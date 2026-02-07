@@ -391,7 +391,7 @@ export async function executeUnstableAgentTask(
       const msgs = ((messagesCheck as { data?: unknown }).data ?? messagesCheck) as Array<unknown>
       const currentMsgCount = msgs.length
 
-      if (currentMsgCount === lastMsgCount) {
+      if (currentMsgCount > 0 && currentMsgCount === lastMsgCount) {
         stablePolls++
         if (stablePolls >= timingCfg.STABILITY_POLLS_REQUIRED) break
       } else {
@@ -707,7 +707,7 @@ export async function executeSyncTask(
       const msgs = ((messagesCheck as { data?: unknown }).data ?? messagesCheck) as Array<unknown>
       const currentMsgCount = msgs.length
 
-      if (currentMsgCount === lastMsgCount) {
+      if (currentMsgCount > 0 && currentMsgCount === lastMsgCount) {
         stablePolls++
         if (stablePolls >= syncTiming.STABILITY_POLLS_REQUIRED) {
         log("[task] Poll complete - messages stable", { sessionID, pollCount, currentMsgCount })
