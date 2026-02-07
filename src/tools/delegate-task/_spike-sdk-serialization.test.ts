@@ -81,13 +81,13 @@ describe("SPIKE: SDK permission field serialization", () => {
     const result = await client.session.create({
       body: {
         title: "Test Session",
-        permission: [
-          {
-            permission: "edit",
-            action: "allow",
-            pattern: "**/*.ts",
-          },
-        ],
+        permission: {
+          edit: "allow",
+          bash: "allow",
+          webfetch: "allow",
+          doom_loop: "allow",
+          external_directory: "allow",
+        },
       } as any,
     })
 
@@ -105,6 +105,7 @@ describe("SPIKE: SDK permission field serialization", () => {
     if ("permission" in (requestBody || {})) {
       expect(requestBody.permission).toBeDefined()
       console.log("✓ FINDING: permission field IS serialized in request body")
+      console.log("✓ FINDING: permission format is object (not array)")
     } else {
       console.log("✗ FINDING: permission field IS NOT serialized in request body")
       console.log("  This explains why the ACP permission delegation fails")

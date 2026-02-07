@@ -12,7 +12,7 @@ import { resolveMultipleSkillsAsync } from "../../features/opencode-skill-loader
 import { discoverSkills } from "../../features/opencode-skill-loader"
 import { getTaskToastManager } from "../../features/task-toast-manager"
 import { subagentSessions, getSessionAgent } from "../../features/claude-code-session-state"
-import { log, getAgentToolRestrictions, resolveModelPipeline, promptWithModelSuggestionRetry } from "../../shared"
+import { log, getAgentToolRestrictions, resolveModelPipeline, promptWithModelSuggestionRetry, CHILD_SESSION_PERMISSIONS } from "../../shared"
 import { fetchAvailableModels, isModelAvailable } from "../../shared/model-availability"
 import { readConnectedProvidersCache } from "../../shared/connected-providers-cache"
 import { CATEGORY_MODEL_REQUIREMENTS } from "../../shared/model-requirements"
@@ -556,9 +556,7 @@ export async function executeSyncTask(
       body: {
         parentID: parentContext.sessionID,
         title: `${args.description} (@${agentToUse} subagent)`,
-        permission: [
-          { permission: "question", action: "deny" as const, pattern: "*" },
-        ],
+        permission: CHILD_SESSION_PERMISSIONS,
       } as any,
       query: {
         directory: parentDirectory,
