@@ -3178,4 +3178,410 @@ describe("sisyphus-task", () => {
       expect(result).toContain("</task_metadata>")
     }, { timeout: 10000 })
   })
+
+  describe("sync delegation tool restrictions and polling", () => {
+    test("explore agent gets write/edit denied in sync delegation", async () => {
+      //#given - sync delegation to explore agent
+      const { createDelegateTask } = require("./tools")
+      let promptBody: any
+
+      const mockManager = { launch: async () => ({}) }
+
+      const promptMock = async (input: any) => {
+        promptBody = input.body
+        return { data: {} }
+      }
+
+      const mockClient = {
+        app: { agents: async () => ({ data: [{ name: "explore", mode: "subagent" }] }) },
+        config: { get: async () => ({ data: { model: SYSTEM_DEFAULT_MODEL } }) },
+        session: {
+          get: async () => ({ data: { directory: "/project" } }),
+          create: async () => ({ data: { id: "ses_explore_restrictions" } }),
+          prompt: promptMock,
+          promptAsync: promptMock,
+          messages: async () => ({
+            data: [{ info: { role: "assistant" }, parts: [{ type: "text", text: "Explored" }] }],
+          }),
+          status: async () => ({ data: { "ses_explore_restrictions": { type: "idle" } } }),
+        },
+      }
+
+      const tool = createDelegateTask({
+        manager: mockManager,
+        client: mockClient,
+      })
+
+      const toolContext = {
+        sessionID: "parent-session",
+        messageID: "parent-message",
+        agent: "sisyphus",
+        abort: new AbortController().signal,
+      }
+
+      //#when - sync delegation to explore
+      await tool.execute(
+        {
+          description: "Explore restriction test",
+          prompt: "Find auth patterns",
+          subagent_type: "explore",
+          run_in_background: false,
+          load_skills: [],
+        },
+        toolContext
+      )
+
+      //#then - explore agent restrictions should deny write and edit
+      expect(promptBody.tools.write).toBe(false)
+      expect(promptBody.tools.edit).toBe(false)
+    }, { timeout: 20000 })
+
+    test("oracle agent gets write/edit denied in sync delegation", async () => {
+      //#given - sync delegation to oracle agent
+      const { createDelegateTask } = require("./tools")
+      let promptBody: any
+
+      const mockManager = { launch: async () => ({}) }
+
+      const promptMock = async (input: any) => {
+        promptBody = input.body
+        return { data: {} }
+      }
+
+      const mockClient = {
+        app: { agents: async () => ({ data: [{ name: "oracle", mode: "subagent" }] }) },
+        config: { get: async () => ({ data: { model: SYSTEM_DEFAULT_MODEL } }) },
+        session: {
+          get: async () => ({ data: { directory: "/project" } }),
+          create: async () => ({ data: { id: "ses_oracle_restrictions" } }),
+          prompt: promptMock,
+          promptAsync: promptMock,
+          messages: async () => ({
+            data: [{ info: { role: "assistant" }, parts: [{ type: "text", text: "Consulted" }] }],
+          }),
+          status: async () => ({ data: { "ses_oracle_restrictions": { type: "idle" } } }),
+        },
+      }
+
+      const tool = createDelegateTask({
+        manager: mockManager,
+        client: mockClient,
+      })
+
+      const toolContext = {
+        sessionID: "parent-session",
+        messageID: "parent-message",
+        agent: "sisyphus",
+        abort: new AbortController().signal,
+      }
+
+      //#when - sync delegation to oracle
+      await tool.execute(
+        {
+          description: "Oracle restriction test",
+          prompt: "Review this design",
+          subagent_type: "oracle",
+          run_in_background: false,
+          load_skills: [],
+        },
+        toolContext
+      )
+
+      //#then - oracle agent restrictions should deny write and edit
+      expect(promptBody.tools.write).toBe(false)
+      expect(promptBody.tools.edit).toBe(false)
+    }, { timeout: 20000 })
+
+    test("sisyphus-junior via category preserves task=false override from isPlanAgent", async () => {
+      //#given - sync delegation via category routes to sisyphus-junior
+      const { createDelegateTask } = require("./tools")
+      let promptBody: any
+
+      const mockManager = { launch: async () => ({}) }
+
+      const promptMock = async (input: any) => {
+        promptBody = input.body
+        return { data: {} }
+      }
+
+      const mockClient = {
+        app: { agents: async () => ({ data: [] }) },
+        config: { get: async () => ({ data: { model: SYSTEM_DEFAULT_MODEL } }) },
+        session: {
+          get: async () => ({ data: { directory: "/project" } }),
+          create: async () => ({ data: { id: "ses_sjr_restrictions" } }),
+          prompt: promptMock,
+          promptAsync: promptMock,
+          messages: async () => ({
+            data: [{ info: { role: "assistant" }, parts: [{ type: "text", text: "Done" }] }],
+          }),
+          status: async () => ({ data: { "ses_sjr_restrictions": { type: "idle" } } }),
+        },
+      }
+
+      const tool = createDelegateTask({
+        manager: mockManager,
+        client: mockClient,
+      })
+
+      const toolContext = {
+        sessionID: "parent-session",
+        messageID: "parent-message",
+        agent: "sisyphus",
+        abort: new AbortController().signal,
+      }
+
+      //#when - sync delegation via category (resolves to sisyphus-junior)
+      await tool.execute(
+        {
+          description: "Junior restriction test",
+          prompt: "Do a quick task",
+          category: "quick",
+          run_in_background: false,
+          load_skills: [],
+        },
+        toolContext
+      )
+
+      //#then - task should be false (isPlanAgent returns false, explicit override wins)
+      expect(promptBody.tools.task).toBe(false)
+    }, { timeout: 20000 })
+
+    test("unknown custom agent gets empty restrictions but retains explicit fields", async () => {
+      //#given - sync delegation to unknown custom agent
+      const { createDelegateTask } = require("./tools")
+      let promptBody: any
+
+      const mockManager = { launch: async () => ({}) }
+
+      const promptMock = async (input: any) => {
+        promptBody = input.body
+        return { data: {} }
+      }
+
+      const mockClient = {
+        app: { agents: async () => ({ data: [{ name: "my-custom-agent", mode: "subagent" }] }) },
+        config: { get: async () => ({ data: { model: SYSTEM_DEFAULT_MODEL } }) },
+        session: {
+          get: async () => ({ data: { directory: "/project" } }),
+          create: async () => ({ data: { id: "ses_custom_restrictions" } }),
+          prompt: promptMock,
+          promptAsync: promptMock,
+          messages: async () => ({
+            data: [{ info: { role: "assistant" }, parts: [{ type: "text", text: "Custom done" }] }],
+          }),
+          status: async () => ({ data: { "ses_custom_restrictions": { type: "idle" } } }),
+        },
+      }
+
+      const tool = createDelegateTask({
+        manager: mockManager,
+        client: mockClient,
+      })
+
+      const toolContext = {
+        sessionID: "parent-session",
+        messageID: "parent-message",
+        agent: "sisyphus",
+        abort: new AbortController().signal,
+      }
+
+      //#when - sync delegation to unknown custom agent
+      await tool.execute(
+        {
+          description: "Custom agent restriction test",
+          prompt: "Do custom work",
+          subagent_type: "my-custom-agent",
+          run_in_background: false,
+          load_skills: [],
+        },
+        toolContext
+      )
+
+      //#then - unknown agent has empty restrictions, only explicit fields exist
+      expect(promptBody.tools.task).toBe(false)
+      expect(promptBody.tools.call_omo_agent).toBe(true)
+      expect(promptBody.tools.question).toBe(false)
+      expect(promptBody.tools.write).toBeUndefined()
+      expect(promptBody.tools.edit).toBeUndefined()
+    }, { timeout: 20000 })
+
+    test("prometheus explicit task=true overrides restriction task=false", async () => {
+      //#given - sync delegation to prometheus (isPlanAgent returns true)
+      const { createDelegateTask } = require("./tools")
+      let promptBody: any
+
+      const mockManager = { launch: async () => ({}) }
+
+      const promptMock = async (input: any) => {
+        promptBody = input.body
+        return { data: {} }
+      }
+
+      const mockClient = {
+        app: { agents: async () => ({ data: [{ name: "prometheus", mode: "subagent" }] }) },
+        config: { get: async () => ({ data: { model: SYSTEM_DEFAULT_MODEL } }) },
+        session: {
+          get: async () => ({ data: { directory: "/project" } }),
+          create: async () => ({ data: { id: "ses_prometheus_override" } }),
+          prompt: promptMock,
+          promptAsync: promptMock,
+          messages: async () => ({
+            data: [{ info: { role: "assistant" }, parts: [{ type: "text", text: "Plan created" }] }],
+          }),
+          status: async () => ({ data: { "ses_prometheus_override": { type: "idle" } } }),
+        },
+      }
+
+      const tool = createDelegateTask({
+        manager: mockManager,
+        client: mockClient,
+      })
+
+      const toolContext = {
+        sessionID: "parent-session",
+        messageID: "parent-message",
+        agent: "sisyphus",
+        abort: new AbortController().signal,
+      }
+
+      //#when - sync delegation to prometheus
+      await tool.execute(
+        {
+          description: "Prometheus override test",
+          prompt: "Create a plan",
+          subagent_type: "prometheus",
+          run_in_background: false,
+          load_skills: [],
+        },
+        toolContext
+      )
+
+      //#then - isPlanAgent("prometheus") returns true, so explicit task=true wins
+      expect(promptBody.tools.task).toBe(true)
+      expect(promptBody.tools.call_omo_agent).toBe(true)
+    }, { timeout: 20000 })
+
+    test("poll timeout returns gracefully without hanging", async () => {
+      //#given - MAX_POLL_TIME_MS set very low, session stays busy
+      const { createDelegateTask } = require("./tools")
+
+      __setTimingConfig({
+        POLL_INTERVAL_MS: 10,
+        MIN_STABILITY_TIME_MS: 10,
+        STABILITY_POLLS_REQUIRED: 1,
+        MAX_POLL_TIME_MS: 100,
+      })
+
+      const mockManager = { launch: async () => ({}) }
+
+      const mockClient = {
+        app: { agents: async () => ({ data: [] }) },
+        config: { get: async () => ({ data: { model: SYSTEM_DEFAULT_MODEL } }) },
+        session: {
+          get: async () => ({ data: { directory: "/project" } }),
+          create: async () => ({ data: { id: "ses_poll_timeout" } }),
+          prompt: async () => ({ data: {} }),
+          promptAsync: async () => ({ data: {} }),
+          messages: async () => ({
+            data: [{ info: { role: "assistant" }, parts: [{ type: "text", text: "Timeout result" }] }],
+          }),
+          status: async () => ({ data: { "ses_poll_timeout": { type: "busy" } } }),
+        },
+      }
+
+      const tool = createDelegateTask({
+        manager: mockManager,
+        client: mockClient,
+      })
+
+      const toolContext = {
+        sessionID: "parent-session",
+        messageID: "parent-message",
+        agent: "sisyphus",
+        abort: new AbortController().signal,
+      }
+
+      //#when - sync delegation with tiny poll timeout
+      const startTime = Date.now()
+      const result = await tool.execute(
+        {
+          description: "Poll timeout test",
+          prompt: "Do something",
+          category: "quick",
+          run_in_background: false,
+          load_skills: [],
+        },
+        toolContext
+      )
+      const elapsed = Date.now() - startTime
+
+      //#then - should return without hanging and still have content
+      expect(elapsed).toBeLessThan(5000)
+      expect(typeof result).toBe("string")
+      expect(result.length).toBeGreaterThan(0)
+    }, { timeout: 10000 })
+
+    test("poll with abort signal exits early", async () => {
+      //#given - abort controller that fires during polling
+      const { createDelegateTask } = require("./tools")
+
+      __setTimingConfig({
+        POLL_INTERVAL_MS: 10,
+        MIN_STABILITY_TIME_MS: 10,
+        STABILITY_POLLS_REQUIRED: 1,
+        MAX_POLL_TIME_MS: 10000,
+      })
+
+      const mockManager = { launch: async () => ({}) }
+
+      const abortController = new AbortController()
+
+      const mockClient = {
+        app: { agents: async () => ({ data: [] }) },
+        config: { get: async () => ({ data: { model: SYSTEM_DEFAULT_MODEL } }) },
+        session: {
+          get: async () => ({ data: { directory: "/project" } }),
+          create: async () => ({ data: { id: "ses_abort_poll" } }),
+          prompt: async () => ({ data: {} }),
+          promptAsync: async () => ({ data: {} }),
+          messages: async () => ({ data: [] }),
+          status: async () => ({ data: { "ses_abort_poll": { type: "busy" } } }),
+        },
+      }
+
+      const tool = createDelegateTask({
+        manager: mockManager,
+        client: mockClient,
+      })
+
+      const toolContext = {
+        sessionID: "parent-session",
+        messageID: "parent-message",
+        agent: "sisyphus",
+        abort: abortController.signal,
+      }
+
+      //#when - abort after 50ms while poll is running
+      setTimeout(() => abortController.abort(), 50)
+
+      const startTime = Date.now()
+      const result = await tool.execute(
+        {
+          description: "Abort poll test",
+          prompt: "Do something",
+          category: "quick",
+          run_in_background: false,
+          load_skills: [],
+        },
+        toolContext
+      )
+      const elapsed = Date.now() - startTime
+
+      //#then - should return abort message quickly
+      expect(elapsed).toBeLessThan(5000)
+      expect(result).toContain("abort")
+      expect(result).toContain("ses_abort_poll")
+    }, { timeout: 10000 })
+  })
 })
