@@ -26,6 +26,7 @@ export * from "./session-cursor"
 export * from "./shell-env"
 export * from "./system-directive"
 export * from "./agent-tool-restrictions"
+export * from "./child-session-permissions"
 export * from "./model-requirements"
 export * from "./model-resolver"
 export {
