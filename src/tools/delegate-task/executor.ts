@@ -627,6 +627,7 @@ export async function executeSyncTask(
           agent: agentToUse,
           system: systemContent,
           tools: {
+            ...getAgentToolRestrictions(agentToUse),
             task: allowTask,
             call_omo_agent: true,
             question: false,
