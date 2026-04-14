@@ -1,17 +1,16 @@
-# src/agents/ — 10 Agent Definitions
+# src/agents/ — Agent Definitions
 
 **Generated:** 2026-04-11
 
 ## OVERVIEW
 
-Agent factories following `createXXXAgent(model) → AgentConfig` pattern. Each has static `mode` property. Built via `buildAgent()` compositing factory + categories + skills.
+Agent factories follow `createXXXAgent(model) → AgentConfig`. Each has a static `mode` property and is built via `buildAgent()` plus category/prompt composition.
 
 ## AGENT INVENTORY
 
 | Agent | Model | Temp | Mode | Fallback Chain | Purpose |
 |-------|-------|------|------|----------------|---------|
 | **Sisyphus** | claude-opus-4-6 max | 0.1 | all | k2p5 -> kimi-k2.5 -> gpt-5.4 medium -> glm-5 -> big-pickle | Main orchestrator, plans + delegates |
-| **Hephaestus** | gpt-5.4 medium | 0.1 | all | — | Autonomous deep worker |
 | **Oracle** | gpt-5.4 high | 0.1 | subagent | gemini-3.1-pro high -> claude-opus-4-6 max | Read-only consultation |
 | **Librarian** | minimax-m2.7 | 0.1 | subagent | minimax-m2.7-highspeed -> claude-haiku-4-5 -> gpt-5-nano | External docs/code search |
 | **Explore** | grok-code-fast-1 | 0.1 | subagent | minimax-m2.7-highspeed -> minimax-m2.7 -> claude-haiku-4-5 -> gpt-5-nano | Contextual grep |
@@ -36,7 +35,6 @@ Agent factories following `createXXXAgent(model) → AgentConfig` pattern. Each 
 ```
 agents/
 ├── sisyphus.ts            # 559 LOC, main orchestrator
-├── hephaestus.ts          # 507 LOC, autonomous worker
 ├── oracle.ts              # Read-only consultant
 ├── librarian.ts           # External search
 ├── explore.ts             # Codebase grep
@@ -56,7 +54,6 @@ agents/
 ├── env-context.ts                   # Environment context
 └── builtin-agents/        # maybeCreateXXXConfig conditional factories
     ├── sisyphus-agent.ts
-    ├── hephaestus-agent.ts
     ├── general-agents.ts  # collectPendingBuiltinAgents
     └── available-skills.ts
 ```

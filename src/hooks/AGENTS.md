@@ -1,10 +1,10 @@
-# src/hooks/ — 49 Lifecycle Hooks
+# src/hooks/ — Lifecycle Hooks
 
 **Generated:** 2026-04-11
 
 ## OVERVIEW
 
-49 hooks across dedicated modules and standalone files. Session, tool-guard, transform, and continuation hooks compose the runtime surface. All hooks follow `createXXXHook(deps) → HookFunction` factory pattern.
+Session, tool-guard, transform, and continuation hooks compose the runtime surface. All hooks follow `createXXXHook(deps) → HookFunction` factory pattern.
 
 ## HOOK TIERS
 
@@ -27,7 +27,6 @@ hooks/
 ├── edit-error-recovery/        # Recovers from failures
 ├── hashline-edit-diff-enhancer/ # Enhanced diff output for hashline edits
 ├── hashline-read-enhancer/     # Adds LINE#ID hashes to Read output
-├── interactive-bash-session/   # Tmux session management
 ├── json-error-recovery/        # JSON parse error correction
 ├── keyword-detector/           # ultrawork/search/analyze modes
 ├── legacy-plugin-toast/        # Legacy plugin name migration toast
@@ -64,7 +63,6 @@ hooks/
 | autoUpdateChecker | session.created | Check npm for plugin updates |
 | agentUsageReminder | chat.message | Remind about available agents |
 | nonInteractiveEnv | chat.message | Adjust behavior for `run` command |
-| interactiveBashSession | tool.execute | Tmux session for interactive tools |
 | editErrorRecovery | tool.execute.after | Retry failed file edits |
 | delegateTaskRetry | tool.execute.after | Retry failed task delegations |
 | prometheusMdOnly | tool.execute.before | Enforce .md-only writes for Prometheus |
@@ -105,7 +103,7 @@ hooks/
 | thinkingBlockValidator | messages.transform | Validate thinking block structure |
 | toolPairValidator | messages.transform | Validate tool call/result pairs |
 
-### Tier 4: Continuation Hooks (5) — `create-continuation-hooks.ts`
+### Tier 4: Continuation Hooks (4) — `create-continuation-hooks.ts`
 
 | Hook | Event | Purpose |
 |------|-------|---------|

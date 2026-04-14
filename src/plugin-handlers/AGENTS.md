@@ -74,8 +74,7 @@ PRs attempting these patterns will be rejected.
 | Agent | Granted | Denied |
 |-------|---------|--------|
 | Librarian | grep_app_* | — |
-| Sisyphus, Prometheus | task, task_*, teammate | — |
-| Hephaestus | task | — |
+| Sisyphus | task, task_*, teammate | — |
 | Default (all others) | — | grep_app_*, task_*, teammate, LSP |
 
 ## MULTI-LEVEL CONFIG MERGE

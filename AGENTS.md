@@ -4,7 +4,7 @@
 
 ## OVERVIEW
 
-OpenCode plugin (npm: `oh-my-opencode`) extending Claude Code with multi-agent orchestration, 52 lifecycle hooks, 26 tools, skill/command/MCP systems, Hashline edit tool, IntentGate classifier, and Claude Code compatibility. ~1600 TypeScript source files. Dual-published as `oh-my-opencode` + `oh-my-openagent` during transition.
+OpenCode plugin (npm: `oh-my-opencode`) extending Claude Code with focused multi-agent orchestration, hook/tool integrations, Hashline edit, IntentGate classification, and Claude Code compatibility. ~1600 TypeScript source files. Dual-published as `oh-my-opencode` + `oh-my-openagent` during transition.
 
 ## STRUCTURE
 
@@ -13,9 +13,9 @@ oh-my-opencode/
 ├── src/
 │   ├── index.ts              # Plugin entry: loadConfig → createManagers → createTools → createHooks → createPluginInterface
 │   ├── plugin-config.ts      # JSONC multi-level config: user → project → defaults (Zod v4)
-│   ├── agents/               # 11 agents (Sisyphus, Hephaestus, Oracle, Librarian, Explore, Atlas, Prometheus, Metis, Momus, Multimodal-Looker, Sisyphus-Junior)
-│   ├── hooks/                # 52 lifecycle hooks across dedicated modules and standalone files
-│   ├── tools/                # 26 tools across 16 directories (includes Hashline edit with LINE#ID content hashing)
+│   ├── agents/               # Built-in agent definitions and prompt assembly
+│   ├── hooks/                # Lifecycle hooks across dedicated modules and standalone files
+│   ├── tools/                # Tool factories and built-in tool wiring (includes Hashline edit with LINE#ID content hashing)
 │   ├── features/             # 19 feature modules (background-agent, skill-loader, tmux, MCP-OAuth, skill-mcp-manager, etc.)
 │   ├── shared/               # 170+ utility files (barrel-exported, logger → /tmp/oh-my-opencode.log)
 │   ├── config/               # Zod v4 schema system (32 files)
@@ -37,7 +37,7 @@ OhMyOpenCodePlugin(ctx)
   ├─→ loadPluginConfig()         # JSONC parse → project/user merge → Zod validate → migrate
   ├─→ createManagers()           # TmuxSessionManager, BackgroundManager, SkillMcpManager, ConfigHandler
   ├─→ createTools()              # SkillContext + AvailableCategories + ToolRegistry (26 tools)
-  ├─→ createHooks()              # 3-tier: Core(43) + Continuation(7) + Skill(2) = 52 hooks
+  ├─→ createHooks()              # Compose core + continuation hooks
   └─→ createPluginInterface()    # 10 OpenCode hook handlers → PluginInterface
 ```
 
