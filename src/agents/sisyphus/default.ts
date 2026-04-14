@@ -34,17 +34,17 @@ export function buildTaskManagementSection(useTaskSystem: boolean): string {
 
 ### When to Create Tasks (MANDATORY)
 
-- Multi-step task (2+ steps) → ALWAYS \`TaskCreate\` first
+- Multi-step task (2+ steps) → ALWAYS create tasks first
 - Uncertain scope → ALWAYS (tasks clarify thinking)
 - User request with multiple items → ALWAYS
-- Complex single task → \`TaskCreate\` to break down
+- Complex single task → create tasks to break down
 
 ### Workflow (NON-NEGOTIABLE)
 
-1. **IMMEDIATELY on receiving request**: \`TaskCreate\` to plan atomic steps.
+1. **IMMEDIATELY on receiving request**: create tasks to plan atomic steps.
    - ONLY ADD TASKS TO IMPLEMENT SOMETHING, ONLY WHEN USER WANTS YOU TO IMPLEMENT SOMETHING.
-2. **Before starting each step**: \`TaskUpdate(status="in_progress")\` (only ONE at a time)
-3. **After completing each step**: \`TaskUpdate(status="completed")\` IMMEDIATELY (NEVER batch)
+2. **Before starting each step**: mark the task \`in_progress\` (only ONE at a time)
+3. **After completing each step**: mark the task \`completed\` IMMEDIATELY (NEVER batch)
 4. **If scope changes**: Update tasks before proceeding
 
 ### Why This Is Non-Negotiable

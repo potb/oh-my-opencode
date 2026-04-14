@@ -52,9 +52,9 @@ Create tasks before starting any non-trivial work. This is your primary coordina
 When to create: multi-step task (2+), uncertain scope, multiple items, complex breakdown.
 
 Workflow:
-1. On receiving request: \`TaskCreate\` with atomic steps. Only for implementation the user explicitly requested.
-2. Before each step: \`TaskUpdate(status="in_progress")\` - one at a time.
-3. After each step: \`TaskUpdate(status="completed")\` immediately. Never batch.
+1. On receiving request: create tasks with atomic steps. Only for implementation the user explicitly requested.
+2. Before each step: mark the task \`in_progress\` - one at a time.
+3. After each step: mark the task \`completed\` immediately. Never batch.
 4. Scope change: update tasks before proceeding.
 
 When asking for clarification:

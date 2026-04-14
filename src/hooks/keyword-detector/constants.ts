@@ -38,7 +38,7 @@ IF COMPLEX - DO NOT STRUGGLE ALONE. Consult specialists:
 
 SYNTHESIZE findings before proceeding.
 ---
-MANDATORY delegate_task params: ALWAYS include run_in_background when calling delegate_task.
-Example: delegate_task(subagent_type="explore", prompt="...", run_in_background=true)`,
+MANDATORY task params: ALWAYS include run_in_background when calling task.
+Example: task(subagent_type="explore", prompt="...", run_in_background=true)`,
   },
 ]

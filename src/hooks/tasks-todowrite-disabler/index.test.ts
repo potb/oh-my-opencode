@@ -131,7 +131,7 @@ describe("tasks-todowrite-disabler", () => {
       // when / then
       await expect(
         hook["tool.execute.before"](input, output)
-      ).rejects.toThrow(/TaskCreate|TaskUpdate|TaskList|TaskGet/)
+      ).rejects.toThrow(/task_create|task_update|task_list|task_get/)
     })
   })
 })
