@@ -17,13 +17,16 @@ Three-layer review before publishing to npm. Every layer covers a different angl
 
 ## Phase 0: Detect Unpublished Changes
 
-Run `/get-unpublished-changes` FIRST. This is the single source of truth for what changed.
+Run the equivalent unpublished-change detection steps FIRST. This is the single source of truth for what changed.
 
-```
-skill(name="get-unpublished-changes")
+```bash
+PUBLISHED=$(npm view oh-my-opencode version 2>/dev/null || echo "not published")
+LOCAL=$(node -p "require('./package.json').version" 2>/dev/null || echo "unknown")
+git log "v${PUBLISHED}"..HEAD --oneline 2>/dev/null || echo "no commits"
+git diff "v${PUBLISHED}"..HEAD --stat 2>/dev/null || echo "no diff"
 ```
 
-This command automatically:
+These steps automatically give you:
 - Detects published npm version vs local version
 - Lists all commits since last release
 - Reads actual diffs (not just commit messages) to describe REAL changes
@@ -53,10 +56,10 @@ If `PUBLISHED` is "not published", this is a first release — use the full git 
 
 ## Phase 1: Parse Changes into Groups
 
-Use the `/get-unpublished-changes` output as the starting point — it already groups by scope and type.
+Use the unpublished-change output as the starting point.
 
 **Grouping strategy:**
-1. Start from the `/get-unpublished-changes` analysis which already categorizes by feat/fix/refactor/docs with scope
+1. Start from the unpublished-change analysis and categorize by feat/fix/refactor/docs with scope
 2. Further split by **module/area** — changes touching the same module or feature area belong together
 3. Target **up to 10 groups**. If fewer than 10 commits, each commit is its own group. If more than 10 logical areas, merge the smallest groups.
 4. For each group, extract:

@@ -20,28 +20,9 @@ You are the release manager for oh-my-opencode. Execute the FULL publish workflo
 
 ---
 
-## STEP 0: REGISTER TODO LIST (MANDATORY FIRST ACTION)
+## STEP 0: CREATE A LOCAL CHECKLIST (MANDATORY FIRST ACTION)
 
-**Before doing ANYTHING else**, create a detailed todo list using TodoWrite:
-
-```
-[
-  { "id": "confirm-bump", "content": "Confirm version bump type with user (patch/minor/major)", "status": "in_progress", "priority": "high" },
-  { "id": "check-uncommitted", "content": "Check for uncommitted changes and commit if needed", "status": "pending", "priority": "high" },
-  { "id": "sync-remote", "content": "Sync with remote (pull --rebase && push if unpushed commits)", "status": "pending", "priority": "high" },
-  { "id": "run-workflow", "content": "Trigger GitHub Actions publish workflow", "status": "pending", "priority": "high" },
-  { "id": "wait-workflow", "content": "Wait for workflow completion (poll every 30s)", "status": "pending", "priority": "high" },
-  { "id": "verify-and-preview", "content": "Verify release created + preview auto-generated changelog & contributor thanks", "status": "pending", "priority": "high" },
-  { "id": "draft-summary", "content": "Draft enhanced release summary (mandatory for minor/major, optional for patch — ask user)", "status": "pending", "priority": "high" },
-  { "id": "apply-summary", "content": "Prepend enhanced summary to release (if user opted in)", "status": "pending", "priority": "high" },
-  { "id": "verify-npm", "content": "Verify npm package published successfully", "status": "pending", "priority": "high" },
-  { "id": "wait-platform-workflow", "content": "Wait for publish-platform workflow completion", "status": "pending", "priority": "high" },
-  { "id": "verify-platform-binaries", "content": "Verify all 7 platform binary packages published", "status": "pending", "priority": "high" },
-  { "id": "final-confirmation", "content": "Final confirmation to user with links", "status": "pending", "priority": "low" }
-]
-```
-
-**Mark each todo as `in_progress` when starting, `completed` when done. ONE AT A TIME.**
+Before doing anything else, create and maintain a local execution checklist in your own notes. Track each step one at a time.
 
 ---
 
@@ -65,9 +46,9 @@ Run: `git status --porcelain`
 
 ## STEP 2.5: SYNC WITH REMOTE (MANDATORY)
 
-Check if there are unpushed commits:
+Check if there are unpushed commits against the main development branch:
 ```bash
-git log origin/master..HEAD --oneline
+git log origin/dev..HEAD --oneline
 ```
 
 **If there are unpushed commits, you MUST sync before triggering workflow:**

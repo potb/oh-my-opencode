@@ -11,14 +11,14 @@ Read-only GitHub triage orchestrator. Fetch open issues/PRs, classify, spawn 1 b
 
 ## Architecture
 
-**1 ISSUE/PR = 1 `task_create` = 1 background subagent. NO EXCEPTIONS.**
+**1 ISSUE/PR = 1 background subagent. NO EXCEPTIONS.**
 
 | Rule | Value |
 |------|-------|
 | Subagent | `explore` |
 | Execution | `run_in_background=true` |
 | Parallelism | ALL items simultaneously |
-| Tracking | `task_create` per item |
+| Tracking | local in-memory mapping per item |
 | Output | `/tmp/{YYYYMMDD-HHmmss}/issue-{N}.md` or `pr-{N}.md` |
 
 ---
@@ -156,20 +156,9 @@ Example: If there are 500 open issues, spawn 500 subagents. If there are 1000 op
 
 ## Phase 3: Spawn Subagents (Individual Tool Calls)
 
-**CRITICAL: Create tasks ONE BY ONE using individual `task_create` tool calls. NEVER batch or script.**
-
 For each item, execute these steps sequentially:
 
-### Step 3.1: Create Task Record
-```typescript
-task_create(
-  subject="Triage: #{number} {title}",
-  description="GitHub {issue|PR} triage analysis - {type}",
-  metadata={"type": "{ISSUE_QUESTION|ISSUE_BUG|ISSUE_FEATURE|ISSUE_OTHER|PR_BUGFIX|PR_OTHER}", "number": {number}}
-)
-```
-
-### Step 3.2: Spawn Analysis Subagent (Background)
+### Step 3.1: Spawn Analysis Subagent (Background)
 ```typescript
 task(
   subagent_type="explore",
@@ -186,9 +175,8 @@ task(
 
 ```
 For each item:
-  1. task_create(subject="Triage: #{number} {title}")
-  2. task(subagent_type="explore", run_in_background=true, prompt=SUBAGENT_PROMPT)
-  3. Store mapping: item_number -> { task_id, background_task_id }
+  1. task(subagent_type="explore", run_in_background=true, prompt=SUBAGENT_PROMPT)
+  2. Store mapping: item_number -> background_task_id
 ```
 
 ---
@@ -527,10 +515,10 @@ NEVER merge. NEVER comment. NEVER review. Write to file ONLY.
 
 ## Phase 4: Collect & Update
 
-Poll `background_output()` per task. As each completes:
-1. Parse report.
-2. `task_update(id=task_id, status="completed", description=REPORT_SUMMARY)`
-3. Stream to user immediately.
+As each background task completes:
+1. Parse the generated report.
+2. Update your local tracking notes.
+3. Stream the result to the user immediately.
 
 ---
 

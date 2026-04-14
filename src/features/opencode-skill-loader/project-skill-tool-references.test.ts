@@ -25,14 +25,11 @@ describe("project skill tool references", () => {
   })
 
   describe("#given github-triage skill instructions", () => {
-    test("#when reading task tracking examples #then they use the real task management tool names", async () => {
+    test("#when reading task tracking examples #then they no longer rely on removed task_create/task_update tools", async () => {
       const skillContent = await readProjectSkill("github-triage")
 
-      const usesRealToolNames =
-        skillContent.includes("task_create(subject=\"Triage: #{number} {title}\")")
-        && skillContent.includes("task_update(id=task_id, status=\"completed\", description=REPORT_SUMMARY)")
-
-      expect(usesRealToolNames).toBe(true)
+      expect(skillContent).not.toContain("task_create(")
+      expect(skillContent).not.toContain("task_update(")
       expect(skillContent).not.toContain("TaskCreate(")
       expect(skillContent).not.toContain("TaskUpdate(")
     })
@@ -52,6 +49,7 @@ describe("project skill tool references", () => {
       const skillContent = await readProjectSkill("pre-publish-review")
 
       expect(skillContent).toContain('task(\n  subagent_type="oracle"')
+      expect(skillContent).not.toContain('skill(name="get-unpublished-changes")')
       expect(skillContent).not.toContain('category="ultrabrain"')
       expect(skillContent).not.toContain('category="unspecified-high"')
       expect(skillContent).not.toContain('load_skills=')
@@ -67,6 +65,16 @@ describe("project skill tool references", () => {
       expect(commandContent).toContain('subagent_type="oracle"')
       expect(commandContent).not.toContain('category="deep"')
       expect(commandContent).not.toContain('load_skills=')
+    })
+  })
+
+  describe("#given publish command instructions", () => {
+    test("#when reading publish command #then it no longer relies on TodoWrite or origin/master", async () => {
+      const commandContent = await Bun.file(join(PROJECT_ROOT, ".opencode", "command", "publish.md")).text()
+
+      expect(commandContent).not.toContain('TodoWrite')
+      expect(commandContent).not.toContain('origin/master')
+      expect(commandContent).toContain('origin/dev')
     })
   })
 })
