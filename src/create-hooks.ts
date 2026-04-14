@@ -7,7 +7,6 @@ import type { ModelCacheState } from "./plugin-state"
 
 import { createCoreHooks } from "./plugin/hooks/create-core-hooks"
 import { createContinuationHooks } from "./plugin/hooks/create-continuation-hooks"
-import { createSkillHooks } from "./plugin/hooks/create-skill-hooks"
 
 export type CreatedHooks = ReturnType<typeof createHooks>
 
@@ -18,7 +17,6 @@ export type DisposableCreatedHooks = {
   commentChecker?: DisposableHook
   runtimeFallback?: DisposableHook
   todoContinuationEnforcer?: DisposableHook
-  autoSlashCommand?: DisposableHook
   anthropicContextWindowLimitRecovery?: DisposableHook
 }
 
@@ -27,7 +25,6 @@ export function disposeCreatedHooks(hooks: DisposableCreatedHooks): void {
   hooks.commentChecker?.dispose?.()
   hooks.runtimeFallback?.dispose?.()
   hooks.todoContinuationEnforcer?.dispose?.()
-  hooks.autoSlashCommand?.dispose?.()
   hooks.anthropicContextWindowLimitRecovery?.dispose?.()
 }
 
@@ -69,19 +66,11 @@ export function createHooks(args: {
     sessionRecovery: core.sessionRecovery,
   })
 
-  const skill = createSkillHooks({
-    ctx,
-    pluginConfig,
-    isHookEnabled,
-    safeHookEnabled,
-    mergedSkills,
-    availableSkills,
-  })
-
   const hooks = {
     ...core,
     ...continuation,
-    ...skill,
+    autoSlashCommand: null,
+    categorySkillReminder: null,
   }
 
   return {
