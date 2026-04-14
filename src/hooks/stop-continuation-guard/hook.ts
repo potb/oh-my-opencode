@@ -106,7 +106,7 @@ export function createStopContinuationGuardHook(
     // (including normal chat) would re-enable continuation.
     //
     // Stop state is now only cleared by:
-    // 1. /start-work (or /ulw-loop, /ralph-loop) via explicit clear() call
+    // 1. explicit clear() calls from work-starting flows like /ulw-loop or /ralph-loop
     // 2. session.deleted event
     // 3. Future /resume-continuation command
     void sessionID

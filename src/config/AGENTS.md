@@ -32,7 +32,6 @@ config/schema/
 ├── runtime-fallback.ts         # RuntimeFallbackConfigSchema
 ├── babysitting.ts              # Unstable agent monitoring
 ├── dynamic-context-pruning.ts  # Context pruning settings
-├── start-work.ts              # StartWorkConfigSchema (auto_commit)
 ├── openclaw.ts                # OpenClaw integration settings
 ├── git-env-prefix.ts          # Git environment prefix config
 ├── model-capabilities.ts      # Model capabilities config
@@ -40,9 +39,9 @@ config/schema/
 
 ```
 
-## ROOT SCHEMA FIELDS (32)
+## ROOT SCHEMA FIELDS (31)
 
-`$schema`, `new_task_system_enabled`, `default_run_agent`, `disabled_mcps`, `disabled_agents`, `disabled_skills`, `disabled_hooks`, `disabled_commands`, `disabled_tools`, `hashline_edit`, `agents`, `categories`, `claude_code`, `sisyphus_agent`, `comment_checker`, `experimental`, `auto_update`, `skills`, `ralph_loop`, `background_task`, `notification`, `babysitting`, `git_master`, `browser_automation_engine`, `websearch`, `tmux`, `sisyphus`, `start_work`, `_migrations`, `model_fallback`, `model_capabilities`, `openclaw`, `mcp_env_allowlist`
+`$schema`, `new_task_system_enabled`, `default_run_agent`, `disabled_mcps`, `disabled_agents`, `disabled_skills`, `disabled_hooks`, `disabled_commands`, `disabled_tools`, `hashline_edit`, `agents`, `categories`, `claude_code`, `sisyphus_agent`, `comment_checker`, `experimental`, `auto_update`, `skills`, `ralph_loop`, `background_task`, `notification`, `babysitting`, `git_master`, `browser_automation_engine`, `websearch`, `tmux`, `sisyphus`, `_migrations`, `model_fallback`, `model_capabilities`, `openclaw`, `mcp_env_allowlist`
 
 ## AGENT OVERRIDE FIELDS (21)
 

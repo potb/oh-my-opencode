@@ -16,7 +16,6 @@ import {
   createEditErrorRecoveryHook,
   createDelegateTaskRetryHook,
   createTaskResumeInfoHook,
-  createStartWorkHook,
   createSisyphusJuniorNotepadHook,
   createNoSisyphusGptHook,
   createQuestionLabelTruncatorHook,
@@ -48,7 +47,6 @@ export type SessionHooks = {
   ralphLoop: ReturnType<typeof createRalphLoopHook> | null
   editErrorRecovery: ReturnType<typeof createEditErrorRecoveryHook> | null
   delegateTaskRetry: ReturnType<typeof createDelegateTaskRetryHook> | null
-  startWork: ReturnType<typeof createStartWorkHook> | null
   sisyphusJuniorNotepad: ReturnType<typeof createSisyphusJuniorNotepadHook> | null
   noSisyphusGpt: ReturnType<typeof createNoSisyphusGptHook> | null
   questionLabelTruncator: ReturnType<typeof createQuestionLabelTruncatorHook> | null
@@ -206,10 +204,6 @@ export function createSessionHooks(args: {
     ? safeHook("delegate-task-retry", () => createDelegateTaskRetryHook(ctx))
     : null
 
-  const startWork = isHookEnabled("start-work")
-    ? safeHook("start-work", () => createStartWorkHook(ctx))
-    : null
-
   const sisyphusJuniorNotepad = isHookEnabled("sisyphus-junior-notepad")
     ? safeHook("sisyphus-junior-notepad", () => createSisyphusJuniorNotepadHook(ctx))
     : null
@@ -260,7 +254,6 @@ export function createSessionHooks(args: {
     ralphLoop,
     editErrorRecovery,
     delegateTaskRetry,
-    startWork,
     sisyphusJuniorNotepad,
     noSisyphusGpt,
     questionLabelTruncator,

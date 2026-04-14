@@ -33,7 +33,6 @@ export { createEditErrorRecoveryHook } from "./edit-error-recovery";
 
 export { createSisyphusJuniorNotepadHook } from "./sisyphus-junior-notepad";
 export { createTaskResumeInfoHook } from "./task-resume-info";
-export { createStartWorkHook } from "./start-work";
 export { createAtlasHook } from "./atlas";
 export { createDelegateTaskRetryHook } from "./delegate-task-retry";
 export { createQuestionLabelTruncatorHook } from "./question-label-truncator";

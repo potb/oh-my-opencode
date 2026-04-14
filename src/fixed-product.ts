@@ -71,6 +71,5 @@ export function applyFixedProductTrim(config: OhMyOpenCodeConfig): OhMyOpenCodeC
     new_task_system_enabled: false,
     runtime_fallback: false,
     skills: undefined,
-    start_work: undefined,
   }
 }

@@ -46,7 +46,6 @@ hooks/
 ├── runtime-fallback/           # Auto-switch models on API errors
 ├── session-recovery/           # Auto-recovers from crashes
 ├── sisyphus-junior-notepad/    # Sisyphus Junior notepad
-├── start-work/                 # Sisyphus work session starter
 ├── stop-continuation-guard/    # Guards stop continuation
 ├── task-reminder/              # Task system usage reminders
 ├── task-resume-info/           # Resume info for cancelled tasks
@@ -77,7 +76,6 @@ hooks/
 | ralphLoop | event | Self-referential dev loop (boulder continuation) |
 | editErrorRecovery | tool.execute.after | Retry failed file edits |
 | delegateTaskRetry | tool.execute.after | Retry failed task delegations |
-| startWork | chat.message | `/start-work` command handler |
 | prometheusMdOnly | tool.execute.before | Enforce .md-only writes for Prometheus |
 | sisyphusJuniorNotepad | chat.message | Notepad injection for subagents |
 | questionLabelTruncator | tool.execute.before | Truncate long question labels |

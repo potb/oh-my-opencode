@@ -6,14 +6,11 @@ import {
   readBoulderState,
   writeBoulderState,
   appendSessionId,
-  clearBoulderState,
-  getPlanProgress,
-  getPlanName,
-  createBoulderState,
-  findPrometheusPlans,
   getTaskSessionState,
   upsertTaskSessionState,
 } from "./storage"
+import { clearBoulderState } from "./clear-state"
+import { getPlanProgress } from "./plan-progress"
 import type { BoulderState } from "./types"
 import { readCurrentTopLevelTask } from "./top-level-task"
 
@@ -711,71 +708,4 @@ describe("boulder-state", () => {
     })
   })
 
-  describe("getPlanName", () => {
-    test("should extract plan name from path", () => {
-      // given
-      const path = "/home/user/.sisyphus/plans/project/my-feature.md"
-      // when
-      const name = getPlanName(path)
-      // then
-      expect(name).toBe("my-feature")
-    })
-  })
-
-  describe("createBoulderState", () => {
-    test("should create state with correct fields", () => {
-      // given
-      const planPath = "/path/to/auth-refactor.md"
-      const sessionId = "ses-abc123"
-
-      // when
-      const state = createBoulderState(planPath, sessionId)
-
-      // then
-      expect(state.active_plan).toBe(planPath)
-      expect(state.session_ids).toEqual([sessionId])
-      expect(state.plan_name).toBe("auth-refactor")
-      expect(state.started_at).toBeDefined()
-    })
-
-    test("should include agent field when provided", () => {
-      //#given - plan path, session id, and agent type
-      const planPath = "/path/to/feature.md"
-      const sessionId = "ses-xyz789"
-      const agent = "atlas"
-
-      //#when - createBoulderState is called with agent
-      const state = createBoulderState(planPath, sessionId, agent)
-
-      //#then - state should include the agent field
-      expect(state.agent).toBe("atlas")
-      expect(state.active_plan).toBe(planPath)
-      expect(state.session_ids).toEqual([sessionId])
-      expect(state.plan_name).toBe("feature")
-    })
-
-    test("should mark the initial session origin as direct", () => {
-      // given
-      const planPath = "/path/to/feature.md"
-      const sessionId = "ses-origin"
-
-      // when
-      const state = createBoulderState(planPath, sessionId)
-
-      // then
-      expect(state.session_origins).toEqual({ [sessionId]: "direct" })
-    })
-
-    test("should allow agent to be undefined", () => {
-      //#given - plan path and session id without agent
-      const planPath = "/path/to/legacy.md"
-      const sessionId = "ses-legacy"
-
-      //#when - createBoulderState is called without agent
-      const state = createBoulderState(planPath, sessionId)
-
-      //#then - state should not have agent field (backward compatible)
-      expect(state.agent).toBeUndefined()
-    })
-  })
 })
