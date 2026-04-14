@@ -13,7 +13,6 @@ export { lspManager }
 export { createAstGrepTools } from "./ast-grep"
 export { createGrepTools } from "./grep"
 export { createGlobTools } from "./glob"
-export { discoverCommandsSync } from "./slashcommand"
 export { createSessionManagerTools } from "./session-manager"
 
 export { sessionExists } from "./session-manager/storage"
