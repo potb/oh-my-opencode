@@ -11,12 +11,6 @@
       "ultrawork": { "model": "anthropic/claude-opus-4-6", "variant": "max" },
     },
 
-    // Deep autonomous worker: end-to-end implementation
-    "hephaestus": {
-      "model": "openai/gpt-5.4",
-      "prompt_append": "Explore thoroughly, then implement. Prefer small, testable changes.",
-    },
-
     // Strategic planner: interview mode before execution
     "prometheus": {
       "prompt_append": "Always interview first. Validate scope before planning.",

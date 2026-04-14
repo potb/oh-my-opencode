@@ -9,14 +9,6 @@
     "sisyphus": {
       "model": "kimi-for-coding/k2p5",
       "ultrawork": { "model": "anthropic/claude-opus-4-6", "variant": "max" },
-      "prompt_append": "Delegate heavily to hephaestus for implementation. Parallelize exploration.",
-    },
-
-    // Heavy lifter: maximum autonomy for coding tasks
-    "hephaestus": {
-      "model": "openai/gpt-5.4",
-      "prompt_append": "You are the primary implementation agent. Own the codebase. Explore, decide, execute. Use LSP and AST-grep aggressively.",
-      "permission": { "edit": "allow", "bash": { "git": "allow", "test": "allow" } },
     },
 
     // Lightweight planner: quick planning for coding tasks

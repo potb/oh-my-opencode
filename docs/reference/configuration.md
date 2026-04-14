@@ -145,7 +145,7 @@ Here's a practical starting configuration:
 
 ### Agents
 
-Override built-in agent settings. Available agents: `sisyphus`, `hephaestus`, `prometheus`, `oracle`, `librarian`, `explore`, `multimodal-looker`, `metis`, `momus`, `atlas`, `sisyphus-junior`.
+Override built-in agent settings. Available agents: `sisyphus`, `oracle`, `librarian`, `explore`, `metis`, `momus`, `sisyphus-junior`.
 
 ```json
 {
@@ -158,7 +158,7 @@ Override built-in agent settings. Available agents: `sisyphus`, `hephaestus`, `p
 
 Disable agents entirely: `{ "disabled_agents": ["oracle", "multimodal-looker"] }`
 
-Core agents receive an injected runtime `order` field for deterministic Tab cycling in the UI: Sisyphus = 1, Hephaestus = 2, Prometheus = 3, Atlas = 4. This is not a user-configurable config key.
+Core agents receive an injected runtime `order` field for deterministic Tab cycling in the UI. This is not a user-configurable config key.
 
 #### Agent Options
 
@@ -355,15 +355,11 @@ Capability data comes from provider runtime metadata first. OmO also ships bundl
 | Agent                 | Default Model       | Provider Priority                                                            |
 | --------------------- | ------------------- | ---------------------------------------------------------------------------- |
 | **Sisyphus**          | `claude-opus-4-6`   | `anthropic\|github-copilot\|opencode/claude-opus-4-6 (max)` → `opencode-go/kimi-k2.5` → `kimi-for-coding/k2p5` → `opencode\|moonshotai\|moonshotai-cn\|firmware\|ollama-cloud\|aihubmix/kimi-k2.5` → `openai\|github-copilot\|opencode/gpt-5.4 (medium)` → `zai-coding-plan\|opencode/glm-5` → `opencode/big-pickle` |
-| **Hephaestus**        | `gpt-5.4`           | `gpt-5.4 (medium)`                                                           |
 | **oracle**            | `gpt-5.4`           | `openai\|github-copilot\|opencode/gpt-5.4 (high)` → `google\|github-copilot\|opencode/gemini-3.1-pro (high)` → `anthropic\|github-copilot\|opencode/claude-opus-4-6 (max)` → `opencode-go/glm-5` |
 | **librarian**         | `minimax-m2.7`      | `opencode-go/minimax-m2.7` → `opencode/minimax-m2.7-highspeed` → `anthropic\|opencode/claude-haiku-4-5` → `opencode/gpt-5-nano` |
 | **explore**           | `grok-code-fast-1`  | `github-copilot\|xai/grok-code-fast-1` → `opencode-go/minimax-m2.7-highspeed` → `opencode/minimax-m2.7` → `anthropic\|opencode/claude-haiku-4-5` → `opencode/gpt-5-nano` |
-| **multimodal-looker** | `gpt-5.4`           | `openai\|opencode/gpt-5.4 (medium)` → `opencode-go/kimi-k2.5` → `zai-coding-plan/glm-4.6v` → `openai\|github-copilot\|opencode/gpt-5-nano` |
-| **Prometheus**        | `claude-opus-4-6`   | `anthropic\|github-copilot\|opencode/claude-opus-4-6 (max)` → `openai\|github-copilot\|opencode/gpt-5.4 (high)` → `opencode-go/glm-5` → `google\|github-copilot\|opencode/gemini-3.1-pro` |
 | **Metis**             | `claude-opus-4-6`   | `anthropic\|github-copilot\|opencode/claude-opus-4-6 (max)` → `openai\|github-copilot\|opencode/gpt-5.4 (high)` → `opencode-go/glm-5` → `kimi-for-coding/k2p5` |
 | **Momus**             | `gpt-5.4`           | `openai\|github-copilot\|opencode/gpt-5.4 (xhigh)` → `anthropic\|github-copilot\|opencode/claude-opus-4-6 (max)` → `google\|github-copilot\|opencode/gemini-3.1-pro (high)` → `opencode-go/glm-5` |
-| **Atlas**             | `claude-sonnet-4-6` | `anthropic\|github-copilot\|opencode/claude-sonnet-4-6` → `opencode-go/kimi-k2.5` → `openai\|github-copilot\|opencode/gpt-5.4 (medium)` → `opencode-go/minimax-m2.7` |
 
 #### Category Provider Chains
 
@@ -717,7 +713,7 @@ Use strings when you only need an ordered fallback chain:
 ```json
 {
   "agents": {
-    "atlas": {
+    "sisyphus": {
       "model": "anthropic/claude-sonnet-4-6",
       "fallback_models": [
         "anthropic/claude-haiku-4-5",
@@ -736,7 +732,7 @@ If the primary model already establishes the provider, fallback entries can omit
 ```json
 {
   "agents": {
-    "atlas": {
+    "sisyphus": {
       "model": "openai/gpt-5.4",
       "fallback_models": [
         "gpt-5.4-mini",

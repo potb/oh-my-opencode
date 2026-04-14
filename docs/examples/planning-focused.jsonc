@@ -12,12 +12,6 @@
       "prompt_append": "Always consult prometheus for planning. Never rush to implementation.",
     },
 
-    // Implementation: uses planning outputs
-    "hephaestus": {
-      "model": "openai/gpt-5.4",
-      "prompt_append": "Follow established plans precisely. Ask for clarification when plans are ambiguous.",
-    },
-
     // Primary planner: deep interview mode
     "prometheus": {
       "model": "anthropic/claude-opus-4-6",

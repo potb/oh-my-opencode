@@ -86,15 +86,7 @@ Sisyphus is your main orchestrator. He plans, delegates to specialists, and driv
 - **Kimi K2.5** — Great Claude-like alternative. Many users run this combo exclusively.
 - **GLM 5** — Solid option, especially via Z.ai.
 
-Sisyphus works best on Claude Opus 4.6, Kimi K2.5, and GLM 5. GPT-5.4 now has a dedicated prompt path, but older GPT models are still a poor fit and should route to Hephaestus instead.
-
-### Hephaestus: The Legitimate Craftsman
-
-Named with intentional irony. Anthropic blocked OpenCode from using their API because of this project. So the team built an autonomous GPT-native agent instead.
-
-Hephaestus runs on GPT-5.4. Give him a goal, not a recipe. He explores the codebase, researches patterns, and executes end-to-end without hand-holding. He is the legitimate craftsman because he was born from necessity, not privilege.
-
-Use Hephaestus when you need deep architectural reasoning, complex debugging across many files, or cross-domain knowledge synthesis. Switch to him explicitly when the work demands GPT-5.4's particular strengths.
+Sisyphus works best on Claude Opus 4.6, Kimi K2.5, and GLM 5. GPT-5.4 now has dedicated high-end prompt paths where the product still uses it directly.
 
 **Why this beats vanilla Codex CLI:**
 
@@ -225,7 +217,7 @@ You can override specific agents or categories in your config:
 
 **GPT models** (explicit reasoning, principle-driven):
 
-- GPT-5.4 — deep coding powerhouse, required for Hephaestus and default for Oracle
+- GPT-5.4 — deep coding powerhouse, used for Oracle and other high-end reasoning paths
 - GPT-5.4 Mini — fast and cheap utility tasks
 
 **Different-behavior models**:

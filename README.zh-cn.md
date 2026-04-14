@@ -67,8 +67,6 @@
 
 > “用 Oh My Opencode 一天之内解决了 8000 个 eslint 警告。” <br/>- [Jacob Ferrari](https://x.com/jacobferrari_/status/2003258761952289061)
 
-> “我用 Ohmyopencode 和 ralph loop 花了一晚上的时间，把一个 45k 行代码的 tauri 应用转换成了 SaaS Web 应用。从面试模式开始，让它对我提供的提示词进行提问和提出建议。看着它工作很有趣，今早醒来看到网站基本已经跑起来了，太震撼了！” - [James Hargis](https://x.com/hargabyte/status/2007299688261882202)
-
 > “用 oh-my-opencode 吧，你绝对回不去了。” <br/>- [d0t3ch](https://x.com/d0t3ch/status/2001685618200580503)
 
 > “我很难准确描述它到底哪里牛逼，但开发体验已经达到完全不同的维度了。” - [苔硯:こけすずり](https://x.com/kokesuzuri/status/2008532913961529372?s=20)
@@ -148,7 +146,7 @@ Read this and tell me why it's not just another boilerplate: https://raw.githubu
 
 |       | 特性                                                            | 功能说明                                                                                                                                                                        |
 | :---: | :-------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-|   🤖   | **自律军团 (Discipline Agents)**                                | Sisyphus 负责调度 Hephaestus、Oracle、Librarian 和 Explore。一支完整的 AI 开发团队并行工作。                                                                                    |
+|   🤖   | **自律军团 (Discipline Agents)**                                | Sisyphus 负责调度 Oracle、Librarian、Explore、Metis 和 Momus。一支聚焦的 AI 开发团队并行工作。                                                                                    |
 |   ⚡   | **`ultrawork` / `ulw`**                                         | 一键触发，所有智能体出动。任务完成前绝不罢休。                                                                                                                                  |
 |   🚪   | **[IntentGate 意图门](https://factory.ai/news/terminal-bench)** | 真正行动前，先分析用户的真实意图。彻底告别被字面意思误导的 AI 废话。                                                                                                            |
 |   🔗   | **基于哈希的编辑工具**                                          | 每次修改都通过 `LINE#ID` 内容哈希验证、0% 错误修改。灵感来自 [oh-my-pi](https://github.com/can1357/oh-my-pi)。[马具问题 →](https://blog.can.ac/2026/02/12/the-harness-problem/) |
@@ -167,18 +165,14 @@ Read this and tell me why it's not just another boilerplate: https://raw.githubu
 
 <table><tr>
 <td align="center"><img src=".github/assets/sisyphus.png" height="300" /></td>
-<td align="center"><img src=".github/assets/hephaestus.png" height="300" /></td>
 </tr></table>
 
 **Sisyphus** (`claude-opus-4-6` / **`kimi-k2.5`** / **`glm-5`**) 是你的主指挥官。他负责制定计划、分配任务给专家团队，并以极其激进的并行策略推动任务直至完成。他从不半途而废。
-
-**Hephaestus** (`gpt-5.4`) 是你的自主深度工作者。你只需要给他目标，不要给他具体做法。他会自动探索代码库模式，从头到尾独立执行任务，绝不会中途要你当保姆。*名副其实的正牌工匠。*
 
 **Prometheus** (`claude-opus-4-6` / **`kimi-k2.5`** / **`glm-5`**) 是你的战略规划师。他通过访谈模式，在动一行代码之前，先通过提问确定范围并构建详尽的执行计划。
 
 每一个 Agent 都针对其底层模型的特点进行了专门调优。你无需手动来回切换模型。[阅读背景设定了解更多 →](docs/guide/overview.md)
 
-> Anthropic [因为我们屏蔽了 OpenCode](https://x.com/thdxr/status/2010149530486911014)。这就是为什么我们将 Hephaestus 命名为“正牌工匠 (The Legitimate Craftsman)”。这是一个故意的讽刺。
 >
 > 我们在 Opus 上运行得最好，但仅仅使用 Kimi K2.5 + GPT-5.4 就足以碾压原版的 Claude Code。完全不需要配置。
 

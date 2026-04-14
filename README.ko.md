@@ -62,8 +62,6 @@
 
 > "Oh My Opencode로 하루 만에 eslint 경고 8000개를 해결했습니다." <br/>- [Jacob Ferrari](https://x.com/jacobferrari_/status/2003258761952289061)
 
-> "Ohmyopencode와 ralph loop를 써서 45k 라인짜리 tauri 앱을 하룻밤 만에 SaaS 웹앱으로 변환했어요. 인터뷰 모드로 시작해서, 제가 쓴 프롬프트에 대해 질문하고 추천을 부탁했죠. 일하는 걸 지켜보는 것도 재밌었고, 아침에 일어났더니 웹사이트가 대부분 돌아가고 있는 걸 보고 경악했습니다!" - [James Hargis](https://x.com/hargabyte/status/2007299688261882202)
-
 > "oh-my-opencode 쓰세요, 다시는 예전으로 못 돌아갑니다." <br/>- [d0t3ch](https://x.com/d0t3ch/status/2001685618200580503)
 
 > "뭐가 이렇게 대단한 건지 아직 정확하게 말로 표현하긴 어려운데, 개발 경험 자체가 완전히 다른 차원에 도달해버렸어요." - [苔硯:こけすずり](https://x.com/kokesuzuri/status/2008532913961529372?s=20)
@@ -141,7 +139,7 @@ Read this and tell me why it's not just another boilerplate: https://raw.githubu
 
 |       | 기능                                                     | 역할                                                                                                                                                                                                                     |
 | :---: | :------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-|   🤖   | **기강 잡힌 에이전트 (Discipline Agents)**               | Sisyphus가 Hephaestus, Oracle, Librarian, Explore를 오케스트레이션합니다. 완전한 AI 개발팀이 병렬로 돌아갑니다.                                                                                                          |
+|   🤖   | **기강 잡힌 에이전트 (Discipline Agents)**               | Sisyphus가 Oracle, Librarian, Explore, Metis, Momus를 오케스트레이션합니다. 집중된 AI 개발팀이 병렬로 돌아갑니다.                                                                                                          |
 |   ⚡   | **`ultrawork` / `ulw`**                                  | 단어 하나면 됩니다. 모든 에이전트가 활성화되고 다 끝날 때까지 멈추지 않습니다.                                                                                                                                           |
 |   🚪   | **[IntentGate](https://factory.ai/news/terminal-bench)** | 사용자의 진짜 의도를 분석한 뒤 분류하거나 행동합니다. 더 이상 문자 그대로 오해해서 헛짓거리하는 일이 없습니다.                                                                                                           |
 |   🔗   | **해시 기반 편집 툴**                                    | `LINE#ID` 콘텐츠 해시로 모든 변경 사항을 검증합니다. stale-line 에러 0%. [oh-my-pi](https://github.com/can1357/oh-my-pi)에서 영감을 받았습니다. [하니스 프로블러 →](https://blog.can.ac/2026/02/12/the-harness-problem/) |
@@ -160,20 +158,14 @@ Read this and tell me why it's not just another boilerplate: https://raw.githubu
 
 <table><tr>
 <td align="center"><img src=".github/assets/sisyphus.png" height="300" /></td>
-<td align="center"><img src=".github/assets/hephaestus.png" height="300" /></td>
 </tr></table>
 
 **Sisyphus** (`claude-opus-4-6` / **`kimi-k2.5`** / **`glm-5`**)는 당신의 메인 오케스트레이터입니다. 공격적인 병렬 실행으로 계획을 세우고, 전문가들에게 위임하며, 완료될 때까지 밀어붙입니다. 중간에 포기하는 법이 없습니다.
-
-**Hephaestus** (`gpt-5.4`)는 당신의 자율 딥 워커입니다. 레시피가 아니라 목표를 주세요. 베이비시터 없이 알아서 코드베이스를 탐색하고, 패턴을 연구하며, 끝에서 끝까지 전부 해냅니다. *진정한 장인(The Legitimate Craftsman).*
 
 **Prometheus** (`claude-opus-4-6` / **`kimi-k2.5`** / **`glm-5`**)는 당신의 전략 플래너입니다. 인터뷰 모드로 작동합니다. 코드 한 줄 만지기 전에 질문을 던져 스코프를 파악하고 상세한 계획부터 세웁니다.
 
 모든 에이전트는 해당 모델의 특장점에 맞춰 튜닝되어 있습니다. 수동으로 모델 바꿔가며 뻘짓하지 마세요. [더 알아보기 →](docs/guide/overview.md)
 
-> Anthropic이 [우리 때문에 OpenCode를 막아버렸습니다.](https://x.com/thdxr/status/2010149530486911014) 그래서 Hephaestus의 별명이 "진정한 장인(The Legitimate Craftsman)"인 겁니다. (어디서 많이 들어본 이름이죠?) 아이러니를 노렸습니다.
->
-> Opus에서 제일 잘 돌아가긴 하지만, Kimi K2.5 + GPT-5.4 조합만으로도 바닐라 Claude Code는 가볍게 바릅니다. 설정도 필요 없습니다.
 
 ### 에이전트 오케스트레이션
 
@@ -266,7 +258,7 @@ project/
 
 ---
 
-> **비하인드 스토리가 궁금하신가요?** 왜 Sisyphus가 돌을 굴리는지, 왜 Hephaestus가 "진정한 장인"인지, 그리고 [오케스트레이션 가이드](docs/guide/orchestration.md)를 읽어보세요.
+> **비하인드 스토리가 궁금하신가요?** 왜 Sisyphus가 돌을 굴리는지, 그리고 [오케스트레이션 가이드](docs/guide/orchestration.md)를 읽어보세요.
 >
 > oh-my-opencode가 처음이신가요? 어떤 모델을 써야 할지 **[설치 가이드](docs/guide/installation.md#step-5-understand-your-model-setup)** 에서 추천 조합을 확인하세요.
 

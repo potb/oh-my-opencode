@@ -417,38 +417,6 @@ Monday 2:00 PM (NEW SESSION)
 
 When a planned execution is active, continuation state resumes from `boulder.json` automatically.
 
-### Hephaestus vs Sisyphus + ultrawork
-
-**Quick Comparison:**
-
-| Aspect          | Hephaestus                                 | Sisyphus + `ulw` / `ultrawork`                       |
-| --------------- | ------------------------------------------ | ---------------------------------------------------- |
-| **Model**       | `gpt-5.4` (`medium`)                       | `claude-opus-4-6` / `kimi-k2.5` / `gpt-5.4` / `glm-5` depending on setup |
-| **Approach**    | Autonomous deep worker                     | Keyword-activated ultrawork mode                     |
-| **Best For**    | Complex architectural work, deep reasoning | General complex tasks, "just do it" scenarios        |
-| **Planning**    | Self-plans during execution                | Uses Prometheus plans if available                   |
-| **Delegation**  | Heavy use of explore/librarian agents      | Uses category-based delegation                       |
-| **Temperature** | 0.1                                        | 0.1                                                  |
-
-**When to Use Hephaestus:**
-
-Switch to Hephaestus (Tab → Select Hephaestus) when:
-
-1. **Deep architectural reasoning needed**
-   - "Design a new plugin system"
-   - "Refactor this monolith into microservices"
-
-2. **Complex debugging requiring inference chains**
-   - "Why does this race condition only happen on Tuesdays?"
-   - "Trace this memory leak through 15 files"
-
-3. **Cross-domain knowledge synthesis**
-   - "Integrate our Rust core with the TypeScript frontend"
-   - "Migrate from MongoDB to PostgreSQL with zero downtime"
-
-4. **You specifically want GPT-5.4 reasoning**
-   - Some problems benefit from GPT-5.4's training characteristics
-
 **When to Use Sisyphus + `ulw`:**
 
 Use the `ulw` keyword in Sisyphus when:
@@ -472,7 +440,6 @@ Use the `ulw` keyword in Sisyphus when:
 **Recommendation:**
 
 - **For most users**: Use `ulw` keyword in Sisyphus. It's the default path and works excellently for 90% of complex tasks.
-- **For power users**: Switch to Hephaestus when you specifically need GPT-5.4's reasoning style or want the "AmpCode deep mode" experience of fully autonomous exploration and execution.
 
 ---
 
@@ -483,14 +450,13 @@ You can control related features in `oh-my-openagent.json`:
 ```jsonc
 {
   "sisyphus_agent": {
-    "disabled": false, // Enable Atlas orchestration (default: false)
+    "disabled": false, // Enable Sisyphus orchestration settings (default: false)
     "planner_enabled": true, // Enable Prometheus (default: true)
     "replace_plan": true, // Replace default plan agent with Prometheus (default: true)
   },
 
   // Hook settings (add to disable)
   "disabled_hooks": [
-    // "atlas",                  // Disable planned execution orchestration
     // "prometheus-md-only"      // Remove Prometheus write restrictions (not recommended)
   ],
 }
@@ -510,22 +476,6 @@ Either:
 
 - No plans exist in `.sisyphus/plans/` → Create one with Prometheus first
 - Plans exist but boulder.json points elsewhere → Delete `.sisyphus/boulder.json` and retry
-
-### "I'm in Atlas but I want to switch back to normal mode"
-
-Type `exit` or start a new session. Planned execution resumes from saved continuation state rather than a dedicated user command.
-
-### "What's the difference between @plan and just switching to Prometheus?"
-
-**Nothing functional.** Both invoke Prometheus. @plan is a convenience command while switching agents is explicit control. Use whichever feels natural.
-
-### "Should I use Hephaestus or type ulw?"
-
-**For most tasks**: Type `ulw` in Sisyphus.
-
-**Use Hephaestus when**: You specifically need GPT-5.4's reasoning style for deep architectural work or complex debugging.
-
----
 
 ## Further Reading
 
