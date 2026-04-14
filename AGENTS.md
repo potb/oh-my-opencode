@@ -87,7 +87,7 @@ Fields: agents, categories, disabled_* arrays, and the remaining fixed-product r
 |------|--------|-----------|
 | Built-in | `src/mcp/` | 3 remote HTTP: websearch (Exa/Tavily), context7, grep_app |
 | Claude Code | `.mcp.json` | `${VAR}` env expansion via claude-code-mcp-loader |
-| Skill-embedded | SKILL.md YAML | Managed by SkillMcpManager (stdio + HTTP) |
+| Skill-embedded | SKILL.md YAML | Managed by the skill loader/runtime integration |
 
 ## CONVENTIONS
 
