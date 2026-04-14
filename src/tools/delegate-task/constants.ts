@@ -116,12 +116,12 @@ WHY THIS MATTERS:
 
 
 ═══════════════════════════════════════════════════════════════════
-█ SECTION 3: CATEGORY + SKILLS RECOMMENDATIONS (MANDATORY)        █
+█ SECTION 3: SUBAGENT RECOMMENDATIONS (MANDATORY)                 █
 ═══════════════════════════════════════════════════════════════════
 
 FOR EVERY TASK, YOU MUST RECOMMEND:
-1. Which CATEGORY to use for delegation
-2. Which SKILLS to load for the delegated agent
+1. Which SUBAGENT to use for delegation
+2. Whether it should run in background or foreground
 `
 
 export const PLAN_AGENT_SYSTEM_PREPEND_STATIC_AFTER_SKILLS = `### REQUIRED OUTPUT FORMAT
@@ -132,19 +132,13 @@ For EACH task, include a recommendation block:
 ### Task N: [Task Title]
 
 **Delegation Recommendation:**
-- Category: \`[category-name]\` - [reason for choice]
-- Skills: [\`skill-1\`, \`skill-2\`] - [reason each skill is needed]
-
-**Skills Evaluation:**
-- INCLUDED \`skill-name\`: [reason]
-- OMITTED \`other-skill\`: [reason domain doesn't overlap]
+- subagent_type: \`[explore | librarian | oracle | plan]\` - [reason for choice]
+- run_in_background: \`true | false\` - [reason]
 \`\`\`
 
 WHY THIS MATTERS:
-- Category determines the MODEL used for execution
-- Skills inject SPECIALIZED KNOWLEDGE into the executor
-- Missing a relevant skill = suboptimal execution
-- Wrong category = wrong model = poor results
+- The fixed-product runtime delegates through direct subagents, not category routing.
+- Background vs foreground execution affects orchestration behavior and latency.
 
 
 ═══════════════════════════════════════════════════════════════════
@@ -170,9 +164,8 @@ YOUR PLAN OUTPUT MUST FOLLOW THIS EXACT STRUCTURE:
 ### Task 1: [Title]
 **Description**: [What to do]
 **Delegation Recommendation**:
-- Category: \`[category]\` - [reason]
-- Skills: [\`skill-1\`] - [reason]
-**Skills Evaluation**: [✅ included / ❌ omitted with reasons]
+- subagent_type: \`[subagent]\` - [reason]
+- run_in_background: \`true | false\` - [reason]
 **Depends On**: [Task IDs or "None"]
 **Acceptance Criteria**: [Verifiable conditions]
 
@@ -204,7 +197,7 @@ YOU MUST END YOUR RESPONSE WITH THIS SECTION.
 \`\`\`markdown
 ## TODO List (ADD THESE)
 
-> CALLER: Add these TODOs using TodoWrite/TaskCreate and execute by wave.
+> CALLER: Add these TODOs using todowrite or task_create and execute by wave.
 
 ### Wave 1 (Start Immediately - No Dependencies)
 
@@ -212,16 +205,16 @@ YOU MUST END YOUR RESPONSE WITH THIS SECTION.
   - What: [Clear implementation steps]
   - Depends: None
   - Blocks: [Tasks that depend on this]
-  - Category: \`category-name\`
-  - Skills: [\`skill-1\`, \`skill-2\`]
+  - subagent_type: \`explore|librarian|oracle|plan\`
+  - run_in_background: \`true|false\`
   - QA: [How to verify completion - specific command or check]
 
 - [ ] **N. [Task Title]**
   - What: [Steps]
   - Depends: None
   - Blocks: [...]
-  - Category: \`category-name\`
-  - Skills: [\`skill-1\`]
+  - subagent_type: \`explore|librarian|oracle|plan\`
+  - run_in_background: \`true|false\`
   - QA: [Verification]
 
 ### Wave 2 (After Wave 1 Completes)
@@ -230,8 +223,8 @@ YOU MUST END YOUR RESPONSE WITH THIS SECTION.
   - What: [Steps]
   - Depends: 1
   - Blocks: [4]
-  - Category: \`category-name\`
-  - Skills: [\`skill-1\`]
+  - subagent_type: \`explore|librarian|oracle|plan\`
+  - run_in_background: \`true|false\`
   - QA: [Verification]
 
 [Continue for all waves...]
