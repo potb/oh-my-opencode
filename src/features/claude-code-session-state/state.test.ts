@@ -29,7 +29,7 @@ describe("claude-code-session-state", () => {
     test("should store agent for session", () => {
       // given
       const sessionID = "test-session-1"
-      const agent = "Atlas - Plan Executor"
+      const agent = "Metis - Plan Consultant"
 
       // when
       setSessionAgent(sessionID, agent)
@@ -41,25 +41,25 @@ describe("claude-code-session-state", () => {
     test("should strip zero-width ordering prefixes before storing agent for session", () => {
       // given
       const sessionID = "test-session-prefixed"
-      const agent = "\u200B\u200B\u200BAtlas - Plan Executor"
+      const agent = "\u200B\u200B\u200BMetis - Plan Consultant"
 
       // when
       setSessionAgent(sessionID, agent)
 
       // then
-      expect(getSessionAgent(sessionID)).toBe("Atlas - Plan Executor")
+      expect(getSessionAgent(sessionID)).toBe("Metis - Plan Consultant")
     })
 
     test("should NOT overwrite existing agent (first-write wins)", () => {
       // given
       const sessionID = "test-session-1"
-      setSessionAgent(sessionID, "Atlas - Plan Executor")
+      setSessionAgent(sessionID, "Metis - Plan Consultant")
 
       // when - try to overwrite
       setSessionAgent(sessionID, "sisyphus")
 
       // then - first agent preserved
-      expect(getSessionAgent(sessionID)).toBe("Atlas - Plan Executor")
+      expect(getSessionAgent(sessionID)).toBe("Metis - Plan Consultant")
     })
 
     test("should return undefined for unknown session", () => {
@@ -74,7 +74,7 @@ describe("claude-code-session-state", () => {
     test("should overwrite existing agent", () => {
       // given
       const sessionID = "test-session-1"
-      setSessionAgent(sessionID, "Atlas - Plan Executor")
+      setSessionAgent(sessionID, "Metis - Plan Consultant")
 
       // when - force update
       updateSessionAgent(sessionID, "sisyphus")
@@ -89,10 +89,10 @@ describe("claude-code-session-state", () => {
       setSessionAgent(sessionID, "sisyphus")
 
       // when
-      updateSessionAgent(sessionID, "\u200B\u200BAtlas - Plan Executor")
+      updateSessionAgent(sessionID, "\u200B\u200BMetis - Plan Consultant")
 
       // then
-      expect(getSessionAgent(sessionID)).toBe("Atlas - Plan Executor")
+      expect(getSessionAgent(sessionID)).toBe("Metis - Plan Consultant")
     })
   })
 
@@ -100,8 +100,8 @@ describe("claude-code-session-state", () => {
     test("should remove agent from session", () => {
       // given
       const sessionID = "test-session-1"
-      setSessionAgent(sessionID, "Atlas - Plan Executor")
-      expect(getSessionAgent(sessionID)).toBe("Atlas - Plan Executor")
+      setSessionAgent(sessionID, "Metis - Plan Consultant")
+      expect(getSessionAgent(sessionID)).toBe("Metis - Plan Consultant")
 
       // when
       clearSessionAgent(sessionID)
@@ -132,32 +132,32 @@ describe("claude-code-session-state", () => {
   })
 
   describe("agent registration", () => {
-    test("should register config-key lookup when given a display name", () => {
-      // given
-      registerAgentName("Atlas - Plan Executor")
+    test("should register config-key lookup when given a known display name", () => {
+      // given - Sisyphus - Ultraworker resolves to config key "sisyphus"
+      registerAgentName("Sisyphus - Ultraworker")
 
       // when / then
-      expect(isAgentRegistered("atlas")).toBe(true)
-      expect(isAgentRegistered("Atlas - Plan Executor")).toBe(true)
+      expect(isAgentRegistered("sisyphus")).toBe(true)
+      expect(isAgentRegistered("Sisyphus - Ultraworker")).toBe(true)
     })
 
     test("should resolve config keys back to the registered raw agent name", () => {
       // given
-      registerAgentName("\u200B\u200B\u200B\u200BAtlas - Plan Executor")
+      registerAgentName("\u200B\u200B\u200B\u200BSisyphus - Ultraworker")
 
       // when / then
-      expect(resolveRegisteredAgentName("atlas")).toBe("\u200B\u200B\u200B\u200BAtlas - Plan Executor")
-      expect(resolveRegisteredAgentName("Atlas - Plan Executor")).toBe("\u200B\u200B\u200B\u200BAtlas - Plan Executor")
+      expect(resolveRegisteredAgentName("sisyphus")).toBe("\u200B\u200B\u200B\u200BSisyphus - Ultraworker")
+      expect(resolveRegisteredAgentName("Sisyphus - Ultraworker")).toBe("\u200B\u200B\u200B\u200BSisyphus - Ultraworker")
     })
 
-    describe("#given atlas display name with zero-width prefix", () => {
+    describe("#given display name with zero-width prefix", () => {
       describe("#when checking registration without the zero-width prefix", () => {
         test("#then it treats the display name as registered", () => {
           // given
-          registerAgentName("\u200BAtlas - Plan Executor")
+          registerAgentName("\u200BSisyphus - Ultraworker")
 
           // when
-          const isRegistered = isAgentRegistered("Atlas - Plan Executor")
+          const isRegistered = isAgentRegistered("Sisyphus - Ultraworker")
 
           // then
           expect(isRegistered).toBe(true)
@@ -167,23 +167,23 @@ describe("claude-code-session-state", () => {
   })
 
   describe("display-name integration scenario", () => {
-    test("should correctly identify Atlas display names for downstream hooks", () => {
-      // given - Atlas session
-      const sessionID = "test-atlas-session"
-      const atlasAgent = "Atlas - Plan Executor"
+    test("should correctly identify agent display names for downstream hooks", () => {
+      // given - Metis session
+      const sessionID = "test-metis-session"
+      const metisAgent = "Metis - Plan Consultant"
 
       // when - agent is set (simulating chat.message hook)
-      setSessionAgent(sessionID, atlasAgent)
+      setSessionAgent(sessionID, metisAgent)
 
       // then - getSessionAgent returns the exact display name
       const agent = getSessionAgent(sessionID)
-      expect(agent).toBe("Atlas - Plan Executor")
-      expect(["Atlas - Plan Executor"].includes(agent!)).toBe(true)
+      expect(agent).toBe("Metis - Plan Consultant")
+      expect(["Metis - Plan Consultant"].includes(agent!)).toBe(true)
     })
 
     test("should return undefined when agent not set (bug scenario)", () => {
       // given - session exists but no agent set (the bug)
-      const sessionID = "test-atlas-session"
+      const sessionID = "test-metis-session"
 
       // when / then - this is the bug: agent is undefined
       expect(getSessionAgent(sessionID)).toBe(undefined)
