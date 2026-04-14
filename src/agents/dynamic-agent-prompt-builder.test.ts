@@ -125,7 +125,7 @@ describe("buildParallelDelegationSection", () => {
 
     //#then
     expect(result).toContain("DECOMPOSE AND DELEGATE")
-    expect(result).toContain("`deep` or `unspecified-high`")
+    expect(result).toContain("appropriate direct subagent")
     expect(result).toContain("NEVER work sequentially")
   })
 
