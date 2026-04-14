@@ -217,19 +217,17 @@ describe("migrateHookNames", () => {
     expect(migrated).toEqual(["anthropic-context-window-limit-recovery"])
   })
 
-  test("migrates sisyphus-orchestrator to atlas", () => {
+  test("removes sisyphus-orchestrator from disabled hooks", () => {
     // given: Config with legacy sisyphus-orchestrator hook
     const hooks = ["sisyphus-orchestrator", "comment-checker"]
 
     // when: Migrate hook names
     const { migrated, changed, removed } = migrateHookNames(hooks)
 
-    // then: sisyphus-orchestrator should be migrated to atlas
+    // then: sisyphus-orchestrator should be removed
     expect(changed).toBe(true)
-    expect(migrated).toContain("atlas")
-    expect(migrated).toContain("comment-checker")
-    expect(migrated).not.toContain("sisyphus-orchestrator")
-    expect(removed).toEqual([])
+    expect(migrated).toEqual(["comment-checker"])
+    expect(removed).toEqual(["sisyphus-orchestrator"])
   })
 
   test("removes obsolete hooks and returns them in removed array", () => {
@@ -261,17 +259,17 @@ describe("migrateHookNames", () => {
 
   test("handles mixed migration and removal", () => {
     // given: Config with both legacy rename and removed hooks
-    const hooks = ["anthropic-auto-compact", "preemptive-compaction", "sisyphus-orchestrator"]
+      const hooks = ["anthropic-auto-compact", "preemptive-compaction", "sisyphus-orchestrator"]
 
     // when: Migrate hook names
     const { migrated, changed, removed } = migrateHookNames(hooks)
 
     // then: Legacy should be renamed, removed should be filtered
     expect(changed).toBe(true)
-    expect(migrated).toContain("anthropic-context-window-limit-recovery")
-    expect(migrated).toContain("atlas")
-    expect(migrated).toContain("preemptive-compaction")
-    expect(removed).toEqual([])
+      expect(migrated).toContain("anthropic-context-window-limit-recovery")
+      expect(migrated).toContain("preemptive-compaction")
+      expect(migrated).not.toContain("atlas")
+      expect(removed).toEqual(["sisyphus-orchestrator"])
   })
 })
 

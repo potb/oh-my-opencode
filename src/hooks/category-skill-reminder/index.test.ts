@@ -55,11 +55,11 @@ describe("category-skill-reminder hook", () => {
       clearSessionAgent(sessionID)
     })
 
-    test("should inject reminder for atlas agent", async () => {
-      // given - atlas agent session
+    test("should inject reminder for sisyphus agent during bash work", async () => {
+      // given - sisyphus agent session
       const hook = createHook()
-      const sessionID = "atlas-session"
-      updateSessionAgent(sessionID, "Atlas")
+      const sessionID = "bash-session"
+      updateSessionAgent(sessionID, "Sisyphus")
 
       const output = { title: "", output: "result", metadata: {} }
 
@@ -383,7 +383,7 @@ describe("category-skill-reminder hook", () => {
       ]
       const hook = createHook(availableSkills)
       const sessionID = "user-skills"
-      updateSessionAgent(sessionID, "Atlas")
+      updateSessionAgent(sessionID, "Sisyphus")
       const output = { title: "", output: "result", metadata: {} }
 
       // when

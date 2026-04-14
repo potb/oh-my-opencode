@@ -103,7 +103,7 @@ Agent resolution order:
   4) Sisyphus (fallback)
 
 Available core agents:
-  Sisyphus, Atlas
+  Sisyphus
 
 Unlike 'opencode run', this command waits until:
   - All todos are completed or cancelled

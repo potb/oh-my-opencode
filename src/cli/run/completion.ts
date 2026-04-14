@@ -8,7 +8,7 @@ import {
 
 export async function checkCompletionConditions(ctx: RunContext): Promise<boolean> {
   try {
-    const continuationState = await getContinuationState(ctx.directory, ctx.sessionID, ctx.client)
+    const continuationState = await getContinuationState(ctx.directory, ctx.sessionID)
 
     if (continuationState.hasActiveHookMarker) {
       const reason = continuationState.activeHookMarkerReason ?? "continuation hook is active"
@@ -39,11 +39,6 @@ function areContinuationHooksIdle(
   ctx: RunContext,
   continuationState: ContinuationState
 ): boolean {
-  if (continuationState.hasActiveBoulder) {
-    logWaiting(ctx, "boulder continuation is active")
-    return false
-  }
-
   return true
 }
 

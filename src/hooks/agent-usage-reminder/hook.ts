@@ -36,7 +36,6 @@ interface EventInput {
 const ORCHESTRATOR_AGENTS = new Set([
   "sisyphus",
   "sisyphus-junior",
-  "atlas",
 ]);
 
 function isOrchestratorAgent(agentName: string): boolean {

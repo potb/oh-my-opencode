@@ -185,7 +185,6 @@ afterEach(() => {
 				interactiveBashSession: { event: async () => {} },
 				stopContinuationGuard: { event: async () => {} },
 				compactionTodoPreserver: { event: async () => {} },
-				atlasHook: { handler: async () => {} },
 			} as any,
 		})
 
@@ -277,7 +276,6 @@ afterEach(() => {
 				ralphLoop: { event: async () => {} },
 				stopContinuationGuard: { event: async () => {} },
 				compactionTodoPreserver: { event: async () => {} },
-				atlasHook: { handler: async () => {} },
 			} as any,
 		})
 
@@ -334,7 +332,6 @@ afterEach(() => {
 				ralphLoop: { event: async () => {} },
 				stopContinuationGuard: { event: async () => {} },
 				compactionTodoPreserver: { event: async () => {} },
-				atlasHook: { handler: async () => {} },
 			} as any,
 		})
 

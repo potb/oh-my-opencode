@@ -7,7 +7,6 @@ import {
   createStopContinuationGuardHook,
   createCompactionContextInjector,
   createCompactionTodoPreserverHook,
-  createAtlasHook,
 } from "../../hooks"
 import { safeCreateHook } from "../../shared/safe-create-hook"
 import { createUnstableAgentBabysitter } from "../unstable-agent-babysitter"
@@ -18,7 +17,6 @@ export type ContinuationHooks = {
   compactionTodoPreserver: ReturnType<typeof createCompactionTodoPreserverHook> | null
   unstableAgentBabysitter: ReturnType<typeof createUnstableAgentBabysitter> | null
   backgroundNotificationHook: ReturnType<typeof createBackgroundNotificationHook> | null
-  atlasHook: ReturnType<typeof createAtlasHook> | null
 }
 
 export function createContinuationHooks(args: {
@@ -64,23 +62,11 @@ export function createContinuationHooks(args: {
     ? safeHook("background-notification", () => createBackgroundNotificationHook(backgroundManager))
     : null
 
-  const atlasHook = isHookEnabled("atlas")
-    ? safeHook("atlas", () =>
-        createAtlasHook(ctx, {
-          directory: ctx.directory,
-          backgroundManager,
-          isContinuationStopped: (sessionID: string) =>
-            stopContinuationGuard?.isStopped(sessionID) ?? false,
-          agentOverrides: pluginConfig.agents,
-        }))
-    : null
-
   return {
     stopContinuationGuard,
     compactionContextInjector,
     compactionTodoPreserver,
     unstableAgentBabysitter,
     backgroundNotificationHook,
-    atlasHook,
   }
 }

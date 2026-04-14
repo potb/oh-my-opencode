@@ -1,10 +1,10 @@
-# src/hooks/ — 52 Lifecycle Hooks
+# src/hooks/ — 51 Lifecycle Hooks
 
 **Generated:** 2026-04-11
 
 ## OVERVIEW
 
-52 hooks across dedicated modules and standalone files. Three-tier composition: Core(43) + Continuation(7) + Skill(2). All hooks follow `createXXXHook(deps) → HookFunction` factory pattern.
+51 hooks across dedicated modules and standalone files. Three-tier composition: Core(43) + Continuation(5) + Skill(2). All hooks follow `createXXXHook(deps) → HookFunction` factory pattern.
 
 ## HOOK TIERS
 
@@ -13,7 +13,6 @@
 ```
 hooks/
 ├── agent-usage-reminder/         # Reminds about available agents
-├── atlas/                      # Main orchestration (757 lines)
 ├── anthropic-context-window-limit-recovery/ # Auto-summarize
 ├── anthropic-effort/            # Reasoning effort level adjustment
 ├── auto-slash-command/         # Detects /command patterns
@@ -111,7 +110,7 @@ hooks/
 | thinkingBlockValidator | messages.transform | Validate thinking block structure |
 | toolPairValidator | messages.transform | Validate tool call/result pairs |
 
-### Tier 4: Continuation Hooks (7) — `create-continuation-hooks.ts`
+### Tier 4: Continuation Hooks (5) — `create-continuation-hooks.ts`
 
 | Hook | Event | Purpose |
 |------|-------|---------|
@@ -120,7 +119,6 @@ hooks/
 | compactionTodoPreserver | session.compacted | Preserve todos through compaction |
 | unstableAgentBabysitter | session.idle | Monitor unstable agent behavior |
 | backgroundNotificationHook | event | Background task completion notifications |
-| atlasHook | event | Master orchestrator for boulder/background sessions |
 
 ### Tier 5: Skill Hooks (2) — `create-skill-hooks.ts`
 
@@ -133,9 +131,6 @@ hooks/
 
 ### anthropic-context-window-limit-recovery (31 files, ~2232 LOC)
 Multi-strategy recovery when hitting context limits. Strategies: truncation, compaction, summarization.
-
-### atlas (17 files, ~1976 LOC)
-Master orchestrator for boulder sessions. Decision gates: session type → abort check → failure count → background tasks → agent match → plan completeness → cooldown (5s). Injects continuation prompts on session.idle.
 
 ### keyword-detector (~1665 LOC)
 Detects modes from user input: ultrawork, search, analyze, prove-yourself. Injects mode-specific system prompts.
