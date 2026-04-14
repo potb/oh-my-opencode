@@ -183,7 +183,6 @@ afterEach(() => {
 				agentUsageReminder: { event: async () => {} },
 				categorySkillReminder: { event: async () => {} },
 				interactiveBashSession: { event: async () => {} },
-				stopContinuationGuard: { event: async () => {} },
 				compactionTodoPreserver: { event: async () => {} },
 			} as any,
 		})
@@ -274,7 +273,6 @@ afterEach(() => {
 				categorySkillReminder: { event: async () => {} },
 				interactiveBashSession: { event: async () => {} },
 				ralphLoop: { event: async () => {} },
-				stopContinuationGuard: { event: async () => {} },
 				compactionTodoPreserver: { event: async () => {} },
 			} as any,
 		})
@@ -330,7 +328,6 @@ afterEach(() => {
 				categorySkillReminder: { event: async () => {} },
 				interactiveBashSession: { event: async () => {} },
 				ralphLoop: { event: async () => {} },
-				stopContinuationGuard: { event: async () => {} },
 				compactionTodoPreserver: { event: async () => {} },
 			} as any,
 		})
@@ -519,13 +516,12 @@ describe("createEventHandler - session recovery compaction", () => {
 				clear: () => {},
 			},
 			managers: createEventHandlerManagers(),
-			hooks: createEventHandlerHooks({
-				sessionRecovery: {
-					isRecoverableError: () => true,
-					handleSessionRecovery: async () => true,
-				},
-				stopContinuationGuard: { isStopped: () => false },
-			}),
+				hooks: createEventHandlerHooks({
+					sessionRecovery: {
+						isRecoverableError: () => true,
+						handleSessionRecovery: async () => true,
+					},
+				}),
 		})
 
 		//#when
@@ -573,13 +569,12 @@ describe("createEventHandler - session recovery compaction", () => {
 				clear: () => {},
 			},
 			managers: createEventHandlerManagers(),
-			hooks: createEventHandlerHooks({
-				sessionRecovery: {
-					isRecoverableError: () => true,
-					handleSessionRecovery: async () => true,
-				},
-				stopContinuationGuard: { isStopped: () => false },
-			}),
+				hooks: createEventHandlerHooks({
+					sessionRecovery: {
+						isRecoverableError: () => true,
+						handleSessionRecovery: async () => true,
+					},
+				}),
 		})
 
 		//#when
@@ -618,19 +613,18 @@ describe("createEventHandler - session recovery compaction", () => {
 				clear: () => {},
 			},
 			managers: createEventHandlerManagers(),
-			hooks: createEventHandlerHooks({
-				autoUpdateChecker: {
-					event: async () => {
-						throw new Error("upstream hook failed")
+				hooks: createEventHandlerHooks({
+					autoUpdateChecker: {
+						event: async () => {
+							throw new Error("upstream hook failed")
+						},
 					},
-				},
-				agentUsageReminder: {
-					event: async (input: EventInput) => {
-						agentUsageReminderCalls.push(input)
+					agentUsageReminder: {
+						event: async (input: EventInput) => {
+							agentUsageReminderCalls.push(input)
+						},
 					},
-				},
-				stopContinuationGuard: { isStopped: () => false },
-			}),
+				}),
 		})
 
 		//#when

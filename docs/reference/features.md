@@ -446,7 +446,6 @@ Commands are slash-triggered workflows that execute predefined templates.
 | -------------------- | ------------------------------------------------------------------------------------------ |
 | `/init-deep`         | Initialize hierarchical AGENTS.md knowledge base                                           |
 | `/refactor`          | Intelligent refactoring with LSP, AST-grep, architecture analysis, and TDD verification    |
-| `/stop-continuation` | Stop all continuation mechanisms (boulder and related flows) for this session               |
 | `/handoff`           | Create a detailed context summary for continuing work in a new session                     |
 
 ### /init-deep
@@ -487,12 +486,6 @@ project/
 - Architecture analysis before changes
 - TDD verification after changes
 - Codemap generation
-
-### /stop-continuation
-
-**Purpose**: Stop all remaining continuation mechanisms for this session
-
-Stops boulder state and related continuation flows. Use when you want the agent to stop its current multi-step workflow.
 
 ### /handoff
 
@@ -706,7 +699,6 @@ Hooks intercept and modify behavior at key points in the agent lifecycle across 
 | **keyword-detector**        | Message + Transform | Detects keywords and activates modes: `ultrawork`/`ulw` (max performance), `search`/`find` (parallel exploration), `analyze`/`investigate` (deep analysis). |
 | **think-mode**              | Params              | Auto-detects extended thinking needs. Catches "think deeply", "ultrathink" and adjusts model settings.                                                      |
 | **auto-slash-command**      | Message             | Automatically executes slash commands from prompts.                                                                                                         |
-| **stop-continuation-guard** | Event + Message     | Guards the stop-continuation mechanism.                                                                                                                     |
 | **category-skill-reminder** | Event + PostToolUse | Reminds agents about available category skills for delegation.                                                                                              |
 | **anthropic-effort**        | Params              | Adjusts Anthropic API effort level based on context.                                                                                                        |
 

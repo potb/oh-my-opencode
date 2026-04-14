@@ -33,7 +33,6 @@ export { createSisyphusJuniorNotepadHook } from "./sisyphus-junior-notepad";
 export { createTaskResumeInfoHook } from "./task-resume-info";
 export { createDelegateTaskRetryHook } from "./delegate-task-retry";
 export { createQuestionLabelTruncatorHook } from "./question-label-truncator";
-export { createStopContinuationGuardHook, type StopContinuationGuard } from "./stop-continuation-guard";
 export { createCompactionContextInjector } from "./compaction-context-injector";
 export { createCompactionTodoPreserverHook } from "./compaction-todo-preserver";
 export { createUnstableAgentBabysitterHook } from "./unstable-agent-babysitter";

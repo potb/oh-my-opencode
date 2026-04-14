@@ -525,7 +525,7 @@ Disable built-in commands via `disabled_commands`:
 { "disabled_commands": ["init-deep", "refactor"] }
 ```
 
-Available commands: `init-deep`, `refactor`, `stop-continuation`, `handoff`
+Available commands: `init-deep`, `refactor`, `handoff`
 
 ### Browser Automation
 

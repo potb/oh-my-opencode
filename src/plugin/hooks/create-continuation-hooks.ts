@@ -4,7 +4,6 @@ import type { PluginContext } from "../types"
 
 import {
   createBackgroundNotificationHook,
-  createStopContinuationGuardHook,
   createCompactionContextInjector,
   createCompactionTodoPreserverHook,
 } from "../../hooks"
@@ -12,7 +11,6 @@ import { safeCreateHook } from "../../shared/safe-create-hook"
 import { createUnstableAgentBabysitter } from "../unstable-agent-babysitter"
 
 export type ContinuationHooks = {
-  stopContinuationGuard: ReturnType<typeof createStopContinuationGuardHook> | null
   compactionContextInjector: ReturnType<typeof createCompactionContextInjector> | null
   compactionTodoPreserver: ReturnType<typeof createCompactionTodoPreserverHook> | null
   unstableAgentBabysitter: ReturnType<typeof createUnstableAgentBabysitter> | null
@@ -37,13 +35,6 @@ export function createContinuationHooks(args: {
   const safeHook = <T>(hookName: HookName, factory: () => T): T | null =>
     safeCreateHook(hookName, factory, { enabled: safeHookEnabled })
 
-  const stopContinuationGuard = isHookEnabled("stop-continuation-guard")
-    ? safeHook("stop-continuation-guard", () =>
-        createStopContinuationGuardHook(ctx, {
-          backgroundManager,
-        }))
-    : null
-
   const compactionContextInjector = isHookEnabled("compaction-context-injector")
     ? safeHook("compaction-context-injector", () =>
         createCompactionContextInjector({ ctx, backgroundManager }))
@@ -63,7 +54,6 @@ export function createContinuationHooks(args: {
     : null
 
   return {
-    stopContinuationGuard,
     compactionContextInjector,
     compactionTodoPreserver,
     unstableAgentBabysitter,

@@ -43,7 +43,6 @@ hooks/
 ├── rules-injector/             # Conditional rules
 ├── session-recovery/           # Auto-recovers from crashes
 ├── sisyphus-junior-notepad/    # Sisyphus Junior notepad
-├── stop-continuation-guard/    # Guards stop continuation
 ├── task-reminder/              # Task system usage reminders
 ├── task-resume-info/           # Resume info for cancelled tasks
 ├── tasks-todowrite-disabler/   # Disable TodoWrite when task system active
@@ -114,7 +113,6 @@ hooks/
 
 | Hook | Event | Purpose |
 |------|-------|---------|
-| stopContinuationGuard | chat.message | `/stop-continuation` command handler |
 | compactionContextInjector | session.compacted | Re-inject context after compaction |
 | compactionTodoPreserver | session.compacted | Preserve todos through compaction |
 | unstableAgentBabysitter | session.idle | Monitor unstable agent behavior |

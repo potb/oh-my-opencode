@@ -242,7 +242,6 @@ export function createEventHandler(args: {
       input,
     );
     await runEventHookSafely("agentUsageReminder", hooks.agentUsageReminder?.event, input);
-    await runEventHookSafely("stopContinuationGuard", hooks.stopContinuationGuard?.event, input);
     await runEventHookSafely("compactionContextInjector", hooks.compactionContextInjector?.event, input);
     await runEventHookSafely("compactionTodoPreserver", hooks.compactionTodoPreserver?.event, input);
     await runEventHookSafely("writeExistingFileGuard", hooks.writeExistingFileGuard?.event, input);
@@ -422,11 +421,7 @@ export function createEventHandler(args: {
 
                 const setFallback = setPendingModelFallback(sessionID, agentName, currentProvider, currentModel);
 
-                if (
-                  setFallback &&
-                  shouldAutoRetrySession(sessionID) &&
-                  !hooks.stopContinuationGuard?.isStopped(sessionID)
-                ) {
+                if (setFallback && shouldAutoRetrySession(sessionID)) {
                   lastHandledModelErrorMessageID.set(sessionID, assistantMessageID);
                   await autoContinueAfterFallback(sessionID, "message.updated");
                 }
@@ -483,11 +478,7 @@ export function createEventHandler(args: {
 
               const setFallback = setPendingModelFallback(sessionID, agentName, currentProvider, currentModel);
 
-              if (
-                setFallback &&
-                shouldAutoRetrySession(sessionID) &&
-                !hooks.stopContinuationGuard?.isStopped(sessionID)
-              ) {
+              if (setFallback && shouldAutoRetrySession(sessionID)) {
                 await autoContinueAfterFallback(sessionID, "session.status");
               }
             }
@@ -517,12 +508,7 @@ export function createEventHandler(args: {
           };
           const recovered = await hooks.sessionRecovery.handleSessionRecovery(messageInfo);
 
-          if (
-            recovered &&
-            sessionID &&
-            sessionID === getMainSessionID() &&
-            !hooks.stopContinuationGuard?.isStopped(sessionID)
-          ) {
+          if (recovered && sessionID && sessionID === getMainSessionID()) {
             // Trigger compaction before sending "continue" to avoid double-sending continuation
             await pluginContext.client.session
               .summarize({
@@ -567,11 +553,7 @@ export function createEventHandler(args: {
 
             const setFallback = setPendingModelFallback(sessionID, agentName, currentProvider, currentModel);
 
-            if (
-              setFallback &&
-              shouldAutoRetrySession(sessionID) &&
-              !hooks.stopContinuationGuard?.isStopped(sessionID)
-            ) {
+            if (setFallback && shouldAutoRetrySession(sessionID)) {
               await autoContinueAfterFallback(sessionID, "session.error");
             }
           }
