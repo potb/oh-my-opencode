@@ -51,14 +51,13 @@ agent-browser close           # Close browser (aliases: quit, exit)
 \`\`\`bash
 agent-browser snapshot            # Full accessibility tree
 agent-browser snapshot -i         # Interactive elements only (recommended)
-agent-browser snapshot -i -C      # Include cursor-interactive elements (divs with onclick, etc.)
 agent-browser snapshot -c         # Compact (remove empty structural elements)
 agent-browser snapshot -d 3       # Limit depth to 3
 agent-browser snapshot -s "#main" # Scope to CSS selector
 agent-browser snapshot -i -c -d 5 # Combine options
 \`\`\`
 
-The \`-C\` flag is useful for modern web apps that use custom clickable elements (divs, spans) instead of standard buttons/links.
+Current agent-browser versions include cursor-interactive elements in snapshots by default, so \`agent-browser snapshot -i\` is usually enough.
 
 ### Interactions (use @refs from snapshot)
 \`\`\`bash
