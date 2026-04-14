@@ -19,7 +19,7 @@ git clone https://github.com/sawyerhood/dev-browser /tmp/dev-browser-skill
 # For oh-my-opencode: already bundled
 # For manual installation:
 mkdir -p ~/.config/opencode/skills
-cp -r /tmp/dev-browser-skill/skills/dev-browser ~/.config/opencode/skills/dev-browser
+cp -r /tmp/dev-browser-skill/skills/dev-browser ~/dev-tools/dev-browser
 
 # Cleanup
 rm -rf /tmp/dev-browser-skill
@@ -41,7 +41,7 @@ Remove-Item -Recurse -Force "$env:TEMP\dev-browser-skill"
 ### Step 2: Install Dependencies
 
 ```bash
-cd ~/.config/opencode/skills/dev-browser
+cd ~/dev-tools/dev-browser
 npm install
 ```
 
@@ -57,7 +57,7 @@ npm install
 
 **macOS/Linux:**
 ```bash
-cd ~/.config/opencode/skills/dev-browser
+cd ~/dev-tools/dev-browser
 ./server.sh &
 # Or for headless:
 ./server.sh --headless &
@@ -66,15 +66,15 @@ cd ~/.config/opencode/skills/dev-browser
 **Windows (PowerShell):**
 ```powershell
 cd "$env:USERPROFILE\.config\opencode\skills\dev-browser"
-Start-Process -NoNewWindow -FilePath "node" -ArgumentList "server.js"
+Set-Location "$env:USERPROFILE\dev-tools\dev-browser"; Start-Process -NoNewWindow -FilePath "node" -ArgumentList "server.js"
 # Or for headless:
-Start-Process -NoNewWindow -FilePath "node" -ArgumentList "server.js", "--headless"
+Set-Location "$env:USERPROFILE\dev-tools\dev-browser"; Start-Process -NoNewWindow -FilePath "node" -ArgumentList "server.js", "--headless"
 ```
 
 **Windows (CMD):**
 ```cmd
 cd %USERPROFILE%\.config\opencode\skills\dev-browser
-start /B node server.js
+cd %USERPROFILE%\dev-tools\dev-browser && start /B node server.js
 ```
 
 Wait for the `Ready` message before running scripts.
@@ -83,7 +83,7 @@ Wait for the `Ready` message before running scripts.
 
 **macOS/Linux:**
 ```bash
-cd ~/.config/opencode/skills/dev-browser
+cd ~/dev-tools/dev-browser
 npm run start-extension &
 ```
 
@@ -153,7 +153,7 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 Use forward slashes or escaped backslashes in paths:
 ```powershell
 # Good
-cd "$env:USERPROFILE/.config/opencode/skills/dev-browser"
+cd "$env:USERPROFILE/dev-tools/dev-browser"
 # Also good
 cd "$env:USERPROFILE\.config\opencode\skills\dev-browser"
 ```
@@ -161,7 +161,7 @@ cd "$env:USERPROFILE\.config\opencode\skills\dev-browser"
 ### Extension Not Connecting
 
 1. Ensure extension is "Active" (click icon to toggle)
-2. Check relay server is running (`npm run start-extension`)
+2. Check the relay server is running in your external dev-browser checkout (`npm run start-extension`)
 3. Look for `Extension connected` message in console
 4. Try reloading the extension in `chrome://extensions`
 
@@ -180,7 +180,7 @@ To skip permission prompts in Claude Code, add to `~/.claude/settings.json`:
 ## Updating
 
 ```bash
-cd ~/.config/opencode/skills/dev-browser
+cd ~/dev-tools/dev-browser
 git pull
 npm install
 ```

@@ -70,7 +70,7 @@ OhMyOpenCodePlugin(ctx)
 ## MULTI-LEVEL CONFIG
 
 ```
-Project (.opencode/oh-my-opencode.jsonc)  →  User (~/.config/opencode/oh-my-opencode.jsonc)  →  Defaults
+Project (.opencode/oh-my-openagent.jsonc)  →  User (~/.config/opencode/oh-my-openagent.jsonc)  →  Defaults
 ```
 
 - `agents`, `categories`, `claude_code`: deep merged recursively (prototype-pollution-safe)

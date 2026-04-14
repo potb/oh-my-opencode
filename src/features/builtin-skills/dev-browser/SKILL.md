@@ -15,7 +15,7 @@ Browser automation that maintains page state across script executions. Write sma
 
 ## Setup
 
-> **Installation**: See [references/installation.md](references/installation.md) for detailed setup instructions including Windows support.
+> **Installation**: See [references/installation.md](references/installation.md) for external setup instructions; this repo does not bundle the dev-browser runtime files.
 
 Two modes available. Ask the user if unclear which to use.
 
@@ -24,7 +24,7 @@ Two modes available. Ask the user if unclear which to use.
 Launches a new Chromium browser for fresh automation sessions.
 
 ```bash
-./skills/dev-browser/server.sh &
+cd /path/to/dev-browser && ./server.sh &
 ```
 
 Add `--headless` flag if user requests it. **Wait for the `Ready` message before running scripts.**
@@ -41,7 +41,7 @@ Connects to user's existing Chrome browser. Use this when:
 **Start the relay server:**
 
 ```bash
-cd skills/dev-browser && npm i && npm run start-extension &
+cd /path/to/dev-browser && npm i && npm run start-extension &
 ```
 
 Wait for `Waiting for extension to connect...` followed by `Extension connected` in the console. To know that a client has connected and the browser is ready to be controlled.
@@ -54,12 +54,12 @@ If the extension hasn't connected yet, tell the user to launch and activate it. 
 
 ## Writing Scripts
 
-> **Run all scripts from `skills/dev-browser/` directory.** The `@/` import alias requires this directory's config.
+> **Run all scripts from your external `dev-browser/` checkout.** The `@/` import alias requires that project's config.
 
 Execute scripts inline using heredocs:
 
 ```bash
-cd skills/dev-browser && npx tsx <<'EOF'
+cd /path/to/dev-browser && npx tsx <<'EOF'
 import { connect, waitForPageLoad } from "@/client.js";
 
 const client = await connect();
@@ -195,7 +195,7 @@ await element.click();
 Page state persists after failures. Debug with:
 
 ```bash
-cd skills/dev-browser && npx tsx <<'EOF'
+cd /path/to/dev-browser && npx tsx <<'EOF'
 import { connect } from "@/client.js";
 
 const client = await connect();

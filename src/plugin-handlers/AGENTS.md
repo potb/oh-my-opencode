@@ -79,9 +79,9 @@ PRs attempting these patterns will be rejected.
 ## MULTI-LEVEL CONFIG MERGE
 
 ```
-User (~/.config/opencode/oh-my-opencode.jsonc)
+User (~/.config/opencode/oh-my-openagent.jsonc)
   ↓ deepMerge
-Project (.opencode/oh-my-opencode.jsonc)
+Project (.opencode/oh-my-openagent.jsonc)
   ↓ Zod defaults
 Final Config
 ```
