@@ -104,15 +104,15 @@ jobs:
           fi
           opencode --version
 
-          # Run local oh-my-opencode install (uses built dist)
-          bun run dist/cli/index.js install --no-tui --claude=max20 --openai=no --gemini=no --copilot=no
-
           # Override plugin to use local file reference
           OPENCODE_JSON=~/.config/opencode/opencode.json
           REPO_PATH=$(pwd)
           jq --arg path "file://$REPO_PATH/src/index.ts" '
             .plugin = [.plugin[] | select(. != "oh-my-opencode")] + [$path]
           ' "$OPENCODE_JSON" > /tmp/oc.json && mv /tmp/oc.json "$OPENCODE_JSON"
+
+          OMO_JSON=~/.config/opencode/oh-my-opencode.json
+          jq -n '{"$schema":"https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json"}' > "$OMO_JSON"
 
           OPENCODE_JSON=~/.config/opencode/opencode.json
           jq --arg baseURL "$ANTHROPIC_BASE_URL" --arg apiKey "$ANTHROPIC_API_KEY" '
@@ -192,7 +192,6 @@ jobs:
             }
           ' "$OPENCODE_JSON" > /tmp/oc.json && mv /tmp/oc.json "$OPENCODE_JSON"
 
-          OMO_JSON=~/.config/opencode/oh-my-opencode.json
           PROMPT_APPEND=$(cat << 'PROMPT_EOF'
           <ultrawork-mode>
           [CODE RED] Maximum precision required. Ultrathink before acting.

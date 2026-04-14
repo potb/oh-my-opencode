@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        **Please write your issue in English.** See our [Language Policy](https://github.com/code-yeongyu/oh-my-opencode/blob/dev/CONTRIBUTING.md#language-policy) for details.
+        **Please write your issue in English.**
 
   - type: checkboxes
     id: prerequisites
@@ -14,7 +14,7 @@ body:
       label: Prerequisites
       description: Please confirm the following before submitting
       options:
-        - label: I will write this issue in English (see our [Language Policy](https://github.com/code-yeongyu/oh-my-opencode/blob/dev/CONTRIBUTING.md#language-policy))
+        - label: I will write this issue in English
           required: true
         - label: I have searched existing issues to avoid duplicates
           required: true
@@ -63,19 +63,23 @@ body:
       required: true
 
   - type: textarea
-    id: doctor
+    id: diagnostics
     attributes:
-      label: Doctor Output
+      label: Diagnostics Output
       description: |
-        **Required:** Run `bunx oh-my-opencode doctor` and paste the full output below.
-        This helps us diagnose your environment and configuration.
+        **Required:** Paste any relevant diagnostics you ran, such as `opencode --version`, build/test failures, or plugin startup logs.
+        This helps us diagnose your environment and configuration now that the old CLI doctor command is gone.
       placeholder: |
-        Paste the output of: bunx oh-my-opencode doctor
+        Paste diagnostic output here.
         
         Example:
-        ✓ OpenCode version: 1.0.150
-        ✓ oh-my-opencode version: 1.2.3
-        ✓ Plugin loaded successfully
+        $ opencode --version
+        1.0.150
+
+        $ bun run typecheck
+        ...
+
+        Plugin startup log:
         ...
       render: shell
     validations:

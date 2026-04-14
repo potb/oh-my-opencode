@@ -16,15 +16,14 @@ oh-my-opencode/
 │   ├── agents/               # Built-in agent definitions and prompt assembly
 │   ├── hooks/                # Lifecycle hooks across dedicated modules and standalone files
 │   ├── tools/                # Tool factories and built-in tool wiring (includes Hashline edit with LINE#ID content hashing)
-│   ├── features/             # 19 feature modules (background-agent, skill-loader, tmux, MCP-OAuth, skill-mcp-manager, etc.)
+│   ├── features/             # Feature modules (background-agent, skill-loader, tmux, skill-mcp-manager, etc.)
 │   ├── shared/               # 170+ utility files (barrel-exported, logger → /tmp/oh-my-opencode.log)
 │   ├── config/               # Zod v4 schema system (32 files)
-│   ├── cli/                  # CLI: install, run, doctor, mcp-oauth (Commander.js)
+│   ├── cli/                  # CLI: install, run, version (Commander.js)
 │   ├── mcp/                  # 3 built-in remote MCPs (websearch, context7, grep_app)
 │   ├── plugin/               # 10 OpenCode hook handlers + 52 hook composition
 │   ├── plugin-handlers/      # 6-phase config loading pipeline
 │   └── openclaw/             # Bidirectional external integration (Discord/Telegram/webhook/command)
-├── packages/                 # 11 platform-specific compiled binaries (darwin/linux/windows, AVX2 + baseline variants)
 ├── script/                   # Build/publish automation (singular, not scripts/)
 ├── .sisyphus/                # AI agent workspace (rules, plans, tasks, notepads)
 └── .local-ignore/            # Dev-only test fixtures + PR worktrees
@@ -67,8 +66,6 @@ OhMyOpenCodePlugin(ctx)
 | Add new MCP | `src/mcp/` + register in `createBuiltinMcps()` | Remote HTTP only (tier 1 of 3) |
 | Add new skill | `src/features/builtin-skills/skills/` | Implement BuiltinSkill interface |
 | Add new command | `src/features/builtin-commands/` | Template in templates/ |
-| Add new CLI command | `src/cli/cli-program.ts` | Commander.js subcommand |
-| Add new doctor check | `src/cli/doctor/checks/` | Register in checks/index.ts |
 | Modify config schema | `src/config/schema/` + update root schema | Zod v4, add to OhMyOpenCodeConfigSchema |
 | Add new category | `src/tools/delegate-task/constants.ts` | DEFAULT_CATEGORIES + CATEGORY_MODEL_REQUIREMENTS |
 | External notifications | `src/openclaw/` | Bidirectional Discord/Telegram/webhook integration |
@@ -135,9 +132,6 @@ bun test                    # Bun test suite
 bun run build              # Build plugin (ESM + declarations + schema)
 bun run build:all          # Build + platform binaries
 bun run typecheck           # tsc --noEmit
-bunx oh-my-opencode install # Interactive setup
-bunx oh-my-opencode doctor  # Health diagnostics
-bunx oh-my-opencode run     # Non-interactive session
 ```
 
 ## CI/CD
@@ -148,7 +142,6 @@ bunx oh-my-opencode run     # Non-interactive session
 | publish.yml | manual dispatch | Version bump, dual npm publish (oh-my-opencode + oh-my-openagent), platform binaries, GitHub release |
 | publish-platform.yml | called by publish | 11 platform binaries via bun compile (darwin/linux/windows) |
 | sisyphus-agent.yml | @mention / dispatch | AI agent handles issues/PRs |
-| refresh-model-capabilities.yml | weekly schedule / dispatch | Auto-refresh model capabilities from models.dev API |
 | cla.yml | issue_comment/PR | CLA assistant for contributors |
 | lint-workflows.yml | push to .github/ | actionlint + shellcheck on workflow files |
 
