@@ -16,7 +16,7 @@ This guide covers installation for all platforms: macOS, Linux, and Windows.
 git clone https://github.com/sawyerhood/dev-browser /tmp/dev-browser-skill
 
 # Copy to a local working directory (adjust path as needed)
-mkdir -p ~/.config/opencode/skills
+mkdir -p ~/dev-tools
 cp -r /tmp/dev-browser-skill/skills/dev-browser ~/dev-tools/dev-browser
 
 # Cleanup
@@ -28,9 +28,9 @@ rm -rf /tmp/dev-browser-skill
 # Clone dev-browser to temp location
 git clone https://github.com/sawyerhood/dev-browser $env:TEMP\dev-browser-skill
 
-# Copy to skills directory
-New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.config\opencode\skills"
-Copy-Item -Recurse "$env:TEMP\dev-browser-skill\skills\dev-browser" "$env:USERPROFILE\.config\opencode\skills\dev-browser"
+# Copy to a local working directory
+New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\dev-tools"
+Copy-Item -Recurse "$env:TEMP\dev-browser-skill\skills\dev-browser" "$env:USERPROFILE\dev-tools\dev-browser"
 
 # Cleanup
 Remove-Item -Recurse -Force "$env:TEMP\dev-browser-skill"
@@ -45,7 +45,7 @@ npm install
 
 **Windows (PowerShell):**
 ```powershell
-cd "$env:USERPROFILE\.config\opencode\skills\dev-browser"
+cd "$env:USERPROFILE\dev-tools\dev-browser"
 npm install
 ```
 
@@ -63,7 +63,7 @@ cd ~/dev-tools/dev-browser
 
 **Windows (PowerShell):**
 ```powershell
-cd "$env:USERPROFILE\.config\opencode\skills\dev-browser"
+cd "$env:USERPROFILE\dev-tools\dev-browser"
 Set-Location "$env:USERPROFILE\dev-tools\dev-browser"; Start-Process -NoNewWindow -FilePath "node" -ArgumentList "server.js"
 # Or for headless:
 Set-Location "$env:USERPROFILE\dev-tools\dev-browser"; Start-Process -NoNewWindow -FilePath "node" -ArgumentList "server.js", "--headless"
@@ -71,7 +71,6 @@ Set-Location "$env:USERPROFILE\dev-tools\dev-browser"; Start-Process -NoNewWindo
 
 **Windows (CMD):**
 ```cmd
-cd %USERPROFILE%\.config\opencode\skills\dev-browser
 cd %USERPROFILE%\dev-tools\dev-browser && start /B node server.js
 ```
 

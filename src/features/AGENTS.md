@@ -10,16 +10,13 @@ Standalone feature modules wired into plugin/ layer. Each is self-contained with
 
 | Module | Files | Complexity | Purpose |
 |--------|-------|------------|---------|
-| **opencode-skill-loader** | 33 | HIGH | YAML frontmatter skill loading from 4 scopes |
-| **background-agent** | 47 | HIGH | Task lifecycle, concurrency (5/model), polling, spawner pattern, circuit breaker |
-| **tmux-subagent** | 34 | HIGH | Tmux pane management, grid planning, session orchestration |
-| **builtin-skills** | 17 | LOW | 8 skills: git-master, playwright, playwright-cli, agent-browser, dev-browser, frontend-ui-ux, review-work, ai-slop-remover |
-| **skill-mcp-manager** | 18 | HIGH | Tier-3 MCP client lifecycle per session (stdio + HTTP + OAuth step-up) |
+| **opencode-skill-loader** | 33 | HIGH | YAML frontmatter skill loading from multiple scopes |
+| **background-agent** | 47 | HIGH | Task lifecycle, concurrency, polling, spawner pattern, circuit breaker |
+| **builtin-skills** | 17 | LOW | Built-in skill definitions and templates |
 | **claude-code-plugin-loader** | 15 | MEDIUM | Unified plugin discovery from .opencode/plugins/ |
 | **claude-tasks** | 7 | MEDIUM | Task schema + file storage + OpenCode todo sync |
 | **claude-code-mcp-loader** | 6 | MEDIUM | .mcp.json loading with ${VAR} env expansion |
 | **context-injector** | 6 | MEDIUM | AGENTS.md/README.md injection into context |
-| **run-continuation-state** | 5 | LOW | Persistent state for `run` command continuation across sessions |
 | **hook-message-injector** | 5 | MEDIUM | System message injection for hooks |
 | **task-toast-manager** | 4 | MEDIUM | Task progress notifications |
 | **tool-metadata-store** | 3 | LOW | Tool execution metadata cache |
@@ -45,14 +42,6 @@ Core orchestration engine. `BackgroundManager` manages task lifecycle:
 - Skill merger with priority deduplication
 - Template resolution with variable substitution
 - Provider gating for model-specific skills
-
-### tmux-subagent (34 files, ~3.6k LOC)
-
-Legacy tmux integration module kept only as historical/internal context:
-- pane lifecycle and grid planning
-- spawn action decider + target finder
-- polling manager for session health
-- event handlers for pane creation/destruction
 
 ### builtin-skills (8 skill objects)
 
