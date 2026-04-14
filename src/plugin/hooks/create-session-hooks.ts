@@ -12,7 +12,6 @@ import {
   createAutoUpdateCheckerHook,
   createAgentUsageReminderHook,
   createNonInteractiveEnvHook,
-  createInteractiveBashSessionHook,
   createRalphLoopHook,
   createEditErrorRecoveryHook,
   createDelegateTaskRetryHook,
@@ -36,7 +35,6 @@ import {
 } from "../../shared"
 import { safeCreateHook } from "../../shared/safe-create-hook"
 import { sessionExists } from "../../tools"
-import { isTmuxIntegrationEnabled } from "../../create-runtime-tmux-config"
 
 export type SessionHooks = {
   contextWindowMonitor: ReturnType<typeof createContextWindowMonitorHook> | null
@@ -49,7 +47,6 @@ export type SessionHooks = {
   autoUpdateChecker: ReturnType<typeof createAutoUpdateCheckerHook> | null
   agentUsageReminder: ReturnType<typeof createAgentUsageReminderHook> | null
   nonInteractiveEnv: ReturnType<typeof createNonInteractiveEnvHook> | null
-  interactiveBashSession: ReturnType<typeof createInteractiveBashSessionHook> | null
   ralphLoop: ReturnType<typeof createRalphLoopHook> | null
   editErrorRecovery: ReturnType<typeof createEditErrorRecoveryHook> | null
   delegateTaskRetry: ReturnType<typeof createDelegateTaskRetryHook> | null
@@ -197,12 +194,6 @@ export function createSessionHooks(args: {
     ? safeHook("non-interactive-env", () => createNonInteractiveEnvHook(ctx))
     : null
 
-  const interactiveBashSession =
-    isHookEnabled("interactive-bash-session") &&
-    isTmuxIntegrationEnabled(pluginConfig)
-    ? safeHook("interactive-bash-session", () => createInteractiveBashSessionHook(ctx))
-    : null
-
   const ralphLoop = isHookEnabled("ralph-loop")
     ? safeHook("ralph-loop", () =>
         createRalphLoopHook(ctx, {
@@ -281,7 +272,6 @@ export function createSessionHooks(args: {
     autoUpdateChecker,
     agentUsageReminder,
     nonInteractiveEnv,
-    interactiveBashSession,
     ralphLoop,
     editErrorRecovery,
     delegateTaskRetry,

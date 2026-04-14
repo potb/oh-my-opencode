@@ -12,7 +12,7 @@ type CreateToolsResult = {
 export async function createTools(args: {
   ctx: PluginContext
   pluginConfig: OhMyOpenCodeConfig
-  managers: Pick<Managers, "backgroundManager" | "tmuxSessionManager">
+  managers: Pick<Managers, "backgroundManager">
 }): Promise<CreateToolsResult> {
   const { ctx, pluginConfig, managers } = args
 

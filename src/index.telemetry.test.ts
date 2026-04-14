@@ -4,15 +4,6 @@ const mockInitConfigContext = mock(() => {})
 const mockInjectServerAuthIntoClient = mock(() => {})
 const mockLogLegacyPluginStartupWarning = mock(() => {})
 const mockLoadPluginConfig = mock(() => ({}))
-const mockIsTmuxIntegrationEnabled = mock(() => false)
-const mockCreateRuntimeTmuxConfig = mock(() => ({
-  enabled: false,
-  layout: "tiled" as const,
-  main_pane_size: 60,
-  main_pane_min_width: 80,
-  agent_pane_min_width: 40,
-  isolation: "inline" as const,
-}))
 const mockCreateManagers = mock(() => ({
   backgroundManager: { shutdown: async () => {} },
   configHandler: async () => {},
@@ -55,10 +46,6 @@ function installModuleMocks(): void {
   }))
   mock.module("./plugin-config", () => ({
     loadPluginConfig: mockLoadPluginConfig,
-  }))
-  mock.module("./create-runtime-tmux-config", () => ({
-    createRuntimeTmuxConfig: mockCreateRuntimeTmuxConfig,
-    isTmuxIntegrationEnabled: mockIsTmuxIntegrationEnabled,
   }))
   mock.module("./create-managers", () => ({
     createManagers: mockCreateManagers,

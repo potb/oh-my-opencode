@@ -84,7 +84,7 @@ export function trimToolsToCap(filteredTools: ToolsRecord, maxTools: number): vo
 export function createToolRegistry(args: {
   ctx: PluginContext
   pluginConfig: OhMyOpenCodeConfig
-  managers: Pick<Managers, "backgroundManager" | "tmuxSessionManager">
+  managers: Pick<Managers, "backgroundManager">
   toolFactories?: Partial<ToolRegistryFactories>
 }): ToolRegistryResult {
   const {
@@ -102,24 +102,7 @@ export function createToolRegistry(args: {
     client: ctx.client,
     directory: ctx.directory,
     syncPollTimeoutMs: pluginConfig.background_task?.syncPollTimeoutMs,
-    onSyncSessionCreated: async (event) => {
-      log("[index] onSyncSessionCreated callback", {
-        sessionID: event.sessionID,
-        parentID: event.parentID,
-        title: event.title,
-      })
-      await managers.tmuxSessionManager.onSessionCreated({
-        type: "session.created",
-        properties: {
-          info: {
-            id: event.sessionID,
-            parentID: event.parentID,
-            title: event.title,
-            },
-          },
-        })
-      },
-    })
+  })
 
   const hashlineEnabled = pluginConfig.hashline_edit ?? false
   const hashlineToolsRecord: Record<string, ToolDefinition> = hashlineEnabled

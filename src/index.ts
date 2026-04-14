@@ -5,7 +5,6 @@ import type { HookName } from "./config"
 
 import { createHooks } from "./create-hooks"
 import { createManagers } from "./create-managers"
-import { createRuntimeTmuxConfig, isTmuxIntegrationEnabled } from "./create-runtime-tmux-config"
 import { createTools } from "./create-tools"
 import { applyFixedProductTrim } from "./fixed-product"
 import { createPluginInterface } from "./plugin-interface"
@@ -52,7 +51,7 @@ const OhMyOpenCodePlugin: Plugin = async (ctx) => {
         properties: {
           entry_point: "plugin",
           has_openclaw: false,
-          tmux_enabled: isTmuxIntegrationEnabled(pluginConfig),
+          tmux_enabled: false,
         },
       })
   } catch {
@@ -65,14 +64,11 @@ const OhMyOpenCodePlugin: Plugin = async (ctx) => {
 
   const firstMessageVariantGate = createFirstMessageVariantGate()
 
-  const tmuxConfig = createRuntimeTmuxConfig(pluginConfig)
-
   const modelCacheState = createModelCacheState()
 
   const managers = createManagers({
     ctx,
     pluginConfig,
-    tmuxConfig,
     modelCacheState,
     backgroundNotificationHookEnabled: isHookEnabled("background-notification"),
   })

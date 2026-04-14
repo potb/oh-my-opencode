@@ -76,7 +76,6 @@ describe("createToolRegistry", () => {
       pluginConfig: createPluginConfig(),
       managers: {
         backgroundManager: {},
-        tmuxSessionManager: {},
       } as Parameters<typeof createToolRegistry>[0]["managers"],
       toolFactories,
     })
@@ -105,7 +104,6 @@ describe("createToolRegistry", () => {
       pluginConfig: createPluginConfig({ hashline_edit: false }),
       managers: {
         backgroundManager: {},
-        tmuxSessionManager: {},
       } as Parameters<typeof createToolRegistry>[0]["managers"],
       toolFactories,
     })
@@ -114,7 +112,6 @@ describe("createToolRegistry", () => {
       pluginConfig: createPluginConfig({ hashline_edit: true }),
       managers: {
         backgroundManager: {},
-        tmuxSessionManager: {},
       } as Parameters<typeof createToolRegistry>[0]["managers"],
       toolFactories,
     })
@@ -123,37 +120,16 @@ describe("createToolRegistry", () => {
     expect(withEdit.filteredTools).toHaveProperty("edit")
   })
 
-  test("forwards sync session creation events only to the tmux session manager callback", async () => {
-    const onSessionCreated = mock(async () => {})
-
+  test("does not attach a sync session-created side effect in the fixed product", async () => {
     createToolRegistry({
       ctx: { directory: "/tmp/project" } as Parameters<typeof createToolRegistry>[0]["ctx"],
       pluginConfig: createPluginConfig(),
       managers: {
         backgroundManager: {},
-        tmuxSessionManager: {
-          onSessionCreated,
-        },
       } as Parameters<typeof createToolRegistry>[0]["managers"],
       toolFactories,
     })
 
-    await syncSessionCreatedCallbacks[0]?.({
-      sessionID: "ses-sync-1",
-      parentID: "ses-parent",
-      title: "sync task",
-    })
-
-    expect(onSessionCreated).toHaveBeenCalledTimes(1)
-    expect(onSessionCreated).toHaveBeenCalledWith({
-      type: "session.created",
-      properties: {
-        info: {
-          id: "ses-sync-1",
-          parentID: "ses-parent",
-          title: "sync task",
-        },
-      },
-    })
+    expect(syncSessionCreatedCallbacks[0]).toBeUndefined()
   })
 })

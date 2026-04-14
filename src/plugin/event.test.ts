@@ -379,164 +379,52 @@ afterEach(() => {
 })
 
 describe("createEventHandler - event forwarding", () => {
-	it("forwards message activity events to tmux session manager", async () => {
-		//#given
-		const forwardedEvents: EventInput[] = []
+	it("ignores tmux-specific event forwarding in the fixed product", async () => {
 		const eventHandler = createEventHandler({
 			ctx: asEventHandlerContext({}),
-			pluginConfig: asPluginConfig({
-				tmux: {
-					enabled: true,
-					layout: "main-vertical",
-					main_pane_size: 60,
-					main_pane_min_width: 120,
-					agent_pane_min_width: 40,
-					isolation: "inline",
-				},
-			}),
+			pluginConfig: asPluginConfig({}),
 			firstMessageVariantGate: {
 				markSessionCreated: () => {},
 				clear: () => {},
 			},
 			managers: createEventHandlerManagers({
-				skillMcpManager: {
-					disconnectSession: async () => {},
-				},
 				tmuxSessionManager: {
-					onEvent: (event: EventInput["event"]) => {
-						forwardedEvents.push({ event })
+					onEvent: () => {
+						throw new Error("tmux onEvent should not run")
 					},
-					onSessionCreated: async () => {},
-					onSessionDeleted: async () => {},
+					onSessionCreated: async () => {
+						throw new Error("tmux onSessionCreated should not run")
+					},
+					onSessionDeleted: async () => {
+						throw new Error("tmux onSessionDeleted should not run")
+					},
 				},
 			}),
 			hooks: createEventHandlerHooks({}),
 		})
 
-		//#when
-		await eventHandler(asEventHandlerInput({
+		await expect(eventHandler(asEventHandlerInput({
 			event: {
 				type: "message.part.delta",
 				properties: { sessionID: "ses_tmux_activity", field: "text", delta: "x" },
 			},
-		}))
+		}))).resolves.toBeUndefined()
 
-		//#then
-		expect(forwardedEvents.length).toBe(1)
-		expect(forwardedEvents[0]?.event.type).toBe("message.part.delta")
-	})
-
-	it("does not forward tmux activity events when tmux integration is disabled", async () => {
-		//#given
-		const forwardedEvents: EventInput[] = []
-		const eventHandler = createEventHandler({
-			ctx: asEventHandlerContext({}),
-			pluginConfig: asPluginConfig({
-				tmux: {
-					enabled: false,
-					layout: "main-vertical",
-					main_pane_size: 60,
-					main_pane_min_width: 120,
-					agent_pane_min_width: 40,
-					isolation: "inline",
-				},
-			}),
-			firstMessageVariantGate: {
-				markSessionCreated: () => {},
-				clear: () => {},
-			},
-			managers: createEventHandlerManagers({
-				skillMcpManager: {
-					disconnectSession: async () => {},
-				},
-				tmuxSessionManager: {
-					onEvent: (event: EventInput["event"]) => {
-						forwardedEvents.push({ event })
-					},
-					onSessionCreated: async () => {},
-					onSessionDeleted: async () => {},
-				},
-			}),
-			hooks: createEventHandlerHooks({}),
-		})
-
-		//#when
-		await eventHandler(asEventHandlerInput({
-			event: {
-				type: "message.part.delta",
-				properties: { sessionID: "ses_tmux_disabled", field: "text", delta: "x" },
-			},
-		}))
-
-		//#then
-		expect(forwardedEvents).toHaveLength(0)
-	})
-
-	it("does not forward session.created to tmux session manager when tmux integration is disabled", async () => {
-		//#given
-		const createdSessions: string[] = []
-		const eventHandler = createEventHandler({
-			ctx: asEventHandlerContext({}),
-			pluginConfig: asPluginConfig({
-				tmux: {
-					enabled: false,
-					layout: "main-vertical",
-					main_pane_size: 60,
-					main_pane_min_width: 120,
-					agent_pane_min_width: 40,
-					isolation: "inline",
-				},
-			}),
-			firstMessageVariantGate: {
-				markSessionCreated: () => {},
-				clear: () => {},
-			},
-			managers: createEventHandlerManagers({
-				skillMcpManager: {
-					disconnectSession: async () => {},
-				},
-				tmuxSessionManager: {
-					onSessionCreated: async (event: { properties?: { info?: { id?: string } } }) => {
-						const sessionId = event.properties?.info?.id
-						if (sessionId) {
-							createdSessions.push(sessionId)
-						}
-					},
-					onSessionDeleted: async () => {},
-				},
-			}),
-			hooks: createEventHandlerHooks({}),
-		})
-
-		//#when
-		await eventHandler(asEventHandlerInput({
+		await expect(eventHandler(asEventHandlerInput({
 			event: {
 				type: "session.created",
 				properties: { info: { id: "ses_tmux_disabled", parentID: "ses_parent" } },
 			},
-		}))
-
-		//#then
-		expect(createdSessions).toHaveLength(0)
+		}))).resolves.toBeUndefined()
 	})
 
 
 	it("forwards session.deleted to write-existing-file-guard hook", async () => {
 		//#given
 		const forwardedEvents: EventInput[] = []
-		const deletedSessions: string[] = []
 		const eventHandler = createEventHandler({
 			ctx: {} as never,
-			pluginConfig: asPluginConfig({
-				tmux: {
-					enabled: true,
-					layout: "main-vertical",
-					main_pane_size: 60,
-					main_pane_min_width: 120,
-					agent_pane_min_width: 40,
-					isolation: "inline",
-				},
-			}),
+			pluginConfig: asPluginConfig({}),
 			firstMessageVariantGate: {
 				markSessionCreated: () => {},
 				clear: () => {},
@@ -544,9 +432,7 @@ describe("createEventHandler - event forwarding", () => {
 			managers: {
 				tmuxSessionManager: {
 					onSessionCreated: async () => {},
-					onSessionDeleted: async ({ sessionID }: { sessionID: string }) => {
-						deletedSessions.push(sessionID)
-					},
+					onSessionDeleted: async () => {},
 				},
 			} as never,
 			hooks: {
@@ -570,7 +456,6 @@ describe("createEventHandler - event forwarding", () => {
 		//#then
 		expect(forwardedEvents.length).toBe(1)
 		expect(forwardedEvents[0]?.event.type).toBe("session.deleted")
-		expect(deletedSessions).toEqual([sessionID])
 	})
 
 
