@@ -12,8 +12,6 @@ export type {
   ExperimentalConfig,
   DynamicContextPruningConfig,
   RalphLoopConfig,
-  TmuxConfig,
-  TmuxLayout,
   SisyphusConfig,
   SisyphusTasksConfig,
   RuntimeFallbackConfig,

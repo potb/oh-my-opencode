@@ -1,11 +1,9 @@
 import type { BackgroundTask, LaunchInput, ResumeInput } from "./types"
-import type { OpencodeClient, OnSubagentSessionCreated, QueueItem } from "./constants"
-import { TMUX_CALLBACK_DELAY_MS } from "./constants"
+import type { OpencodeClient, QueueItem } from "./constants"
 import { log, getAgentToolRestrictions, promptWithModelSuggestionRetry, createInternalAgentTextPart } from "../../shared"
 import { applySessionPromptParams } from "../../shared/session-prompt-params-helpers"
 import { subagentSessions } from "../claude-code-session-state"
 import { getTaskToastManager } from "../task-toast-manager"
-import { isInsideTmux } from "../../shared/tmux"
 import { stripAgentListSortPrefix } from "../../shared/agent-display-names"
 import type { ConcurrencyManager } from "./concurrency"
 
@@ -46,8 +44,6 @@ export interface SpawnerContext {
   client: OpencodeClient
   directory: string
   concurrencyManager: ConcurrencyManager
-  tmuxEnabled: boolean
-  onSubagentSessionCreated?: OnSubagentSessionCreated
   onTaskError: (task: BackgroundTask, error: Error) => void
 }
 
@@ -72,7 +68,7 @@ export async function startTask(
   ctx: SpawnerContext
 ): Promise<void> {
   const { task, input } = item
-  const { client, directory, concurrencyManager, tmuxEnabled, onSubagentSessionCreated, onTaskError } = ctx
+  const { client, directory, concurrencyManager, onTaskError } = ctx
 
   log("[background-agent] Starting task:", {
     taskId: task.id,
@@ -114,29 +110,6 @@ export async function startTask(
 
   const sessionID = createResult.data.id
   subagentSessions.add(sessionID)
-
-  log("[background-agent] tmux callback check", {
-    hasCallback: !!onSubagentSessionCreated,
-    tmuxEnabled,
-    isInsideTmux: isInsideTmux(),
-    sessionID,
-    parentID: input.parentSessionID,
-  })
-
-  if (onSubagentSessionCreated && tmuxEnabled && isInsideTmux()) {
-    log("[background-agent] Invoking tmux callback NOW", { sessionID })
-    await onSubagentSessionCreated({
-      sessionID,
-      parentID: input.parentSessionID,
-      title: input.description,
-    }).catch((err) => {
-      log("[background-agent] Failed to spawn tmux pane:", err)
-    })
-    log("[background-agent] tmux callback completed, waiting")
-    await new Promise(r => setTimeout(r, TMUX_CALLBACK_DELAY_MS))
-  } else {
-    log("[background-agent] SKIP tmux callback - conditions not met")
-  }
 
   task.status = "running"
   task.startedAt = new Date()

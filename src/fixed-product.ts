@@ -77,6 +77,5 @@ export function applyFixedProductTrim(config: OhMyOpenCodeConfig): OhMyOpenCodeC
     runtime_fallback: false,
     skills: undefined,
     start_work: undefined,
-    tmux: undefined,
   }
 }

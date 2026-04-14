@@ -20,8 +20,7 @@ import { applySessionPromptParams } from "../../shared/session-prompt-params-hel
 import { setSessionTools } from "../../shared/session-tools-store"
 import { SessionCategoryRegistry } from "../../shared/session-category-registry"
 import { ConcurrencyManager } from "./concurrency"
-import type { BackgroundTaskConfig, TmuxConfig } from "../../config/schema"
-import { isInsideTmux } from "../../shared/tmux"
+import type { BackgroundTaskConfig } from "../../config/schema"
 import {
   POLLING_INTERVAL_MS,
   TASK_CLEANUP_DELAY_MS,
@@ -121,14 +120,6 @@ interface QueueItem {
   input: LaunchInput
 }
 
-export interface SubagentSessionCreatedEvent {
-  sessionID: string
-  parentID: string
-  title: string
-}
-
-export type OnSubagentSessionCreated = (event: SubagentSessionCreatedEvent) => Promise<void>
-
 const MAX_TASK_REMOVAL_RESCHEDULES = 6
 
 export class BackgroundManager {
@@ -145,9 +136,6 @@ export class BackgroundManager {
   private concurrencyManager: ConcurrencyManager
   private shutdownTriggered = false
   private config?: BackgroundTaskConfig
-  private tmuxEnabled: boolean
-  private onSubagentSessionCreated?: OnSubagentSessionCreated
-  private onShutdown?: () => void | Promise<void>
 
   private queuesByKey: Map<string, QueueItem[]> = new Map()
   private processingKeys: Set<string> = new Set()
@@ -167,9 +155,6 @@ export class BackgroundManager {
     ctx: PluginInput,
     config?: BackgroundTaskConfig,
     options?: {
-      tmuxConfig?: TmuxConfig
-      onSubagentSessionCreated?: OnSubagentSessionCreated
-      onShutdown?: () => void | Promise<void>
       enableParentSessionNotifications?: boolean
     }
   ) {
@@ -181,9 +166,6 @@ export class BackgroundManager {
     this.directory = ctx.directory
     this.concurrencyManager = new ConcurrencyManager(config)
     this.config = config
-    this.tmuxEnabled = options?.tmuxConfig?.enabled ?? false
-    this.onSubagentSessionCreated = options?.onSubagentSessionCreated
-    this.onShutdown = options?.onShutdown
     this.rootDescendantCounts = new Map()
     this.preStartDescendantReservations = new Set()
     this.enableParentSessionNotifications = options?.enableParentSessionNotifications ?? true
@@ -486,31 +468,8 @@ export class BackgroundManager {
     this.settlePreStartDescendantReservation(task)
     subagentSessions.add(sessionID)
 
-    log("[background-agent] tmux callback check", {
-      hasCallback: !!this.onSubagentSessionCreated,
-      tmuxEnabled: this.tmuxEnabled,
-      isInsideTmux: isInsideTmux(),
-      sessionID,
-      parentID: input.parentSessionID,
-    })
-
-    if (this.onSubagentSessionCreated && this.tmuxEnabled && isInsideTmux()) {
-      log("[background-agent] Invoking tmux callback NOW", { sessionID })
-      await this.onSubagentSessionCreated({
-        sessionID,
-        parentID: input.parentSessionID,
-        title: input.description,
-      }).catch((err) => {
-        log("[background-agent] Failed to spawn tmux pane:", err)
-      })
-      log("[background-agent] tmux callback completed, waiting 200ms")
-      await new Promise(r => setTimeout(r, 200))
-    } else {
-      log("[background-agent] SKIP tmux callback - conditions not met")
-    }
-
     if (this.tasks.get(task.id)?.status === "cancelled") {
-      await this.abortSessionWithLogging(sessionID, "cancelled during tmux setup")
+      await this.abortSessionWithLogging(sessionID, "cancelled during pre-run setup")
       subagentSessions.delete(sessionID)
       if (task.rootSessionID) {
         this.unregisterRootDescendant(task.rootSessionID)
@@ -2079,15 +2038,6 @@ export class BackgroundManager {
           error: abortResult.reason,
           sessionID: abortRequests[index]?.sessionID,
         })
-      }
-    }
-
-    // Notify shutdown listeners (e.g., tmux cleanup)
-    if (this.onShutdown) {
-      try {
-        await this.onShutdown()
-      } catch (error) {
-        log("[background-agent] Error in onShutdown callback:", error)
       }
     }
 
