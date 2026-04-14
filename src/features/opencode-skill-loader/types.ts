@@ -1,5 +1,7 @@
 import type { CommandDefinition } from "../claude-code-command-loader/types"
-import type { SkillMcpConfig } from "../skill-mcp-manager/types"
+
+export type SkillMcpServerConfig = Record<string, unknown>
+export type SkillMcpConfig = Record<string, SkillMcpServerConfig>
 
 export type SkillScope = "builtin" | "config" | "user" | "project" | "opencode" | "opencode-project"
 
