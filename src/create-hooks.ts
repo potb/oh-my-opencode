@@ -59,7 +59,6 @@ export function createHooks(args: {
     ...core,
     ...continuation,
     autoSlashCommand: null,
-    categorySkillReminder: null,
   }
 
   return {

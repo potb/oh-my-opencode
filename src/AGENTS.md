@@ -37,5 +37,5 @@ createHooks()
   │   ├─ createToolGuardHooks()   # 14: commentChecker, rulesInjector, writeExistingFileGuard, jsonErrorRecovery, hashlineReadEnhancer, bashFileReadGuard, readImageResizer, todoDescriptionOverride, webfetchRedirectGuard...
   │   └─ createTransformHooks()   # 5: claudeCodeHooks, keywordDetector, contextInjector, thinkingBlockValidator, toolPairValidator
   ├─→ createContinuationHooks()   # 5: stopContinuationGuard, compactionContextInjector...
-  └─→ createSkillHooks()          # 2: categorySkillReminder, autoSlashCommand
+  └─→ createSkillHooks()          # 1: autoSlashCommand
 ```

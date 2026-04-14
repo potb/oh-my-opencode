@@ -36,7 +36,6 @@ function createMinimalEventHandler() {
       anthropicContextWindowLimitRecovery: { event: async () => {} },
       modelFallback: undefined,
       agentUsageReminder: { event: async () => {} },
-      categorySkillReminder: { event: async () => {} },
       interactiveBashSession: { event: async () => {} },
       compactionTodoPreserver: { event: async () => {} },
       writeExistingFileGuard: { event: async () => {} },

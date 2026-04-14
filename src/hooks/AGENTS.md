@@ -1,10 +1,10 @@
-# src/hooks/ — 51 Lifecycle Hooks
+# src/hooks/ — 50 Lifecycle Hooks
 
 **Generated:** 2026-04-11
 
 ## OVERVIEW
 
-51 hooks across dedicated modules and standalone files. Three-tier composition: Core(43) + Continuation(5) + Skill(2). All hooks follow `createXXXHook(deps) → HookFunction` factory pattern.
+50 hooks across dedicated modules and standalone files. Three-tier composition: Core(43) + Continuation(5) + Skill(1). All hooks follow `createXXXHook(deps) → HookFunction` factory pattern.
 
 ## HOOK TIERS
 
@@ -18,7 +18,6 @@ hooks/
 ├── auto-slash-command/         # Detects /command patterns
 ├── auto-update-checker/        # Plugin update check
 ├── background-notification/    # OS notification
-├── category-skill-reminder/    # Reminds of category skills
 ├── claude-code-hooks/          # settings.json compat layer
 ├── comment-checker/            # Prevents AI slop
 ├── compaction-context-injector/ # Injects context on compaction
@@ -34,7 +33,6 @@ hooks/
 ├── keyword-detector/           # ultrawork/search/analyze modes
 ├── legacy-plugin-toast/        # Legacy plugin name migration toast
 ├── model-fallback/             # Provider-level model fallback
-├── no-hephaestus-non-gpt/      # Block Hephaestus from non-GPT
 ├── no-sisyphus-gpt/            # Block Sisyphus from GPT
 ├── non-interactive-env/        # Non-TTY environment handling
 ├── prometheus-md-only/         # Planner read-only mode
@@ -77,7 +75,6 @@ hooks/
 | anthropicEffort | chat.params | Adjust reasoning effort level |
 | modelFallback | chat.params | Provider-level model fallback on errors |
 | noSisyphusGpt | chat.message | Block Sisyphus from using GPT models (toast warning) |
-| noHephaestusNonGpt | chat.message | Block Hephaestus from using non-GPT models |
 | legacyPluginToast | chat.message | Show toast when legacy plugin name detected |
 
 ### Tier 2: Tool Guard Hooks (14) — `create-tool-guard-hooks.ts`
@@ -118,11 +115,10 @@ hooks/
 | unstableAgentBabysitter | session.idle | Monitor unstable agent behavior |
 | backgroundNotificationHook | event | Background task completion notifications |
 
-### Tier 5: Skill Hooks (2) — `create-skill-hooks.ts`
+### Tier 5: Skill Hooks (1) — `create-skill-hooks.ts`
 
 | Hook | Event | Purpose |
 |------|-------|---------|
-| categorySkillReminder | chat.message | Remind about category+skill delegation |
 | autoSlashCommand | chat.message | Auto-detect `/command` in user input |
 
 ## KEY HOOKS (COMPLEX)

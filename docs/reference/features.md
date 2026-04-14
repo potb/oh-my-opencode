@@ -699,7 +699,6 @@ Hooks intercept and modify behavior at key points in the agent lifecycle across 
 | **keyword-detector**        | Message + Transform | Detects keywords and activates modes: `ultrawork`/`ulw` (max performance), `search`/`find` (parallel exploration), `analyze`/`investigate` (deep analysis). |
 | **think-mode**              | Params              | Auto-detects extended thinking needs. Catches "think deeply", "ultrathink" and adjusts model settings.                                                      |
 | **auto-slash-command**      | Message             | Automatically executes slash commands from prompts.                                                                                                         |
-| **category-skill-reminder** | Event + PostToolUse | Reminds agents about available category skills for delegation.                                                                                              |
 | **anthropic-effort**        | Params              | Adjusts Anthropic API effort level based on context.                                                                                                        |
 
 #### Quality & Safety
@@ -769,7 +768,6 @@ Hooks intercept and modify behavior at key points in the agent lifecycle across 
 | --------------------------- | ---------- | ---------------------------------------------------------- |
 | **prometheus-md-only**      | PreToolUse | Enforces markdown-only output for Prometheus planner.      |
 | **no-sisyphus-gpt**         | Message    | Prevents Sisyphus from running on incompatible GPT models. |
-| **no-hephaestus-non-gpt**   | Message    | Prevents Hephaestus from running on non-GPT models.        |
 | **sisyphus-junior-notepad** | PreToolUse | Manages notepad state for Sisyphus-Junior agents.          |
 
 ### Claude Code Hooks Integration
