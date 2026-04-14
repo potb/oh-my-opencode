@@ -152,9 +152,8 @@ The QA agent follows a structured process: brainstorm scenarios exhaustively fir
 
 \`\`\`
 task(
-  category="unspecified-high",
+  subagent_type="oracle",
   run_in_background=true,
-  load_skills=["playwright", "dev-browser"],
   description="QA by actually running and using the application",
   prompt="""
 <review_type>QA - HANDS-ON APP EXECUTION</review_type>
@@ -204,7 +203,7 @@ Add at least 5 more scenarios from this reflection. Group scenarios by priority:
 
 ### Step 3: Create Task List
 
-Convert your augmented scenario list into a structured task list (use TaskCreate/TaskUpdate or your todo system). Each task = one test scenario with:
+Convert your augmented scenario list into a structured task list (use task_create/task_update or your todo system). Each task = one test scenario with:
 - Test name
 - Steps to execute
 - Expected result
@@ -393,9 +392,8 @@ This agent answers: "Did we miss any context that should have informed this impl
 
 \`\`\`
 task(
-  category="unspecified-high",
+  subagent_type="oracle",
   run_in_background=true,
-  load_skills=["git-master"],
   description="Mine all accessible contexts for missed requirements or background knowledge",
   prompt="""
 <review_type>CONTEXT MINING - MISSED REQUIREMENTS & BACKGROUND</review_type>
