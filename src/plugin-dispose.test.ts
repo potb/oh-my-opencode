@@ -70,9 +70,6 @@ describe("createPluginDispose", () => {
     const todoContinuationEnforcer = {
       dispose: (): void => {},
     }
-    const autoSlashCommand = {
-      dispose: (): void => {},
-    }
     const lspManager = {
       stopAll: async (): Promise<void> => {},
     }
@@ -80,7 +77,6 @@ describe("createPluginDispose", () => {
     const commentCheckerDisposeSpy = spyOn(commentChecker, "dispose")
     const runtimeFallbackDisposeSpy = spyOn(runtimeFallback, "dispose")
     const todoContinuationEnforcerDisposeSpy = spyOn(todoContinuationEnforcer, "dispose")
-    const autoSlashCommandDisposeSpy = spyOn(autoSlashCommand, "dispose")
     const dispose = createPluginDispose({
       backgroundManager: {
       shutdown: async (): Promise<void> => {},
@@ -95,7 +91,6 @@ describe("createPluginDispose", () => {
           commentChecker,
           runtimeFallback,
           todoContinuationEnforcer,
-          autoSlashCommand,
         })
       },
     })
@@ -108,7 +103,6 @@ describe("createPluginDispose", () => {
     expect(commentCheckerDisposeSpy).toHaveBeenCalledTimes(1)
     expect(runtimeFallbackDisposeSpy).toHaveBeenCalledTimes(1)
     expect(todoContinuationEnforcerDisposeSpy).toHaveBeenCalledTimes(1)
-    expect(autoSlashCommandDisposeSpy).toHaveBeenCalledTimes(1)
   })
 
   test("#given dispose already called #when dispose() called again #then no errors", async () => {

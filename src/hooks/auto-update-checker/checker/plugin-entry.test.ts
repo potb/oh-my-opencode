@@ -50,6 +50,7 @@ describe("findPluginEntry", () => {
     const opencodeDirectory = path.join(temporaryDirectory, ".opencode")
     fs.mkdirSync(opencodeDirectory, { recursive: true })
     configPath = path.join(opencodeDirectory, "opencode.json")
+    process.env.OPENCODE_CONFIG_DIR = opencodeDirectory
   })
 
   afterEach(() => {

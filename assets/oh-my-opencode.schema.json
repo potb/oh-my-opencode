@@ -14,32 +14,10 @@
     "default_run_agent": {
       "type": "string"
     },
-    "disabled_mcps": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "minLength": 1
-      }
-    },
     "disabled_agents": {
       "type": "array",
       "items": {
         "type": "string"
-      }
-    },
-    "disabled_skills": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "enum": [
-          "playwright",
-          "agent-browser",
-          "dev-browser",
-          "frontend-ui-ux",
-          "git-master",
-          "review-work",
-          "ai-slop-remover"
-        ]
       }
     },
     "disabled_hooks": {
@@ -48,29 +26,7 @@
         "type": "string"
       }
     },
-    "disabled_commands": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "enum": [
-          "init-deep",
-          "ralph-loop",
-          "ulw-loop",
-          "cancel-ralph",
-          "refactor",
-          "start-work",
-          "stop-continuation",
-          "remove-ai-slops"
-        ]
-      }
-    },
     "disabled_tools": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
-    "mcp_env_allowlist": {
       "type": "array",
       "items": {
         "type": "string"

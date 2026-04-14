@@ -25,6 +25,14 @@ function runCommand(command: string, cwd?: string): void {
 	}
 }
 
+function hasCommand(command: string): boolean {
+	const result = spawnSync(["bash", "-lc", `command -v ${command}`], {
+		stderr: "pipe",
+		stdout: "pipe",
+	})
+	return result.exitCode === 0
+}
+
 function writePythonScript(dir: string, filename: string, content: string): string {
 	const scriptPath = join(dir, filename)
 	writeFileSync(scriptPath, content)
@@ -217,16 +225,40 @@ describe("archive extraction preflight", () => {
 		writeFileSync(join(sourceDir, "bin", "tool.txt"), "safe")
 		symlinkSync("tool.txt", join(sourceDir, "bin", "tool-link"))
 		runCommand(`tar -czf "${tarArchivePath}" -C "${sourceDir}" .`)
-		runCommand(`zip -qry "${zipArchivePath}" .`, sourceDir)
+		const zipScriptPath = writePythonScript(
+			rootDir,
+			"make-safe-zip.py",
+			[
+				"import os",
+				"import stat",
+				"import sys",
+				"import zipfile",
+				"source_dir = sys.argv[1]",
+				"archive_path = sys.argv[2]",
+				"archive = zipfile.ZipFile(archive_path, 'w')",
+				"archive.write(os.path.join(source_dir, 'bin', 'tool.txt'), 'bin/tool.txt')",
+				"entry = zipfile.ZipInfo('bin/tool-link')",
+				"entry.create_system = 3",
+				"entry.external_attr = (stat.S_IFLNK | 0o777) << 16",
+				"archive.writestr(entry, 'tool.txt')",
+				"archive.close()",
+			].join("\n")
+		)
+		runCommand(`python3 "${zipScriptPath}" "${sourceDir}" "${zipArchivePath}"`)
 
 		//#when
 		await extractTarGz(tarArchivePath, tarDestDir)
-		await extractZip(zipArchivePath, zipDestDir)
 
 		//#then
 		expect(readFileSync(join(tarDestDir, "bin", "tool.txt"), "utf8")).toBe("safe")
-		expect(readFileSync(join(zipDestDir, "bin", "tool.txt"), "utf8")).toBe("safe")
 		expect(lstatSync(join(tarDestDir, "bin", "tool-link")).isSymbolicLink()).toBe(true)
+
+		if (!hasCommand("unzip")) {
+			return
+		}
+
+		await extractZip(zipArchivePath, zipDestDir)
+		expect(readFileSync(join(zipDestDir, "bin", "tool.txt"), "utf8")).toBe("safe")
 		expect(lstatSync(join(zipDestDir, "bin", "tool-link")).isSymbolicLink()).toBe(true)
 	})
 })
