@@ -2,7 +2,6 @@ const { afterEach, describe, expect, test } = require("bun:test")
 const { createToolExecuteBeforeHandler } = require("./tool-execute-before")
 const { createToolRegistry } = require("./tool-registry")
 const { builtinTools } = require("../tools")
-const { resetStorageClient } = require("../tools/session-manager/storage")
 
 describe("createToolExecuteBeforeHandler", () => {
   test("does not execute subagent question blocker hook for question tool", async () => {
@@ -223,10 +222,6 @@ describe("createToolExecuteBeforeHandler", () => {
 })
 
 describe("createToolRegistry", () => {
-  afterEach(() => {
-    resetStorageClient()
-  })
-
   function createRegistryInput(overrides = {}) {
     return {
       ctx: {
