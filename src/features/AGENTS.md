@@ -13,7 +13,6 @@ Standalone feature modules wired into plugin/ layer. Each is self-contained with
 | **opencode-skill-loader** | 33 | HIGH | YAML frontmatter skill loading from 4 scopes |
 | **background-agent** | 47 | HIGH | Task lifecycle, concurrency (5/model), polling, spawner pattern, circuit breaker |
 | **tmux-subagent** | 34 | HIGH | Tmux pane management, grid planning, session orchestration |
-| **mcp-oauth** | 18 | HIGH | OAuth 2.0 + PKCE + DCR (RFC 7591) for MCP servers |
 | **builtin-skills** | 17 | LOW | 8 skills: git-master, playwright, playwright-cli, agent-browser, dev-browser, frontend-ui-ux, review-work, ai-slop-remover |
 | **skill-mcp-manager** | 18 | HIGH | Tier-3 MCP client lifecycle per session (stdio + HTTP + OAuth step-up) |
 | **claude-code-plugin-loader** | 15 | MEDIUM | Unified plugin discovery from .opencode/plugins/ |
