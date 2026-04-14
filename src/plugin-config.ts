@@ -34,13 +34,9 @@ function loadExplicitGitMasterOverrides(configPath: string): Record<string, unkn
 }
 
 const PARTIAL_STRING_ARRAY_KEYS = new Set([
-  "disabled_mcps",
   "disabled_agents",
-  "disabled_skills",
   "disabled_hooks",
-  "disabled_commands",
   "disabled_tools",
-  "mcp_env_allowlist",
 ]);
 
 export function parseConfigPartially(
@@ -145,40 +141,16 @@ export function mergeConfigs(
         ...(override.disabled_agents ?? []),
       ]),
     ],
-    disabled_mcps: [
-      ...new Set([
-        ...(base.disabled_mcps ?? []),
-        ...(override.disabled_mcps ?? []),
-      ]),
-    ],
     disabled_hooks: [
       ...new Set([
         ...(base.disabled_hooks ?? []),
         ...(override.disabled_hooks ?? []),
       ]),
     ],
-    disabled_commands: [
-      ...new Set([
-        ...(base.disabled_commands ?? []),
-        ...(override.disabled_commands ?? []),
-      ]),
-    ],
-    disabled_skills: [
-      ...new Set([
-        ...(base.disabled_skills ?? []),
-        ...(override.disabled_skills ?? []),
-      ]),
-    ],
     disabled_tools: [
       ...new Set([
         ...(base.disabled_tools ?? []),
         ...(override.disabled_tools ?? []),
-      ]),
-    ],
-    mcp_env_allowlist: [
-      ...new Set([
-        ...(base.mcp_env_allowlist ?? []),
-        ...(override.mcp_env_allowlist ?? []),
       ]),
     ],
     claude_code: deepMerge(base.claude_code, override.claude_code),
@@ -272,15 +244,9 @@ export function loadPluginConfig(
     }
   }
 
-  config = {
-    ...config,
-    mcp_env_allowlist: userConfig?.mcp_env_allowlist ?? [],
-  };
-
   log("Final merged config", {
     agents: config.agents,
     disabled_agents: config.disabled_agents,
-    disabled_mcps: config.disabled_mcps,
     disabled_hooks: config.disabled_hooks,
     claude_code: config.claude_code,
   });

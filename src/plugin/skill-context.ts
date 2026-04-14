@@ -56,7 +56,7 @@ export async function createSkillContext(args: {
   const browserProvider: BrowserAutomationProvider =
     pluginConfig.browser_automation_engine?.provider ?? "playwright"
 
-  const disabledSkills = new Set<string>(pluginConfig.disabled_skills ?? [])
+  const disabledSkills = new Set<string>()
   const systemMcpNames = getSystemMcpServerNames()
 
   const builtinSkills = createBuiltinSkills({

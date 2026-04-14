@@ -140,9 +140,7 @@ export type {
   AgentName,
   AgentOverrideConfig,
   AgentOverrides,
-  McpName,
   HookName,
-  BuiltinCommandName,
 } from "./config"
 
 export type { ConfigLoadError } from "./shared/config-errors"

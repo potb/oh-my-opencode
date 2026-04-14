@@ -30,7 +30,7 @@ export async function applyMcpConfig(params: {
   pluginConfig: OhMyOpenCodeConfig;
   pluginComponents: PluginComponents;
 }): Promise<void> {
-  const disabledMcps = params.pluginConfig.disabled_mcps ?? [];
+  const disabledMcps: string[] = [];
   const userMcp = params.config.mcp as Record<string, unknown> | undefined;
   const userDisabledMcps = captureUserDisabledMcps(userMcp);
 

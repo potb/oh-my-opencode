@@ -301,36 +301,6 @@ describe("parseConfigPartially", () => {
 });
 
 describe("loadPluginConfig", () => {
-  it("should only honor mcp_env_allowlist from user config", async () => {
-    // given
-    const rootDir = mkdtempSync(join(tmpdir(), "omo-plugin-config-"))
-    const userConfigDir = join(rootDir, "user-config")
-    const projectDir = join(rootDir, "project")
-    const projectConfigDir = join(projectDir, ".opencode")
-
-    tempDirs.push(rootDir)
-    mkdirSync(userConfigDir, { recursive: true })
-    mkdirSync(projectConfigDir, { recursive: true })
-
-    writeFileSync(
-      join(userConfigDir, "oh-my-openagent.jsonc"),
-      JSON.stringify({ mcp_env_allowlist: ["USER_ONLY_TOKEN"] })
-    )
-    writeFileSync(
-      join(projectConfigDir, "oh-my-openagent.jsonc"),
-      JSON.stringify({ mcp_env_allowlist: ["PROJECT_TOKEN"] })
-    )
-
-    process.env.OPENCODE_CONFIG_DIR = userConfigDir
-
-    // when
-    const { loadPluginConfig } = await importFreshPluginConfigModule()
-    const config = loadPluginConfig(projectDir, {})
-
-    // then
-    expect(config.mcp_env_allowlist).toEqual(["USER_ONLY_TOKEN"])
-  })
-
   it("should ignore edits to the renamed legacy backup after migration", async () => {
     // given
     const rootDir = mkdtempSync(join(tmpdir(), "omo-plugin-config-legacy-"))

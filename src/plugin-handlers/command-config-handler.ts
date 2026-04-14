@@ -33,7 +33,7 @@ export async function applyCommandConfig(params: {
   ctx: { directory: string };
   pluginComponents: PluginComponents;
 }): Promise<void> {
-  const builtinCommands = loadBuiltinCommands(params.pluginConfig.disabled_commands, {
+  const builtinCommands = loadBuiltinCommands(undefined, {
     useRegisteredAgents: true,
   });
   const systemCommands = (params.config.command as Record<string, unknown>) ?? {};

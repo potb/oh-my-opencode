@@ -72,7 +72,6 @@ export function applyFixedProductTrim(config: OhMyOpenCodeConfig): OhMyOpenCodeC
     disabled_agents: mergeUnique(config.disabled_agents, REMOVED_AGENT_NAMES),
     disabled_hooks: mergeUnique(config.disabled_hooks, REMOVED_HOOK_NAMES),
     disabled_tools: mergeUnique(config.disabled_tools, REMOVED_TOOL_NAMES),
-    mcp_env_allowlist: undefined,
     model_fallback: false,
     new_task_system_enabled: false,
     openclaw: undefined,
