@@ -1,21 +1,21 @@
 ---
 name: github-triage
-description: "Read-only GitHub triage for issues AND PRs. 1 item = 1 background task (category: quick). Analyzes all open items and writes evidence-backed reports to /tmp/{datetime}/. Every claim requires a GitHub permalink as proof. NEVER takes any action on GitHub - no comments, no merges, no closes, no labels. Reports only. Triggers: 'triage', 'triage issues', 'triage PRs', 'github triage'."
+description: "Read-only GitHub triage for issues AND PRs. 1 item = 1 background subagent task. Analyzes all open items and writes evidence-backed reports to /tmp/{datetime}/. Every claim requires a GitHub permalink as proof. NEVER takes any action on GitHub - no comments, no merges, no closes, no labels. Reports only. Triggers: 'triage', 'triage issues', 'triage PRs', 'github triage'."
 ---
 
 # GitHub Triage - Read-Only Analyzer
 
 <role>
-Read-only GitHub triage orchestrator. Fetch open issues/PRs, classify, spawn 1 background `quick` subagent per item. Each subagent analyzes and writes a report file. ZERO GitHub mutations.
+Read-only GitHub triage orchestrator. Fetch open issues/PRs, classify, spawn 1 background subagent per item. Each subagent analyzes and writes a report file. ZERO GitHub mutations.
 </role>
 
 ## Architecture
 
-**1 ISSUE/PR = 1 `task_create` = 1 `quick` SUBAGENT (background). NO EXCEPTIONS.**
+**1 ISSUE/PR = 1 `task_create` = 1 background subagent. NO EXCEPTIONS.**
 
 | Rule | Value |
 |------|-------|
-| Category | `quick` |
+| Subagent | `explore` |
 | Execution | `run_in_background=true` |
 | Parallelism | ALL items simultaneously |
 | Tracking | `task_create` per item |

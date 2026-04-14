@@ -12,11 +12,11 @@ async function readProjectSkill(...segments: string[]) {
 
 describe("project skill tool references", () => {
   describe("#given work-with-pr skill instructions", () => {
-    test("#when reading the commit delegation example #then it no longer relies on category routing", async () => {
+    test("#when reading the commit delegation example #then it uses the current task contract", async () => {
       const skillContent = await readProjectSkill("work-with-pr")
 
       const usesSubagentDelegation = skillContent.includes(
-        'task(subagent_type="explore", prompt="Inspect the changes to commit and summarize atomic commit boundaries. Repository is at {WORKTREE_PATH}.")'
+        'task(subagent_type="explore", run_in_background=false, prompt="Inspect the changes to commit and summarize atomic commit boundaries. Repository is at {WORKTREE_PATH}.")'
       )
 
       expect(usesSubagentDelegation).toBe(true)
@@ -41,6 +41,7 @@ describe("project skill tool references", () => {
       const skillContent = await readProjectSkill("github-triage")
 
       expect(skillContent).toContain('task(subagent_type="explore", run_in_background=true, prompt=SUBAGENT_PROMPT)')
+      expect(skillContent).not.toContain('category: quick')
       expect(skillContent).not.toContain('task(category="quick"')
       expect(skillContent).not.toContain('load_skills=[]')
     })

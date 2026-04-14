@@ -94,7 +94,7 @@ Use the git-master skill's atomic commit principles. The reason for atomic commi
 Each commit should pair implementation with its tests. Use the `git-master` guidance directly when committing:
 
 ```
-task(subagent_type="explore", prompt="Inspect the changes to commit and summarize atomic commit boundaries. Repository is at {WORKTREE_PATH}.")
+task(subagent_type="explore", run_in_background=false, prompt="Inspect the changes to commit and summarize atomic commit boundaries. Repository is at {WORKTREE_PATH}.")
 ```
 
 ### Pre-push local validation
