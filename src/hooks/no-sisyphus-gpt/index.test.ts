@@ -65,7 +65,7 @@ describe("no-sisyphus-gpt hook", () => {
       model: { providerID: "openai", modelID: "gpt-5.4" },
     }, output)
 
-    // then - no toast, agent NOT switched to Hephaestus
+    // then - no toast, agent remains unchanged
     expect(showToast).toHaveBeenCalledTimes(0)
     expect(output.message.agent).toBeUndefined()
   })

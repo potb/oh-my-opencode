@@ -56,11 +56,9 @@ export const AgentOverrideConfigSchema = z.object({
 })
 
 export const AgentOverridesSchema = z.object({
-  build: AgentOverrideConfigSchema.optional(),
   plan: AgentOverrideConfigSchema.optional(),
   sisyphus: AgentOverrideConfigSchema.optional(),
   "sisyphus-junior": AgentOverrideConfigSchema.optional(),
-  "OpenCode-Builder": AgentOverrideConfigSchema.optional(),
   metis: AgentOverrideConfigSchema.optional(),
   momus: AgentOverrideConfigSchema.optional(),
   oracle: AgentOverrideConfigSchema.optional(),

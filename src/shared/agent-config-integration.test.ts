@@ -8,7 +8,6 @@ describe("Agent Config Integration", () => {
     test("migrates old format agent keys to lowercase", () => {
       const oldConfig = {
         Sisyphus: { model: "anthropic/claude-opus-4-6" },
-        "Prometheus - Plan Builder": { model: "anthropic/claude-opus-4-6" },
         "Metis - Plan Consultant": { model: "anthropic/claude-sonnet-4-6" },
         "Momus - Plan Critic": { model: "anthropic/claude-sonnet-4-6" },
       }
@@ -16,13 +15,10 @@ describe("Agent Config Integration", () => {
       const result = migrateAgentNames(oldConfig)
 
       expect(result.migrated).toHaveProperty("sisyphus")
-      expect(result.migrated).toHaveProperty("prometheus")
       expect(result.migrated).toHaveProperty("metis")
       expect(result.migrated).toHaveProperty("momus")
       expect(result.migrated).not.toHaveProperty("Sisyphus")
-      expect(result.migrated).not.toHaveProperty("Prometheus - Plan Builder")
       expect(result.migrated.sisyphus).toEqual({ model: "anthropic/claude-opus-4-6" })
-      expect(result.migrated.prometheus).toEqual({ model: "anthropic/claude-opus-4-6" })
       expect(result.changed).toBe(true)
     })
 

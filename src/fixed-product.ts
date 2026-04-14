@@ -47,8 +47,20 @@ function mergeUnique<T extends string>(existing: readonly T[] | undefined, addit
 }
 
 export function applyFixedProductTrim(config: OhMyOpenCodeConfig): OhMyOpenCodeConfig {
+  const {
+    agents: _agents,
+    categories: _categories,
+    auto_update: _autoUpdate,
+    babysitting: _babysitting,
+    model_capabilities: _modelCapabilities,
+    notification: _notification,
+    sisyphus_agent: _sisyphusAgent,
+    skills: _skills,
+    ...rest
+  } = config as OhMyOpenCodeConfig & Record<string, unknown>
+
   return {
-    ...config,
+    ...rest,
     agents: undefined,
     categories: undefined,
     claude_code: {
@@ -65,6 +77,5 @@ export function applyFixedProductTrim(config: OhMyOpenCodeConfig): OhMyOpenCodeC
     disabled_hooks: mergeUnique(config.disabled_hooks, REMOVED_HOOK_NAMES),
     disabled_tools: mergeUnique(config.disabled_tools, REMOVED_TOOL_NAMES),
     new_task_system_enabled: false,
-    skills: undefined,
   }
 }

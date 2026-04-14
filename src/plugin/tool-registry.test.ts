@@ -27,7 +27,16 @@ const syncSessionCreatedCallbacks: Array<
 const { createToolRegistry, trimToolsToCap } = await import("./tool-registry")
 
 const toolFactories: NonNullable<Parameters<typeof createToolRegistry>[0]["toolFactories"]> = {
-  builtinTools: { bash: fakeTool, read: fakeTool },
+  builtinTools: {
+    bash: fakeTool,
+    read: fakeTool,
+    lsp_goto_definition: fakeTool,
+    lsp_find_references: fakeTool,
+    lsp_symbols: fakeTool,
+    lsp_diagnostics: fakeTool,
+    lsp_prepare_rename: fakeTool,
+    lsp_rename: fakeTool,
+  },
   createGrepTools: mock(() => ({ grep: fakeTool })),
   createGlobTools: mock(() => ({ glob: fakeTool })),
   createAstGrepTools: mock(() => ({ ast_grep_search: fakeTool, ast_grep_replace: fakeTool })),
@@ -86,6 +95,12 @@ describe("createToolRegistry", () => {
     expect(result.filteredTools).toHaveProperty("grep")
     expect(result.filteredTools).toHaveProperty("glob")
     expect(result.filteredTools).toHaveProperty("ast_grep_search")
+    expect(result.filteredTools).toHaveProperty("lsp_goto_definition")
+    expect(result.filteredTools).toHaveProperty("lsp_find_references")
+    expect(result.filteredTools).toHaveProperty("lsp_symbols")
+    expect(result.filteredTools).toHaveProperty("lsp_diagnostics")
+    expect(result.filteredTools).toHaveProperty("lsp_prepare_rename")
+    expect(result.filteredTools).toHaveProperty("lsp_rename")
     expect(result.filteredTools).toHaveProperty("task")
     expect(result.filteredTools).not.toHaveProperty("background_cancel")
     expect(result.filteredTools).not.toHaveProperty("background_output")

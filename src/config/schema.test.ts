@@ -26,34 +26,27 @@ describe("disabled_mcps schema", () => {
   })
 })
 
-describe("OhMyOpenCodeConfigSchema - model_capabilities", () => {
-  test("accepts valid model capabilities config", () => {
-    const input = {
-      model_capabilities: {
-        enabled: true,
-        auto_refresh_on_start: true,
-        refresh_timeout_ms: 5000,
-        source_url: "https://models.dev/api.json",
-      },
-    }
-
-    const result = OhMyOpenCodeConfigSchema.safeParse(input)
+describe("OhMyOpenCodeConfigSchema trimmed fixed-product fields", () => {
+  test("strips removed top-level config fields", () => {
+    const result = OhMyOpenCodeConfigSchema.safeParse({
+      auto_update: true,
+      skills: ["frontend-ui-ux"],
+      notification: { force_enable: true },
+      model_capabilities: { enabled: true },
+      babysitting: { timeout_ms: 1 },
+      sisyphus_agent: { disabled: true },
+    })
 
     expect(result.success).toBe(true)
     if (result.success) {
-      expect(result.data.model_capabilities).toEqual(input.model_capabilities)
+      const data = result.data as Record<string, unknown>
+      expect(data.auto_update).toBeUndefined()
+      expect(data.skills).toBeUndefined()
+      expect(data.notification).toBeUndefined()
+      expect(data.model_capabilities).toBeUndefined()
+      expect(data.babysitting).toBeUndefined()
+      expect(data.sisyphus_agent).toBeUndefined()
     }
-  })
-
-  test("rejects invalid model capabilities config", () => {
-    const result = OhMyOpenCodeConfigSchema.safeParse({
-      model_capabilities: {
-        refresh_timeout_ms: -1,
-        source_url: "not-a-url",
-      },
-    })
-
-    expect(result.success).toBe(false)
   })
 })
 
@@ -624,7 +617,7 @@ describe("OhMyOpenCodeConfigSchema - hashline_edit", () => {
 
   test("hashline_edit is optional", () => {
     //#given
-    const input = { auto_update: true }
+    const input = { comment_checker: { custom_prompt: "x" } }
 
     //#when
     const result = OhMyOpenCodeConfigSchema.safeParse(input)

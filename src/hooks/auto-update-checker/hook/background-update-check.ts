@@ -1,9 +1,9 @@
 import type { PluginInput } from "@opencode-ai/plugin"
 import { existsSync } from "node:fs"
 import { join } from "node:path"
-import { runBunInstallWithDetails } from "../../../cli/config-manager"
 import { log } from "../../../shared/logger"
 import { getOpenCodeCacheDir, getOpenCodeConfigPaths } from "../../../shared"
+import { runBunInstallWithDetails } from "../../../shared/bun-install-runner"
 import { invalidatePackage } from "../cache"
 import { PACKAGE_NAME } from "../constants"
 import { extractChannel } from "../version-channel"
@@ -60,7 +60,7 @@ function getPinnedVersionToastMessage(latestVersion: string): string {
 
 /**
  * Resolves the active install workspace.
- * Same logic as doctor check: prefer config-dir if installed, fall back to cache-dir.
+ * Same install/update logic: prefer config-dir if installed, fall back to cache-dir.
  */
 function resolveActiveInstallWorkspace(deps: BackgroundUpdateCheckDeps): string {
   const configPaths = deps.getOpenCodeConfigPaths({ binary: "opencode" })
@@ -86,7 +86,7 @@ function resolveActiveInstallWorkspace(deps: BackgroundUpdateCheckDeps): string 
     return cacheDir
   }
 
-  // Default to config-dir if neither exists (matches doctor behavior)
+  // Default to config-dir if neither exists (matches the install/update fallback behavior)
   deps.log(`[auto-update-checker] Active workspace: config-dir (default, no install detected)`)
   return configPaths.configDir
 }

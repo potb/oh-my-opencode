@@ -14,12 +14,9 @@ export const AGENT_DISPLAY_NAMES: Record<string, string> = {
   "sisyphus-junior": "Sisyphus-Junior",
   metis: "Metis - Plan Consultant",
   momus: "Momus - Plan Critic",
-  athena: "Athena - Council",
-  "athena-junior": "Athena-Junior - Council",
   oracle: "oracle",
   librarian: "librarian",
   explore: "explore",
-  "council-member": "council-member",
 }
 
 const AGENT_LIST_SORT_PREFIXES: Record<string, string> = {
@@ -78,16 +75,8 @@ const REVERSE_DISPLAY_NAMES: Record<string, string> = Object.fromEntries(
 // Old configs/sessions may reference these names; resolve them to config keys.
 const LEGACY_DISPLAY_NAMES: Record<string, string> = {
   "sisyphus (ultraworker)": "sisyphus",
-  "hephaestus - deep agent": "hephaestus",
-  "hephaestus (deep agent)": "hephaestus",
-  "prometheus - plan builder": "prometheus",
-  "prometheus (plan builder)": "prometheus",
-  "atlas - plan executor": "atlas",
-  "atlas (plan executor)": "atlas",
   "metis (plan consultant)": "metis",
   "momus (plan critic)": "momus",
-  "athena (council)": "athena",
-  "athena-junior (council)": "athena-junior",
 }
 
 function resolveKnownAgentConfigKey(agentName: string): string | undefined {

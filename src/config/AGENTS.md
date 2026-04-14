@@ -15,31 +15,26 @@ config/schema/
 ├── agent-overrides.ts          # AgentOverrideConfigSchema (21 fields per agent)
 ├── categories.ts               # 8 built-in + custom categories
 ├── hooks.ts                    # HookNameSchema (48 hooks)
-├── skills.ts                   # SkillsConfigSchema (sources, paths, recursive)
 ├── experimental.ts             # Feature flags (plugin_load_timeout_ms min 1000)
 ├── sisyphus.ts                 # SisyphusConfigSchema (task system)
-├── sisyphus-agent.ts           # SisyphusAgentConfigSchema
 ├── tmux.ts                     # TmuxConfigSchema + TmuxLayoutSchema
 ├── websearch.ts                # provider: "exa" | "tavily"
 ├── claude-code.ts              # CC compatibility settings
 ├── comment-checker.ts          # AI comment detection config
-├── notification.ts             # OS notification settings
 ├── git-master.ts               # commit_footer: boolean | string
 ├── browser-automation.ts       # provider: playwright | agent-browser | playwright-cli
 ├── background-task.ts          # Concurrency limits per model/provider
 ├── fallback-models.ts          # FallbackModelsConfigSchema
-├── babysitting.ts              # Unstable agent monitoring
 ├── dynamic-context-pruning.ts  # Context pruning settings
 ├── openclaw.ts                # OpenClaw integration settings
 ├── git-env-prefix.ts          # Git environment prefix config
-├── model-capabilities.ts      # Model capabilities config
 └── internal/permission.ts      # AgentPermissionSchema
 
 ```
 
-## ROOT SCHEMA FIELDS (31)
+## ROOT SCHEMA FIELDS
 
-`$schema`, `new_task_system_enabled`, `default_run_agent`, `disabled_mcps`, `disabled_agents`, `disabled_skills`, `disabled_hooks`, `disabled_commands`, `disabled_tools`, `hashline_edit`, `agents`, `categories`, `claude_code`, `sisyphus_agent`, `comment_checker`, `experimental`, `auto_update`, `skills`, `background_task`, `notification`, `babysitting`, `git_master`, `browser_automation_engine`, `websearch`, `tmux`, `sisyphus`, `_migrations`, `model_capabilities`, `openclaw`, `mcp_env_allowlist`
+`$schema`, `new_task_system_enabled`, `default_run_agent`, `disabled_mcps`, `disabled_agents`, `disabled_hooks`, `disabled_commands`, `disabled_tools`, `hashline_edit`, `agents`, `categories`, `claude_code`, `comment_checker`, `experimental`, `background_task`, `git_master`, `browser_automation_engine`, `websearch`, `sisyphus`, `_migrations`
 
 ## AGENT OVERRIDE FIELDS (21)
 

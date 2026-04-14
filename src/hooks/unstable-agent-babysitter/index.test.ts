@@ -91,8 +91,8 @@ describe("unstable-agent-babysitter hook", () => {
     expect(promptCalls.length).toBe(1)
     const payload = promptCalls[0].input as { body?: { parts?: Array<{ text?: string }> } }
     const text = payload.body?.parts?.[0]?.text ?? ""
-    expect(text).toContain("background_output")
-    expect(text).toContain("background_cancel")
+    expect(text).toContain("inspect the parent session")
+    expect(text).toContain("cancel the stuck work")
     expect(text).toContain("deep thought")
     expect(text).toContain(OMO_INTERNAL_INITIATOR_MARKER)
   })
@@ -127,8 +127,8 @@ describe("unstable-agent-babysitter hook", () => {
     expect(promptCalls.length).toBe(1)
     const payload = promptCalls[0].input as { body?: { parts?: Array<{ text?: string }> } }
     const text = payload.body?.parts?.[0]?.text ?? ""
-    expect(text).toContain("background_output")
-    expect(text).toContain("background_cancel")
+    expect(text).toContain("inspect the parent session")
+    expect(text).toContain("cancel the stuck work")
     expect(text).toContain("minimax thought")
     expect(text).toContain(OMO_INTERNAL_INITIATOR_MARKER)
   })

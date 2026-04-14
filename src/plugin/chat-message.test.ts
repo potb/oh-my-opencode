@@ -30,6 +30,7 @@ describe("createChatMessageHandler", () => {
     const keywordHook = mock(async () => {})
     const thinkHook = mock(async () => {})
     const claudeHook = mock(async () => {})
+    const noSisyphusGptHook = mock(async () => {})
     const appliedSessions: string[] = []
 
     const handler = createChatMessageHandler({
@@ -45,6 +46,7 @@ describe("createChatMessageHandler", () => {
         keywordDetector: { "chat.message": keywordHook },
         thinkMode: { "chat.message": thinkHook },
         claudeCodeHooks: { "chat.message": claudeHook },
+        noSisyphusGpt: { "chat.message": noSisyphusGptHook },
       } as never,
     })
 
@@ -54,6 +56,7 @@ describe("createChatMessageHandler", () => {
     expect(keywordHook).toHaveBeenCalledTimes(1)
     expect(thinkHook).toHaveBeenCalledTimes(1)
     expect(claudeHook).toHaveBeenCalledTimes(1)
+    expect(noSisyphusGptHook).toHaveBeenCalledTimes(1)
   })
 
   test("reuses the stored main-session model when no explicit model is provided", async () => {

@@ -123,7 +123,7 @@ export type BuiltinAgentName =
   | "momus"
   | "sisyphus-junior";
 
-export type OverridableAgentName = "build" | BuiltinAgentName;
+export type OverridableAgentName = BuiltinAgentName;
 
 export type AgentName = BuiltinAgentName;
 

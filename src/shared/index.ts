@@ -13,10 +13,12 @@ export * from "./file-utils"
 export * from "./dynamic-truncator"
 export * from "./data-path"
 export * from "./config-errors"
+export * from "./bun-install-runner"
 export * from "./claude-config-dir"
 export * from "./jsonc-parser"
 export * from "./migration"
 export * from "./opencode-config-dir"
+export * from "./opencode-config-context"
 export type {
   OpenCodeBinaryType,
   OpenCodeConfigDirOptions,

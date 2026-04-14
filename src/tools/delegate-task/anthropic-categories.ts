@@ -5,7 +5,7 @@ You are working on tasks that don't fit specific categories but require moderate
 
 <Selection_Gate>
 BEFORE selecting this category, VERIFY ALL conditions:
-1. Task does NOT fit: quick (trivial), visual-engineering (UI), ultrabrain (deep logic), artistry (creative), writing (docs)
+1. Task does NOT fit: quick (trivial), visual-engineering (UI), ultrabrain (deep logic), deep (autonomous implementation), writing (docs)
 2. Task requires more than trivial effort but is NOT system-wide
 3. Scope is contained within a few files/modules
 
@@ -28,7 +28,7 @@ You are working on tasks that don't fit specific categories but require substant
 
 <Selection_Gate>
 BEFORE selecting this category, VERIFY ALL conditions:
-1. Task does NOT fit: quick (trivial), visual-engineering (UI), ultrabrain (deep logic), artistry (creative), writing (docs)
+1. Task does NOT fit: quick (trivial), visual-engineering (UI), ultrabrain (deep logic), deep (autonomous implementation), writing (docs)
 2. Task requires substantial effort across multiple systems/modules
 3. Changes have broad impact or require careful coordination
 4. NOT just "complex" - must be genuinely unclassifiable AND high-effort

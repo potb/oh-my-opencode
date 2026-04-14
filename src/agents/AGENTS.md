@@ -14,10 +14,8 @@ Agent factories follow `createXXXAgent(model) → AgentConfig`. Each has a stati
 | **Oracle** | gpt-5.4 high | 0.1 | subagent | gemini-3.1-pro high -> claude-opus-4-6 max | Read-only consultation |
 | **Librarian** | minimax-m2.7 | 0.1 | subagent | minimax-m2.7-highspeed -> claude-haiku-4-5 -> gpt-5-nano | External docs/code search |
 | **Explore** | grok-code-fast-1 | 0.1 | subagent | minimax-m2.7-highspeed -> minimax-m2.7 -> claude-haiku-4-5 -> gpt-5-nano | Contextual grep |
-| **Multimodal-Looker** | gpt-5.3-codex medium | 0.1 | subagent | k2p5 -> gemini-3-flash -> glm-4.6v -> gpt-5-nano | PDF/image analysis |
 | **Metis** | claude-opus-4-6 max | **0.3** | subagent | gpt-5.4 high -> gemini-3.1-pro high | Pre-planning consultant |
 | **Momus** | gpt-5.4 xhigh | 0.1 | subagent | claude-opus-4-6 max -> gemini-3.1-pro high | Plan reviewer |
-| **Prometheus** | claude-opus-4-6 max | 0.1 | — | internal planner | Strategic planner (internal) |
 | **Sisyphus-Junior** | claude-sonnet-4-6 | 0.1 | all | user-configurable | Category-spawned executor |
 
 ## TOOL RESTRICTIONS
@@ -27,7 +25,6 @@ Agent factories follow `createXXXAgent(model) → AgentConfig`. Each has a stati
 | Oracle | write, edit, task |
 | Librarian | write, edit, task |
 | Explore | write, edit, task |
-| Multimodal-Looker | ALL except read |
 | Momus | write, edit, task |
 
 ## STRUCTURE
@@ -38,7 +35,6 @@ agents/
 ├── oracle.ts              # Read-only consultant
 ├── librarian.ts           # External search
 ├── explore.ts             # Codebase grep
-├── multimodal-looker.ts   # Vision/PDF
 ├── metis.ts               # Pre-planning
 ├── momus.ts               # Plan review
 ├── types.ts               # AgentFactory, AgentMode

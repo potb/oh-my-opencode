@@ -146,9 +146,9 @@ Description: ${task.description}
 Agent: ${task.agent}${args.category ? ` (category: ${args.category})` : ""}
 Status: ${task.status}
 
-System notifies on completion. Use \`background_output\` with task_id="${task.id}" to check.
+System notifies on completion. Wait for the related parent-session follow-up.
 
-Do NOT call background_output now. Wait for <system-reminder> notification first.${taskMetadataBlock}`
+Do NOT poll removed background helper tools. Wait for <system-reminder> notification first.${taskMetadataBlock}`
   } catch (error) {
     return formatDetailedError(error, {
       operation: "Launch background task",

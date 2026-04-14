@@ -93,12 +93,6 @@ export function migrateConfigFile(
     needsWrite = true
   }
 
-  if (copy.omo_agent) {
-    copy.sisyphus_agent = copy.omo_agent
-    delete copy.omo_agent
-    needsWrite = true
-  }
-
   if (copy.experimental && typeof copy.experimental === "object") {
     const experimental = copy.experimental as Record<string, unknown>
     if ("hashline_edit" in experimental) {

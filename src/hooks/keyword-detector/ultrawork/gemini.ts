@@ -69,7 +69,7 @@ Where TYPE is one of: research | implementation | investigation | evaluation | f
 2. **EXPLORE THOROUGHLY** - Fire explore/librarian agents to gather ALL relevant context
 3. **CONSULT SPECIALISTS** - For hard/complex tasks, DO NOT struggle alone. Delegate:
    - **Oracle**: Conventional problems - architecture, debugging, complex logic
-   - **Artistry**: Non-conventional problems - different approach needed, unusual constraints
+   - **Deep category**: Non-trivial implementation work that benefits from autonomous execution
 4. **ASK THE USER** - If ambiguity remains after exploration, ASK. Don't guess.
 
 **SIGNS YOU ARE NOT READY TO IMPLEMENT:**
@@ -118,7 +118,7 @@ task(subagent_type="oracle", load_skills=[], prompt="I need architectural review
 **IF YOU ENCOUNTER A BLOCKER:**
 1. **DO NOT** give up
 2. **DO NOT** deliver a compromised version
-3. **DO** consult specialists (oracle for conventional, artistry for non-conventional)
+3. **DO** consult specialists (oracle for architecture/debugging, deep category for heavy implementation)
 4. **DO** ask the user for guidance
 5. **DO** explore alternative approaches
 
@@ -185,7 +185,7 @@ task(subagent_type="plan", load_skills=[], prompt="<gathered context + user requ
 | Documentation lookup | task(subagent_type="librarian", load_skills=[], run_in_background=true) | Specialized knowledge |
 | Planning | task(subagent_type="plan", load_skills=[]) | Parallel task graph + structured TODO list |
 | Hard problem (conventional) | task(subagent_type="oracle", load_skills=[]) | Architecture, debugging, complex logic |
-| Hard problem (non-conventional) | task(category="artistry", load_skills=[...]) | Different approach needed |
+| Hard implementation problem | task(category="deep", load_skills=[...]) | Autonomous execution with more context |
 | Implementation | task(category="...", load_skills=[...]) | Domain-optimized models |
 
 **YOU SHOULD ONLY DO IT YOURSELF WHEN:**

@@ -103,8 +103,8 @@ Thinking summary (first ${THINKING_SUMMARY_MAX_CHARS} chars):
 ${summaryText}
 
 Suggested actions:
-- background_output task_id="${task.id}" full_session=true include_thinking=true include_tool_results=true message_limit=50
-- background_cancel taskId="${task.id}"
+- inspect the parent session for the injected reminder and decide whether to continue waiting
+- cancel the stuck work through the active runtime controls if needed
 
 This is a reminder only. No automatic action was taken.`
 }

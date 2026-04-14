@@ -225,8 +225,8 @@ describe("createBuiltinAgents with model overrides", () => {
 
     // #then
     expect(agents.sisyphus.prompt).not.toContain("playwright")
-    expect(agents.sisyphus.prompt).toContain("frontend-ui-ux")
-    expect(agents.sisyphus.prompt).toContain("git-master")
+    expect(agents.sisyphus.prompt).toContain("Category-based task routing has been removed")
+    expect(agents.sisyphus.prompt).toContain("subagent_type")
     providerModelsSpy.mockRestore()
     connectedSpy.mockRestore()
     fetchSpy.mockRestore()
@@ -566,7 +566,7 @@ describe("Sisyphus and Librarian environment context toggle", () => {
   })
 })
 
-describe("Atlas is unaffected by environment context toggle", () => {
+describe("Removed agents are unaffected by environment context toggle", () => {
   let fetchSpy: ReturnType<typeof spyOn>
 
   beforeEach(() => {

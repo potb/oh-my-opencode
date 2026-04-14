@@ -47,4 +47,21 @@ describe("createToolGuardHooks", () => {
     // then
     expect(capturedOptions).toEqual({ skipClaudeUserRules: true })
   })
+
+  it("returns null for all tool-guard hooks when every hook is disabled", () => {
+    const pluginConfig = {} as OhMyOpenCodeConfig
+    const { createToolGuardHooks } = require("./create-tool-guard-hooks")
+
+    const result = createToolGuardHooks({
+      ctx: mockContext,
+      pluginConfig,
+      modelCacheState: mockModelCacheState,
+      isHookEnabled: () => false,
+      safeHookEnabled: true,
+    })
+
+    for (const value of Object.values(result)) {
+      expect(value).toBeNull()
+    }
+  })
 })

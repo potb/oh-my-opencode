@@ -3,9 +3,11 @@ import { fixEmptyMessagesWithSDK } from "./empty-content-recovery-sdk"
 
 const mockReplaceEmptyTextParts = mock(() => Promise.resolve(false))
 const mockInjectTextPart = mock(() => Promise.resolve(false))
+const mockFindMessagesWithEmptyTextPartsFromSDK = mock(() => Promise.resolve([] as string[]))
 
 mock.module("../session-recovery/storage/empty-text", () => ({
   replaceEmptyTextPartsAsync: mockReplaceEmptyTextParts,
+  findMessagesWithEmptyTextPartsFromSDK: mockFindMessagesWithEmptyTextPartsFromSDK,
 }))
 mock.module("../session-recovery/storage/text-part-injector", () => ({
   injectTextPartAsync: mockInjectTextPart,
@@ -27,8 +29,10 @@ describe("fixEmptyMessagesWithSDK", () => {
   beforeEach(() => {
     mockReplaceEmptyTextParts.mockReset()
     mockInjectTextPart.mockReset()
+    mockFindMessagesWithEmptyTextPartsFromSDK.mockReset()
     mockReplaceEmptyTextParts.mockReturnValue(Promise.resolve(false))
     mockInjectTextPart.mockReturnValue(Promise.resolve(false))
+    mockFindMessagesWithEmptyTextPartsFromSDK.mockReturnValue(Promise.resolve([]))
   })
 
   it("returns fixed=false when no empty messages exist", async () => {

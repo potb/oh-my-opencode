@@ -4,7 +4,7 @@
 
 ## OVERVIEW
 
-49 files. The `task` tool implementation — delegates work to subagents via background or sync sessions. Resolves categories, models, skills, and manages both async and synchronous execution flows. 8+ built-in categories.
+Task delegation implementation for the fixed-product runtime. Supports direct subagent delegation plus sync/background execution flows.
 
 ## TWO EXECUTION MODES
 
@@ -20,11 +20,9 @@
 | `tools.ts` | `createDelegateTask()` factory — main entry point |
 | `executor.ts` | Route to background or sync execution |
 | `types.ts` | `DelegateTaskArgs`, `DelegateTaskToolOptions`, `ToolContextWithMetadata` |
-| `category-resolver.ts` | Map category name → model + config |
 | `subagent-resolver.ts` | Map subagent_type → agent + model |
 | `model-selection.ts` | Model availability checking + fallback |
-| `skill-resolver.ts` | Resolve `load_skills[]` → skill content for injection |
-| `prompt-builder.ts` | Build system/user prompt with skill content, categories |
+| `prompt-builder.ts` | Build system/user prompt for direct subagent delegation |
 
 ## SYNC EXECUTION CHAIN
 
@@ -42,17 +40,12 @@ background-task.ts → BackgroundManager.launch() → (async polling) → backgr
 
 `background-continuation.ts` handles `session_id` resume for existing background tasks.
 
-## CATEGORY RESOLUTION
-
-1. Check user-defined categories (`pluginConfig.categories`)
-2. Fall back to built-in 8 categories
-3. Resolve model from category config
-4. Check model availability → fallback if unavailable
-
 ## MODEL STRING PARSER
 
 `model-string-parser.ts` handles `"model variant"` format (e.g., `"gpt-5.3-codex medium"` → model=`gpt-5.3-codex`, variant=`medium`).
 
-## UNSTABLE AGENT TRACKING
+## FIXED-PRODUCT CONSTRAINTS
 
-`unstable-agent-task.ts` marks tasks from categories/agents known to be unstable (e.g., free models). Enables `unstableAgentBabysitter` hook monitoring.
+- Category-based task routing has been removed from the fixed-product runtime.
+- Skill loading through the `task` tool has been removed from the fixed-product runtime.
+- Direct `subagent_type` delegation is the supported path.

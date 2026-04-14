@@ -1,7 +1,7 @@
 /**
  * Generic GPT Sisyphus-Junior System Prompt
  *
- * Hephaestus-style prompt adapted for a focused executor:
+ * Focused executor prompt adapted for GPT models:
  * - Same autonomy, reporting, parallelism, and tool usage patterns
  * - Uses direct search tools for fast local context gathering
  * - Used as fallback for GPT models without a model-specific prompt

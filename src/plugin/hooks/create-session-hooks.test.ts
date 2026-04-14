@@ -34,4 +34,20 @@ describe("createSessionHooks", () => {
     expect(result.thinkMode).not.toBeNull()
     expect(result.autoUpdateChecker).not.toBeNull()
   })
+
+  it("returns null for all session hooks when every hook is disabled", () => {
+    const pluginConfig = {} as OhMyOpenCodeConfig
+
+    const result = createSessionHooks({
+      ctx: mockContext,
+      pluginConfig,
+      modelCacheState: mockModelCacheState,
+      isHookEnabled: () => false,
+      safeHookEnabled: true,
+    })
+
+    for (const value of Object.values(result)) {
+      expect(value).toBeNull()
+    }
+  })
 })

@@ -31,13 +31,10 @@ describe("getAgentConfigKey", () => {
     expect(getAgentConfigKey("Momus - Plan Critic")).toBe("momus")
   })
 
-  it("keeps resolving legacy atlas display names for backward compatibility", () => {
-    expect(getAgentConfigKey("Atlas - Plan Executor")).toBe("atlas")
-    expect(getAgentConfigKey("Atlas (Plan Executor)")).toBe("atlas")
-  })
-
-  it("returns lowercased unknown agents", () => {
+  it("returns lowercased unknown agents (including removed agents)", () => {
     expect(getAgentConfigKey("Custom-Agent")).toBe("custom-agent")
+    expect(getAgentConfigKey("Removed Agent - Primary")).toBe("removed agent - primary")
+    expect(getAgentConfigKey("Removed Agent (Primary)")).toBe("removed agent (primary)")
   })
 })
 
@@ -57,9 +54,9 @@ describe("normalizeAgentForPrompt", () => {
     expect(normalizeAgentForPrompt(getAgentListDisplayName("sisyphus"))).toBe("Sisyphus - Ultraworker")
   })
 
-  it("preserves removed atlas legacy display names", () => {
-    expect(normalizeAgentForPrompt("Atlas (Plan Executor)")).toBe("Atlas (Plan Executor)")
-    expect(normalizeAgentForPrompt("Atlas - Plan Executor")).toBe("Atlas - Plan Executor")
+  it("preserves unknown agent names as-is", () => {
+    expect(normalizeAgentForPrompt("Removed Agent (Primary)")).toBe("Removed Agent (Primary)")
+    expect(normalizeAgentForPrompt("Removed Agent - Primary")).toBe("Removed Agent - Primary")
   })
 })
 
@@ -84,12 +81,9 @@ describe("AGENT_DISPLAY_NAMES", () => {
       "sisyphus-junior": "Sisyphus-Junior",
       metis: "Metis - Plan Consultant",
       momus: "Momus - Plan Critic",
-      athena: "Athena - Council",
-      "athena-junior": "Athena-Junior - Council",
       oracle: "oracle",
       librarian: "librarian",
       explore: "explore",
-      "council-member": "council-member",
     })
   })
 })

@@ -52,89 +52,13 @@ export function buildCategorySkillsDelegationGuide(
   if (categories.length === 0 && skills.length === 0) {
     return ""
   }
+  void categories
+  void skills
 
-  const categoryRows = categories.map((category) => {
-    const description = category.description || category.name
-    return `- \`${category.name}\` - ${description}`
-  })
+  return `### Delegation Constraints
 
-  const customSkills = skills.filter((skill) => skill.location !== "plugin")
-  const skillsSection = buildSkillsSection(skills)
-  const customPriorityNote =
-    customSkills.length > 0
-      ? `
-> **User-installed skills get PRIORITY.** When in doubt, INCLUDE rather than omit.`
-      : ""
-
-  return `### Category + Skills Delegation System
-
-**task() combines categories and skills for optimal task execution.**
-
-#### Available Categories (Domain-Optimized Models)
-
-Each category is configured with a model optimized for that domain. Read the description to understand when to use it.
-
-${categoryRows.join("\n")}
-
-${skillsSection}
-
----
-
-### MANDATORY: Category + Skill Selection Protocol
-
-**STEP 1: Select Category**
-- Read each category's description
-- Match task requirements to category domain
-- Select the category whose domain BEST fits the task
-
-**STEP 2: Evaluate ALL Skills**
-Check the \`skill\` tool for available skills and their descriptions. For EVERY skill, ask:
-> "Does this skill's expertise domain overlap with my task?"
-
-- If YES → INCLUDE in \`load_skills=[...]\`
-- If NO → OMIT (no justification needed)${customPriorityNote}
-
----
-
-### Delegation Pattern
-
-\`\`\`typescript
-task(
-  category="[selected-category]",
-  load_skills=["skill-1", "skill-2"],  // Include ALL relevant skills - ESPECIALLY user-installed ones
-  prompt="..."
-)
-\`\`\`
-
-**ANTI-PATTERN (will produce poor results):**
-\`\`\`typescript
-task(category="...", load_skills=[], run_in_background=false, prompt="...")  // Empty load_skills without justification
-\`\`\`
-
----
-
-### Category Domain Matching (ZERO TOLERANCE)
-
-Every delegation MUST use the category that matches the task's domain. Mismatched categories produce measurably worse output because each category runs on a model optimized for that specific domain.
-
-**VISUAL WORK = ALWAYS \`visual-engineering\`. NO EXCEPTIONS.**
-
-Any task involving UI, UX, CSS, styling, layout, animation, design, or frontend components MUST go to \`visual-engineering\`. Never delegate visual work to \`quick\`, \`unspecified-*\`, or any other category.
-
-\`\`\`typescript
-// CORRECT: Visual work → visual-engineering category
-task(category="visual-engineering", load_skills=["frontend-ui-ux"], prompt="Redesign the sidebar layout with new spacing...")
-
-// WRONG: Visual work in wrong category - WILL PRODUCE INFERIOR RESULTS
-task(category="quick", load_skills=[], prompt="Redesign the sidebar layout with new spacing...")
-\`\`\`
-
-| Task Domain | MUST Use Category |
-|---|---|
-| UI, styling, animations, layout, design | \`visual-engineering\` |
-| Hard logic, architecture decisions, algorithms | \`ultrabrain\` |
-| Autonomous research + end-to-end implementation | \`deep\` |
-| Single-file typo, trivial config change | \`quick\` |
-
-**When in doubt about category, it is almost never \`quick\` or \`unspecified-*\`. Match the domain.**`
+- Category-based task routing has been removed from the fixed-product runtime.
+- Skill loading through the \`task\` tool has been removed from the fixed-product runtime.
+- Use direct \`subagent_type\` delegation with \`task(subagent_type="...", load_skills=[], ...)\`.
+- If no suitable subagent exists, work directly with the available local tools instead of inventing category or skill routing.`
 }

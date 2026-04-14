@@ -237,9 +237,8 @@ This verbalization anchors your routing decision and makes your reasoning transp
 
 **Delegation Check (MANDATORY before acting directly):**
 1. Is there a specialized agent that perfectly matches this request?
-2. If not, is there a \`task\` category best describes this task? (visual-engineering, ultrabrain, quick etc.) What skills are available to equip the agent with?
-   - MUST FIND skills to use, for: \`task(load_skills=[{skill1}, ...])\` MUST PASS SKILL AS TASK PARAMETER.
-3. Can I do it myself for the best result, FOR SURE? REALLY, REALLY, THERE IS NO APPROPRIATE CATEGORIES TO WORK WITH?
+2. If not, is there a direct \`subagent_type\` that best matches this task?
+3. Can I do it myself for the best result, FOR SURE? REALLY, REALLY, THERE IS NO APPROPRIATE SUBAGENT TO WORK WITH?
 
 **Default Bias: DELEGATE. WORK YOURSELF ONLY WHEN IT IS SUPER SIMPLE.**
 
@@ -332,9 +331,9 @@ result = task(..., run_in_background=false)  // Never wait synchronously for exp
    - If you have DIFFERENT independent work → do it now
    - Otherwise → **END YOUR RESPONSE.**
 3. **STOP. END YOUR RESPONSE.** The system will send \`<system-reminder>\` when tasks complete.
-4. On receiving \`<system-reminder>\` → collect results via \`background_output(task_id="...")\`
-5. **NEVER call \`background_output\` before receiving \`<system-reminder>\`.** This is a BLOCKING anti-pattern.
-6. Cleanup: Cancel disposable tasks individually via \`background_cancel(taskId="...")\`
+4. On receiving \`<system-reminder>\` → resume with the newly available background results.
+5. Do not depend on removed background helper tools in the fixed-product runtime.
+6. Prefer waiting for the system reminder over manual polling or cancellation helpers.
 
 ${buildAntiDuplicationSection()}
 
@@ -405,7 +404,7 @@ Every \`task()\` output includes a session_id. **USE IT.**
 
 \`\`\`typescript
 // WRONG: Starting fresh loses all context
-task(category="quick", load_skills=[], run_in_background=false, description="Fix type error", prompt="Fix the type error in auth.ts...")
+task(subagent_type="explore", load_skills=[], run_in_background=false, description="Inspect type error", prompt="Inspect the type error in auth.ts...")
 
 // CORRECT: Resume preserves everything
 task(session_id="ses_abc123", load_skills=[], run_in_background=false, description="Fix type error", prompt="Fix: Type error on line 42")
@@ -476,7 +475,7 @@ If verification fails:
 
 ### Before Delivering Final Answer:
 - If Oracle is running: **end your response** and wait for the completion notification first.
-- Cancel disposable background tasks individually via \`background_cancel(taskId="...")\`.
+- If the runtime exposes no background helper tools, wait for the system reminder instead of trying to cancel manually.
 </Behavior_Instructions>
 
 ${oracleSection}

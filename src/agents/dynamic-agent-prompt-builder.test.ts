@@ -31,89 +31,13 @@ describe("buildCategorySkillsDelegationGuide", () => {
     { name: "our-design-system", description: "Internal design system components", location: "project" },
   ]
 
-  it("should list builtin and custom skills in compact format", () => {
-    //#given: mix of builtin and custom skills
-    const allSkills = [...builtinSkills, ...customUserSkills]
-
-    //#when: building the delegation guide
-    const result = buildCategorySkillsDelegationGuide(categories, allSkills)
-
-    //#then: should use compact format with both sections
-    expect(result).toContain("**Built-in**: playwright, frontend-ui-ux")
-    expect(result).toContain("YOUR SKILLS (PRIORITY)")
-    expect(result).toContain("react-19 (user)")
-    expect(result).toContain("tailwind-4 (user)")
-  })
-
-  it("should point to skill tool as source of truth", () => {
-    //#given: skills present
-    const allSkills = [...builtinSkills, ...customUserSkills]
-
-    //#when: building the delegation guide
-    const result = buildCategorySkillsDelegationGuide(categories, allSkills)
-
-    //#then: should reference the skill tool for full descriptions
-    expect(result).toContain("`skill` tool")
-  })
-
-  it("should show source tags for custom skills (user vs project)", () => {
-    //#given: both user and project custom skills
+  it("should describe fixed-product delegation constraints", () => {
     const allSkills = [...builtinSkills, ...customUserSkills, ...customProjectSkills]
-
-    //#when: building the delegation guide
     const result = buildCategorySkillsDelegationGuide(categories, allSkills)
 
-    //#then: should show source tag for each custom skill
-    expect(result).toContain("(user)")
-    expect(result).toContain("(project)")
-  })
-
-  it("should not show custom skill section when only builtin skills exist", () => {
-    //#given: only builtin skills
-    const allSkills = [...builtinSkills]
-
-    //#when: building the delegation guide
-    const result = buildCategorySkillsDelegationGuide(categories, allSkills)
-
-    //#then: should not contain custom skill emphasis
-    expect(result).not.toContain("YOUR SKILLS")
-    expect(result).toContain("**Built-in**:")
-    expect(result).toContain("Available Skills")
-  })
-
-  it("should handle only custom skills (no builtins)", () => {
-    //#given: only custom skills, no builtins
-    const allSkills = [...customUserSkills]
-
-    //#when: building the delegation guide
-    const result = buildCategorySkillsDelegationGuide(categories, allSkills)
-
-    //#then: should show custom skills with emphasis, no builtin line
-    expect(result).toContain("YOUR SKILLS (PRIORITY)")
-    expect(result).not.toContain("**Built-in**:")
-  })
-
-  it("should include priority note for custom skills in evaluation step", () => {
-    //#given: custom skills present
-    const allSkills = [...builtinSkills, ...customUserSkills]
-
-    //#when: building the delegation guide
-    const result = buildCategorySkillsDelegationGuide(categories, allSkills)
-
-    //#then: evaluation section should mention user-installed priority
-    expect(result).toContain("User-installed skills get PRIORITY")
-    expect(result).toContain("INCLUDE rather than omit")
-  })
-
-  it("should NOT include priority note when no custom skills", () => {
-    //#given: only builtin skills
-    const allSkills = [...builtinSkills]
-
-    //#when: building the delegation guide
-    const result = buildCategorySkillsDelegationGuide(categories, allSkills)
-
-    //#then: no priority note for custom skills
-    expect(result).not.toContain("User-installed skills get PRIORITY")
+    expect(result).toContain("Category-based task routing has been removed")
+    expect(result).toContain("Skill loading through the `task` tool has been removed")
+    expect(result).toContain("subagent_type")
   })
 
   it("should return empty string when no categories and no skills", () => {
@@ -125,18 +49,13 @@ describe("buildCategorySkillsDelegationGuide", () => {
     expect(result).toBe("")
   })
 
-  it("should include category descriptions", () => {
-    //#given: categories with descriptions
+  it("should not advertise legacy category or skill routing details", () => {
     const allSkills = [...builtinSkills]
-
-    //#when: building the delegation guide
     const result = buildCategorySkillsDelegationGuide(categories, allSkills)
 
-    //#then: should list categories with their descriptions
-    expect(result).toContain("`visual-engineering`")
-    expect(result).toContain("Frontend, UI/UX")
-    expect(result).toContain("`quick`")
-    expect(result).toContain("Trivial tasks")
+    expect(result).not.toContain("**Built-in**")
+    expect(result).not.toContain("YOUR SKILLS")
+    expect(result).not.toContain("visual-engineering")
   })
 })
 
@@ -271,4 +190,3 @@ describe("buildNonClaudePlannerSection", () => {
     expect(result).not.toBe("")
   })
 })
-

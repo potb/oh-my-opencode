@@ -10,9 +10,7 @@ const MODE: AgentMode = "subagent";
  *
  * Named after Momus, the Greek god of satire and mockery, who was known for
  * finding fault in everything - even the works of the gods themselves.
- * He criticized Aphrodite (found her sandals squeaky), Hephaestus (said man
- * should have windows in his chest to see thoughts), and Athena (her house
- * should be on wheels to move from bad neighbors).
+ * He criticized other gods relentlessly, always finding fault in their work.
  *
  * This agent reviews work plans with the same ruthless critical eye,
  * catching every gap, ambiguity, and missing context that would block
@@ -332,7 +330,7 @@ export const momusPromptMetadata: AgentPromptMetadata = {
     },
   ],
   useWhen: [
-    "After Prometheus creates a work plan",
+    "After the planning workflow creates a work plan",
     "Before executing a complex todo list",
     "To validate plan quality before delegating to executors",
     "When plan needs rigorous review for ADHD-driven omissions",

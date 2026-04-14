@@ -21,7 +21,7 @@ describe("buildAgentIdentitySection", () => {
       })
 
       it("#then wraps content in an identity XML tag", () => {
-        const result = buildAgentIdentitySection("Hephaestus", "Autonomous deep worker")
+        const result = buildAgentIdentitySection("Oracle", "Strategic advisor")
 
         expect(result).toContain("<agent-identity>")
         expect(result).toContain("</agent-identity>")
@@ -39,14 +39,12 @@ describe("buildAgentIdentitySection", () => {
     describe("#when building identity for each", () => {
       it("#then each identity section contains the correct agent name", () => {
         const sisyphus = buildAgentIdentitySection("Sisyphus", "AI orchestrator")
-        const hephaestus = buildAgentIdentitySection("Hephaestus", "Autonomous deep worker")
         const oracle = buildAgentIdentitySection("Oracle", "Strategic advisor")
 
         expect(sisyphus).toContain("Sisyphus")
-        expect(sisyphus).not.toContain("Hephaestus")
-        expect(hephaestus).toContain("Hephaestus")
-        expect(hephaestus).not.toContain("Sisyphus")
+        expect(sisyphus).not.toContain("Oracle")
         expect(oracle).toContain("Oracle")
+        expect(oracle).not.toContain("Sisyphus")
       })
     })
   })

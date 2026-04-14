@@ -10,7 +10,7 @@ export function buildHardBlocksSection(): string {
     "- Commit without explicit request - **Never**",
     "- Speculate about unread code - **Never**",
     "- Leave code in broken state after failures - **Never**",
-    "- `background_cancel(all=true)` - **Never.** Always cancel individually by taskId.",
+    "- Manual cancellation of background work without a clear need - **Never.** Prefer waiting for system reminders.",
     "- Delivering final answer before collecting Oracle result - **Never.**",
   ]
 
@@ -26,7 +26,7 @@ export function buildAntiPatternsSection(): string {
     '- **Testing**: Deleting failing tests to "pass"',
     "- **Search**: Firing agents for single-line typos or obvious syntax errors",
     "- **Debugging**: Shotgun debugging, random changes",
-    "- **Background Tasks**: Polling `background_output` on running tasks - end response and wait for notification",
+    "- **Background Tasks**: Polling or forcing background helpers instead of waiting for system notifications",
     "- **Delegation Duplication**: Delegating exploration to explore/librarian and then manually doing the same search yourself",
     "- **Oracle**: Delivering answer without collecting Oracle results",
   ]
@@ -148,7 +148,7 @@ When you need the delegated results but they're not ready:
 
 1. **End your response** - do NOT continue with work that depends on those results
 2. **Wait for the completion notification** - the system will trigger your next turn
-3. **Then** collect results via \`background_output(task_id="...")\`
+3. **Then** resume once the system notification says the results are available
 4. **Do NOT** impatiently re-search the same topics while waiting
 
 ### Why This Matters:

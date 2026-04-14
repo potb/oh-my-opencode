@@ -43,6 +43,10 @@ interface ParsedRuleEntry {
 
 const parsedRuleCache = new Map<string, ParsedRuleEntry>();
 
+export function _resetParsedRuleCacheForTesting(): void {
+  parsedRuleCache.clear();
+}
+
 function resolveFilePath(
   workspaceDirectory: string,
   path: string

@@ -62,7 +62,6 @@ PRs attempting these patterns will be rejected.
 | `command-config-handler.ts` | ~200 | 9 parallel sources for commands/skills |
 | `tool-config-handler.ts` | ~100 | Agent-specific tool grants/denials |
 | `provider-config-handler.ts` | ~80 | Provider config + model cache |
-| `prometheus-agent-config-builder.ts` | ~100 | Prometheus config with model resolution |
 | `plan-model-inheritance.ts` | 28 | Plan demotion logic |
 | `agent-priority-order.ts` | ~30 | sisyphus first |
 | `agent-key-remapper.ts` | ~30 | Agent key → display name |

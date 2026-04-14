@@ -34,7 +34,7 @@ CONTEXT GATHERING (parallel):
 
 IF COMPLEX - DO NOT STRUGGLE ALONE. Consult specialists:
 - **Oracle**: Conventional problems (architecture, debugging, complex logic)
-- **Artistry**: Non-conventional problems (different approach needed)
+- **Deep category**: Use only if a deeper autonomous implementation path is actually available
 
 SYNTHESIZE findings before proceeding.
 ---

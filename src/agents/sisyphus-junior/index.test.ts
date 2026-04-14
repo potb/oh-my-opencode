@@ -331,7 +331,7 @@ describe("createSisyphusJuniorAgentWithOverrides", () => {
       expect(result.prompt).toContain("todowrite")
     })
 
-    test("GPT model uses GPT-optimized prompt with Hephaestus-style sections", () => {
+    test("GPT model uses GPT-optimized prompt with focused executor sections", () => {
       // given
       const override = { model: "openai/gpt-5.4" }
 

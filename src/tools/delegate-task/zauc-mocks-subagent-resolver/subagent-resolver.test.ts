@@ -153,9 +153,9 @@ describe("resolveSubagentExecution", () => {
 
   test("returns explicit error for primary display-name agents", async () => {
     //#given
-    const args = createBaseArgs({ subagent_type: "Atlas - Plan Executor" })
+    const args = createBaseArgs({ subagent_type: "Primary Agent (Removed)" })
     const executorCtx = createExecutorContext(async () => ([
-      { name: "Atlas - Plan Executor", mode: "primary" },
+      { name: "Primary Agent (Removed)", mode: "primary" },
       { name: "oracle", mode: "subagent" },
     ]))
 
@@ -165,7 +165,7 @@ describe("resolveSubagentExecution", () => {
     //#then
     expect(result.agentToUse).toBe("")
     expect(result.categoryModel).toBeUndefined()
-    expect(result.error).toBe('Cannot delegate to primary agent "Atlas - Plan Executor" via task. Select that agent directly instead.')
+    expect(result.error).toBe('Cannot delegate to primary agent "Primary Agent (Removed)" via task. Select that agent directly instead.')
   })
 
   test("requires explicit all or subagent mode for task-callable agents", async () => {

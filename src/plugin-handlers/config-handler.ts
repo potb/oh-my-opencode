@@ -6,7 +6,6 @@ import { applyProviderConfig } from "./provider-config-handler";
 import { applyToolConfig } from "./tool-config-handler";
 import { clearFormatterCache } from "../tools/hashline-edit/formatter-trigger"
 
-export { resolveCategoryConfig } from "./category-config-resolver";
 
 export interface ConfigHandlerDeps {
   ctx: { directory: string; client?: any };

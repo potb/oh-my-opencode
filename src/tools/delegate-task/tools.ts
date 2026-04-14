@@ -15,7 +15,6 @@ import {
   executeSyncTask,
 } from "./executor"
 
-export { resolveCategoryConfig } from "./categories"
 export type { SyncSessionCreatedEvent, DelegateTaskToolOptions, BuildSystemContentInput } from "./types"
 export { buildSystemContent, buildTaskPrompt } from "./prompt-builder"
 

@@ -148,7 +148,7 @@ Before acting, reason through these questions:
 - Is there a simpler way to achieve this than what they described?
 - What could go wrong with the obvious approach?
 - What tool calls can I issue IN PARALLEL right now? List independent reads, searches, and agent fires before calling.
-- Is there a skill whose domain connects to this task? If so, load it immediately via \`skill\` tool - do not hesitate.
+- Do not rely on the \`skill\` tool in the fixed-product runtime.
 
 ${keyTriggers}
 
@@ -268,9 +268,9 @@ Background result collection:
    - If you have DIFFERENT independent work → do it now
    - Otherwise → **END YOUR RESPONSE.**
 3. **STOP. END YOUR RESPONSE.** The system will send \`<system-reminder>\` when tasks complete.
-4. On receiving \`<system-reminder>\` → collect results via \`background_output(task_id="...")\`
-5. **NEVER call \`background_output\` before receiving \`<system-reminder>\`.** This is a BLOCKING anti-pattern.
-6. Cancel disposable tasks individually via \`background_cancel(taskId="...")\`
+4. On receiving \`<system-reminder>\` → resume with the newly available background results.
+5. Do not depend on removed background helper tools in the fixed-product runtime.
+6. Prefer waiting for the system reminder over manual polling/cancellation helpers.
 
 ${buildAntiDuplicationSection()}
 
@@ -300,15 +300,15 @@ Every implementation task follows this cycle. No exceptions.
 
    | Decision | Criteria |
    |---|---|
-   | **delegate** (DEFAULT) | Specialized domain, multi-file, >50 lines, unfamiliar module → matching category |
+| **delegate** (DEFAULT) | Specialized domain, multi-file, >50 lines, unfamiliar module → matching subagent |
    | **self** | Trivial local work only: <10 lines, single file, you have full context |
    | **answer** | Analysis/explanation request → respond with exploration results |
    | **ask** | Truly blocked after exhausting exploration → ask ONE precise question |
    | **challenge** | User's design seems flawed → raise concern, propose alternative |
 
-   Visual domain → MUST delegate to \`visual-engineering\`. No exceptions.
+   Visual domain → delegate to the best available visual/frontend-capable subagent when one exists.
 
-   Skills: if ANY available skill's domain overlaps with the task, load it NOW via \`skill\` tool and include it in \`load_skills\`. When the connection is even remotely plausible, load the skill - the cost of loading an irrelevant skill is near zero, the cost of missing a relevant one is high.
+   Skills are not loaded through the \`task\` tool in the fixed-product runtime; ignore \`load_skills\` as a strategy.
 
 4. EXECUTE_OR_SUPERVISE -
    If self: surgical changes, match existing patterns, minimal diff. Never suppress type errors. Never commit unless asked. Bugfix rule: fix minimally, never refactor while fixing. ${GPT_APPLY_PATCH_GUIDANCE}

@@ -32,7 +32,7 @@ const mockCreatePluginPostHog = mock(() => ({
 const mockGetPostHogDistinctId = mock(() => "plugin-distinct-id")
 
 function installModuleMocks(): void {
-  mock.module("./cli/config-manager/config-context", () => ({
+  mock.module("./shared/opencode-config-context", () => ({
     initConfigContext: mockInitConfigContext,
   }))
   mock.module("./shared/external-plugin-detector", () => ({

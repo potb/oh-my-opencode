@@ -165,7 +165,7 @@ Briefly announce "Consulting Oracle for [reason]" before invocation.
 - Never "time out and continue anyway" for Oracle-dependent tasks.
 
 - Oracle takes minutes. When done with your own work: **end your response** - wait for the \`<system-reminder>\`.
-- Do NOT poll \`background_output\` on a running Oracle. The notification will come.
+- Do NOT depend on removed background helper tools when waiting on Oracle. The notification will come.
 - Never cancel Oracle.
 </Oracle_Usage>`
 }

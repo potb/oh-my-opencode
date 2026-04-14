@@ -15,28 +15,6 @@ describe("AGENT_NAME_MAP parenthesized aliases", () => {
     expect(result).toBe("sisyphus")
   })
 
-  test("maps Hephaestus (Deep Agent) to hephaestus", () => {
-    // given
-    const alias = "Hephaestus (Deep Agent)"
-
-    // when
-    const result = AGENT_NAME_MAP[alias]
-
-    // then
-    expect(result).toBe("hephaestus")
-  })
-
-  test("maps Prometheus (Plan Builder) to prometheus", () => {
-    // given
-    const alias = "Prometheus (Plan Builder)"
-
-    // when
-    const result = AGENT_NAME_MAP[alias]
-
-    // then
-    expect(result).toBe("prometheus")
-  })
-
   test("maps Metis (Plan Consultant) to metis", () => {
     // given
     const alias = "Metis (Plan Consultant)"
@@ -61,12 +39,10 @@ describe("AGENT_NAME_MAP parenthesized aliases", () => {
 })
 
 describe("migrateAgentNames with parenthesized aliases", () => {
-  test("migrates all parenthesized aliases to canonical names", () => {
+  test("migrates supported parenthesized aliases to canonical names", () => {
     // given
     const legacyAgents = {
       "Sisyphus (Ultraworker)": { model: "claude-opus-4" },
-      "Hephaestus (Deep Agent)": { model: "gpt-5.4" },
-      "Prometheus (Plan Builder)": { model: "claude-opus-4" },
       "Metis (Plan Consultant)": { model: "claude-opus-4" },
       "Momus (Plan Critic)": { model: "claude-opus-4" },
     }
@@ -77,11 +53,22 @@ describe("migrateAgentNames with parenthesized aliases", () => {
     // then
     expect(changed).toBe(true)
     expect(migrated.sisyphus).toEqual({ model: "claude-opus-4" })
-    expect(migrated.hephaestus).toEqual({ model: "gpt-5.4" })
-    expect(migrated.prometheus).toEqual({ model: "claude-opus-4" })
     expect(migrated.metis).toEqual({ model: "claude-opus-4" })
     expect(migrated.momus).toEqual({ model: "claude-opus-4" })
     expect(migrated["Sisyphus (Ultraworker)"]).toBeUndefined()
-    expect(migrated["Hephaestus (Deep Agent)"]).toBeUndefined()
+  })
+
+  test("passes through removed agent names unchanged", () => {
+    // given
+    const agents = {
+      "Removed Agent (Legacy)": { model: "gpt-5.4" },
+    }
+
+    // when
+    const { migrated, changed } = migrateAgentNames(agents)
+
+    // then - no alias mapping, keys pass through as-is
+    expect(changed).toBe(false)
+    expect(migrated["Removed Agent (Legacy)"]).toEqual({ model: "gpt-5.4" })
   })
 })

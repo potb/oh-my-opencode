@@ -51,9 +51,9 @@ Agent: ${task.agent}
 Status: ${task.status}
 
 Agent continues with full previous context preserved.
-System notifies on completion. Use \`background_output\` with task_id="${task.id}" to check.
+System notifies on completion. Wait for the related parent-session follow-up.
 
-Do NOT call background_output now. Wait for <system-reminder> notification first.
+Do NOT poll removed background helper tools. Wait for <system-reminder> notification first.
 
 <task_metadata>
 session_id: ${task.sessionID}

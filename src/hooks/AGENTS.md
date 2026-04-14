@@ -32,7 +32,6 @@ hooks/
 ├── legacy-plugin-toast/        # Legacy plugin name migration toast
 ├── no-sisyphus-gpt/            # Block Sisyphus from GPT
 ├── non-interactive-env/        # Non-TTY environment handling
-├── prometheus-md-only/         # Planner read-only mode
 ├── question-label-truncator/   # Auto-truncates question labels
 ├── read-image-resizer/         # Resize images for context efficiency
 ├── rules-injector/             # Conditional rules
@@ -64,12 +63,10 @@ hooks/
 | nonInteractiveEnv | chat.message | Adjust behavior for `run` command |
 | editErrorRecovery | tool.execute.after | Retry failed file edits |
 | delegateTaskRetry | tool.execute.after | Retry failed task delegations |
-| prometheusMdOnly | tool.execute.before | Enforce .md-only writes for Prometheus |
 | sisyphusJuniorNotepad | chat.message | Notepad injection for subagents |
 | questionLabelTruncator | tool.execute.before | Truncate long question labels |
 | taskResumeInfo | chat.message | Inject task context on resume |
 | anthropicEffort | chat.params | Adjust reasoning effort level |
-| modelFallback | chat.params | Provider-level model fallback on errors |
 | noSisyphusGpt | chat.message | Block Sisyphus from using GPT models (toast warning) |
 | legacyPluginToast | chat.message | Show toast when legacy plugin name detected |
 

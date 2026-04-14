@@ -590,7 +590,7 @@ describe("keyword-detector agent-specific ultrawork messages", () => {
     }
 
     // when - ultrawork keyword detected with planner agent
-    await hook["chat.message"]({ sessionID, agent: "Prometheus (Planner)" }, output)
+    await hook["chat.message"]({ sessionID, agent: "plan" }, output)
 
     // then - ultrawork should be skipped, text unchanged
     const textPart = output.parts.find(p => p.type === "text")
@@ -774,25 +774,6 @@ describe("keyword-detector non-OMO agent skipping", () => {
       },
     } as unknown as PluginInput
   }
-
-  test("should skip all keyword injection for OpenCode-Builder agent", async () => {
-    // given - keyword-detector hook with Builder agent
-    const collector = new ContextCollector()
-    const hook = createKeywordDetectorHook(createMockPluginInput(), collector)
-    const sessionID = "builder-session"
-    const output = {
-      message: {} as Record<string, unknown>,
-      parts: [{ type: "text", text: "ultrawork search and analyze this code" }],
-    }
-
-    // when - keyword detection runs with OpenCode-Builder agent
-    await hook["chat.message"]({ sessionID, agent: "OpenCode-Builder" }, output)
-
-    // then - no keywords should be injected
-    const textPart = output.parts.find(p => p.type === "text")
-    expect(textPart).toBeDefined()
-    expect(textPart!.text).toBe("ultrawork search and analyze this code")
-  })
 
   test("should skip all keyword injection for Plan agent", async () => {
     // given - keyword-detector hook with Plan agent

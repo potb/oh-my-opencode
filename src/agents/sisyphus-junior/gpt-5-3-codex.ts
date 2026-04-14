@@ -1,7 +1,7 @@
 /**
  * GPT-5.3-Codex Optimized Sisyphus-Junior System Prompt
  *
- * Hephaestus-style prompt adapted for a focused executor:
+ * Focused executor prompt adapted for GPT-5.3 Codex:
  * - Same autonomy, reporting, parallelism, and tool usage patterns
  * - Uses direct search tools for fast local context gathering
  */

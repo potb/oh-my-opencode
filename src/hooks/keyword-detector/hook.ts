@@ -48,7 +48,7 @@ export function createKeywordDetectorHook(
 
       const currentAgent = getSessionAgent(input.sessionID) ?? input.agent
 
-      // Skip all keyword injection for non-OMO agents (e.g., OpenCode-Builder, Plan)
+  // Skip all keyword injection for planner-family and non-OMO agents
       if (isNonOmoAgent(currentAgent)) {
         log(`[keyword-detector] Skipping keyword injection for non-OMO agent`, { sessionID: input.sessionID, agent: currentAgent })
         return

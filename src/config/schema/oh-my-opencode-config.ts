@@ -1,6 +1,5 @@
 import { z } from "zod"
 import { AgentOverridesSchema } from "./agent-overrides"
-import { BabysittingConfigSchema } from "./babysitting"
 import { BackgroundTaskConfigSchema } from "./background-task"
 import { BrowserAutomationConfigSchema } from "./browser-automation"
 import { CategoriesConfigSchema } from "./categories"
@@ -8,11 +7,7 @@ import { ClaudeCodeConfigSchema } from "./claude-code"
 import { CommentCheckerConfigSchema } from "./comment-checker"
 import { ExperimentalConfigSchema } from "./experimental"
 import { GitMasterConfigSchema } from "./git-master"
-import { NotificationConfigSchema } from "./notification"
-import { ModelCapabilitiesConfigSchema } from "./model-capabilities"
-import { SkillsConfigSchema } from "./skills"
 import { SisyphusConfigSchema } from "./sisyphus"
-import { SisyphusAgentConfigSchema } from "./sisyphus-agent"
 import { WebsearchConfigSchema } from "./websearch"
 
 export const OhMyOpenCodeConfigSchema = z.object({
@@ -30,15 +25,9 @@ export const OhMyOpenCodeConfigSchema = z.object({
   agents: AgentOverridesSchema.optional(),
   categories: CategoriesConfigSchema.optional(),
   claude_code: ClaudeCodeConfigSchema.optional(),
-  sisyphus_agent: SisyphusAgentConfigSchema.optional(),
   comment_checker: CommentCheckerConfigSchema.optional(),
   experimental: ExperimentalConfigSchema.optional(),
-  auto_update: z.boolean().optional(),
-  skills: SkillsConfigSchema.optional(),
   background_task: BackgroundTaskConfigSchema.optional(),
-  notification: NotificationConfigSchema.optional(),
-  model_capabilities: ModelCapabilitiesConfigSchema.optional(),
-  babysitting: BabysittingConfigSchema.optional(),
   git_master: GitMasterConfigSchema.default({
     commit_footer: true,
     include_co_authored_by: true,

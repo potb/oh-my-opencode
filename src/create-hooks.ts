@@ -49,7 +49,6 @@ export function createHooks(args: {
 
   const continuation = createContinuationHooks({
     ctx,
-    pluginConfig,
     isHookEnabled,
     safeHookEnabled,
     backgroundManager,

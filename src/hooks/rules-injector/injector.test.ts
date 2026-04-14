@@ -5,7 +5,7 @@ import * as os from "node:os";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { RULES_INJECTOR_STORAGE } from "./constants";
-import { createRuleInjectionProcessor } from "./injector";
+import { _resetParsedRuleCacheForTesting, createRuleInjectionProcessor } from "./injector";
 
 type StatSnapshot = { mtimeMs: number; size: number };
 
@@ -98,6 +98,7 @@ describe("createRuleInjectionProcessor", () => {
   let ruleRealPath: string;
 
   beforeEach(() => {
+    _resetParsedRuleCacheForTesting();
     testRoot = join(tmpdir(), `rules-injector-injector-${Date.now()}`);
     projectRoot = join(testRoot, "project");
     homeRoot = join(testRoot, "home");

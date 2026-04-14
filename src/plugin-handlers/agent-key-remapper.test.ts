@@ -29,7 +29,6 @@ describe("remapAgentKeysToDisplayNames", () => {
   it("remaps supported display-name agents only", () => {
     const agents = {
       sisyphus: {},
-      athena: {},
       metis: {},
       momus: {},
       "sisyphus-junior": {},
@@ -38,7 +37,6 @@ describe("remapAgentKeysToDisplayNames", () => {
     const result = remapAgentKeysToDisplayNames(agents)
 
     expect(result[getAgentListDisplayName("sisyphus")]).toBeDefined()
-    expect(result[getAgentDisplayName("athena")]).toBeDefined()
     expect(result[getAgentDisplayName("metis")]).toBeDefined()
     expect(result[getAgentDisplayName("momus")]).toBeDefined()
     expect(result[getAgentDisplayName("sisyphus-junior")]).toBeDefined()

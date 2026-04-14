@@ -100,8 +100,8 @@ task(subagent_type="librarian", load_skills=[], prompt="I'm working with [TECHNO
 grep(pattern="relevant_pattern", path="src/")
 read_file(filePath="known/important/file.ts")
 
-// Collect background results when ready
-deep_context = background_output(task_id=...)
+// When the system reminder arrives, continue with the newly available background results
+deep_context = "available via system reminder"
 
 // Merge ALL findings for comprehensive understanding
 \`\`\`

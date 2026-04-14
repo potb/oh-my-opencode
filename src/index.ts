@@ -1,4 +1,3 @@
-import { initConfigContext } from "./cli/config-manager/config-context"
 import type { Plugin } from "@opencode-ai/plugin"
 
 import type { HookName } from "./config"
@@ -13,7 +12,7 @@ import { createPluginDispose, type PluginDispose } from "./plugin-dispose"
 import { loadPluginConfig } from "./plugin-config"
 import { createModelCacheState } from "./plugin-state"
 import { createFirstMessageVariantGate } from "./shared/first-message-variant"
-import { injectServerAuthIntoClient, log, logLegacyPluginStartupWarning } from "./shared"
+import { initConfigContext, injectServerAuthIntoClient, log, logLegacyPluginStartupWarning } from "./shared"
 import { detectExternalSkillPlugin, getSkillPluginConflictWarning } from "./shared/external-plugin-detector"
 import { lspManager } from "./tools/lsp/client"
 import { createPluginPostHog, getPostHogDistinctId } from "./shared/posthog"

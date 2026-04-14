@@ -6,19 +6,6 @@ export const AGENT_NAME_MAP: Record<string, string> = {
   "Sisyphus (Ultraworker)": "sisyphus",
   sisyphus: "sisyphus",
 
-  // Hephaestus variants → "hephaestus"
-  "Hephaestus - Deep Agent": "hephaestus",
-  "Hephaestus (Deep Agent)": "hephaestus",
-
-  // Prometheus variants → "prometheus"
-  "OmO-Plan": "prometheus",
-  "omo-plan": "prometheus",
-  "Planner-Sisyphus": "prometheus",
-  "planner-sisyphus": "prometheus",
-  "Prometheus - Plan Builder": "prometheus",
-  "Prometheus (Plan Builder)": "prometheus",
-  prometheus: "prometheus",
-
   // Metis variants → "metis"
   "plan-consultant": "metis",
   "Metis - Plan Consultant": "metis",
@@ -35,7 +22,6 @@ export const AGENT_NAME_MAP: Record<string, string> = {
   "sisyphus-junior": "sisyphus-junior",
 
   // Already lowercase - passthrough
-  build: "build",
   oracle: "oracle",
   librarian: "librarian",
   explore: "explore",
@@ -48,8 +34,6 @@ export const BUILTIN_AGENT_NAMES = new Set([
   "explore",
   "metis", // was "Metis - Plan Consultant"
   "momus", // was "Momus - Plan Critic"
-  "prometheus", // was "Prometheus - Plan Builder"
-  "build",
 ])
 
 export function migrateAgentNames(

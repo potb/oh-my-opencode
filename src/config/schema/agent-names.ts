@@ -21,11 +21,9 @@ export const BuiltinSkillNameSchema = z.enum([
 ])
 
 export const OverridableAgentNameSchema = z.enum([
-  "build",
   "plan",
   "sisyphus",
   "sisyphus-junior",
-  "OpenCode-Builder",
   "metis",
   "momus",
   "oracle",

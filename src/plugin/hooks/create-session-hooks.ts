@@ -78,9 +78,8 @@ export function createSessionHooks(args: {
 
   let sessionNotification: ReturnType<typeof createSessionNotification> | null = null
   if (isHookEnabled("session-notification")) {
-    const forceEnable = pluginConfig.notification?.force_enable ?? false
     const externalNotifier = detectExternalNotificationPlugin(ctx.directory)
-    if (externalNotifier.detected && !forceEnable) {
+    if (externalNotifier.detected) {
       log(getNotificationConflictWarning(externalNotifier.pluginName!))
     } else {
       sessionNotification = safeHook("session-notification", () => createSessionNotification(ctx))
@@ -100,9 +99,9 @@ export function createSessionHooks(args: {
     ? safeHook("auto-update-checker", () =>
         createAutoUpdateCheckerHook(ctx, {
           showStartupToast: true,
-          isSisyphusEnabled: pluginConfig.sisyphus_agent?.disabled !== true,
-          autoUpdate: pluginConfig.auto_update ?? true,
-          modelCapabilities: pluginConfig.model_capabilities,
+          isSisyphusEnabled: true,
+          autoUpdate: false,
+          modelCapabilities: undefined,
         }))
     : null
 

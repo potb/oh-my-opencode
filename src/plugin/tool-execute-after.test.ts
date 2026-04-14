@@ -32,4 +32,41 @@ describe("createToolExecuteAfterHandler", () => {
     expect(callOrder).toEqual(["truncator", "claude"])
     expect(claudeSawOutput).toBe("truncated output")
   })
+
+  it("runs comment checker and hashline enhancer after truncation and claude hooks", async () => {
+    const callOrder: string[] = []
+
+    const handler = createToolExecuteAfterHandler({
+      ctx: { directory: "/repo" } as never,
+      hooks: {
+        toolOutputTruncator: {
+          "tool.execute.after": async () => {
+            callOrder.push("truncator")
+          },
+        },
+        claudeCodeHooks: {
+          "tool.execute.after": async () => {
+            callOrder.push("claude")
+          },
+        },
+        commentChecker: {
+          "tool.execute.after": async () => {
+            callOrder.push("commentChecker")
+          },
+        },
+        hashlineReadEnhancer: {
+          "tool.execute.after": async () => {
+            callOrder.push("hashlineReadEnhancer")
+          },
+        },
+      } as never,
+    })
+
+    await handler(
+      { tool: "read", sessionID: "ses_test", callID: "call_test" },
+      { title: "result", output: "original output", metadata: {} },
+    )
+
+    expect(callOrder).toEqual(["truncator", "claude", "commentChecker", "hashlineReadEnhancer"])
+  })
 })

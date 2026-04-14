@@ -1,4 +1,4 @@
-import type { HookName, OhMyOpenCodeConfig } from "../../config"
+import type { HookName } from "../../config"
 import type { BackgroundManager } from "../../features/background-agent"
 import type { PluginContext } from "../types"
 
@@ -19,14 +19,12 @@ export type ContinuationHooks = {
 
 export function createContinuationHooks(args: {
   ctx: PluginContext
-  pluginConfig: OhMyOpenCodeConfig
   isHookEnabled: (hookName: HookName) => boolean
   safeHookEnabled: boolean
   backgroundManager: BackgroundManager
 }): ContinuationHooks {
   const {
     ctx,
-    pluginConfig,
     isHookEnabled,
     safeHookEnabled,
     backgroundManager,
@@ -46,7 +44,7 @@ export function createContinuationHooks(args: {
 
   const unstableAgentBabysitter = isHookEnabled("unstable-agent-babysitter")
     ? safeHook("unstable-agent-babysitter", () =>
-        createUnstableAgentBabysitter({ ctx, backgroundManager, pluginConfig }))
+        createUnstableAgentBabysitter({ ctx, backgroundManager }))
     : null
 
   const backgroundNotificationHook = isHookEnabled("background-notification")

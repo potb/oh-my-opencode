@@ -28,7 +28,7 @@ describe("buildBackgroundTaskNotificationText", () => {
 **1 task still in progress.** You WILL be notified when ALL complete.
 Do NOT poll - continue productive work.
 
-Use \`background_output(task_id="task-1")\` to retrieve this result when ready.
+Wait for the related parent-session follow-up for this task.
 </system-reminder>`
 
       // then
@@ -64,7 +64,7 @@ Use \`background_output(task_id="task-1")\` to retrieve this result when ready.
 **2 tasks still in progress.** You WILL be notified when ALL complete.
 **ACTION REQUIRED:** This task failed. Check the error and decide whether to retry, cancel remaining tasks, or continue.
 
-Use \`background_output(task_id="task-2")\` to retrieve this result when ready.
+Wait for the related parent-session follow-up for this task.
 </system-reminder>`
 
       // then
@@ -118,7 +118,7 @@ Use \`background_output(task_id="task-2")\` to retrieve this result when ready.
 - \`task-2\`: Summarize logs [CANCELLED] - User aborted
 - \`task-3\`: Fallback task [ERROR] - Denied
 
-Use \`background_output(task_id="<id>")\` to retrieve each result.
+Inspect the related parent-session follow-up for each completed task.
 
 **ACTION REQUIRED:** 2 task(s) failed. Check errors above and decide whether to retry or proceed.
 </system-reminder>`

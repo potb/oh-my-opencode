@@ -54,7 +54,7 @@ ${header}
 
 ${body.trim()}
 
-Use \`background_output(task_id="<id>")\` to retrieve each result.${hasFailures ? `\n\n**ACTION REQUIRED:** ${failedTasks.length} task(s) failed. Check errors above and decide whether to retry or proceed.` : ""}
+Inspect the related parent-session follow-up for each completed task.${hasFailures ? `\n\n**ACTION REQUIRED:** ${failedTasks.length} task(s) failed. Check errors above and decide whether to retry or proceed.` : ""}
 </system-reminder>`
   }
 
@@ -69,6 +69,6 @@ Use \`background_output(task_id="<id>")\` to retrieve each result.${hasFailures 
 **${remainingCount} task${remainingCount === 1 ? "" : "s"} still in progress.** You WILL be notified when ALL complete.
 ${isFailure ? "**ACTION REQUIRED:** This task failed. Check the error and decide whether to retry, cancel remaining tasks, or continue." : "Do NOT poll - continue productive work."}
 
-Use \`background_output(task_id="${task.id}")\` to retrieve this result when ready.
+Wait for the related parent-session follow-up for this task.
 </system-reminder>`
 }
