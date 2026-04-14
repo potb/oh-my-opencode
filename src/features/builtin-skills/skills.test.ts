@@ -162,7 +162,7 @@ describe("createBuiltinSkills", () => {
 		expect(reviewWork!.template).toContain("QA")
 		expect(reviewWork!.template).toContain("Code Quality")
 		expect(reviewWork!.template).toContain("Security")
-		expect(reviewWork!.template).toContain("Context Mining")
+		expect(reviewWork!.template).toContain("Context Review")
 	})
 
 	test("ai-slop-remover skill has correct structure", () => {
