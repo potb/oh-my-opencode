@@ -205,8 +205,7 @@ Invoke review-work after CI passes — there's no point reviewing code that does
 
 ```
 task(
-  category="unspecified-high",
-  load_skills=["review-work"],
+  subagent_type="oracle",
   run_in_background=false,
   description="Post-implementation review of PR changes",
   prompt="Review the implementation work on branch {BRANCH_NAME}. The worktree is at {WORKTREE_PATH}. Goal: {ORIGINAL_GOAL}. Constraints: {CONSTRAINTS}. Run command: bun run dev (or as appropriate)."

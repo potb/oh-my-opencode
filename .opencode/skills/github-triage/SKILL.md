@@ -172,9 +172,8 @@ task_create(
 ### Step 3.2: Spawn Analysis Subagent (Background)
 ```typescript
 task(
-  category="quick",
+  subagent_type="explore",
   run_in_background=true,
-  load_skills=[],
   prompt=SUBAGENT_PROMPT
 )
 ```
@@ -188,7 +187,7 @@ task(
 ```
 For each item:
   1. task_create(subject="Triage: #{number} {title}")
-  2. task(category="quick", run_in_background=true, load_skills=[], prompt=SUBAGENT_PROMPT)
+  2. task(subagent_type="explore", run_in_background=true, prompt=SUBAGENT_PROMPT)
   3. Store mapping: item_number -> { task_id, background_task_id }
 ```
 

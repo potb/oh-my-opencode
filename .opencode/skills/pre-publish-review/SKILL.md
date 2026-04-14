@@ -77,9 +77,8 @@ For each change group, spawn one ultrabrain agent. Each gets only its portion of
 
 ```
 task(
-  category="ultrabrain",
+  subagent_type="oracle",
   run_in_background=true,
-  load_skills=[],
   description="Deep analysis: {GROUP_NAME}",
   prompt="""
 <review_type>PER-CHANGE DEEP ANALYSIS</review_type>
@@ -153,9 +152,8 @@ Spawn a sub-agent that loads the `/review-work` skill. The review-work skill int
 
 ```
 task(
-  category="unspecified-high",
+  subagent_type="oracle",
   run_in_background=true,
-  load_skills=["review-work"],
   description="Run /review-work on all unpublished changes",
   prompt="""
 Run /review-work on the unpublished changes between v{PUBLISHED} and HEAD.
@@ -185,7 +183,6 @@ The oracle gets the full picture — all commits, full diff stat, and changed fi
 task(
   subagent_type="oracle",
   run_in_background=true,
-  load_skills=[],
   description="Oracle: overall release synthesis and version bump recommendation",
   prompt="""
 <review_type>RELEASE SYNTHESIS — OVERALL ASSESSMENT</review_type>

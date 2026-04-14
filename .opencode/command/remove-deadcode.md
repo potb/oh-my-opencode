@@ -7,7 +7,7 @@ description: Remove unused code from this project with ultrawork mode, LSP-verif
 Dead code removal via massively parallel deep agents. You are the ORCHESTRATOR — you scan, verify, batch, then delegate ALL removals to parallel agents.
 
 <rules>
-- **LSP is law.** Verify with `LspFindReferences(includeDeclaration=false)` before ANY removal decision.
+- **LSP is law.** Verify with `lsp_find_references(includeDeclaration=false)` before ANY removal decision.
 - **Never remove entry points.** `src/index.ts`, `src/cli/index.ts`, test files, config files, `packages/` — off-limits.
 - **You do NOT remove code yourself.** You scan, verify, batch, then fire deep agents. They do the work.
 </rules>
@@ -39,11 +39,11 @@ This gives you the definitive list of unused locals, imports, parameters, and ty
 **Explore agents (fire ALL simultaneously as background):**
 
 ```
-task(subagent_type="explore", run_in_background=true, load_skills=[],
+task(subagent_type="explore", run_in_background=true,
   description="Find orphaned files",
   prompt="Find files in src/ NOT imported by any other file. Check all import statements. EXCLUDE: index.ts, *.test.ts, entry points, .md, packages/. Return: file paths.")
 
-task(subagent_type="explore", run_in_background=true, load_skills=[],
+task(subagent_type="explore", run_in_background=true,
   description="Find unused exported symbols",
   prompt="Find exported functions/types/constants in src/ that are never imported by other files. Cross-reference: for each export, grep the symbol name across src/ — if it only appears in its own file, it's a candidate. EXCLUDE: src/index.ts exports, test files. Return: file path, line, symbol name, export type.")
 ```
@@ -59,7 +59,7 @@ Collect all results into a master candidate list.
 For EACH candidate from Phase 1:
 
 ```typescript
-LspFindReferences(filePath, line, character, includeDeclaration=false)
+lsp_find_references(filePath, line, character, includeDeclaration=false)
 // 0 references → CONFIRMED dead
 // 1+ references → NOT dead, drop from list
 ```
@@ -113,8 +113,7 @@ For EACH batch, fire a deep agent:
 
 ```
 task(
-  category="deep",
-  load_skills=["typescript-programmer", "git-master"],
+  subagent_type="oracle",
   run_in_background=true,
   description="Remove dead code batch N: [brief description]",
   prompt="[see template below]"
@@ -140,7 +139,7 @@ Every deep agent gets this prompt structure (fill in the specifics per batch):
 ## PROTOCOL
 
 1. Read each file to understand exact syntax at the target lines
-2. For each symbol, run LspFindReferences to RE-VERIFY it's still dead (another agent may have changed things)
+2. For each symbol, run lsp_find_references to RE-VERIFY it's still dead (another agent may have changed things)
 3. Apply the change:
    - Unused import (only symbol in line): remove entire import line
    - Unused import (one of many): remove only that symbol from the import list
