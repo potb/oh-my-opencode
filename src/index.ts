@@ -90,8 +90,6 @@ const OhMyOpenCodePlugin: Plugin = async (ctx) => {
     backgroundManager: managers.backgroundManager,
     isHookEnabled,
     safeHookEnabled,
-    mergedSkills: toolsResult.mergedSkills,
-    availableSkills: toolsResult.availableSkills,
   })
 
   const dispose = createPluginDispose({

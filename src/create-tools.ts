@@ -6,11 +6,6 @@ import { createToolRegistry } from "./plugin/tool-registry"
 
 type CreateToolsResult = {
   filteredTools: ToolsRecord
-  mergedSkills: []
-  availableSkills: []
-  availableCategories: []
-  browserProvider: undefined
-  disabledSkills: Set<string>
   taskSystemEnabled: boolean
 }
 
@@ -29,11 +24,6 @@ export async function createTools(args: {
 
   return {
     filteredTools,
-    mergedSkills: [],
-    availableSkills: [],
-    availableCategories: [],
-    browserProvider: undefined,
-    disabledSkills: new Set<string>(),
     taskSystemEnabled,
   }
 }

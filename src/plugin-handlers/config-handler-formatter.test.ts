@@ -2,19 +2,13 @@ import { afterEach, beforeEach, describe, expect, spyOn, test, mock } from "bun:
 
 import type { OhMyOpenCodeConfig } from "../config"
 import * as agentConfigHandler from "./agent-config-handler"
-import * as commandConfigHandler from "./command-config-handler"
-import * as mcpConfigHandler from "./mcp-config-handler"
-import * as pluginComponentsLoader from "./plugin-components-loader"
 import * as providerConfigHandler from "./provider-config-handler"
 import * as shared from "../shared"
 import * as toolConfigHandler from "./tool-config-handler"
 
 let logSpy: ReturnType<typeof spyOn>
-let loadPluginComponentsSpy: ReturnType<typeof spyOn>
 let applyAgentConfigSpy: ReturnType<typeof spyOn>
 let applyToolConfigSpy: ReturnType<typeof spyOn>
-let applyMcpConfigSpy: ReturnType<typeof spyOn>
-let applyCommandConfigSpy: ReturnType<typeof spyOn>
 let applyProviderConfigSpy: ReturnType<typeof spyOn>
 let createConfigHandler: (typeof import("./config-handler"))["createConfigHandler"]
 
@@ -37,29 +31,12 @@ beforeEach(async () => {
   mock.restore()
 
   logSpy = spyOn(shared, "log").mockImplementation(() => {})
-  loadPluginComponentsSpy = spyOn(
-    pluginComponentsLoader,
-    "loadPluginComponents",
-  ).mockResolvedValue({
-    commands: {},
-    skills: {},
-    agents: {},
-    mcpServers: {},
-    hooksConfigs: [],
-    plugins: [],
-    errors: [],
-  })
   applyAgentConfigSpy = spyOn(agentConfigHandler, "applyAgentConfig").mockResolvedValue(
     {},
   )
   applyToolConfigSpy = spyOn(toolConfigHandler, "applyToolConfig").mockImplementation(
     () => {},
   )
-  applyMcpConfigSpy = spyOn(mcpConfigHandler, "applyMcpConfig").mockResolvedValue()
-  applyCommandConfigSpy = spyOn(
-    commandConfigHandler,
-    "applyCommandConfig",
-  ).mockResolvedValue()
   applyProviderConfigSpy = spyOn(
     providerConfigHandler,
     "applyProviderConfig",
@@ -69,11 +46,8 @@ beforeEach(async () => {
 
 afterEach(() => {
   logSpy.mockRestore()
-  loadPluginComponentsSpy.mockRestore()
   applyAgentConfigSpy.mockRestore()
   applyToolConfigSpy.mockRestore()
-  applyMcpConfigSpy.mockRestore()
-  applyCommandConfigSpy.mockRestore()
   applyProviderConfigSpy.mockRestore()
   mock.restore()
 })
