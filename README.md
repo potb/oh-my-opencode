@@ -247,11 +247,11 @@ project/
 
 Agents auto-read relevant context. Zero manual management.
 
-### Planning. Prometheus
+### Planning
 
 Complex task? Don't prompt and pray.
 
-`/start-work` calls Prometheus. **Interviews you like a real engineer**, identifies scope and ambiguities, builds a verified plan before touching code. Agent knows what it's building before it starts.
+When you want precision, ask the agent to plan first. It can **interview you like a real engineer**, identify scope and ambiguities, and build a verified plan before touching code.
 
 ### Skills
 

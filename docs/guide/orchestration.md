@@ -10,7 +10,7 @@ Oh My OpenAgent's orchestration system transforms a simple AI agent into a coord
 | --------------------- | ------------------------- | ---------------------------------------------------------------------------------------- |
 | **Simple**            | Just prompt               | Simple tasks, quick fixes, single-file changes                                           |
 | **Complex + Lazy**    | Type `ulw` or `ultrawork` | Complex tasks where explaining context is tedious. Agent figures it out.                 |
-| **Complex + Precise** | `@plan` → `/start-work`   | Precise, multi-step work requiring true orchestration. Prometheus plans, Atlas executes. |
+| **Complex + Precise** | `@plan` + planned execution | Precise, multi-step work requiring a written plan before execution continues. |
 
 **Decision Flow:**
 
@@ -21,7 +21,7 @@ Is it a quick fix or simple task?
   └─ NO  → Is explaining the full context tedious?
               └─ YES → Type "ulw" and let the agent figure it out
               └─ NO  → Do you need precise, verifiable execution?
-                         └─ YES → Use @plan for Prometheus planning, then /start-work
+                         └─ YES → Use @plan for Prometheus planning, then continue execution against that plan
                          └─ NO  → Just use "ulw"
 ```
 
@@ -59,7 +59,7 @@ flowchart TB
     Plan -->|"High accuracy?"| Momus
     Momus -->|"OKAY / REJECT"| Prometheus
 
-    User -->|"/start-work"| Orchestrator
+    User -->|"continue execution"| Orchestrator
     Plan -->|"Read"| Orchestrator
 
     Orchestrator -->|"task(category=deep/quick/unspecified-*)"| Junior
@@ -116,7 +116,7 @@ stateDiagram-v2
     MomusLoop --> WritePlan: REJECTED - fix issues
     MomusLoop --> Done: OKAY - plan approved
 
-    Done --> [*]: Guide to /start-work
+    Done --> [*]: Hand off to execution
 ```
 
 **Intent-Specific Strategies:**
@@ -363,14 +363,14 @@ task(
 
 Both methods trigger the same Prometheus planning flow. The @plan command is simply a convenience shortcut.
 
-### /start-work Behavior and Session Continuity
+### Planned Execution and Session Continuity
 
-**What Happens When You Run /start-work:**
+**What Happens When Planned Execution Continues:**
 
 ```
-User: /start-work
+User: continue execution from the plan
     ↓
-[start-work hook activates]
+[continuation state is checked]
     ↓
 Check: Does .sisyphus/boulder.json exist?
     ↓
@@ -381,9 +381,9 @@ Check: Does .sisyphus/boulder.json exist?
     │   - Atlas continues where you left off
     │
     └─ NO (fresh start) → INIT MODE
-        - Find the most recent plan in .sisyphus/plans/
+        - Use the selected plan in .sisyphus/plans/
         - Create new boulder.json tracking this plan
-        - Switch session agent to Atlas
+        - Hand execution to the orchestrator
         - Begin execution from task 1
 ```
 
@@ -402,20 +402,20 @@ The `boulder.json` file tracks:
 Monday 9:00 AM
   └─ @plan "Build user authentication"
   └─ Prometheus interviews and creates plan
-  └─ User: /start-work
+  └─ User resumes planned execution
   └─ Atlas begins execution, creates boulder.json
   └─ Task 1 complete, Task 2 in progress...
   └─ [Session ends - computer crash, user logout, etc.]
 
 Monday 2:00 PM (NEW SESSION)
   └─ User opens new session (agent = Sisyphus by default)
-  └─ User: /start-work
-  └─ [start-work hook reads boulder.json]
+  └─ User resumes planned execution
+  └─ [continuation state reads boulder.json]
   └─ "Resuming 'Build user authentication' - 3 of 8 tasks complete"
   └─ Atlas continues from Task 3 (no context lost)
 ```
 
-Atlas is automatically activated when you run `/start-work`. You don't need to manually switch to Atlas.
+When a planned execution is active, continuation state resumes from `boulder.json` automatically.
 
 ### Hephaestus vs Sisyphus + ultrawork
 
@@ -490,7 +490,7 @@ You can control related features in `oh-my-openagent.json`:
 
   // Hook settings (add to disable)
   "disabled_hooks": [
-    // "start-work",             // Disable execution trigger
+    // "atlas",                  // Disable planned execution orchestration
     // "prometheus-md-only"      // Remove Prometheus write restrictions (not recommended)
   ],
 }
@@ -504,7 +504,7 @@ You can control related features in `oh-my-openagent.json`:
 
 Prometheus enters interview mode by default. It will ask you questions about your requirements. Answer them, then say "make it a plan" when ready.
 
-### "/start-work says 'no active plan found'"
+### "planned execution says 'no active plan found'"
 
 Either:
 
@@ -513,7 +513,7 @@ Either:
 
 ### "I'm in Atlas but I want to switch back to normal mode"
 
-Type `exit` or start a new session. Atlas is primarily entered via `/start-work` - you don't typically "switch to Atlas" manually.
+Type `exit` or start a new session. Planned execution resumes from saved continuation state rather than a dedicated user command.
 
 ### "What's the difference between @plan and just switching to Prometheus?"
 

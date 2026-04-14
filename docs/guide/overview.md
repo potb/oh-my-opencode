@@ -31,7 +31,7 @@ ultrawork
 
 That's it. The agent figures everything out — explores your codebase, researches patterns, implements the feature, verifies with diagnostics. Keeps working until done.
 
-Want more control? Press **Tab** to enter [Prometheus mode](./orchestration.md) for interview-based planning, then run `/start-work` for full orchestration.
+Want more control? Ask for an interview-style plan first, then execute against that plan with normal orchestration.
 
 ---
 
@@ -113,7 +113,7 @@ Press **Tab** to enter Prometheus mode, or type `@plan "your task"` from Sisyphu
 
 Atlas executes Prometheus plans. Distributes tasks to specialized subagents. Accumulates learnings across tasks. Verifies completion independently.
 
-Run `/start-work` to activate Atlas on your latest plan.
+Atlas activates from persisted continuation state when a planned execution is already in progress.
 
 ### Oracle: The Consultant
 
@@ -145,7 +145,7 @@ Press **Tab** to enter Prometheus mode.
 
 Prometheus interviews you like a real engineer. Asks clarifying questions. Identifies scope and ambiguities. Builds a detailed plan before a single line of code is touched.
 
-Then run `/start-work` and Atlas takes over. Tasks are distributed to specialized subagents. Each completion is verified independently. Learnings accumulate across tasks. Progress tracks across sessions.
+Then continue execution from that plan. Tasks are distributed to specialized subagents, each completion is verified independently, and progress can carry across sessions.
 
 Use Prometheus for multi-day projects, critical production changes, complex refactoring, or when you want a documented decision trail.
 

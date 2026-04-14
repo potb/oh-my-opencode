@@ -449,7 +449,6 @@ Commands are slash-triggered workflows that execute predefined templates.
 | `/ulw-loop`          | Start ultrawork loop - continues with ultrawork mode                                       |
 | `/cancel-ralph`      | Cancel active Ralph Loop                                                                   |
 | `/refactor`          | Intelligent refactoring with LSP, AST-grep, architecture analysis, and TDD verification    |
-| `/start-work`        | Start Sisyphus work session from Prometheus plan                                           |
 | `/stop-continuation` | Stop all continuation mechanisms (ralph loop, todo continuation, boulder) for this session |
 | `/handoff`           | Create a detailed context summary for continuing work in a new session                     |
 
@@ -519,18 +518,6 @@ Everything runs at maximum intensity - parallel agents, background tasks, aggres
 - Architecture analysis before changes
 - TDD verification after changes
 - Codemap generation
-
-### /start-work
-
-**Purpose**: Start execution from a Prometheus-generated plan
-
-**Usage**:
-
-```
-/start-work [plan-name]
-```
-
-Uses atlas agent to execute planned tasks systematically.
 
 ### /stop-continuation
 
@@ -750,7 +737,6 @@ Hooks intercept and modify behavior at key points in the agent lifecycle across 
 | **keyword-detector**        | Message + Transform | Detects keywords and activates modes: `ultrawork`/`ulw` (max performance), `search`/`find` (parallel exploration), `analyze`/`investigate` (deep analysis). |
 | **think-mode**              | Params              | Auto-detects extended thinking needs. Catches "think deeply", "ultrathink" and adjusts model settings.                                                      |
 | **ralph-loop**              | Event + Message     | Manages self-referential loop continuation.                                                                                                                 |
-| **start-work**              | Message             | Handles /start-work command execution.                                                                                                                      |
 | **auto-slash-command**      | Message             | Automatically executes slash commands from prompts.                                                                                                         |
 | **stop-continuation-guard** | Event + Message     | Guards the stop-continuation mechanism.                                                                                                                     |
 | **category-skill-reminder** | Event + PostToolUse | Reminds agents about available category skills for delegation.                                                                                              |
