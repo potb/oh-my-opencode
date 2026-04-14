@@ -8,12 +8,10 @@ import {
 import { isSessionInBoulderLineage } from "../../hooks/atlas/boulder-session-lineage"
 import { getLastAgentFromSession } from "../../hooks/atlas/session-last-agent"
 import { getAgentConfigKey } from "../../shared/agent-display-names"
-import { readState as readRalphLoopState } from "../../hooks/ralph-loop/storage"
 import type { RunContext } from "./types"
 
 export interface ContinuationState {
   hasActiveBoulder: boolean
-  hasActiveRalphLoop: boolean
   hasHookMarker: boolean
   hasTodoHookMarker: boolean
   hasActiveHookMarker: boolean
@@ -29,7 +27,6 @@ export async function getContinuationState(
 
   return {
     hasActiveBoulder: await hasActiveBoulderContinuation(directory, sessionID, client),
-    hasActiveRalphLoop: hasActiveRalphLoopContinuation(directory, sessionID),
     hasHookMarker: marker !== null,
     hasTodoHookMarker: marker?.sources.todo !== undefined,
     hasActiveHookMarker: isContinuationMarkerActive(marker),
@@ -98,15 +95,4 @@ async function isTrackedDescendantSession(
     sessionID,
     boulderSessionIDs: ancestorSessionIDs,
   })
-}
-
-function hasActiveRalphLoopContinuation(directory: string, sessionID: string): boolean {
-  const state = readRalphLoopState(directory)
-  if (!state || !state.active) return false
-
-  if (state.session_id && state.session_id !== sessionID) {
-    return false
-  }
-
-  return true
 }

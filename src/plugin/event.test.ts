@@ -184,7 +184,6 @@ afterEach(() => {
 				agentUsageReminder: { event: async () => {} },
 				categorySkillReminder: { event: async () => {} },
 				interactiveBashSession: { event: async () => {} },
-				ralphLoop: { event: async () => {} },
 				stopContinuationGuard: { event: async () => {} },
 				compactionTodoPreserver: { event: async () => {} },
 				atlasHook: { handler: async () => {} },

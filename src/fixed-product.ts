@@ -38,7 +38,6 @@ export const REMOVED_HOOK_NAMES = [
   "interactive-bash-session",
   "model-fallback",
   "no-hephaestus-non-gpt",
-  "ralph-loop",
   "runtime-fallback",
   "start-work",
   "stop-continuation-guard",

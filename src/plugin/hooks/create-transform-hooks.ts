@@ -1,6 +1,5 @@
 import type { OhMyOpenCodeConfig } from "../../config"
 import type { PluginContext } from "../types"
-import type { RalphLoopHook } from "../../hooks/ralph-loop"
 
 import {
   createClaudeCodeHooksHook,
@@ -27,9 +26,8 @@ export function createTransformHooks(args: {
   pluginConfig: OhMyOpenCodeConfig
   isHookEnabled: (hookName: string) => boolean
   safeHookEnabled?: boolean
-  ralphLoop?: RalphLoopHook | null
 }): TransformHooks {
-  const { ctx, pluginConfig, isHookEnabled, ralphLoop } = args
+  const { ctx, pluginConfig, isHookEnabled } = args
   const safeHookEnabled = args.safeHookEnabled ?? true
 
   const claudeCodeHooks = isHookEnabled("claude-code-hooks")
@@ -51,7 +49,7 @@ export function createTransformHooks(args: {
   const keywordDetector = isHookEnabled("keyword-detector")
     ? safeCreateHook(
         "keyword-detector",
-        () => createKeywordDetectorHook(ctx, contextCollector, ralphLoop ?? undefined),
+        () => createKeywordDetectorHook(ctx, contextCollector),
         { enabled: safeHookEnabled },
       )
     : null

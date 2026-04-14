@@ -11,7 +11,6 @@ export type {
   SisyphusAgentConfig,
   ExperimentalConfig,
   DynamicContextPruningConfig,
-  RalphLoopConfig,
   SisyphusConfig,
   SisyphusTasksConfig,
   ModelCapabilitiesConfig,

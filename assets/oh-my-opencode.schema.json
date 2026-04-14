@@ -4467,38 +4467,6 @@
         }
       ]
     },
-    "ralph_loop": {
-      "type": "object",
-      "properties": {
-        "enabled": {
-          "default": false,
-          "type": "boolean"
-        },
-        "default_max_iterations": {
-          "default": 100,
-          "type": "number",
-          "minimum": 1,
-          "maximum": 1000
-        },
-        "state_dir": {
-          "type": "string"
-        },
-        "default_strategy": {
-          "default": "continue",
-          "type": "string",
-          "enum": [
-            "reset",
-            "continue"
-          ]
-        }
-      },
-      "required": [
-        "enabled",
-        "default_max_iterations",
-        "default_strategy"
-      ],
-      "additionalProperties": false
-    },
     "background_task": {
       "type": "object",
       "properties": {
