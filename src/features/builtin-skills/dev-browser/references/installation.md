@@ -15,9 +15,7 @@ This guide covers installation for all platforms: macOS, Linux, and Windows.
 # Clone dev-browser to a temporary location
 git clone https://github.com/sawyerhood/dev-browser /tmp/dev-browser-skill
 
-# Copy to skills directory (adjust path as needed)
-# For oh-my-opencode: already bundled
-# For manual installation:
+# Copy to a local working directory (adjust path as needed)
 mkdir -p ~/.config/opencode/skills
 cp -r /tmp/dev-browser-skill/skills/dev-browser ~/dev-tools/dev-browser
 
