@@ -884,16 +884,16 @@ describe("resolveSubagentExecution - agent name sanitization", () => {
     mock.restore()
   })
 
-  test("strips backslash-wrapped agent names like \\hephaestus\\", async () => {
+  test("strips backslash-wrapped agent names like \\metis\\", async () => {
     //#given
     readProviderModelsCacheMock.mockReturnValue({
       models: {},
       connected: [],
       updatedAt: "2026-03-03T00:00:00.000Z",
     })
-    const args = createBaseArgs({ subagent_type: "\\hephaestus\\" })
+    const args = createBaseArgs({ subagent_type: "\\metis\\" })
     const executorCtx = createExecutorContext(async () => ([
-      { name: "Hephaestus - Deep Agent", mode: "subagent", model: "openai/gpt-5.3-codex" },
+      { name: "Metis - Plan Consultant", mode: "subagent", model: "openai/gpt-5.3-codex" },
     ]))
 
     //#when
@@ -901,7 +901,7 @@ describe("resolveSubagentExecution - agent name sanitization", () => {
 
     //#then
     expect(result.error).toBeUndefined()
-    expect(result.agentToUse).toBe("Hephaestus - Deep Agent")
+    expect(result.agentToUse).toBe("Metis - Plan Consultant")
   })
 
   test("strips double-quoted agent names", async () => {

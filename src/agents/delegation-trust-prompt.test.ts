@@ -1,6 +1,5 @@
 import { describe, expect, test } from "bun:test"
 import { createSisyphusAgent } from "./sisyphus"
-import { createHephaestusAgent } from "./hephaestus"
 import { buildSisyphusJuniorPrompt } from "./sisyphus-junior/agent"
 import {
   buildAntiDuplicationSection,
@@ -53,44 +52,6 @@ describe("delegation trust prompt rules", () => {
 
     // then
     expect(prompt).toContain("Continue only with non-overlapping work")
-    expect(prompt).toContain("DO NOT perform the same search yourself")
-  })
-
-  test("Hephaestus prompt forbids duplicate delegated exploration", () => {
-    // given
-    const agent = createHephaestusAgent("openai/gpt-5.2", [exploreAgent])
-
-    // when
-    const prompt = agent.prompt
-
-    // then
-    expect(prompt).toContain("Continue only with non-overlapping work after launching background agents")
-    expect(prompt).toContain("DO NOT perform the same search yourself")
-  })
-
-  test("Hephaestus GPT-5.4 prompt forbids duplicate delegated exploration", () => {
-    // given
-    const agent = createHephaestusAgent("openai/gpt-5.4", [exploreAgent])
-
-    // when
-    const prompt = agent.prompt
-
-    // then
-    expect(prompt).toContain("continue only with non-overlapping work while they search")
-    expect(prompt).toContain("Continue only with non-overlapping work after launching background agents")
-    expect(prompt).toContain("DO NOT perform the same search yourself")
-  })
-
-  test("Hephaestus GPT-5.3 Codex prompt forbids duplicate delegated exploration", () => {
-    // given
-    const agent = createHephaestusAgent("openai/gpt-5.3-codex", [exploreAgent])
-
-    // when
-    const prompt = agent.prompt
-
-    // then
-    expect(prompt).toContain("continue only with non-overlapping work while they search")
-    expect(prompt).toContain("Continue only with non-overlapping work after launching background agents")
     expect(prompt).toContain("DO NOT perform the same search yourself")
   })
 

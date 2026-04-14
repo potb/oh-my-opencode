@@ -4,7 +4,7 @@ import { getAgentDisplayName } from "../../shared/agent-display-names"
 import { createNoSisyphusGptHook } from "./index"
 
 const SISYPHUS_DISPLAY = getAgentDisplayName("sisyphus")
-const HEPHAESTUS_DISPLAY = getAgentDisplayName("hephaestus")
+const ATLAS_DISPLAY = getAgentDisplayName("atlas")
 
 function createOutput() {
   return {
@@ -38,12 +38,12 @@ describe("no-sisyphus-gpt hook", () => {
 
     // then - toast is shown for every message
     expect(showToast).toHaveBeenCalledTimes(2)
-    expect(output1.message.agent).toBe("hephaestus")
-    expect(output2.message.agent).toBe("hephaestus")
+    expect(output1.message.agent).toBeUndefined()
+    expect(output2.message.agent).toBeUndefined()
     expect(showToast.mock.calls[0]?.[0]).toMatchObject({
       body: {
         title: "NEVER Use Sisyphus with GPT",
-        message: expect.stringContaining("For GPT models (other than 5.4), always use Hephaestus."),
+        message: expect.stringContaining("keep Sisyphus selected"),
         variant: "error",
       },
     })
@@ -92,7 +92,7 @@ describe("no-sisyphus-gpt hook", () => {
   })
 
   test("does not show toast for non-sisyphus agent", async () => {
-    // given - hephaestus with gpt model
+    // given - atlas with gpt model
     const showToast = spyOn({ fn: async () => ({}) }, "fn")
     const hook = createNoSisyphusGptHook({
       client: { tui: { showToast } },
@@ -103,7 +103,7 @@ describe("no-sisyphus-gpt hook", () => {
     // when - chat.message runs
     await hook["chat.message"]?.({
       sessionID: "ses_3",
-      agent: HEPHAESTUS_DISPLAY,
+      agent: ATLAS_DISPLAY,
       model: { providerID: "openai", modelID: "gpt-5.4" },
     }, output)
 
@@ -131,6 +131,6 @@ describe("no-sisyphus-gpt hook", () => {
 
     // then - toast shown via session-agent fallback
     expect(showToast).toHaveBeenCalledTimes(1)
-    expect(output.message.agent).toBe("hephaestus")
+    expect(output.message.agent).toBeUndefined()
   })
 })

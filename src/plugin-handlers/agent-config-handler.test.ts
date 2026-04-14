@@ -45,7 +45,6 @@ describe("applyAgentConfig", () => {
       metis: { name: "metis", prompt: "metis prompt", mode: "subagent" },
       momus: { name: "momus", prompt: "momus prompt", mode: "subagent" },
       oracle: { name: "oracle", prompt: "oracle prompt", mode: "subagent" },
-      hephaestus: { name: "hephaestus", prompt: "hephaestus prompt", mode: "primary" },
       atlas: { name: "atlas", prompt: "atlas prompt", mode: "primary" },
       "multimodal-looker": {
         name: "multimodal-looker",
@@ -77,7 +76,6 @@ describe("applyAgentConfig", () => {
       FIXED_PRODUCT_AGENT_NAMES.map((name) => getAgentListDisplayName(name)).sort(),
     )
     expect(result[getAgentListDisplayName("atlas")]).toBeUndefined()
-    expect(result[getAgentListDisplayName("hephaestus")]).toBeUndefined()
     expect(result[getAgentListDisplayName("multimodal-looker")]).toBeUndefined()
 
     for (const key of Object.keys(result)) {

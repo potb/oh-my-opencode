@@ -19,7 +19,6 @@ import {
   createStartWorkHook,
   createSisyphusJuniorNotepadHook,
   createNoSisyphusGptHook,
-  createNoHephaestusNonGptHook,
   createQuestionLabelTruncatorHook,
   createPreemptiveCompactionHook,
   createRuntimeFallbackHook,
@@ -52,7 +51,6 @@ export type SessionHooks = {
   startWork: ReturnType<typeof createStartWorkHook> | null
   sisyphusJuniorNotepad: ReturnType<typeof createSisyphusJuniorNotepadHook> | null
   noSisyphusGpt: ReturnType<typeof createNoSisyphusGptHook> | null
-  noHephaestusNonGpt: ReturnType<typeof createNoHephaestusNonGptHook> | null
   questionLabelTruncator: ReturnType<typeof createQuestionLabelTruncatorHook> | null
   taskResumeInfo: ReturnType<typeof createTaskResumeInfoHook> | null
   anthropicEffort: ReturnType<typeof createAnthropicEffortHook> | null
@@ -220,13 +218,6 @@ export function createSessionHooks(args: {
     ? safeHook("no-sisyphus-gpt", () => createNoSisyphusGptHook(ctx))
     : null
 
-  const noHephaestusNonGpt = isHookEnabled("no-hephaestus-non-gpt")
-    ? safeHook("no-hephaestus-non-gpt", () =>
-      createNoHephaestusNonGptHook(ctx, {
-        allowNonGptModel: pluginConfig.agents?.hephaestus?.allow_non_gpt_model,
-      }))
-    : null
-
   const questionLabelTruncator = isHookEnabled("question-label-truncator")
     ? safeHook("question-label-truncator", () => createQuestionLabelTruncatorHook())
     : null
@@ -272,7 +263,6 @@ export function createSessionHooks(args: {
     startWork,
     sisyphusJuniorNotepad,
     noSisyphusGpt,
-    noHephaestusNonGpt,
     questionLabelTruncator,
     taskResumeInfo,
     anthropicEffort,

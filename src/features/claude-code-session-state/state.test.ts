@@ -89,10 +89,10 @@ describe("claude-code-session-state", () => {
       setSessionAgent(sessionID, "sisyphus")
 
       // when
-      updateSessionAgent(sessionID, "\u200B\u200BHephaestus - Deep Agent")
+      updateSessionAgent(sessionID, "\u200B\u200BAtlas - Plan Executor")
 
       // then
-      expect(getSessionAgent(sessionID)).toBe("Hephaestus - Deep Agent")
+      expect(getSessionAgent(sessionID)).toBe("Atlas - Plan Executor")
     })
   })
 

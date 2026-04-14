@@ -112,13 +112,13 @@ describe("resolveVariantForModel", () => {
     expect(variant).toBe("max")
   })
 
-  test("returns correct variant for openai provider (hephaestus agent)", () => {
-    // #given hephaestus has openai/gpt-5.4 with variant "medium" in its chain
+  test("returns correct variant for openai provider in sisyphus chain", () => {
+    // #given sisyphus has openai/gpt-5.4 with variant "medium" in its chain
     const config = {} as OhMyOpenCodeConfig
     const model = { providerID: "openai", modelID: "gpt-5.4" }
 
     // #when
-    const variant = resolveVariantForModel(config, "hephaestus", model)
+    const variant = resolveVariantForModel(config, "sisyphus", model)
 
     // then
     expect(variant).toBe("medium")

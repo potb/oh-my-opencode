@@ -7,6 +7,7 @@ export const AGENT_NAME_MAP: Record<string, string> = {
   sisyphus: "sisyphus",
 
   // Hephaestus variants → "hephaestus"
+  "Hephaestus - Deep Agent": "hephaestus",
   "Hephaestus (Deep Agent)": "hephaestus",
 
   // Prometheus variants → "prometheus"

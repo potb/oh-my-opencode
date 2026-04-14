@@ -3,7 +3,6 @@
 import { describe, it, expect } from "bun:test"
 import { buildAgentIdentitySection } from "./dynamic-agent-core-sections"
 import { createSisyphusAgent } from "./sisyphus"
-import { createHephaestusAgent } from "./hephaestus"
 import { mergeAgentConfig } from "./builtin-agents/agent-overrides"
 
 describe("buildAgentIdentitySection", () => {
@@ -84,28 +83,6 @@ describe("Sisyphus prompt identity", () => {
         expect(config.prompt).toContain("<agent-identity>")
         expect(config.prompt).toContain("Sisyphus")
         expect(config.prompt).toContain("</agent-identity>")
-      })
-    })
-  })
-})
-
-describe("Hephaestus prompt identity", () => {
-  describe("#given a Hephaestus agent created with GPT model", () => {
-    describe("#when checking the prompt", () => {
-      it("#then contains the agent identity section", () => {
-        const config = createHephaestusAgent("openai/gpt-5.4")
-
-        expect(config.prompt).toContain("<agent-identity>")
-        expect(config.prompt).toContain("Hephaestus")
-        expect(config.prompt).toContain("</agent-identity>")
-      })
-
-      it("#then identity section appears at the start of the prompt", () => {
-        const config = createHephaestusAgent("openai/gpt-5.4")
-        const prompt = config.prompt ?? ""
-        const identityIndex = prompt.indexOf("<agent-identity>")
-
-        expect(identityIndex).toBe(0)
       })
     })
   })

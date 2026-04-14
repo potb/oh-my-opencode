@@ -21,22 +21,22 @@ describe("resolveRunAgent", () => {
   it("uses CLI agent over env and config", () => {
     // given
     const config = createConfig({ default_run_agent: "atlas" })
-    const env = { OPENCODE_DEFAULT_AGENT: "Atlas" }
+    const env = { OPENCODE_DEFAULT_AGENT: "Sisyphus" }
 
     // when
     const agent = resolveRunAgent(
-      { message: "test", agent: "Hephaestus" },
+      { message: "test", agent: "Atlas" },
       config,
       env
     )
 
     // then
-    expect(agent).toBe("Hephaestus - Deep Agent")
+    expect(agent).toBe("Atlas - Plan Executor")
   })
 
   it("uses env agent over config", () => {
     // given
-    const config = createConfig({ default_run_agent: "hephaestus" })
+    const config = createConfig({ default_run_agent: "sisyphus" })
     const env = { OPENCODE_DEFAULT_AGENT: "Atlas" }
 
     // when
@@ -76,7 +76,7 @@ describe("resolveRunAgent", () => {
     const agent = resolveRunAgent({ message: "test" }, config, {})
 
     // then
-    expect(agent).toBe("Hephaestus - Deep Agent")
+    expect(agent).toBe("Atlas - Plan Executor")
   })
 
   it("maps display-name style default_run_agent values to canonical display names", () => {

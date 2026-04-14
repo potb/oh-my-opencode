@@ -419,7 +419,7 @@ describe("loadPluginConfig", () => {
       join(projectConfigDir, "oh-my-openagent.jsonc"),
       JSON.stringify({
         agents: {
-          hephaestus: { model: "openai/gpt-5.4" },
+          atlas: { model: "anthropic/claude-opus-4-6" },
         },
       })
     )

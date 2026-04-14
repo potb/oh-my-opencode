@@ -45,16 +45,6 @@ export const AGENT_MODEL_REQUIREMENTS: Record<string, ModelRequirement> = {
     ],
     requiresAnyModel: true,
   },
-  hephaestus: {
-    fallbackChain: [
-      {
-        providers: ["openai", "github-copilot", "venice", "opencode", "vercel"],
-        model: "gpt-5.4",
-        variant: "medium",
-      },
-    ],
-    requiresProvider: ["openai", "github-copilot", "venice", "opencode", "vercel"],
-  },
   oracle: {
     fallbackChain: [
       {

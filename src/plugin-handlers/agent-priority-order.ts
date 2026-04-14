@@ -2,7 +2,7 @@ import { getAgentListDisplayName } from "../shared/agent-display-names"
 
 /**
  * CRITICAL: This is the ONLY source of truth for core agent ordering.
- * The order is: sisyphus → hephaestus → atlas
+ * The order is: sisyphus → atlas
  *
  * DO NOT CHANGE THIS ORDER. Any PR attempting to modify this order
  * or introduce alternative ordering mechanisms (ZWSP prefixes, sort
@@ -12,7 +12,6 @@ import { getAgentListDisplayName } from "../shared/agent-display-names"
  */
 export const CANONICAL_CORE_AGENT_ORDER = [
   "sisyphus",
-  "hephaestus",
   "atlas",
 ] as const
 

@@ -31,7 +31,6 @@ describe("createBuiltinAgents custom agent visibility", () => {
 
 			//#then
 			expect(agents.sisyphus.prompt).not.toContain("backend-engineer")
-			expect(agents.hephaestus.prompt).not.toContain("backend-engineer")
 			expect(agents.atlas.prompt).not.toContain("backend-engineer")
 		} finally {
 			fetchSpy.mockRestore()

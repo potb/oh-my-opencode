@@ -452,79 +452,6 @@ describe("generateModelConfig", () => {
     })
   })
 
-  describe("Hephaestus agent special cases", () => {
-    test("Hephaestus is created when OpenAI is available (openai provider connected)", () => {
-      // #given
-      const config = createConfig({ hasOpenAI: true })
-
-      // #when
-      const result = generateModelConfig(config)
-
-      // #then
-      expect(result.agents?.hephaestus?.model).toBe("openai/gpt-5.4")
-      expect(result.agents?.hephaestus?.variant).toBe("medium")
-    })
-
-    test("Hephaestus falls back to Copilot GPT-5.4 when only Copilot is available", () => {
-      // #given
-      const config = createConfig({ hasCopilot: true })
-
-      // #when
-      const result = generateModelConfig(config)
-
-      // #then
-      expect(result.agents?.hephaestus).toEqual({
-        model: "github-copilot/gpt-5.4",
-        variant: "medium",
-      })
-    })
-
-    test("Hephaestus is created when OpenCode Zen is available (opencode provider connected)", () => {
-      // #given
-      const config = createConfig({ hasOpencodeZen: true })
-
-      // #when
-      const result = generateModelConfig(config)
-
-      // #then
-      expect(result.agents?.hephaestus?.model).toBe("opencode/gpt-5.4")
-      expect(result.agents?.hephaestus?.variant).toBe("medium")
-    })
-
-    test("Hephaestus is omitted when only Claude is available (no required provider connected)", () => {
-      // #given
-      const config = createConfig({ hasClaude: true })
-
-      // #when
-      const result = generateModelConfig(config)
-
-      // #then
-      expect(result.agents?.hephaestus).toBeUndefined()
-    })
-
-    test("Hephaestus is omitted when only Gemini is available (no required provider connected)", () => {
-      // #given
-      const config = createConfig({ hasGemini: true })
-
-      // #when
-      const result = generateModelConfig(config)
-
-      // #then
-      expect(result.agents?.hephaestus).toBeUndefined()
-    })
-
-    test("Hephaestus is omitted when only ZAI is available (no required provider connected)", () => {
-      // #given
-      const config = createConfig({ hasZaiCodingPlan: true })
-
-      // #when
-      const result = generateModelConfig(config)
-
-      // #then
-      expect(result.agents?.hephaestus).toBeUndefined()
-    })
-  })
-
   describe("librarian agent special cases", () => {
     test("librarian uses ZAI model when ZAI is available regardless of other providers", () => {
       // #given ZAI and Claude are available
@@ -651,17 +578,6 @@ describe("generateModelConfig", () => {
 
       // #then librarian should use gateway-routed minimax (preferred over claude-haiku)
       expect(result.agents?.librarian?.model).toBe("vercel/minimax/minimax-m2.7")
-    })
-
-    test("Hephaestus is created when only Vercel AI Gateway is available", () => {
-      // #given only Vercel AI Gateway is available
-      const config = createConfig({ hasVercelAiGateway: true })
-
-      // #when generateModelConfig is called
-      const result = generateModelConfig(config)
-
-      // #then hephaestus should be created with gateway-routed gpt-5.4
-      expect(result.agents?.hephaestus?.model).toBe("vercel/openai/gpt-5.4")
     })
 
     test("native providers take priority over gateway", () => {

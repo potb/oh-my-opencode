@@ -164,11 +164,14 @@ describe("getAgentConfigKey", () => {
   it("resolves all core agent display names", () => {
     // given all core display names
     // when/then each resolves to its config key
-    expect(getAgentConfigKey("Hephaestus - Deep Agent")).toBe("hephaestus")
     expect(getAgentConfigKey("Atlas - Plan Executor")).toBe("atlas")
     expect(getAgentConfigKey("Metis - Plan Consultant")).toBe("metis")
     expect(getAgentConfigKey("Momus - Plan Critic")).toBe("momus")
     expect(getAgentConfigKey("Sisyphus-Junior")).toBe("sisyphus-junior")
+  })
+
+  it("keeps resolving legacy removed Hephaestus display names to the old config key", () => {
+    expect(getAgentConfigKey("Hephaestus - Deep Agent")).toBe("hephaestus")
   })
 
   it("keeps resolving legacy removed Prometheus display names to the old config key", () => {
@@ -188,8 +191,7 @@ describe("getAgentConfigKey", () => {
 describe("getAgentListDisplayName", () => {
   it("applies invisible stable-sort prefixes to the core agent list", () => {
     expect(getAgentListDisplayName("sisyphus")).toBe("\u200BSisyphus - Ultraworker")
-    expect(getAgentListDisplayName("hephaestus")).toBe("\u200B\u200BHephaestus - Deep Agent")
-    expect(getAgentListDisplayName("atlas")).toBe("\u200B\u200B\u200BAtlas - Plan Executor")
+    expect(getAgentListDisplayName("atlas")).toBe("\u200B\u200BAtlas - Plan Executor")
   })
 
   it("keeps non-core agents unprefixed for list display", () => {
@@ -200,7 +202,6 @@ describe("getAgentListDisplayName", () => {
 describe("normalizeAgentForPrompt", () => {
   it("strips core UI ordering prefixes back to canonical display names", () => {
     expect(normalizeAgentForPrompt(getAgentListDisplayName("sisyphus"))).toBe("Sisyphus - Ultraworker")
-    expect(normalizeAgentForPrompt(getAgentListDisplayName("hephaestus"))).toBe("Hephaestus - Deep Agent")
     expect(normalizeAgentForPrompt(getAgentListDisplayName("atlas"))).toBe("Atlas - Plan Executor")
   })
 
@@ -232,7 +233,6 @@ describe("AGENT_DISPLAY_NAMES", () => {
     // given expected mappings
     const expectedMappings = {
       sisyphus: "Sisyphus - Ultraworker",
-      hephaestus: "Hephaestus - Deep Agent",
       atlas: "Atlas - Plan Executor",
       "sisyphus-junior": "Sisyphus-Junior",
       metis: "Metis - Plan Consultant",

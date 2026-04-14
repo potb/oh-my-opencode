@@ -29,7 +29,6 @@ export { createToolPairValidatorHook } from "./tool-pair-validator";
 export { createCategorySkillReminderHook } from "./category-skill-reminder";
 export { createRalphLoopHook, type RalphLoopHook } from "./ralph-loop";
 export { createNoSisyphusGptHook } from "./no-sisyphus-gpt";
-export { createNoHephaestusNonGptHook } from "./no-hephaestus-non-gpt";
 export { createEditErrorRecoveryHook } from "./edit-error-recovery";
 
 export { createSisyphusJuniorNotepadHook } from "./sisyphus-junior-notepad";

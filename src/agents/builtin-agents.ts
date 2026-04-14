@@ -11,7 +11,6 @@ import { createMultimodalLookerAgent, MULTIMODAL_LOOKER_PROMPT_METADATA } from "
 import { createMetisAgent, metisPromptMetadata } from "./metis"
 import { createAtlasAgent, atlasPromptMetadata } from "./atlas"
 import { createMomusAgent, momusPromptMetadata } from "./momus"
-import { createHephaestusAgent } from "./hephaestus"
 import { createSisyphusJuniorAgentWithOverrides } from "./sisyphus-junior"
 import type { AvailableCategory } from "./dynamic-agent-prompt-builder"
 import {
@@ -24,14 +23,12 @@ import { mergeCategories } from "../shared/merge-categories"
 import { buildAvailableSkills } from "./builtin-agents/available-skills"
 import { collectPendingBuiltinAgents } from "./builtin-agents/general-agents"
 import { maybeCreateSisyphusConfig } from "./builtin-agents/sisyphus-agent"
-import { maybeCreateHephaestusConfig } from "./builtin-agents/hephaestus-agent"
 import { maybeCreateAtlasConfig } from "./builtin-agents/atlas-agent"
 
 type AgentSource = AgentFactory | AgentConfig
 
 const agentSources: Record<BuiltinAgentName, AgentSource> = {
   sisyphus: createSisyphusAgent,
-  hephaestus: createHephaestusAgent,
   oracle: createOracleAgent,
   librarian: createLibrarianAgent,
   explore: createExploreAgent,
@@ -139,25 +136,7 @@ export async function createBuiltinAgents(
     result["sisyphus"] = sisyphusConfig
   }
 
-  const hephaestusConfig = maybeCreateHephaestusConfig({
-    disabledAgents,
-    agentOverrides,
-    availableModels,
-    systemDefaultModel,
-    isFirstRunNoCache,
-    availableAgents,
-    availableSkills,
-    availableCategories,
-    mergedCategories,
-    directory,
-    useTaskSystem,
-    disableOmoEnv,
-  })
-  if (hephaestusConfig) {
-    result["hephaestus"] = hephaestusConfig
-  }
-
-  // Add pending agents after sisyphus and hephaestus to maintain order
+  // Add pending agents after sisyphus to maintain a stable order
   for (const [name, config] of pendingAgentConfigs) {
     result[name] = config
   }
