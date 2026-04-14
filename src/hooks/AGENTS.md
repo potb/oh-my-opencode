@@ -30,7 +30,6 @@ hooks/
 ├── json-error-recovery/        # JSON parse error correction
 ├── keyword-detector/           # ultrawork/search/analyze modes
 ├── legacy-plugin-toast/        # Legacy plugin name migration toast
-├── model-fallback/             # Provider-level model fallback
 ├── no-sisyphus-gpt/            # Block Sisyphus from GPT
 ├── non-interactive-env/        # Non-TTY environment handling
 ├── prometheus-md-only/         # Planner read-only mode

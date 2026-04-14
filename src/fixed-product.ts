@@ -36,7 +36,6 @@ export const REMOVED_HOOK_NAMES = [
   "auto-slash-command",
   "category-skill-reminder",
   "interactive-bash-session",
-  "model-fallback",
   "no-hephaestus-non-gpt",
   "runtime-fallback",
   "start-work",
@@ -65,7 +64,6 @@ export function applyFixedProductTrim(config: OhMyOpenCodeConfig): OhMyOpenCodeC
     disabled_agents: mergeUnique(config.disabled_agents, REMOVED_AGENT_NAMES),
     disabled_hooks: mergeUnique(config.disabled_hooks, REMOVED_HOOK_NAMES),
     disabled_tools: mergeUnique(config.disabled_tools, REMOVED_TOOL_NAMES),
-    model_fallback: false,
     new_task_system_enabled: false,
     skills: undefined,
   }
