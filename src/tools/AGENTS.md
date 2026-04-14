@@ -1,10 +1,10 @@
-# src/tools/ - 26 Tools Across 16 Directories
+# src/tools/ - Tool Factories
 
 **Generated:** 2026-04-11
 
 ## OVERVIEW
 
-26 tools registered via `createToolRegistry()`. Two patterns: factory functions (`createXXXTool`) for 19 tools, direct `ToolDefinition` for 7 (LSP + interactive_bash).
+Tool factories and direct definitions used by the trimmed plugin tool surface.
 
 ## TOOL CATALOG
 
@@ -30,13 +30,6 @@
 | Tool | Factory | Parameters |
 |------|---------|------------|
 
-### Background Tasks (2)
-
-| Tool | Factory | Parameters |
-|------|---------|------------|
-| `background_output` | `createBackgroundOutput` | task_id, block, timeout, full_session, include_thinking, message_limit, since_message_id, thinking_max_chars |
-| `background_cancel` | `createBackgroundCancel` | taskId, all |
-
 ### LSP Refactoring (6) - Direct ToolDefinition
 
 | Tool | Parameters |
@@ -56,15 +49,6 @@
 | `ast_grep_replace` | `createAstGrepTools` | pattern, rewrite, lang, paths, globs, dryRun |
 | `grep` | `createGrepTools` | pattern, path, include (60s timeout, 10MB limit) |
 | `glob` | `createGlobTools` | pattern, path (60s timeout, 100 file limit) |
-
-### Session History (4)
-
-| Tool | Factory | Parameters |
-|------|---------|------------|
-| `session_list` | `createSessionManagerTools` | (none) |
-| `session_read` | `createSessionManagerTools` | session_id, include_todos, limit |
-| `session_search` | `createSessionManagerTools` | query, session_id, case_sensitive, limit |
-| `session_info` | `createSessionManagerTools` | session_id |
 
 ### Skill/Command (2)
 
