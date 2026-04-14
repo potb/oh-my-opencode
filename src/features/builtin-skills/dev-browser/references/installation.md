@@ -86,7 +86,7 @@ npm run start-extension &
 
 **Windows (PowerShell):**
 ```powershell
-cd "$env:USERPROFILE\.config\opencode\skills\dev-browser"
+cd "$env:USERPROFILE\dev-tools\dev-browser"
 Start-Process -NoNewWindow -FilePath "npm" -ArgumentList "run", "start-extension"
 ```
 
@@ -152,7 +152,7 @@ Use forward slashes or escaped backslashes in paths:
 # Good
 cd "$env:USERPROFILE/dev-tools/dev-browser"
 # Also good
-cd "$env:USERPROFILE\.config\opencode\skills\dev-browser"
+cd "$env:USERPROFILE\dev-tools\dev-browser"
 ```
 
 ### Extension Not Connecting
@@ -184,7 +184,7 @@ npm install
 
 **Windows:**
 ```powershell
-cd "$env:USERPROFILE\.config\opencode\skills\dev-browser"
+cd "$env:USERPROFILE\dev-tools\dev-browser"
 git pull
 npm install
 ```
