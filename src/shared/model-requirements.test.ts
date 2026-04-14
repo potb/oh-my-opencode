@@ -160,36 +160,6 @@ describe("AGENT_MODEL_REQUIREMENTS", () => {
     expect(primary.providers[0]).toBe("openai")
   })
 
-  test("atlas has valid fallbackChain with claude-sonnet-4-6 as primary", () => {
-    // given - atlas agent requirement
-    const atlas = AGENT_MODEL_REQUIREMENTS["atlas"]
-
-    // when - accessing Atlas requirement
-    // then - fallbackChain exists with claude-sonnet-4-6 as first entry
-    expect(atlas).toBeDefined()
-    expect(atlas.fallbackChain).toBeArray()
-    expect(atlas.fallbackChain).toHaveLength(4)
-
-    const primary = atlas.fallbackChain[0]
-    expect(primary.model).toBe("claude-sonnet-4-6")
-    expect(primary.providers[0]).toBe("anthropic")
-
-    const secondary = atlas.fallbackChain[1]
-    expect(secondary.model).toBe("kimi-k2.5")
-    expect(secondary.providers[0]).toBe("opencode-go")
-
-    const tertiary = atlas.fallbackChain[2]
-    expect(tertiary).toEqual({
-      providers: ["openai", "github-copilot", "opencode", "vercel"],
-      model: "gpt-5.4",
-      variant: "medium",
-    })
-
-    const quaternary = atlas.fallbackChain[3]
-    expect(quaternary.model).toBe("minimax-m2.7")
-    expect(quaternary.providers[0]).toBe("opencode-go")
-  })
-
   test("sisyphus-junior has an OpenAI fallback and minimax before big-pickle", () => {
     // given - sisyphus-junior agent requirement
     const sisyphusJunior = AGENT_MODEL_REQUIREMENTS["sisyphus-junior"]
@@ -211,8 +181,8 @@ describe("AGENT_MODEL_REQUIREMENTS", () => {
     expect(bigPickleIndex).toBeGreaterThan(minimaxIndex)
   })
 
-  test("all 8 builtin agents have valid fallbackChain arrays", () => {
-    // #given - list of 8 agent names
+  test("all 7 builtin agents have valid fallbackChain arrays", () => {
+    // #given - list of 7 agent names
     const expectedAgents = [
       "sisyphus",
       "oracle",
@@ -220,7 +190,6 @@ describe("AGENT_MODEL_REQUIREMENTS", () => {
       "explore",
       "metis",
       "momus",
-      "atlas",
       "sisyphus-junior",
     ]
 
@@ -228,7 +197,7 @@ describe("AGENT_MODEL_REQUIREMENTS", () => {
     const definedAgents = Object.keys(AGENT_MODEL_REQUIREMENTS)
 
     // #then - all agents present with valid fallbackChain
-    expect(definedAgents).toHaveLength(8)
+    expect(definedAgents).toHaveLength(7)
     for (const agent of expectedAgents) {
       const requirement = AGENT_MODEL_REQUIREMENTS[agent]
       expect(requirement).toBeDefined()

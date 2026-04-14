@@ -2,7 +2,7 @@ import type { AgentConfig } from "@opencode-ai/sdk";
 
 /**
  * Agent mode determines UI model selection behavior:
- * - "primary": Respects user's UI-selected model (sisyphus, atlas)
+ * - "primary": Respects user's UI-selected model (sisyphus)
  * - "subagent": Uses own fallback chain, ignores UI selection (oracle, explore, etc.)
  * - "all": Available in both contexts (OpenCode compatibility)
  */
@@ -121,7 +121,6 @@ export type BuiltinAgentName =
   | "explore"
   | "metis"
   | "momus"
-  | "atlas"
   | "sisyphus-junior";
 
 export type OverridableAgentName = "build" | BuiltinAgentName;

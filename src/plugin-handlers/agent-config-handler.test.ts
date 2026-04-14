@@ -45,7 +45,6 @@ describe("applyAgentConfig", () => {
       metis: { name: "metis", prompt: "metis prompt", mode: "subagent" },
       momus: { name: "momus", prompt: "momus prompt", mode: "subagent" },
       oracle: { name: "oracle", prompt: "oracle prompt", mode: "subagent" },
-      atlas: { name: "atlas", prompt: "atlas prompt", mode: "primary" },
     }
 
     createBuiltinAgentsSpy = spyOn(agents, "createBuiltinAgents").mockResolvedValue(builtinAgents)

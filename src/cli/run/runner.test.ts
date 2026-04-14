@@ -19,81 +19,62 @@ describe("resolveRunAgent", () => {
   })
 
   it("uses CLI agent over env and config", () => {
-    // given
-    const config = createConfig({ default_run_agent: "atlas" })
+    const config = createConfig({ default_run_agent: "oracle" })
     const env = { OPENCODE_DEFAULT_AGENT: "Sisyphus" }
 
-    // when
     const agent = resolveRunAgent(
-      { message: "test", agent: "Atlas" },
+      { message: "test", agent: "oracle" },
       config,
       env
     )
 
-    // then
-    expect(agent).toBe("Atlas - Plan Executor")
+    expect(agent).toBe("oracle")
   })
 
   it("uses env agent over config", () => {
-    // given
     const config = createConfig({ default_run_agent: "sisyphus" })
-    const env = { OPENCODE_DEFAULT_AGENT: "Atlas" }
+    const env = { OPENCODE_DEFAULT_AGENT: "oracle" }
 
-    // when
     const agent = resolveRunAgent({ message: "test" }, config, env)
 
-    // then
-    expect(agent).toBe("Atlas - Plan Executor")
+    expect(agent).toBe("oracle")
   })
 
   it("uses config agent over default", () => {
-    // given
-    const config = createConfig({ default_run_agent: "Atlas" })
+    const config = createConfig({ default_run_agent: "oracle" })
 
-    // when
     const agent = resolveRunAgent({ message: "test" }, config, {})
 
-    // then
-    expect(agent).toBe("Atlas - Plan Executor")
+    expect(agent).toBe("oracle")
   })
 
   it("falls back to sisyphus when none set", () => {
-    // given
     const config = createConfig()
 
-    // when
     const agent = resolveRunAgent({ message: "test" }, config, {})
 
-    // then
     expect(agent).toBe("Sisyphus - Ultraworker")
   })
 
-  it("skips disabled sisyphus for next available core agent", () => {
-    // given
+  it("keeps sisyphus as the only core fallback even when disabled", () => {
     const config = createConfig({ disabled_agents: ["sisyphus"] })
 
-    // when
     const agent = resolveRunAgent({ message: "test" }, config, {})
 
-    // then
-    expect(agent).toBe("Atlas - Plan Executor")
+    expect(agent).toBe("Sisyphus - Ultraworker")
   })
 
   it("maps display-name style default_run_agent values to canonical display names", () => {
-    // given
     const config = createConfig({ default_run_agent: "Sisyphus - Ultraworker" })
 
-    // when
     const agent = resolveRunAgent({ message: "test" }, config, {})
 
-    // then
     expect(agent).toBe("Sisyphus - Ultraworker")
   })
 })
 
 describe("waitForEventProcessorShutdown", () => {
   it("returns quickly when event processor completes", async () => {
-    //#given
     const { waitForEventProcessorShutdown } = await import("./runner")
     const eventProcessor = new Promise<void>((resolve) => {
       setTimeout(() => {
@@ -102,25 +83,20 @@ describe("waitForEventProcessorShutdown", () => {
     })
     const start = performance.now()
 
-    //#when
     await waitForEventProcessorShutdown(eventProcessor, 200)
 
-    //#then
     const elapsed = performance.now() - start
     expect(elapsed).toBeLessThan(200)
   })
 
   it("times out and continues when event processor does not complete", async () => {
-    //#given
     const { waitForEventProcessorShutdown } = await import("./runner")
     const eventProcessor = new Promise<void>(() => {})
     const timeoutMs = 200
     const start = performance.now()
 
-    //#when
     await waitForEventProcessorShutdown(eventProcessor, timeoutMs)
 
-    //#then
     const elapsed = performance.now() - start
     expect(elapsed).toBeGreaterThanOrEqual(timeoutMs - 10)
   })
@@ -152,14 +128,11 @@ describe("run environment setup", () => {
   })
 
   it("sets OPENCODE_CLIENT to 'run' to exclude question tool from registry", async () => {
-    //#given
     delete process.env.OPENCODE_CLIENT
 
-    //#when
     const { run } = await import("./runner")
     await run({ message: "test", model: "invalid" })
 
-    //#then
     expect(String(process.env.OPENCODE_CLIENT)).toBe("run")
     expect(String(process.env.OPENCODE_CLI_RUN_MODE)).toBe("true")
   })
@@ -167,7 +140,6 @@ describe("run environment setup", () => {
 
 describe("run with invalid model", () => {
   it("given invalid --model value, when run, then returns exit code 1 with error message", async () => {
-    // given
     const originalExit = process.exit
     const originalError = console.error
     const errorMessages: string[] = []
@@ -182,24 +154,17 @@ describe("run with invalid model", () => {
     }) as typeof process.exit
 
     try {
-      // when
-      // Note: This will actually try to run - but the issue is that resolveRunModel
-      // is called BEFORE the try block, so it throws an unhandled exception
-      // We're testing the runner's error handling
       const { run } = await import("./runner")
 
-      // This will throw because model "invalid" is invalid format
       try {
         await run({
           message: "test",
           model: "invalid",
         })
       } catch {
-        // Expected to potentially throw due to unhandled model resolution error
+        // expected
       }
     } finally {
-      // then - verify error handling
-      // Currently this will fail because the error is not caught properly
       console.error = originalError
       process.exit = originalExit
     }

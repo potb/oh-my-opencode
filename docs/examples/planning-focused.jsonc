@@ -9,7 +9,7 @@
     "sisyphus": {
       "model": "anthropic/claude-opus-4-6",
       "ultrawork": { "model": "anthropic/claude-opus-4-6", "variant": "max" },
-      "prompt_append": "Always consult prometheus and atlas for planning. Never rush to implementation.",
+      "prompt_append": "Always consult prometheus for planning. Never rush to implementation.",
     },
 
     // Implementation: uses planning outputs
@@ -51,11 +51,6 @@
     "momus": {
       "model": "openai/gpt-5.4",
       "prompt_append": "Challenge all assumptions in plans. Look for edge cases, failure modes, and overlooked requirements.",
-    },
-
-    // Long-running planning sessions
-    "atlas": {
-      "prompt_append": "Preserve context across long planning sessions. Track evolving decisions.",
     },
 
     // Quick research tasks

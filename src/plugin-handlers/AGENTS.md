@@ -4,7 +4,7 @@
 
 ## CRITICAL: AGENT ORDERING
 
-The canonical agent order is **sisyphus → hephaestus → prometheus → atlas**.
+The canonical agent order is **sisyphus**.
 
 This order is enforced via two mechanisms working together:
 1. `CANONICAL_CORE_AGENT_ORDER` in `agent-priority-order.ts` controls object key insertion order
@@ -12,7 +12,7 @@ This order is enforced via two mechanisms working together:
 
 ### Why Two Mechanisms
 
-OpenCode's `Agent.list()` sorts agents by `name` field via `localeCompare`. Object key order alone is not enough. The `name` field carries ZWSP prefixes (1-4 chars) so core agents sort before alphabetically-named agents.
+OpenCode's `Agent.list()` sorts agents by `name` field via `localeCompare`. Object key order alone is not enough. The `name` field carries a ZWSP prefix for the core agent so it sorts before alphabetically-named agents.
 
 ZWSP is intentionally used in the `name` field only. It MUST NOT appear in:
 - Object keys (used as HTTP header values, causes RFC 7230 violations)
@@ -64,7 +64,7 @@ PRs attempting these patterns will be rejected.
 | `provider-config-handler.ts` | ~80 | Provider config + model cache |
 | `prometheus-agent-config-builder.ts` | ~100 | Prometheus config with model resolution |
 | `plan-model-inheritance.ts` | 28 | Plan demotion logic |
-| `agent-priority-order.ts` | ~30 | sisyphus, hephaestus, prometheus, atlas first |
+| `agent-priority-order.ts` | ~30 | sisyphus first |
 | `agent-key-remapper.ts` | ~30 | Agent key → display name |
 | `category-config-resolver.ts` | ~40 | User vs default category lookup |
 | `index.ts` | ~10 | Barrel exports |
@@ -74,7 +74,7 @@ PRs attempting these patterns will be rejected.
 | Agent | Granted | Denied |
 |-------|---------|--------|
 | Librarian | grep_app_* | — |
-| Atlas, Sisyphus, Prometheus | task, task_*, teammate | — |
+| Sisyphus, Prometheus | task, task_*, teammate | — |
 | Hephaestus | task | — |
 | Default (all others) | — | grep_app_*, task_*, teammate, LSP |
 

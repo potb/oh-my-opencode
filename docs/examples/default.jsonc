@@ -40,9 +40,6 @@
     // Critic and reviewer
     "momus": {},
 
-    // Continuation and long-running task handler
-    "atlas": {},
-
     // Lightweight task executor for simple jobs
     "sisyphus-junior": { "model": "opencode/gpt-5-nano" },
   },

@@ -415,18 +415,6 @@ describe("generateModelConfig", () => {
   })
 
   describe("OpenAI fallback coverage", () => {
-    test("Atlas resolves to OpenAI when only OpenAI is available", () => {
-      // #given
-      const config = createConfig({ hasOpenAI: true })
-
-      // #when
-      const result = generateModelConfig(config)
-
-      // #then
-      expect(result.agents?.atlas?.model).toBe("openai/gpt-5.4")
-      expect(result.agents?.atlas?.variant).toBe("medium")
-    })
-
     test("Metis resolves to OpenAI when only OpenAI is available", () => {
       // #given
       const config = createConfig({ hasOpenAI: true })

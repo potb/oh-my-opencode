@@ -43,9 +43,6 @@
     // Code review focus
     "momus": { "prompt_append": "Focus on code quality, edge cases, and test coverage." },
 
-    // Long-running coding sessions
-    "atlas": {},
-
     // Quick fixes and small tasks
     "sisyphus-junior": { "model": "opencode/gpt-5-nano" },
   },

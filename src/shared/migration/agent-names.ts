@@ -19,12 +19,6 @@ export const AGENT_NAME_MAP: Record<string, string> = {
   "Prometheus (Plan Builder)": "prometheus",
   prometheus: "prometheus",
 
-  // Atlas variants → "atlas"
-  "orchestrator-sisyphus": "atlas",
-  Atlas: "atlas",
-  "Atlas (Plan Executor)": "atlas",
-  atlas: "atlas",
-
   // Metis variants → "metis"
   "plan-consultant": "metis",
   "Metis - Plan Consultant": "metis",
@@ -55,7 +49,6 @@ export const BUILTIN_AGENT_NAMES = new Set([
   "metis", // was "Metis - Plan Consultant"
   "momus", // was "Momus - Plan Critic"
   "prometheus", // was "Prometheus - Plan Builder"
-  "atlas", // was "Atlas"
   "build",
 ])
 

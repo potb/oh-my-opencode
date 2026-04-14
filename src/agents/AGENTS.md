@@ -1,4 +1,4 @@
-# src/agents/ — 11 Agent Definitions
+# src/agents/ — 10 Agent Definitions
 
 **Generated:** 2026-04-11
 
@@ -18,7 +18,6 @@ Agent factories following `createXXXAgent(model) → AgentConfig` pattern. Each 
 | **Multimodal-Looker** | gpt-5.3-codex medium | 0.1 | subagent | k2p5 -> gemini-3-flash -> glm-4.6v -> gpt-5-nano | PDF/image analysis |
 | **Metis** | claude-opus-4-6 max | **0.3** | subagent | gpt-5.4 high -> gemini-3.1-pro high | Pre-planning consultant |
 | **Momus** | gpt-5.4 xhigh | 0.1 | subagent | claude-opus-4-6 max -> gemini-3.1-pro high | Plan reviewer |
-| **Atlas** | claude-sonnet-4-6 | 0.1 | primary | gpt-5.4 medium | Todo-list orchestrator |
 | **Prometheus** | claude-opus-4-6 max | 0.1 | — | internal planner | Strategic planner (internal) |
 | **Sisyphus-Junior** | claude-sonnet-4-6 | 0.1 | all | user-configurable | Category-spawned executor |
 
@@ -30,7 +29,6 @@ Agent factories following `createXXXAgent(model) → AgentConfig` pattern. Each 
 | Librarian | write, edit, task |
 | Explore | write, edit, task |
 | Multimodal-Looker | ALL except read |
-| Atlas | task |
 | Momus | write, edit, task |
 
 ## STRUCTURE
@@ -45,7 +43,6 @@ agents/
 ├── multimodal-looker.ts   # Vision/PDF
 ├── metis.ts               # Pre-planning
 ├── momus.ts               # Plan review
-├── atlas/agent.ts         # Todo orchestrator
 ├── types.ts               # AgentFactory, AgentMode
 ├── agent-builder.ts       # buildAgent() composition
 ├── utils.ts               # Agent utilities
@@ -60,7 +57,6 @@ agents/
 └── builtin-agents/        # maybeCreateXXXConfig conditional factories
     ├── sisyphus-agent.ts
     ├── hephaestus-agent.ts
-    ├── atlas-agent.ts
     ├── general-agents.ts  # collectPendingBuiltinAgents
     └── available-skills.ts
 ```

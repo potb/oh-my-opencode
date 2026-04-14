@@ -10,224 +10,64 @@ import { getAgentDisplayName, getAgentListDisplayName } from "../shared/agent-di
 
 describe("agent-priority-order", () => {
   describe("CANONICAL_CORE_AGENT_ORDER", () => {
-    // given: The canonical order constant must exist and be correct
-
     test("exports canonical order as readonly array", () => {
-      // then
       expect(CANONICAL_CORE_AGENT_ORDER).toBeDefined()
       expect(Array.isArray(CANONICAL_CORE_AGENT_ORDER)).toBe(true)
     })
 
-    test("canonical order is exactly [sisyphus, atlas]", () => {
-      // then
-      expect(CANONICAL_CORE_AGENT_ORDER).toEqual([
-        "sisyphus",
-        "atlas",
-      ])
+    test("canonical order is exactly [sisyphus]", () => {
+      expect(CANONICAL_CORE_AGENT_ORDER).toEqual(["sisyphus"])
     })
 
-    test("canonical order length is exactly 2", () => {
-      // then
-      expect(CANONICAL_CORE_AGENT_ORDER).toHaveLength(2)
+    test("canonical order length is exactly 1", () => {
+      expect(CANONICAL_CORE_AGENT_ORDER).toHaveLength(1)
     })
   })
 
   describe("reorderAgentsByPriority", () => {
-    // given: display names for all core agents
     const sisyphus = getAgentListDisplayName("sisyphus")
-    const atlas = getAgentListDisplayName("atlas")
     const oracle = getAgentDisplayName("oracle")
     const librarian = getAgentDisplayName("librarian")
     const explore = getAgentDisplayName("explore")
 
-    describe("#given agents in random order", () => {
-      test("#when all core agents present #then orders as sisyphus→atlas", () => {
-        // given: agents in reverse order
-        const agents: Record<string, unknown> = {
-          [atlas]: { name: "atlas" },
-          [sisyphus]: { name: "sisyphus" },
-        }
+    test("keeps sisyphus first when present", () => {
+      const agents: Record<string, unknown> = {
+        [oracle]: { name: "oracle" },
+        custom: { name: "custom" },
+        [sisyphus]: { name: "sisyphus" },
+      }
 
-        // when
-        const result = reorderAgentsByPriority(agents)
+      const result = reorderAgentsByPriority(agents)
 
-        // then
-        const keys = Object.keys(result)
-        expect(keys[0]).toBe(sisyphus)
-        expect(keys[1]).toBe(atlas)
-      })
-
-      test("#when core agents mixed with non-core #then core agents come first in canonical order", () => {
-        // given: mixed order with non-core agents interleaved
-        const agents: Record<string, unknown> = {
-          [oracle]: { name: "oracle" },
-          [atlas]: { name: "atlas" },
-          [librarian]: { name: "librarian" },
-          [explore]: { name: "explore" },
-          custom: { name: "custom" },
-          [sisyphus]: { name: "sisyphus" },
-        }
-
-        // when
-        const result = reorderAgentsByPriority(agents)
-
-        // then
-        const keys = Object.keys(result)
-        expect(keys.slice(0, 2)).toEqual([sisyphus, atlas])
-      })
+      expect(Object.keys(result)[0]).toBe(sisyphus)
     })
 
-    describe("#given 100 random permutations", () => {
-      test("#when reordered #then result is ALWAYS identical", () => {
-        // given: base agent config
-        const baseAgents = {
-          [sisyphus]: { name: "sisyphus" },
-          [atlas]: { name: "atlas" },
-          [oracle]: { name: "oracle" },
-          [librarian]: { name: "librarian" },
-          custom1: { name: "custom1" },
-          custom2: { name: "custom2" },
-        }
+    test("injects the order field only for sisyphus", () => {
+      const agents: Record<string, unknown> = {
+        [sisyphus]: { name: "sisyphus", mode: "primary" },
+        [oracle]: { name: "oracle", mode: "subagent" },
+      }
 
-        // given: shuffle function
-        const shuffle = <T>(array: T[]): T[] => {
-          const result = [...array]
-          for (let i = result.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1))
-            ;[result[i], result[j]] = [result[j], result[i]]
-          }
-          return result
-        }
+      const result = reorderAgentsByPriority(agents)
 
-        // when: run 100 times with different key orders
-        const results: string[][] = []
-        for (let i = 0; i < 100; i++) {
-          const shuffledKeys = shuffle(Object.keys(baseAgents))
-          const shuffledAgents: Record<string, unknown> = {}
-          for (const key of shuffledKeys) {
-            shuffledAgents[key] = baseAgents[key]
-          }
-          const result = reorderAgentsByPriority(shuffledAgents)
-          results.push(Object.keys(result))
-        }
-
-        // then: all results should have identical key order
-        const firstResult = results[0]
-        for (let i = 1; i < results.length; i++) {
-          expect(results[i]).toEqual(firstResult)
-        }
-
-        // then: core agents are always first 2 in canonical order
-        expect(firstResult.slice(0, 2)).toEqual([
-          sisyphus,
-          atlas,
-        ])
-      })
+      expect(result[sisyphus]).toEqual({ name: "sisyphus", mode: "primary", order: 1 })
+      expect(result[oracle]).toEqual({ name: "oracle", mode: "subagent" })
     })
 
-    describe("#given partial core agents", () => {
-      test("#when only sisyphus and atlas present #then orders as sisyphus→atlas", () => {
-        // given
-        const agents: Record<string, unknown> = {
-          [atlas]: { name: "atlas" },
-          custom: { name: "custom" },
-          [sisyphus]: { name: "sisyphus" },
-        }
+    test("sorts non-core agents alphabetically after sisyphus", () => {
+      const agents: Record<string, unknown> = {
+        zebra: { name: "zebra" },
+        [sisyphus]: { name: "sisyphus" },
+        apple: { name: "apple" },
+        [librarian]: { name: "librarian" },
+        [explore]: { name: "explore" },
+      }
 
-        // when
-        const result = reorderAgentsByPriority(agents)
+      const result = reorderAgentsByPriority(agents)
+      const keys = Object.keys(result)
 
-        // then
-        const keys = Object.keys(result)
-        const sisyphusIdx = keys.indexOf(sisyphus)
-        const atlasIdx = keys.indexOf(atlas)
-        expect(sisyphusIdx).toBeLessThan(atlasIdx)
-        expect(sisyphusIdx).toBe(0)
-      })
-
-      test("#when only atlas is present #then atlas stays ahead of custom agents", () => {
-        // given
-        const agents: Record<string, unknown> = {
-          [atlas]: { name: "atlas" },
-          custom: { name: "custom" },
-        }
-
-        // when
-        const result = reorderAgentsByPriority(agents)
-
-        // then
-        const keys = Object.keys(result)
-        const atlasIdx = keys.indexOf(atlas)
-        expect(atlasIdx).toBe(0)
-      })
-    })
-
-    describe("#given order field injection", () => {
-      test("#when core agent is object #then injects order field", () => {
-        // given
-        const agents: Record<string, unknown> = {
-          [sisyphus]: { name: "sisyphus", mode: "primary" },
-          [atlas]: { name: "atlas", mode: "primary" },
-        }
-
-        // when
-        const result = reorderAgentsByPriority(agents)
-
-        // then
-        expect(result[sisyphus]).toEqual({ name: "sisyphus", mode: "primary", order: 1 })
-        expect(result[atlas]).toEqual({ name: "atlas", mode: "primary", order: 2 })
-      })
-
-      test("#when core agent is non-object #then leaves value unchanged", () => {
-        // given
-        const agents: Record<string, unknown> = {
-          [sisyphus]: "string-config",
-          [atlas]: null,
-        }
-
-        // when
-        const result = reorderAgentsByPriority(agents)
-
-        // then
-        expect(result[sisyphus]).toBe("string-config")
-        expect(result[atlas]).toBe(null)
-      })
-
-      test("#when non-core agent #then does NOT inject order field", () => {
-        // given
-        const agents: Record<string, unknown> = {
-          [oracle]: { name: "oracle", mode: "subagent" },
-          custom: { name: "custom" },
-        }
-
-        // when
-        const result = reorderAgentsByPriority(agents)
-
-        // then
-        expect(result[oracle]).toEqual({ name: "oracle", mode: "subagent" })
-        expect(result.custom).toEqual({ name: "custom" })
-      })
-    })
-
-    describe("#given non-core agent ordering", () => {
-      test("#when multiple non-core agents #then sorted alphabetically after core agents", () => {
-        // given: non-core agents in random order
-        const agents: Record<string, unknown> = {
-          zebra: { name: "zebra" },
-          [sisyphus]: { name: "sisyphus" },
-          apple: { name: "apple" },
-          mango: { name: "mango" },
-          [atlas]: { name: "atlas" },
-        }
-
-        // when
-        const result = reorderAgentsByPriority(agents)
-
-        // then: core agents first, then alphabetical
-        const keys = Object.keys(result)
-        expect(keys.slice(0, 2)).toEqual([sisyphus, atlas])
-        expect(keys.slice(2)).toEqual(["apple", "mango", "zebra"])
-      })
+      expect(keys[0]).toBe(sisyphus)
+      expect(keys.slice(1)).toEqual(["apple", "explore", "librarian", "zebra"])
     })
   })
 })

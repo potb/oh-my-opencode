@@ -72,36 +72,6 @@ describe("createBuiltinAgents with model overrides", () => {
     fetchSpy.mockRestore()
   })
 
-  test("Atlas uses uiSelectedModel", async () => {
-    // #given
-    const fetchSpy = spyOn(shared, "fetchAvailableModels").mockResolvedValue(
-      new Set(["openai/gpt-5.4", "anthropic/claude-sonnet-4-6"])
-    )
-    const uiSelectedModel = "openai/gpt-5.4"
-
-    try {
-      // #when
-      const agents = await createBuiltinAgents(
-        [],
-        {},
-        undefined,
-        TEST_DEFAULT_MODEL,
-        undefined,
-        undefined,
-        [],
-        undefined,
-        undefined,
-        uiSelectedModel
-      )
-
-      // #then
-      expect(agents.atlas).toBeDefined()
-      expect(agents.atlas.model).toBe("openai/gpt-5.4")
-    } finally {
-      fetchSpy.mockRestore()
-    }
-  })
-
   test("user config model takes priority over uiSelectedModel for sisyphus", async () => {
     // #given
     const fetchSpy = spyOn(shared, "fetchAvailableModels").mockResolvedValue(
@@ -130,39 +100,6 @@ describe("createBuiltinAgents with model overrides", () => {
       // #then
       expect(agents.sisyphus).toBeDefined()
       expect(agents.sisyphus.model).toBe("google/antigravity-claude-opus-4-5-thinking")
-    } finally {
-      fetchSpy.mockRestore()
-    }
-  })
-
-  test("user config model takes priority over uiSelectedModel for atlas", async () => {
-    // #given
-    const fetchSpy = spyOn(shared, "fetchAvailableModels").mockResolvedValue(
-      new Set(["openai/gpt-5.4", "anthropic/claude-sonnet-4-6"])
-    )
-    const uiSelectedModel = "openai/gpt-5.4"
-    const overrides = {
-      atlas: { model: "google/antigravity-claude-opus-4-5-thinking" },
-    }
-
-    try {
-      // #when
-      const agents = await createBuiltinAgents(
-        [],
-        overrides,
-        undefined,
-        TEST_DEFAULT_MODEL,
-        undefined,
-        undefined,
-        [],
-        undefined,
-        undefined,
-        uiSelectedModel
-      )
-
-      // #then
-      expect(agents.atlas).toBeDefined()
-      expect(agents.atlas.model).toBe("google/antigravity-claude-opus-4-5-thinking")
     } finally {
       fetchSpy.mockRestore()
     }
@@ -331,7 +268,6 @@ describe("createBuiltinAgents with model overrides", () => {
 
       // #then
       expect(agents.sisyphus.prompt).not.toContain("researcher")
-      expect(agents.atlas.prompt).not.toContain("researcher")
     } finally {
       fetchSpy.mockRestore()
     }
@@ -366,7 +302,6 @@ describe("createBuiltinAgents with model overrides", () => {
 
       // #then
       expect(agents.sisyphus.prompt).not.toContain("hidden-agent")
-      expect(agents.atlas.prompt).not.toContain("hidden-agent")
     } finally {
       fetchSpy.mockRestore()
     }
@@ -401,7 +336,6 @@ describe("createBuiltinAgents with model overrides", () => {
 
       // #then
       expect(agents.sisyphus.prompt).not.toContain("disabled-agent")
-      expect(agents.atlas.prompt).not.toContain("disabled-agent")
     } finally {
       fetchSpy.mockRestore()
     }
@@ -436,7 +370,6 @@ describe("createBuiltinAgents with model overrides", () => {
 
       // #then
       expect(agents.sisyphus.prompt).not.toContain("researcher")
-      expect(agents.atlas.prompt).not.toContain("researcher")
     } finally {
       fetchSpy.mockRestore()
     }
@@ -646,45 +579,6 @@ describe("Atlas is unaffected by environment context toggle", () => {
     fetchSpy.mockRestore()
   })
 
-  test("atlas prompt is unchanged and never contains <omo-env>", async () => {
-    const agentsDefault = await createBuiltinAgents(
-      [],
-      {},
-      "/tmp/work",
-      TEST_DEFAULT_MODEL,
-      undefined,
-      undefined,
-      [],
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      false
-    )
-
-    const agentsDisabled = await createBuiltinAgents(
-      [],
-      {},
-      "/tmp/work",
-      TEST_DEFAULT_MODEL,
-      undefined,
-      undefined,
-      [],
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      true
-    )
-
-    expect(agentsDefault.atlas).toBeDefined()
-    expect(agentsDisabled.atlas).toBeDefined()
-    expect(agentsDefault.atlas.prompt).not.toContain("<omo-env>")
-    expect(agentsDisabled.atlas.prompt).not.toContain("<omo-env>")
-    expect(agentsDisabled.atlas.prompt).toBe(agentsDefault.atlas.prompt)
-  })
 })
 
 describe("createBuiltinAgents with requiresAnyModel gating (sisyphus)", () => {
@@ -812,7 +706,7 @@ describe("createBuiltinAgents with requiresAnyModel gating (sisyphus)", () => {
     }
   })
 
-  test("atlas and metis resolve to OpenAI in an OpenAI-only environment without a system default", async () => {
+  test("metis resolves to OpenAI in an OpenAI-only environment without a system default", async () => {
     // #given
     const fetchSpy = spyOn(shared, "fetchAvailableModels").mockResolvedValue(new Set(["openai/gpt-5.4"]))
     const cacheSpy = spyOn(connectedProvidersCache, "readConnectedProvidersCache").mockReturnValue(["openai"])
@@ -822,9 +716,6 @@ describe("createBuiltinAgents with requiresAnyModel gating (sisyphus)", () => {
       const agents = await createBuiltinAgents([], {}, undefined, undefined, undefined, undefined, [], {})
 
       // #then
-      expect(agents.atlas).toBeDefined()
-      expect(agents.atlas.model).toBe("openai/gpt-5.4")
-      expect(agents.atlas.variant).toBe("medium")
       expect(agents.metis).toBeDefined()
       expect(agents.metis.model).toBe("openai/gpt-5.4")
       expect(agents.metis.variant).toBe("high")
@@ -1180,21 +1071,6 @@ describe("override.category expansion in createBuiltinAgents", () => {
     expect(agents.sisyphus).toBeDefined()
     expect(agents.sisyphus.model).toBe("openai/gpt-5.4")
     expect(agents.sisyphus.variant).toBe("xhigh")
-  })
-
-  test("atlas override with category expands category properties", async () => {
-    // #given
-    const overrides = {
-      atlas: { category: "ultrabrain" } as any,
-    }
-
-    // #when
-    const agents = await createBuiltinAgents([], overrides, undefined, TEST_DEFAULT_MODEL)
-
-    // #then - ultrabrain category: model=openai/gpt-5.4, variant=xhigh
-    expect(agents.atlas).toBeDefined()
-    expect(agents.atlas.model).toBe("openai/gpt-5.4")
-    expect(agents.atlas.variant).toBe("xhigh")
   })
 
   test("override with non-existent category has no effect on config", async () => {

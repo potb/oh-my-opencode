@@ -208,7 +208,7 @@ describe("parseConfigPartially", () => {
         agents: {
           oracle: { model: "openai/gpt-5.4" },
           momus: { model: "openai/gpt-5.4" },
-          atlas: {
+          metis: {
             permission: {
               edit: { "*": "ask", ".sisyphus/**": "allow" },
             },
@@ -419,7 +419,7 @@ describe("loadPluginConfig", () => {
       join(projectConfigDir, "oh-my-openagent.jsonc"),
       JSON.stringify({
         agents: {
-          atlas: { model: "anthropic/claude-opus-4-6" },
+          oracle: { model: "anthropic/claude-opus-4-6" },
         },
       })
     )

@@ -59,7 +59,6 @@ describe("migrateAgentNames", () => {
     const agents = {
       SISYPHUS: { model: "test" },
       "planner-sisyphus": { prompt: "test" },
-      "Orchestrator-Sisyphus": { model: "openai/gpt-5.4" },
     }
 
     // when: Migrate agent names
@@ -68,7 +67,6 @@ describe("migrateAgentNames", () => {
     // then: Case-insensitive lookup should migrate correctly
     expect(migrated["sisyphus"]).toEqual({ model: "test" })
     expect(migrated["prometheus"]).toEqual({ prompt: "test" })
-    expect(migrated["atlas"]).toEqual({ model: "openai/gpt-5.4" })
   })
 
   test("passes through unknown agent names unchanged", () => {
@@ -83,35 +81,6 @@ describe("migrateAgentNames", () => {
     // then: Unknown names should pass through
     expect(changed).toBe(false)
     expect(migrated["custom-agent"]).toEqual({ model: "custom/model" })
-  })
-
-  test("migrates orchestrator-sisyphus to atlas", () => {
-    // given: Config with legacy orchestrator-sisyphus agent name
-    const agents = {
-      "orchestrator-sisyphus": { model: "anthropic/claude-opus-4-6" },
-    }
-
-    // when: Migrate agent names
-    const { migrated, changed } = migrateAgentNames(agents)
-
-    // then: orchestrator-sisyphus should be migrated to atlas
-    expect(changed).toBe(true)
-    expect(migrated["atlas"]).toEqual({ model: "anthropic/claude-opus-4-6" })
-    expect(migrated["orchestrator-sisyphus"]).toBeUndefined()
-  })
-
-  test("migrates lowercase atlas to atlas", () => {
-    // given: Config with lowercase atlas agent name
-    const agents = {
-      atlas: { model: "anthropic/claude-opus-4-6" },
-    }
-
-    // when: Migrate agent names
-    const { migrated, changed } = migrateAgentNames(agents)
-
-    // then: lowercase atlas should remain atlas (no change needed)
-    expect(changed).toBe(false)
-    expect(migrated["atlas"]).toEqual({ model: "anthropic/claude-opus-4-6" })
   })
 
   test("migrates Sisyphus variants to lowercase", () => {
@@ -134,17 +103,6 @@ describe("migrateAgentNames", () => {
     expect(changed).toBe(true)
     expect(migrated["sisyphus"]).toEqual({ model: "test" })
     expect(migrated["omo"]).toBeUndefined()
-  })
-
-  test("migrates Atlas variants to lowercase", () => {
-    // given agents config with "Atlas" key
-    // when migrateAgentNames called
-    // then key becomes "atlas"
-    const agents = { "Atlas": { model: "test" } }
-    const { migrated, changed } = migrateAgentNames(agents)
-    expect(changed).toBe(true)
-    expect(migrated["atlas"]).toEqual({ model: "test" })
-    expect(migrated["Atlas"]).toBeUndefined()
   })
 
   test("migrates Prometheus variants to lowercase", () => {

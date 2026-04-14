@@ -4,9 +4,6 @@ exports[`generateModelConfig no providers available returns ULTIMATE_FALLBACK fo
 {
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json",
   "agents": {
-    "atlas": {
-      "model": "opencode/gpt-5-nano",
-    },
     "explore": {
       "model": "opencode/gpt-5-nano",
     },
@@ -59,9 +56,6 @@ exports[`generateModelConfig single native provider uses Claude models when only
 {
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json",
   "agents": {
-    "atlas": {
-      "model": "anthropic/claude-sonnet-4.6",
-    },
     "explore": {
       "fallback_models": [
         {
@@ -123,9 +117,6 @@ exports[`generateModelConfig single native provider uses Claude models with isMa
 {
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json",
   "agents": {
-    "atlas": {
-      "model": "anthropic/claude-sonnet-4.6",
-    },
     "explore": {
       "fallback_models": [
         {
@@ -188,10 +179,6 @@ exports[`generateModelConfig single native provider uses OpenAI models when only
 {
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json",
   "agents": {
-    "atlas": {
-      "model": "openai/gpt-5.4",
-      "variant": "medium",
-    },
     "explore": {
       "model": "openai/gpt-5.4",
       "variant": "medium",
@@ -261,10 +248,6 @@ exports[`generateModelConfig single native provider uses OpenAI models with isMa
 {
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json",
   "agents": {
-    "atlas": {
-      "model": "openai/gpt-5.4",
-      "variant": "medium",
-    },
     "explore": {
       "model": "openai/gpt-5.4",
       "variant": "medium",
@@ -334,9 +317,6 @@ exports[`generateModelConfig single native provider uses Gemini models when only
 {
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json",
   "agents": {
-    "atlas": {
-      "model": "opencode/gpt-5-nano",
-    },
     "explore": {
       "model": "opencode/gpt-5-nano",
     },
@@ -392,9 +372,6 @@ exports[`generateModelConfig single native provider uses Gemini models with isMa
 {
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json",
   "agents": {
-    "atlas": {
-      "model": "opencode/gpt-5-nano",
-    },
     "explore": {
       "model": "opencode/gpt-5-nano",
     },
@@ -450,15 +427,6 @@ exports[`generateModelConfig all native providers uses preferred models from fal
 {
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json",
   "agents": {
-    "atlas": {
-      "fallback_models": [
-        {
-          "model": "openai/gpt-5.4",
-          "variant": "medium",
-        },
-      ],
-      "model": "anthropic/claude-sonnet-4.6",
-    },
     "explore": {
       "fallback_models": [
         {
@@ -628,15 +596,6 @@ exports[`generateModelConfig all native providers uses preferred models with isM
 {
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json",
   "agents": {
-    "atlas": {
-      "fallback_models": [
-        {
-          "model": "openai/gpt-5.4",
-          "variant": "medium",
-        },
-      ],
-      "model": "anthropic/claude-sonnet-4.6",
-    },
     "explore": {
       "fallback_models": [
         {
@@ -804,15 +763,6 @@ exports[`generateModelConfig fallback providers uses OpenCode Zen models when on
 {
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json",
   "agents": {
-    "atlas": {
-      "fallback_models": [
-        {
-          "model": "opencode/gpt-5.4",
-          "variant": "medium",
-        },
-      ],
-      "model": "opencode/claude-sonnet-4-6",
-    },
     "explore": {
       "fallback_models": [
         {
@@ -1003,15 +953,6 @@ exports[`generateModelConfig fallback providers uses OpenCode Zen models with is
 {
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json",
   "agents": {
-    "atlas": {
-      "fallback_models": [
-        {
-          "model": "opencode/gpt-5.4",
-          "variant": "medium",
-        },
-      ],
-      "model": "opencode/claude-sonnet-4-6",
-    },
     "explore": {
       "fallback_models": [
         {
@@ -1206,15 +1147,6 @@ exports[`generateModelConfig fallback providers uses GitHub Copilot models when 
 {
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json",
   "agents": {
-    "atlas": {
-      "fallback_models": [
-        {
-          "model": "github-copilot/gpt-5.4",
-          "variant": "medium",
-        },
-      ],
-      "model": "github-copilot/claude-sonnet-4.6",
-    },
     "explore": {
       "fallback_models": [
         {
@@ -1372,15 +1304,6 @@ exports[`generateModelConfig fallback providers uses GitHub Copilot models with 
 {
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json",
   "agents": {
-    "atlas": {
-      "fallback_models": [
-        {
-          "model": "github-copilot/gpt-5.4",
-          "variant": "medium",
-        },
-      ],
-      "model": "github-copilot/claude-sonnet-4.6",
-    },
     "explore": {
       "fallback_models": [
         {
@@ -1540,9 +1463,6 @@ exports[`generateModelConfig fallback providers uses ZAI model for librarian whe
 {
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json",
   "agents": {
-    "atlas": {
-      "model": "opencode/gpt-5-nano",
-    },
     "explore": {
       "model": "opencode/gpt-5-nano",
     },
@@ -1595,9 +1515,6 @@ exports[`generateModelConfig fallback providers uses ZAI model for librarian wit
 {
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json",
   "agents": {
-    "atlas": {
-      "model": "opencode/gpt-5-nano",
-    },
     "explore": {
       "model": "opencode/gpt-5-nano",
     },
@@ -1650,18 +1567,6 @@ exports[`generateModelConfig mixed provider scenarios uses Claude + OpenCode Zen
 {
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json",
   "agents": {
-    "atlas": {
-      "fallback_models": [
-        {
-          "model": "opencode/claude-sonnet-4-6",
-        },
-        {
-          "model": "opencode/gpt-5.4",
-          "variant": "medium",
-        },
-      ],
-      "model": "anthropic/claude-sonnet-4.6",
-    },
     "explore": {
       "fallback_models": [
         {
@@ -1905,19 +1810,6 @@ exports[`generateModelConfig mixed provider scenarios uses OpenAI + Copilot comb
 {
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json",
   "agents": {
-    "atlas": {
-      "fallback_models": [
-        {
-          "model": "openai/gpt-5.4",
-          "variant": "medium",
-        },
-        {
-          "model": "github-copilot/gpt-5.4",
-          "variant": "medium",
-        },
-      ],
-      "model": "github-copilot/claude-sonnet-4.6",
-    },
     "explore": {
       "fallback_models": [
         {
@@ -2117,9 +2009,6 @@ exports[`generateModelConfig mixed provider scenarios uses Claude + ZAI combinat
 {
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json",
   "agents": {
-    "atlas": {
-      "model": "anthropic/claude-sonnet-4.6",
-    },
     "explore": {
       "fallback_models": [
         {
@@ -2199,9 +2088,6 @@ exports[`generateModelConfig mixed provider scenarios uses Gemini + Claude combi
 {
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json",
   "agents": {
-    "atlas": {
-      "model": "anthropic/claude-sonnet-4.6",
-    },
     "explore": {
       "fallback_models": [
         {
@@ -2323,22 +2209,6 @@ exports[`generateModelConfig mixed provider scenarios uses all fallback provider
 {
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json",
   "agents": {
-    "atlas": {
-      "fallback_models": [
-        {
-          "model": "opencode/claude-sonnet-4-6",
-        },
-        {
-          "model": "github-copilot/gpt-5.4",
-          "variant": "medium",
-        },
-        {
-          "model": "opencode/gpt-5.4",
-          "variant": "medium",
-        },
-      ],
-      "model": "github-copilot/claude-sonnet-4.6",
-    },
     "explore": {
       "fallback_models": [
         {
@@ -2665,29 +2535,6 @@ exports[`generateModelConfig mixed provider scenarios uses all providers togethe
 {
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json",
   "agents": {
-    "atlas": {
-      "fallback_models": [
-        {
-          "model": "github-copilot/claude-sonnet-4.6",
-        },
-        {
-          "model": "opencode/claude-sonnet-4-6",
-        },
-        {
-          "model": "openai/gpt-5.4",
-          "variant": "medium",
-        },
-        {
-          "model": "github-copilot/gpt-5.4",
-          "variant": "medium",
-        },
-        {
-          "model": "opencode/gpt-5.4",
-          "variant": "medium",
-        },
-      ],
-      "model": "anthropic/claude-sonnet-4.6",
-    },
     "explore": {
       "fallback_models": [
         {
@@ -3148,29 +2995,6 @@ exports[`generateModelConfig mixed provider scenarios uses all providers with is
 {
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json",
   "agents": {
-    "atlas": {
-      "fallback_models": [
-        {
-          "model": "github-copilot/claude-sonnet-4.6",
-        },
-        {
-          "model": "opencode/claude-sonnet-4-6",
-        },
-        {
-          "model": "openai/gpt-5.4",
-          "variant": "medium",
-        },
-        {
-          "model": "github-copilot/gpt-5.4",
-          "variant": "medium",
-        },
-        {
-          "model": "opencode/gpt-5.4",
-          "variant": "medium",
-        },
-      ],
-      "model": "anthropic/claude-sonnet-4.6",
-    },
     "explore": {
       "fallback_models": [
         {
@@ -3638,21 +3462,6 @@ exports[`generateModelConfig Vercel AI Gateway provider uses vercel/ model strin
 {
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json",
   "agents": {
-    "atlas": {
-      "fallback_models": [
-        {
-          "model": "vercel/moonshotai/kimi-k2.5",
-        },
-        {
-          "model": "vercel/openai/gpt-5.4",
-          "variant": "medium",
-        },
-        {
-          "model": "vercel/minimax/minimax-m2.7",
-        },
-      ],
-      "model": "vercel/anthropic/claude-sonnet-4.6",
-    },
     "explore": {
       "fallback_models": [
         {
@@ -3896,21 +3705,6 @@ exports[`generateModelConfig Vercel AI Gateway provider uses vercel/ model strin
 {
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json",
   "agents": {
-    "atlas": {
-      "fallback_models": [
-        {
-          "model": "vercel/moonshotai/kimi-k2.5",
-        },
-        {
-          "model": "vercel/openai/gpt-5.4",
-          "variant": "medium",
-        },
-        {
-          "model": "vercel/minimax/minimax-m2.7",
-        },
-      ],
-      "model": "vercel/anthropic/claude-sonnet-4.6",
-    },
     "explore": {
       "fallback_models": [
         {
