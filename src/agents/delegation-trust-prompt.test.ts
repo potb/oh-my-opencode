@@ -60,7 +60,7 @@ describe("delegation trust prompt rules", () => {
     const prompt = buildSisyphusJuniorPrompt("openai/gpt-5.2", false)
 
     // when / then
-    expect(prompt).toContain("continue only with non-overlapping work while they search")
+    expect(prompt).toContain("continue only with non-overlapping work while those searches run")
     expect(prompt).toContain("DO NOT perform the same search yourself")
   })
 
@@ -84,7 +84,7 @@ describe("delegation trust prompt rules", () => {
     const prompt = buildSisyphusJuniorPrompt("openai/gpt-5.4", false)
 
     // when / then
-    expect(prompt).toContain("continue only with non-overlapping work while they search")
+    expect(prompt).toContain("continue only with non-overlapping work while those searches run")
     expect(prompt).toContain("DO NOT perform the same search yourself")
   })
 
@@ -93,7 +93,7 @@ describe("delegation trust prompt rules", () => {
     const prompt = buildSisyphusJuniorPrompt("openai/gpt-5.3-codex", false)
 
     // when / then
-    expect(prompt).toContain("continue only with non-overlapping work while they search")
+    expect(prompt).toContain("continue only with non-overlapping work while those searches run")
     expect(prompt).toContain("DO NOT perform the same search yourself")
   })
 
@@ -102,7 +102,7 @@ describe("delegation trust prompt rules", () => {
     const prompt = buildSisyphusJuniorPrompt("google/gemini-3.1-pro", false)
 
     // when / then
-    expect(prompt).toContain("continue only with non-overlapping work while they search")
+    expect(prompt).toContain("continue only with non-overlapping work while those searches run")
     expect(prompt).toContain("DO NOT perform the same search yourself")
   })
 })

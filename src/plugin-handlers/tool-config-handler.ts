@@ -35,7 +35,6 @@ export function applyToolConfig(params: {
     LspCodeActionResolve: false,
     background_cancel: false,
     background_output: false,
-    call_omo_agent: false,
     interactive_bash: false,
     session_info: false,
     session_list: false,

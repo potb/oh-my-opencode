@@ -181,13 +181,12 @@ describe("createSisyphusJuniorAgentWithOverrides", () => {
     })
   })
 
-  describe("tool safety (task blocked, call_omo_agent allowed)", () => {
-    test("task remains blocked, call_omo_agent is allowed via tools format", () => {
+  describe("tool safety", () => {
+    test("task remains blocked even when override tries to allow extra delegation tools", () => {
       // given
       const override = {
         tools: {
           task: true,
-          call_omo_agent: true,
           read: true,
         },
       }
@@ -200,14 +199,10 @@ describe("createSisyphusJuniorAgentWithOverrides", () => {
       const permission = result.permission as Record<string, string> | undefined
       if (tools) {
         expect(tools.task).toBe(false)
-        // call_omo_agent is NOW ALLOWED for subagents to spawn explore/librarian
-        expect(tools.call_omo_agent).toBe(true)
         expect(tools.read).toBe(true)
       }
       if (permission) {
         expect(permission.task).toBe("deny")
-        // call_omo_agent is NOW ALLOWED for subagents to spawn explore/librarian
-        expect(permission.call_omo_agent).toBe("allow")
       }
     })
 
@@ -216,7 +211,6 @@ describe("createSisyphusJuniorAgentWithOverrides", () => {
       const override = {
         permission: {
           task: "allow",
-          call_omo_agent: "allow",
           read: "allow",
         },
       } as { permission: Record<string, string> }
@@ -224,16 +218,14 @@ describe("createSisyphusJuniorAgentWithOverrides", () => {
       // when
       const result = createSisyphusJuniorAgentWithOverrides(override as Parameters<typeof createSisyphusJuniorAgentWithOverrides>[0])
 
-      // then - task blocked, but call_omo_agent allowed for explore/librarian spawning
+      // then - task remains blocked
       const tools = result.tools as Record<string, boolean> | undefined
       const permission = result.permission as Record<string, string> | undefined
       if (tools) {
         expect(tools.task).toBe(false)
-        expect(tools.call_omo_agent).toBe(true)
       }
       if (permission) {
         expect(permission.task).toBe("deny")
-        expect(permission.call_omo_agent).toBe("allow")
       }
     })
   })

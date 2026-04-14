@@ -528,7 +528,6 @@ describe("executeSyncContinuation - toast cleanup error paths", () => {
     expect(promptAsyncCalls).toHaveLength(1)
     expect(promptAsyncCalls[0]?.body.tools).toEqual({
       task: false,
-      call_omo_agent: false,
       question: false,
       write: false,
       edit: false,
@@ -598,7 +597,6 @@ describe("executeSyncContinuation - toast cleanup error paths", () => {
     expect(promptAsyncCalls).toHaveLength(1)
     expect(promptAsyncCalls[0]?.body.tools).toEqual({
       task: false,
-      call_omo_agent: false,
       question: false,
       write: false,
       edit: false,
@@ -668,7 +666,6 @@ describe("executeSyncContinuation - toast cleanup error paths", () => {
     expect(promptAsyncCalls).toHaveLength(1)
     expect(promptAsyncCalls[0]?.body.tools).toEqual({
       task: true,
-      call_omo_agent: true,
       question: false,
     })
   })

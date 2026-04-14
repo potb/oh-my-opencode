@@ -499,7 +499,6 @@ export function createSisyphusAgent(
       color: "#00CED1",
       permission: {
         question: "allow",
-        call_omo_agent: "deny",
         ...getGptApplyPatchPermission(model),
       } as AgentConfig["permission"],
       reasoningEffort: "medium",
@@ -539,7 +538,6 @@ export function createSisyphusAgent(
 
   const permission = {
     question: "allow",
-    call_omo_agent: "deny",
     ...getGptApplyPatchPermission(model),
   } as AgentConfig["permission"];
   const base = {

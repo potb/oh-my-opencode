@@ -33,7 +33,6 @@ const DELEGATABLE_WORK_TOOLS = new Set([
  */
 const DELEGATION_TOOLS = new Set([
    "task",
-   "call_omo_agent",
 ])
 
 interface ToolExecuteInput {

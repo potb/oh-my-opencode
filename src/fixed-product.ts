@@ -18,7 +18,6 @@ export const REMOVED_AGENT_NAMES = [
 export const REMOVED_TOOL_NAMES = [
   "background_cancel",
   "background_output",
-  "call_omo_agent",
   "interactive_bash",
   "session_info",
   "session_list",

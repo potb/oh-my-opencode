@@ -89,7 +89,6 @@ describe("createToolRegistry", () => {
     expect(result.filteredTools).toHaveProperty("task")
     expect(result.filteredTools).not.toHaveProperty("background_cancel")
     expect(result.filteredTools).not.toHaveProperty("background_output")
-    expect(result.filteredTools).not.toHaveProperty("call_omo_agent")
     expect(result.filteredTools).not.toHaveProperty("interactive_bash")
     expect(result.filteredTools).not.toHaveProperty("session_list")
     expect(result.filteredTools).not.toHaveProperty("skill")

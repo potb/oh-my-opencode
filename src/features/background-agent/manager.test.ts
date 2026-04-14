@@ -5124,7 +5124,6 @@ describe("BackgroundManager - tool permission spread order", () => {
 
     //#then
     expect(capturedTools).toBeDefined()
-    expect(capturedTools?.call_omo_agent).toBe(false)
     expect(capturedTools?.task).toBe(false)
     expect(capturedTools?.write).toBe(false)
     expect(capturedTools?.edit).toBe(false)
@@ -5216,7 +5215,6 @@ describe("BackgroundManager - tool permission spread order", () => {
 
     //#then
     expect(capturedTools).toBeDefined()
-    expect(capturedTools?.call_omo_agent).toBe(false)
     expect(capturedTools?.task).toBe(false)
     expect(capturedTools?.write).toBe(false)
     expect(capturedTools?.edit).toBe(false)

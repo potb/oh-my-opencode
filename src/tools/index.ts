@@ -29,7 +29,6 @@ import type { BackgroundManager } from "../features/background-agent"
 
 type OpencodeClient = PluginInput["client"]
 
-export { createCallOmoAgent } from "./call-omo-agent"
 export { createDelegateTask } from "./delegate-task"
 export {
   createTaskCreateTool,

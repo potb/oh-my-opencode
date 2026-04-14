@@ -26,7 +26,7 @@ describe("read-only agent tool restrictions", () => {
       }
     })
 
-    test("denies task but allows call_omo_agent for research", () => {
+    test("denies task for read-only analysis", () => {
       // given
       const agent = createOracleAgent(TEST_MODEL)
 
@@ -35,7 +35,6 @@ describe("read-only agent tool restrictions", () => {
 
       // then
       expect(permission["task"]).toBe("deny")
-      expect(permission["call_omo_agent"]).toBeUndefined()
     })
   })
 
@@ -109,7 +108,6 @@ describe("read-only agent tool restrictions", () => {
 
       // then
       expect(permission["task"]).toBeUndefined()
-      expect(permission["call_omo_agent"]).toBeUndefined()
     })
   })
 
