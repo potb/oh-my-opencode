@@ -34,7 +34,7 @@ config/schema/
 
 ## ROOT SCHEMA FIELDS
 
-`$schema`, `new_task_system_enabled`, `default_run_agent`, `disabled_mcps`, `disabled_agents`, `disabled_hooks`, `disabled_commands`, `disabled_tools`, `hashline_edit`, `agents`, `categories`, `claude_code`, `comment_checker`, `experimental`, `background_task`, `git_master`, `browser_automation_engine`, `websearch`, `sisyphus`, `_migrations`
+`$schema`, `new_task_system_enabled`, `disabled_mcps`, `disabled_agents`, `disabled_hooks`, `disabled_commands`, `disabled_tools`, `hashline_edit`, `agents`, `categories`, `claude_code`, `comment_checker`, `experimental`, `background_task`, `git_master`, `browser_automation_engine`, `websearch`, `sisyphus`, `_migrations`
 
 ## AGENT OVERRIDE FIELDS
 
