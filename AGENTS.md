@@ -16,10 +16,9 @@ oh-my-opencode/
 │   ├── agents/               # Built-in agent definitions and prompt assembly
 │   ├── hooks/                # Lifecycle hooks across dedicated modules and standalone files
 │   ├── tools/                # Tool factories and built-in tool wiring (includes Hashline edit with LINE#ID content hashing)
-│   ├── features/             # Feature modules (background-agent, skill-loader, tmux, skill-mcp-manager, etc.)
+│   ├── features/             # Feature modules (background-agent, skill-loader, hook injectors, state, etc.)
 │   ├── shared/               # 170+ utility files (barrel-exported, logger → /tmp/oh-my-opencode.log)
 │   ├── config/               # Zod v4 schema system (32 files)
-│   ├── cli/                  # CLI: install, run, version (Commander.js)
 │   ├── mcp/                  # 3 built-in remote MCPs (websearch, context7, grep_app)
 │   ├── plugin/               # 10 OpenCode hook handlers + 52 hook composition
 │   ├── plugin-handlers/      # 6-phase config loading pipeline
@@ -34,8 +33,8 @@ oh-my-opencode/
 ```
 OhMyOpenCodePlugin(ctx)
   ├─→ loadPluginConfig()         # JSONC parse → project/user merge → Zod validate → migrate
-  ├─→ createManagers()           # TmuxSessionManager, BackgroundManager, SkillMcpManager, ConfigHandler
-  ├─→ createTools()              # SkillContext + AvailableCategories + ToolRegistry (26 tools)
+  ├─→ createManagers()           # BackgroundManager and config/runtime managers
+  ├─→ createTools()              # ToolRegistry wiring
   ├─→ createHooks()              # Compose core + continuation hooks
   └─→ createPluginInterface()    # 10 OpenCode hook handlers → PluginInterface
 ```
@@ -65,11 +64,8 @@ OhMyOpenCodePlugin(ctx)
 | Add new feature module | `src/features/{name}/` | Standalone module, wire in plugin/ |
 | Add new MCP | `src/mcp/` + register in `createBuiltinMcps()` | Remote HTTP only (tier 1 of 3) |
 | Add new skill | `src/features/builtin-skills/skills/` | Implement BuiltinSkill interface |
-| Add new command | `src/features/builtin-commands/` | Template in templates/ |
 | Modify config schema | `src/config/schema/` + update root schema | Zod v4, add to OhMyOpenCodeConfigSchema |
-| Add new category | `src/tools/delegate-task/constants.ts` | DEFAULT_CATEGORIES + CATEGORY_MODEL_REQUIREMENTS |
 | External notifications | `src/openclaw/` | Bidirectional Discord/Telegram/webhook integration |
-| Skill-embedded MCP | `src/features/skill-mcp-manager/` | Tier 3 MCPs (stdio + HTTP, per-session) |
 
 ## MULTI-LEVEL CONFIG
 
@@ -83,7 +79,7 @@ Project (.opencode/oh-my-opencode.jsonc)  →  User (~/.config/opencode/oh-my-op
 - Zod `safeParse()` fills defaults for omitted fields; partial parsing as fallback
 - `migrateConfigFile()` transforms legacy keys automatically (idempotent via `_migrations` tracking)
 
-Fields: agents (14 overridable, 21 fields each), categories (8 built-in + custom), disabled_* arrays (agents, hooks, mcps, skills, commands, tools), 19 feature-specific configs.
+Fields: agents, categories, disabled_* arrays, and the remaining fixed-product runtime settings.
 
 ## THREE-TIER MCP SYSTEM
 
@@ -130,7 +126,6 @@ Fields: agents (14 overridable, 21 fields each), categories (8 built-in + custom
 ```bash
 bun test                    # Bun test suite
 bun run build              # Build plugin (ESM + declarations + schema)
-bun run build:all          # Build + platform binaries
 bun run typecheck           # tsc --noEmit
 ```
 
@@ -140,7 +135,6 @@ bun run typecheck           # tsc --noEmit
 |----------|---------|---------|
 | ci.yml | push/PR to master/dev | Tests (split: mock-heavy isolated + batch), typecheck, build, schema auto-commit |
 | publish.yml | manual dispatch | Version bump, dual npm publish (oh-my-opencode + oh-my-openagent), platform binaries, GitHub release |
-| publish-platform.yml | called by publish | 11 platform binaries via bun compile (darwin/linux/windows) |
 | sisyphus-agent.yml | @mention / dispatch | AI agent handles issues/PRs |
 | cla.yml | issue_comment/PR | CLA assistant for contributors |
 | lint-workflows.yml | push to .github/ | actionlint + shellcheck on workflow files |
