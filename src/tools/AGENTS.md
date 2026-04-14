@@ -21,9 +21,9 @@ Tool factories and direct definitions used by the trimmed plugin tool surface.
 
 | Tool | Factory | Parameters |
 |------|---------|------------|
-| `task` | `createDelegateTask` | description, prompt, category, subagent_type, run_in_background, session_id, load_skills, command |
+| `task` | `createDelegateTask` | description, prompt, subagent_type, run_in_background, session_id, load_skills, command |
 
-**8 Built-in Categories**: visual-engineering, ultrabrain, deep, artistry, quick, unspecified-low, unspecified-high, writing
+Category-based routing is removed in the fixed-product runtime. Use direct `subagent_type` delegation.
 
 ### Agent Invocation (1)
 

@@ -73,7 +73,7 @@ Use these when they provide clear value based on the decision framework above:
 | librarian agent | External library docs, OSS examples | \`task(subagent_type="librarian", load_skills=[], run_in_background=true, ...)\` |
 | oracle agent | Stuck on architecture/debugging after 2+ attempts | \`task(subagent_type="oracle", load_skills=[], ...)\` |
 | plan agent | Complex multi-step with dependencies (5+ steps) | \`task(subagent_type="plan", load_skills=[], ...)\` |
-| task category | Specialized work matching a category | \`task(category="...", load_skills=[...])\` |
+| direct subagent | Specialized work matching a known agent | \`task(subagent_type="explore", load_skills=[], ...)\` |
 
 <tool_usage_rules>
 - Prefer tools over internal knowledge for fresh or user-specific data

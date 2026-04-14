@@ -151,19 +151,19 @@ task(session_id="ses_abc123", load_skills=[], prompt="Here's my answer to your q
 | Documentation lookup | task(subagent_type="librarian", load_skills=[], run_in_background=true) | Specialized knowledge |
 | Planning | task(subagent_type="plan", load_skills=[]) | Parallel task graph + structured TODO list |
 | Hard problem (conventional) | task(subagent_type="oracle", load_skills=[]) | Architecture, debugging, complex logic |
-| Hard implementation problem | task(category="deep", load_skills=[...]) | Autonomous execution with more context |
-| Implementation | task(category="...", load_skills=[...]) | Domain-optimized models |
+| Hard implementation problem | task(subagent_type="oracle", load_skills=[]) | Get architectural guidance before execution |
+| Implementation | task(subagent_type="explore", load_skills=[], run_in_background=true) | Gather implementation context first |
 
-**CATEGORY + SKILL DELEGATION:**
+**SUBAGENT DELEGATION:**
 \`\`\`
-// Frontend work
-task(category="visual-engineering", load_skills=["frontend-ui-ux"])
+// Codebase exploration
+task(subagent_type="explore", load_skills=[], run_in_background=true)
 
-// Complex logic
-task(category="ultrabrain", load_skills=[])
+// Documentation lookup
+task(subagent_type="librarian", load_skills=[], run_in_background=true)
 
-// Quick fixes
-task(category="quick", load_skills=["git-master"])
+// Architecture review
+task(subagent_type="oracle", load_skills=[], run_in_background=false)
 \`\`\`
 
 **YOU SHOULD ONLY DO IT YOURSELF WHEN:**

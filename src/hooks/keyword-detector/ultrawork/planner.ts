@@ -117,7 +117,7 @@ Each TODO item MUST include:
 
 | Wave | Tasks | Dispatch Command |
 |------|-------|------------------|
-| 1 | 1, 4 | \`task(category="...", load_skills=[...], run_in_background=false)\` × 2 |
+| 1 | 1, 4 | \`task(subagent_type="...", load_skills=[], run_in_background=false)\` × 2 |
 | 2 | 2, 3, 5 | \`task(...)\` × 3 after Wave 1 completes |
 | 3 | 6 | \`task(...)\` final integration |
 
@@ -125,7 +125,7 @@ Each TODO item MUST include:
 - Orchestrator (Sisyphus) executes tasks in parallel waves
 - Independent tasks run simultaneously via background agents
 - Proper dependency tracking prevents race conditions
-- Category + skills ensure optimal model routing per task`
+- Direct subagent routing keeps the plan aligned with the fixed-product runtime`
 
 export function getPlannerUltraworkMessage(): string {
   return `<ultrawork-mode>

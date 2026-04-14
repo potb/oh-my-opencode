@@ -185,8 +185,8 @@ task(subagent_type="plan", load_skills=[], prompt="<gathered context + user requ
 | Documentation lookup | task(subagent_type="librarian", load_skills=[], run_in_background=true) | Specialized knowledge |
 | Planning | task(subagent_type="plan", load_skills=[]) | Parallel task graph + structured TODO list |
 | Hard problem (conventional) | task(subagent_type="oracle", load_skills=[]) | Architecture, debugging, complex logic |
-| Hard implementation problem | task(category="deep", load_skills=[...]) | Autonomous execution with more context |
-| Implementation | task(category="...", load_skills=[...]) | Domain-optimized models |
+| Hard implementation problem | task(subagent_type="oracle", load_skills=[]) | Get architectural guidance before execution |
+| Implementation | task(subagent_type="explore", load_skills=[], run_in_background=true) | Gather implementation context first |
 
 **YOU SHOULD ONLY DO IT YOURSELF WHEN:**
 - Task is trivially simple (1-2 lines, obvious change)
