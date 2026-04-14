@@ -698,7 +698,6 @@ Hooks intercept and modify behavior at key points in the agent lifecycle across 
 | --------------------------- | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **keyword-detector**        | Message + Transform | Detects keywords and activates modes: `ultrawork`/`ulw` (max performance), `search`/`find` (parallel exploration), `analyze`/`investigate` (deep analysis). |
 | **think-mode**              | Params              | Auto-detects extended thinking needs. Catches "think deeply", "ultrathink" and adjusts model settings.                                                      |
-| **auto-slash-command**      | Message             | Automatically executes slash commands from prompts.                                                                                                         |
 | **anthropic-effort**        | Params              | Adjusts Anthropic API effort level based on context.                                                                                                        |
 
 #### Quality & Safety

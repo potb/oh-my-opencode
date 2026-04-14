@@ -1,10 +1,10 @@
-# src/hooks/ — 50 Lifecycle Hooks
+# src/hooks/ — 49 Lifecycle Hooks
 
 **Generated:** 2026-04-11
 
 ## OVERVIEW
 
-50 hooks across dedicated modules and standalone files. Three-tier composition: Core(43) + Continuation(5) + Skill(1). All hooks follow `createXXXHook(deps) → HookFunction` factory pattern.
+49 hooks across dedicated modules and standalone files. Session, tool-guard, transform, and continuation hooks compose the runtime surface. All hooks follow `createXXXHook(deps) → HookFunction` factory pattern.
 
 ## HOOK TIERS
 
@@ -15,7 +15,6 @@ hooks/
 ├── agent-usage-reminder/         # Reminds about available agents
 ├── anthropic-context-window-limit-recovery/ # Auto-summarize
 ├── anthropic-effort/            # Reasoning effort level adjustment
-├── auto-slash-command/         # Detects /command patterns
 ├── auto-update-checker/        # Plugin update check
 ├── background-notification/    # OS notification
 ├── claude-code-hooks/          # settings.json compat layer
@@ -114,12 +113,6 @@ hooks/
 | compactionTodoPreserver | session.compacted | Preserve todos through compaction |
 | unstableAgentBabysitter | session.idle | Monitor unstable agent behavior |
 | backgroundNotificationHook | event | Background task completion notifications |
-
-### Tier 5: Skill Hooks (1) — `create-skill-hooks.ts`
-
-| Hook | Event | Purpose |
-|------|-------|---------|
-| autoSlashCommand | chat.message | Auto-detect `/command` in user input |
 
 ## KEY HOOKS (COMPLEX)
 

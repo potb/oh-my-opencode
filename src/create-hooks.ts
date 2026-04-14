@@ -58,7 +58,6 @@ export function createHooks(args: {
   const hooks = {
     ...core,
     ...continuation,
-    autoSlashCommand: null,
   }
 
   return {
