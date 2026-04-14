@@ -21,8 +21,7 @@ export const TARGET_TOOLS = new Set([
 
 export const AGENT_TOOLS = new Set([
   "task",
-  "task_create",
-  "task_update",
+  "todowrite",
 ]);
 
 export const REMINDER_MESSAGE = `

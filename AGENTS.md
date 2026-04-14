@@ -129,16 +129,6 @@ bun run build              # Build plugin (ESM + declarations + schema)
 bun run typecheck           # tsc --noEmit
 ```
 
-## CI/CD
-
-| Workflow | Trigger | Purpose |
-|----------|---------|---------|
-| ci.yml | push/PR to master/dev | Tests (split: mock-heavy isolated + batch), typecheck, build, schema auto-commit |
-| publish.yml | manual dispatch | Version bump, dual npm publish (oh-my-opencode + oh-my-openagent), platform binaries, GitHub release |
-| sisyphus-agent.yml | @mention / dispatch | AI agent handles issues/PRs |
-| cla.yml | issue_comment/PR | CLA assistant for contributors |
-| lint-workflows.yml | push to .github/ | actionlint + shellcheck on workflow files |
-
 ## NOTES
 
 - Logger writes to `/tmp/oh-my-opencode.log` -- check there for debugging

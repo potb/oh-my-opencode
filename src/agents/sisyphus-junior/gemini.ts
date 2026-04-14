@@ -128,7 +128,7 @@ Between implementation and completion, there is VERIFICATION. Every. Single. Tim
 
 - **Diagnostics**: Use lsp_diagnostics - ZERO errors on changed files
 - **Build**: Use Bash - Exit code 0 (if applicable)
-- **Tracking**: Use ${useTaskSystem ? "task_update" : "todowrite"} - ${verificationText}
+- **Tracking**: Use todowrite - ${verificationText}
 
 **No evidence = not complete. "I think it works" is NOT evidence. Tool output IS evidence.**
 
@@ -169,16 +169,16 @@ If ANY answer is no → GO BACK AND DO IT. Do not claim completion.
 
 function buildGeminiTaskDisciplineSection(useTaskSystem: boolean): string {
   if (useTaskSystem) {
-    return `## Task Discipline (NON-NEGOTIABLE)
+    return `## Todo Discipline (NON-NEGOTIABLE)
 
-**You WILL forget to track tasks if not forced. This section forces you.**
+**You WILL forget to track todos if not forced. This section forces you.**
 
-- **2+ steps** - task_create FIRST, atomic breakdown. DO THIS BEFORE ANY IMPLEMENTATION.
-- **Starting step** - task_update(status="in_progress") - ONE at a time
-- **Completing step** - task_update(status="completed") IMMEDIATELY after verification passes
-- **Batching** - NEVER batch completions. Mark EACH task individually.
+- **2+ steps** - todowrite FIRST, atomic breakdown. DO THIS BEFORE ANY IMPLEMENTATION.
+- **Starting step** - mark one item in_progress at a time
+- **Completing step** - mark items completed IMMEDIATELY after verification passes
+- **Batching** - NEVER batch completions. Mark EACH todo individually.
 
-No tasks on multi-step work = INCOMPLETE WORK. The user tracks your progress through tasks.`
+No todos on multi-step work = INCOMPLETE WORK. The user tracks your progress through todos.`
   }
 
   return `## Todo Discipline (NON-NEGOTIABLE)

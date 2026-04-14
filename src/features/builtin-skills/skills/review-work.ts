@@ -203,7 +203,7 @@ Add at least 5 more scenarios from this reflection. Group scenarios by priority:
 
 ### Step 3: Create Task List
 
-Convert your augmented scenario list into a structured task list (use task_create/task_update or your todo system). Each task = one test scenario with:
+Convert your augmented scenario list into a structured task list using the active todo system. Each task = one test scenario with:
 - Test name
 - Steps to execute
 - Expected result

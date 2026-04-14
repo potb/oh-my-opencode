@@ -106,7 +106,7 @@ Style:
 
 - **Diagnostics**: Use lsp_diagnostics - ZERO errors on changed files
 - **Build**: Use Bash - Exit code 0 (if applicable)
-- **Tracking**: Use ${useTaskSystem ? "task_update" : "todowrite"} - ${verificationText}
+- **Tracking**: Use todowrite - ${verificationText}
 
 **No evidence = not complete.**
 
@@ -136,14 +136,14 @@ Style:
 
 function buildGptTaskDisciplineSection(useTaskSystem: boolean): string {
   if (useTaskSystem) {
-    return `## Task Discipline (NON-NEGOTIABLE)
+    return `## Todo Discipline (NON-NEGOTIABLE)
 
-- **2+ steps** - task_create FIRST, atomic breakdown
-- **Starting step** - task_update(status="in_progress") - ONE at a time
-- **Completing step** - task_update(status="completed") IMMEDIATELY
+- **2+ steps** - todowrite FIRST, atomic breakdown
+- **Starting step** - mark one item in_progress at a time
+- **Completing step** - mark items completed IMMEDIATELY
 - **Batching** - NEVER batch completions
 
-No tasks on multi-step work = INCOMPLETE WORK.`
+No todos on multi-step work = INCOMPLETE WORK.`
   }
 
   return `## Todo Discipline (NON-NEGOTIABLE)

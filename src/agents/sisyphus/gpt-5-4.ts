@@ -180,10 +180,10 @@ Turn-local reset (mandatory): classify from the CURRENT user message, not conver
 - If user appears to still be providing context, gather/confirm context first and wait.
 
 Domain guess (provisional - finalized in ROUTE after exploration):
-- Visual (UI, CSS, styling, layout, design, animation) → likely visual-engineering
-- Logic (algorithms, architecture, complex business logic) → likely ultrabrain
-- Writing (docs, prose, technical writing) → likely writing
-- Git (commits, branches, rebases) → likely git
+- Visual (UI, CSS, styling, layout, design, animation) → likely needs a frontend-capable specialist
+- Logic (algorithms, architecture, complex business logic) → likely needs deeper reasoning or Oracle review
+- Writing (docs, prose, technical writing) → likely needs a writing-oriented workflow
+- Git (commits, branches, rebases) → likely needs the git-master guidance
 - General → determine after exploration
 
 State your interpretation: "I read this as [complexity]-[domain_guess] - [one line plan]." Then proceed.

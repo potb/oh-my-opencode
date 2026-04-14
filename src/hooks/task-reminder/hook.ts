@@ -2,16 +2,12 @@ import type { PluginInput } from "@opencode-ai/plugin"
 
 const TASK_TOOLS = new Set([
   "task",
-  "task_create",
-  "task_list",
-  "task_get",
-  "task_update",
-  "task_delete",
+  "todowrite",
 ])
 const TURN_THRESHOLD = 10
 const REMINDER_MESSAGE = `
 
-The task tools haven't been used recently. If you're tracking work, use task with action=create/update (or task_create/task_update) to record progress.`
+The task tools haven't been used recently. If you're tracking work, use todowrite to record progress or task(subagent_type=...) for delegation.`
 
 interface ToolExecuteInput {
   tool: string

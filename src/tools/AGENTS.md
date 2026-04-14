@@ -8,15 +8,6 @@ Tool factories and direct definitions used by the trimmed plugin tool surface.
 
 ## TOOL CATALOG
 
-### Task Management (4)
-
-| Tool | Factory | Parameters |
-|------|---------|------------|
-| `task_create` | `createTaskCreateTool` | subject, description, blockedBy, blocks, metadata, parentID |
-| `task_list` | `createTaskList` | (none) |
-| `task_get` | `createTaskGetTool` | id |
-| `task_update` | `createTaskUpdateTool` | id, subject, description, status, addBlocks, addBlockedBy, owner, metadata |
-
 ### Delegation (1)
 
 | Tool | Factory | Parameters |
@@ -50,12 +41,9 @@ Category-based routing is removed in the fixed-product runtime. Use direct `suba
 | `grep` | `createGrepTools` | pattern, path, include (60s timeout, 10MB limit) |
 | `glob` | `createGlobTools` | pattern, path (60s timeout, 100 file limit) |
 
-### Skill/Command (2)
+### Task Tracking
 
-| Tool | Factory | Parameters |
-|------|---------|------------|
-| `skill` | `createSkillTool` | name, user_message |
-| `skill_mcp` | `createSkillMcpTool` | mcp_name, tool_name/resource_name/prompt_name, arguments, grep |
+Task tracking is handled by the active todo/task hooks and current fixed-product runtime conventions, not by a standalone task_create/task_update tool surface.
 
 ### System (2)
 
@@ -70,18 +58,9 @@ Category-based routing is removed in the fixed-product runtime. Use direct `suba
 |------|---------|------------|
 | `hashline_edit` | `createHashlineEditTool` | file, edits[] |
 
-## DELEGATION CATEGORIES
+## DELEGATION
 
-| Category | Model | Domain |
-|----------|-------|--------|
-| visual-engineering | gemini-3.1-pro high | Frontend, UI/UX |
-| ultrabrain | gpt-5.4 xhigh | Hard logic |
-| deep | gpt-5.4 medium | Autonomous problem-solving |
-| artistry | gemini-3.1-pro high | Creative approaches |
-| quick | gpt-5.4-mini | Trivial tasks |
-| unspecified-low | claude-sonnet-4-6 | Moderate effort |
-| unspecified-high | claude-opus-4-6 max | High effort |
-| writing | gemini-3-flash | Documentation |
+The fixed-product runtime delegates through explicit `subagent_type` values such as `explore`, `librarian`, `oracle`, and `plan`.
 
 ## HOW TO ADD A TOOL
 
