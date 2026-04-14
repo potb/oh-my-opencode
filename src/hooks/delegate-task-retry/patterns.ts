@@ -12,26 +12,9 @@ export const DELEGATE_TASK_ERROR_PATTERNS: DelegateTaskErrorPattern[] = [
       "Add run_in_background=false (for delegation) or run_in_background=true (for parallel exploration)",
   },
   {
-    pattern: "load_skills",
-    errorType: "missing_load_skills",
-    fixHint:
-      "Add load_skills=[] parameter (empty array if no skills needed). Note: Calling Skill tool does NOT populate this.",
-  },
-  {
-    pattern: "category OR subagent_type",
-    errorType: "mutual_exclusion",
-    fixHint:
-      "Provide ONLY one of: category (e.g., 'general', 'quick') OR subagent_type (e.g., 'oracle', 'explore')",
-  },
-  {
-    pattern: "Must provide either category or subagent_type",
-    errorType: "missing_category_or_agent",
-    fixHint: "Add either category='general' OR subagent_type='explore'",
-  },
-  {
-    pattern: "Unknown category",
-    errorType: "unknown_category",
-    fixHint: "Use a valid category from the Available list in the error message",
+    pattern: "subagent_type",
+    errorType: "missing_or_invalid_subagent_type",
+    fixHint: "Provide a valid subagent_type such as 'explore', 'librarian', or 'oracle'",
   },
   {
     pattern: "Agent name cannot be empty",
@@ -48,11 +31,6 @@ export const DELEGATE_TASK_ERROR_PATTERNS: DelegateTaskErrorPattern[] = [
     errorType: "primary_agent",
     fixHint:
       "Primary agents cannot be called via task. Use a subagent like 'explore', 'oracle', or 'librarian'",
-  },
-  {
-    pattern: "Skills not found",
-    errorType: "unknown_skills",
-    fixHint: "Use valid skill names from the Available list in the error message",
   },
 ]
 

@@ -91,10 +91,10 @@ Use the git-master skill's atomic commit principles. The reason for atomic commi
 10+ files changed → 5+ commits minimum
 ```
 
-Each commit should pair implementation with its tests. Load `git-master` skill when committing:
+Each commit should pair implementation with its tests. Use the `git-master` guidance directly when committing:
 
 ```
-task(category="quick", load_skills=["git-master"], prompt="Commit the changes atomically following git-master conventions. Repository is at {WORKTREE_PATH}.")
+task(subagent_type="explore", prompt="Inspect the changes to commit and summarize atomic commit boundaries. Repository is at {WORKTREE_PATH}.")
 ```
 
 ### Pre-push local validation

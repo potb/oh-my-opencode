@@ -76,7 +76,6 @@ This agent answers: "Did we build exactly what was asked, within the rules we we
 task(
   subagent_type="oracle",
   run_in_background=true,
-  load_skills=[],
   description="Verify implementation against original goal and constraints",
   prompt="""
 <review_type>GOAL & CONSTRAINT VERIFICATION</review_type>
@@ -265,7 +264,6 @@ This agent answers: "Is the code well-written, maintainable, and consistent with
 task(
   subagent_type="oracle",
   run_in_background=true,
-  load_skills=[],
   description="Review overall code quality, patterns, and architecture",
   prompt="""
 <review_type>CODE QUALITY REVIEW</review_type>
@@ -342,7 +340,6 @@ This is supplementary - it focuses exclusively on security. It does NOT comment 
 task(
   subagent_type="oracle",
   run_in_background=true,
-  load_skills=[],
   description="Security-focused review of implementation changes",
   prompt="""
 <review_type>SECURITY REVIEW (supplementary)</review_type>

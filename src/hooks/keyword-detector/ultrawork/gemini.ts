@@ -81,9 +81,9 @@ Where TYPE is one of: research | implementation | investigation | evaluation | f
 
 **WHEN IN DOUBT:**
 \`\`\`
-task(subagent_type="explore", load_skills=[], prompt="I'm implementing [TASK DESCRIPTION] and need to understand [SPECIFIC KNOWLEDGE GAP]. Find [X] patterns in the codebase - show file paths, implementation approach, and conventions used. I'll use this to [HOW RESULTS WILL BE USED]. Focus on src/ directories, skip test files unless test patterns are specifically needed. Return concrete file paths with brief descriptions of what each file does.", run_in_background=true)
-task(subagent_type="librarian", load_skills=[], prompt="I'm working with [LIBRARY/TECHNOLOGY] and need [SPECIFIC INFORMATION]. Find official documentation and production-quality examples for [Y] - specifically: API reference, configuration options, recommended patterns, and common pitfalls. Skip beginner tutorials. I'll use this to [DECISION THIS WILL INFORM].", run_in_background=true)
-task(subagent_type="oracle", load_skills=[], prompt="I need architectural review of my approach to [TASK]. Here's my plan: [DESCRIBE PLAN WITH SPECIFIC FILES AND CHANGES]. My concerns are: [LIST SPECIFIC UNCERTAINTIES]. Please evaluate: correctness of approach, potential issues I'm missing, and whether a better alternative exists.", run_in_background=false)
+task(subagent_type="explore", prompt="I'm implementing [TASK DESCRIPTION] and need to understand [SPECIFIC KNOWLEDGE GAP]. Find [X] patterns in the codebase - show file paths, implementation approach, and conventions used. I'll use this to [HOW RESULTS WILL BE USED]. Focus on src/ directories, skip test files unless test patterns are specifically needed. Return concrete file paths with brief descriptions of what each file does.", run_in_background=true)
+task(subagent_type="librarian", prompt="I'm working with [LIBRARY/TECHNOLOGY] and need [SPECIFIC INFORMATION]. Find official documentation and production-quality examples for [Y] - specifically: API reference, configuration options, recommended patterns, and common pitfalls. Skip beginner tutorials. I'll use this to [DECISION THIS WILL INFORM].", run_in_background=true)
+task(subagent_type="oracle", prompt="I need architectural review of my approach to [TASK]. Here's my plan: [DESCRIBE PLAN WITH SPECIFIC FILES AND CHANGES]. My concerns are: [LIST SPECIFIC UNCERTAINTIES]. Please evaluate: correctness of approach, potential issues I'm missing, and whether a better alternative exists.", run_in_background=false)
 \`\`\`
 
 **ONLY AFTER YOU HAVE:**
@@ -156,7 +156,7 @@ TELL THE USER WHAT AGENTS YOU WILL LEVERAGE NOW TO SATISFY USER'S REQUEST.
 | Architecture decision needed | MUST call plan agent |
 
 \`\`\`
-task(subagent_type="plan", load_skills=[], prompt="<gathered context + user request>")
+task(subagent_type="plan", prompt="<gathered context + user request>")
 \`\`\`
 
 ### SESSION CONTINUITY WITH PLAN AGENT (CRITICAL)
@@ -165,9 +165,9 @@ task(subagent_type="plan", load_skills=[], prompt="<gathered context + user requ
 
 | Scenario | Action |
 |----------|--------|
-| Plan agent asks clarifying questions | \`task(session_id="{returned_session_id}", load_skills=[], prompt="<your answer>")\` |
-| Need to refine the plan | \`task(session_id="{returned_session_id}", load_skills=[], prompt="Please adjust: <feedback>")\` |
-| Plan needs more detail | \`task(session_id="{returned_session_id}", load_skills=[], prompt="Add more detail to Task N")\` |
+| Plan agent asks clarifying questions | \`task(session_id="{returned_session_id}", prompt="<your answer>")\` |
+| Need to refine the plan | \`task(session_id="{returned_session_id}", prompt="Please adjust: <feedback>")\` |
+| Plan needs more detail | \`task(session_id="{returned_session_id}", prompt="Add more detail to Task N")\` |
 
 **FAILURE TO CALL PLAN AGENT = INCOMPLETE WORK.**
 
@@ -181,12 +181,12 @@ task(subagent_type="plan", load_skills=[], prompt="<gathered context + user requ
 
 | Task Type | Action | Why |
 |-----------|--------|-----|
-| Codebase exploration | task(subagent_type="explore", load_skills=[], run_in_background=true) | Parallel, context-efficient |
-| Documentation lookup | task(subagent_type="librarian", load_skills=[], run_in_background=true) | Specialized knowledge |
-| Planning | task(subagent_type="plan", load_skills=[]) | Parallel task graph + structured TODO list |
-| Hard problem (conventional) | task(subagent_type="oracle", load_skills=[]) | Architecture, debugging, complex logic |
-| Hard implementation problem | task(subagent_type="oracle", load_skills=[]) | Get architectural guidance before execution |
-| Implementation | task(subagent_type="explore", load_skills=[], run_in_background=true) | Gather implementation context first |
+| Codebase exploration | task(subagent_type="explore", run_in_background=true) | Parallel, context-efficient |
+| Documentation lookup | task(subagent_type="librarian", run_in_background=true) | Specialized knowledge |
+| Planning | task(subagent_type="plan", run_in_background=false) | Parallel task graph + structured TODO list |
+| Hard problem (conventional) | task(subagent_type="oracle", run_in_background=false) | Architecture, debugging, complex logic |
+| Hard implementation problem | task(subagent_type="oracle", run_in_background=false) | Get architectural guidance before execution |
+| Implementation | task(subagent_type="explore", run_in_background=true) | Gather implementation context first |
 
 **YOU SHOULD ONLY DO IT YOURSELF WHEN:**
 - Task is trivially simple (1-2 lines, obvious change)

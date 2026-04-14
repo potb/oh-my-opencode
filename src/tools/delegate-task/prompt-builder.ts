@@ -27,15 +27,8 @@ function buildAvailableSkillsSection(skills: AvailableSkill[]): string {
     return ""
   }
 
-  const rows = skills
-    .map((s) => `- \`${s.name}\`: ${s.description || s.name}`)
-    .join("\n")
-
-  return `<available_skills>
-Skills provide specialized instructions. Load via load_skills parameter when delegating tasks.
-
-${rows}
-</available_skills>`
+  void skills
+  return ""
 }
 
 function usesFreeOrLocalModel(model: { providerID: string; modelID: string; variant?: string } | undefined): boolean {

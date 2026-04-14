@@ -142,7 +142,7 @@ export function buildGeminiToolCallExamples(): string {
 **User**: "Add a new /health endpoint to the API"
 **CORRECT**:
 \`\`\`
-→ Call Task(subagent_type="explore", load_skills=[], prompt="...")
+→ Call Task(subagent_type="explore", prompt="...")
 → (After agent completes) Read changed files to verify
 → Call LspDiagnostics on changed files
 → Report

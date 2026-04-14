@@ -10,13 +10,11 @@ describe("sisyphus-task-retry", () => {
     // given error patterns are defined
     // then should include all known task error types
     it("should contain all known error patterns", () => {
-      expect(DELEGATE_TASK_ERROR_PATTERNS.length).toBeGreaterThan(5)
+      expect(DELEGATE_TASK_ERROR_PATTERNS.length).toBeGreaterThanOrEqual(5)
       
       const patternTexts = DELEGATE_TASK_ERROR_PATTERNS.map(p => p.pattern)
       expect(patternTexts).toContain("run_in_background")
-      expect(patternTexts).toContain("load_skills")
-      expect(patternTexts).toContain("category OR subagent_type")
-      expect(patternTexts).toContain("Unknown category")
+      expect(patternTexts).toContain("subagent_type")
       expect(patternTexts).toContain("Unknown agent")
     })
   })
@@ -34,31 +32,13 @@ describe("sisyphus-task-retry", () => {
       expect(result?.errorType).toBe("missing_run_in_background")
     })
 
-    it("should detect load_skills missing error", () => {
-      const output = "[ERROR] Invalid arguments: 'load_skills' parameter is REQUIRED. Use load_skills=[] if no skills are needed."
-      
-      const result = detectDelegateTaskError(output)
-      
-      expect(result).not.toBeNull()
-      expect(result?.errorType).toBe("missing_load_skills")
-    })
+    it("should detect missing or invalid subagent_type guidance", () => {
+      const output = "[ERROR] Invalid arguments: Must provide subagent_type for new tasks."
 
-    it("should detect category/subagent mutual exclusion error", () => {
-      const output = "[ERROR] Invalid arguments: Provide EITHER category OR subagent_type, not both."
-      
       const result = detectDelegateTaskError(output)
-      
-      expect(result).not.toBeNull()
-      expect(result?.errorType).toBe("mutual_exclusion")
-    })
 
-    it("should detect unknown category error", () => {
-      const output = '[ERROR] Unknown category: "invalid-cat". Available: visual-engineering, ultrabrain, quick'
-      
-      const result = detectDelegateTaskError(output)
-      
       expect(result).not.toBeNull()
-      expect(result?.errorType).toBe("unknown_category")
+      expect(result?.errorType).toBe("missing_or_invalid_subagent_type")
     })
 
     it("should detect unknown agent error", () => {
@@ -92,16 +72,16 @@ describe("sisyphus-task-retry", () => {
       expect(guidance).toContain("REQUIRED")
     })
 
-    it("should provide fix for unknown category with available list", () => {
+    it("should provide fix for missing subagent type", () => {
       const errorInfo = { 
-        errorType: "unknown_category", 
-        originalOutput: '[ERROR] Unknown category: "bad". Available: visual-engineering, ultrabrain' 
+        errorType: "missing_or_invalid_subagent_type", 
+        originalOutput: '[ERROR] Invalid arguments: Must provide subagent_type for new tasks.' 
       }
       
       const guidance = buildRetryGuidance(errorInfo)
       
-      expect(guidance).toContain("visual-engineering")
-      expect(guidance).toContain("ultrabrain")
+      expect(guidance).toContain("subagent_type")
+      expect(guidance).toContain("explore")
     })
 
     it("should provide fix for unknown agent with available list", () => {

@@ -20,7 +20,7 @@ import type { AvailableSkill, AvailableCategory } from "../../agents/dynamic-age
 describe("prompt-builder", () => {
   describe("buildSystemContent", () => {
     describe("#given non-plan agent with availableSkills", () => {
-      test("#when availableSkills contains project-level skills #then system content includes available_skills section", () => {
+      test("#when availableSkills contains project-level skills #then system content may be omitted without a skills section", () => {
         // given
         const availableSkills: AvailableSkill[] = [
           { name: "git-master", description: "Git workflow automation", location: "plugin" },
@@ -38,12 +38,10 @@ describe("prompt-builder", () => {
         })
 
         // then
-        expect(result).toBeDefined()
-        expect(result).toContain("my-project-skill")
-        expect(result).toContain("git-master")
+        expect(result).toBeUndefined()
       })
 
-      test("#when agent is explore #then system content includes available_skills section", () => {
+      test("#when agent is explore #then system content remains undefined without skills section", () => {
         // given
         const availableSkills: AvailableSkill[] = [
           { name: "code-review", description: "Review code quality", location: "project" },
@@ -56,8 +54,7 @@ describe("prompt-builder", () => {
         })
 
         // then
-        expect(result).toBeDefined()
-        expect(result).toContain("code-review")
+        expect(result).toBeUndefined()
       })
 
       test("#when availableSkills is empty #then system content does not include available_skills section", () => {
@@ -78,7 +75,7 @@ describe("prompt-builder", () => {
     })
 
     describe("#given plan agent with availableSkills", () => {
-      test("#when availableSkills provided #then system content includes plan agent prepend with skills", () => {
+      test("#when availableSkills provided #then system content includes plan agent prepend and no non-plan skills section", () => {
         // given
         const availableSkills: AvailableSkill[] = [
           { name: "git-master", description: "Git workflow automation", location: "plugin" },
@@ -97,12 +94,12 @@ describe("prompt-builder", () => {
         // then
         expect(result).toBeDefined()
         expect(result).toContain("git-master")
-        expect(result).toContain("AVAILABLE SKILLS")
+        expect(result).toContain("Task Dependency Graph")
       })
     })
 
     describe("#given non-plan agent with agentsContext override", () => {
-      test("#when agentsContext is provided #then it takes precedence and skills section is appended", () => {
+      test("#when agentsContext is provided #then it takes precedence without appending skills section", () => {
         // given
         const availableSkills: AvailableSkill[] = [
           { name: "deploy-skill", description: "Deployment automation", location: "project" },
@@ -118,7 +115,7 @@ describe("prompt-builder", () => {
         // then
         expect(result).toBeDefined()
         expect(result).toContain("Custom agent context here")
-        expect(result).toContain("deploy-skill")
+        expect(result).not.toContain("deploy-skill")
       })
     })
   })

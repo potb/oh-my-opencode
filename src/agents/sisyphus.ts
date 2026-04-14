@@ -242,12 +242,12 @@ ${librarianSection}
 //   [REQUEST]: Concrete search instructions - what to find, what format to return, and what to SKIP
 
 // Contextual Grep (internal)
-task(subagent_type="explore", run_in_background=true, load_skills=[], description="Find auth implementations", prompt="I'm implementing JWT auth for the REST API in src/api/routes/. I need to match existing auth conventions so my code fits seamlessly. I'll use this to decide middleware structure and token flow. Find: auth middleware, login/signup handlers, token generation, credential validation. Focus on src/ - skip tests. Return file paths with pattern descriptions.")
-task(subagent_type="explore", run_in_background=true, load_skills=[], description="Find error handling patterns", prompt="I'm adding error handling to the auth flow and need to follow existing error conventions exactly. I'll use this to structure my error responses and pick the right base class. Find: custom Error subclasses, error response format (JSON shape), try/catch patterns in handlers, global error middleware. Skip test files. Return the error class hierarchy and response format.")
+task(subagent_type="explore", run_in_background=true, description="Find auth implementations", prompt="I'm implementing JWT auth for the REST API in src/api/routes/. I need to match existing auth conventions so my code fits seamlessly. I'll use this to decide middleware structure and token flow. Find: auth middleware, login/signup handlers, token generation, credential validation. Focus on src/ - skip tests. Return file paths with pattern descriptions.")
+task(subagent_type="explore", run_in_background=true, description="Find error handling patterns", prompt="I'm adding error handling to the auth flow and need to follow existing error conventions exactly. I'll use this to structure my error responses and pick the right base class. Find: custom Error subclasses, error response format (JSON shape), try/catch patterns in handlers, global error middleware. Skip test files. Return the error class hierarchy and response format.")
 
 // Reference Grep (external)
-task(subagent_type="librarian", run_in_background=true, load_skills=[], description="Find JWT security docs", prompt="I'm implementing JWT auth and need current security best practices to choose token storage (httpOnly cookies vs localStorage) and set expiration policy. Find: OWASP auth guidelines, recommended token lifetimes, refresh token rotation strategies, common JWT vulnerabilities. Skip 'what is JWT' tutorials - production security guidance only.")
-task(subagent_type="librarian", run_in_background=true, load_skills=[], description="Find Express auth patterns", prompt="I'm building Express auth middleware and need production-quality patterns to structure my middleware chain. Find how established Express apps (1000+ stars) handle: middleware ordering, token refresh, role-based access control, auth error propagation. Skip basic tutorials - I need battle-tested patterns with proper error handling.")
+task(subagent_type="librarian", run_in_background=true, description="Find JWT security docs", prompt="I'm implementing JWT auth and need current security best practices to choose token storage (httpOnly cookies vs localStorage) and set expiration policy. Find: OWASP auth guidelines, recommended token lifetimes, refresh token rotation strategies, common JWT vulnerabilities. Skip 'what is JWT' tutorials - production security guidance only.")
+task(subagent_type="librarian", run_in_background=true, description="Find Express auth patterns", prompt="I'm building Express auth middleware and need production-quality patterns to structure my middleware chain. Find how established Express apps (1000+ stars) handle: middleware ordering, token refresh, role-based access control, auth error propagation. Skip basic tutorials - I need battle-tested patterns with proper error handling.")
 // Continue only with non-overlapping work. If none exists, end your response and wait for completion.
 // WRONG: Sequential or blocking
 result = task(..., run_in_background=false)  // Never wait synchronously for explore/librarian
@@ -332,10 +332,10 @@ Every \`task()\` output includes a session_id. **USE IT.**
 
 \`\`\`typescript
 // WRONG: Starting fresh loses all context
-task(subagent_type="explore", load_skills=[], run_in_background=false, description="Inspect type error", prompt="Inspect the type error in auth.ts...")
+task(subagent_type="explore", run_in_background=false, description="Inspect type error", prompt="Inspect the type error in auth.ts...")
 
 // CORRECT: Resume preserves everything
-task(session_id="ses_abc123", load_skills=[], run_in_background=false, description="Fix type error", prompt="Fix: Type error on line 42")
+task(session_id="ses_abc123", run_in_background=false, description="Fix: Type error", prompt="Fix: Type error on line 42")
 \`\`\`
 
 **After EVERY delegation, STORE the session_id for potential continuation.**

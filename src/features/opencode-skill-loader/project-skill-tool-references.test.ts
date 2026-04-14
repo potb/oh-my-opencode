@@ -12,14 +12,14 @@ async function readProjectSkill(...segments: string[]) {
 
 describe("project skill tool references", () => {
   describe("#given work-with-pr skill instructions", () => {
-    test("#when reading the commit delegation example #then it uses a real task category", async () => {
+    test("#when reading the commit delegation example #then it no longer relies on category routing", async () => {
       const skillContent = await readProjectSkill("work-with-pr")
 
-      const usesQuickCategory = skillContent.includes(
-        'task(category="quick", load_skills=["git-master"], prompt="Commit the changes atomically following git-master conventions. Repository is at {WORKTREE_PATH}.")'
+      const usesSubagentDelegation = skillContent.includes(
+        'task(subagent_type="explore", prompt="Inspect the changes to commit and summarize atomic commit boundaries. Repository is at {WORKTREE_PATH}.")'
       )
 
-      expect(usesQuickCategory).toBe(true)
+      expect(usesSubagentDelegation).toBe(true)
       expect(skillContent).not.toContain('task(category="git"')
     })
   })

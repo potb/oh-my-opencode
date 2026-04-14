@@ -240,13 +240,13 @@ YOU MUST END YOUR RESPONSE WITH THIS SECTION.
 
 1. **Wave 1**: Fire these tasks IN PARALLEL (no dependencies)
    \`\`\`
-   task(category="...", load_skills=[...], run_in_background=false, prompt="Task 1: ...")
-   task(category="...", load_skills=[...], run_in_background=false, prompt="Task N: ...")
+   task(subagent_type="explore", run_in_background=false, prompt="Task 1: ...")
+   task(subagent_type="oracle", run_in_background=false, prompt="Task N: ...")
    \`\`\`
 
 2. **Wave 2**: After Wave 1 completes, fire next wave IN PARALLEL
    \`\`\`
-   task(category="...", load_skills=[...], run_in_background=false, prompt="Task 2: ...")
+   task(subagent_type="librarian", run_in_background=false, prompt="Task 2: ...")
    \`\`\`
 
 3. Continue until all waves complete

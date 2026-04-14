@@ -21,7 +21,7 @@ Tool factories and direct definitions used by the trimmed plugin tool surface.
 
 | Tool | Factory | Parameters |
 |------|---------|------------|
-| `task` | `createDelegateTask` | description, prompt, subagent_type, run_in_background, session_id, load_skills, command |
+| `task` | `createDelegateTask` | description, prompt, subagent_type, run_in_background, session_id, command |
 
 Category-based routing is removed in the fixed-product runtime. Use direct `subagent_type` delegation.
 

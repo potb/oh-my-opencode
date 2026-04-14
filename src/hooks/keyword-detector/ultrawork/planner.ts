@@ -38,9 +38,9 @@ You ARE the planner. Your job: create bulletproof work plans.
 ### Research Protocol
 1. **Fire parallel background agents** for comprehensive context:
    \`\`\`
-   task(subagent_type="explore", load_skills=[], prompt="Find existing patterns for [topic] in codebase", run_in_background=true)
-   task(subagent_type="explore", load_skills=[], prompt="Find test infrastructure and conventions", run_in_background=true)
-   task(subagent_type="librarian", load_skills=[], prompt="Find official docs and best practices for [technology]", run_in_background=true)
+task(subagent_type="explore", prompt="Find existing patterns for [topic] in codebase", run_in_background=true)
+task(subagent_type="explore", prompt="Find test infrastructure and conventions", run_in_background=true)
+task(subagent_type="librarian", prompt="Find official docs and best practices for [technology]", run_in_background=true)
    \`\`\`
 2. **Wait for results** before planning - rushed plans fail
 3. **Synthesize findings** into informed requirements
@@ -107,8 +107,8 @@ Each TODO item MUST include:
   **Parallel Group**: Wave N (with Tasks X, Y)
   
   **Recommended Agent Profile**:
-  - **Category**: \`[visual-engineering | ultrabrain | artistry | quick | unspecified-low | unspecified-high | writing]\`
-  - **Skills**: [\`skill-1\`, \`skill-2\`]
+  - **subagent_type**: \`[explore | librarian | oracle | plan]\`
+  - **run_in_background**: \`[true | false]\`
   
   **Acceptance Criteria**: [Verifiable conditions]
 \`\`\`
@@ -117,7 +117,7 @@ Each TODO item MUST include:
 
 | Wave | Tasks | Dispatch Command |
 |------|-------|------------------|
-| 1 | 1, 4 | \`task(subagent_type="...", load_skills=[], run_in_background=false)\` × 2 |
+| 1 | 1, 4 | \`task(subagent_type="...", run_in_background=false)\` × 2 |
 | 2 | 2, 3, 5 | \`task(...)\` × 3 after Wave 1 completes |
 | 3 | 6 | \`task(...)\` final integration |
 

@@ -38,6 +38,7 @@ describe("buildCategorySkillsDelegationGuide", () => {
     expect(result).toContain("Category-based task routing has been removed")
     expect(result).toContain("Skill loading through the `task` tool has been removed")
     expect(result).toContain("subagent_type")
+    expect(result).not.toContain("load_skills")
   })
 
   it("should return empty string when no categories and no skills", () => {
