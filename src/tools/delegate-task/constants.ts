@@ -21,8 +21,8 @@ BEFORE you begin planning, you MUST first understand the user's request deeply.
 
 MANDATORY CONTEXT GATHERING PROTOCOL:
 1. Launch background agents to gather context:
-   - task(description="Explore codebase patterns", subagent_type="explore", run_in_background=true, load_skills=[], prompt="<search for relevant patterns, files, and implementations in the codebase related to user's request>")
-   - task(description="Research documentation", subagent_type="librarian", run_in_background=true, load_skills=[], prompt="<search for external documentation, examples, and best practices related to user's request>")
+- task(description="Explore codebase patterns", subagent_type="explore", run_in_background=true, prompt="<search for relevant patterns, files, and implementations in the codebase related to user's request>")
+- task(description="Research documentation", subagent_type="librarian", run_in_background=true, prompt="<search for external documentation, examples, and best practices related to user's request>")
 
 2. After gathering context, ALWAYS present:
    - **User Request Summary**: Concise restatement of what the user is asking for
