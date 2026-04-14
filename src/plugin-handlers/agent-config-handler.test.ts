@@ -46,11 +46,6 @@ describe("applyAgentConfig", () => {
       momus: { name: "momus", prompt: "momus prompt", mode: "subagent" },
       oracle: { name: "oracle", prompt: "oracle prompt", mode: "subagent" },
       atlas: { name: "atlas", prompt: "atlas prompt", mode: "primary" },
-      "multimodal-looker": {
-        name: "multimodal-looker",
-        prompt: "multimodal prompt",
-        mode: "subagent",
-      },
     }
 
     createBuiltinAgentsSpy = spyOn(agents, "createBuiltinAgents").mockResolvedValue(builtinAgents)
@@ -76,7 +71,6 @@ describe("applyAgentConfig", () => {
       FIXED_PRODUCT_AGENT_NAMES.map((name) => getAgentListDisplayName(name)).sort(),
     )
     expect(result[getAgentListDisplayName("atlas")]).toBeUndefined()
-    expect(result[getAgentListDisplayName("multimodal-looker")]).toBeUndefined()
 
     for (const key of Object.keys(result)) {
       expect(key).not.toMatch(/[()]/)

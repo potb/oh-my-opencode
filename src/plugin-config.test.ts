@@ -144,14 +144,14 @@ describe("mergeConfigs", () => {
       });
 
       const override = createConfig({
-        disabled_tools: ["interactive_bash", "look_at"],
+        disabled_tools: ["interactive_bash", "background_output"],
       });
 
       const result = mergeConfigs(base, override);
 
       expect(result.disabled_tools).toContain("todowrite");
       expect(result.disabled_tools).toContain("interactive_bash");
-      expect(result.disabled_tools).toContain("look_at");
+      expect(result.disabled_tools).toContain("background_output");
       expect(result.disabled_tools?.length).toBe(3);
     });
   });

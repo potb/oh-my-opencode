@@ -1082,7 +1082,7 @@ describe("migrateConfigFile with backup", () => {
     const testConfigPath = "/tmp/test-config-preserve-model.json"
     const rawConfig: Record<string, unknown> = {
       agents: {
-        "multimodal-looker": { model: "anthropic/claude-haiku-4-5" },
+        metis: { model: "anthropic/claude-opus-4-6" },
         oracle: { model: "openai/gpt-5.4" },
         "my-custom-agent": { model: "google/gemini-3.1-pro" },
       },
@@ -1098,7 +1098,7 @@ describe("migrateConfigFile with backup", () => {
     expect(needsWrite).toBe(false)
 
     const agents = rawConfig.agents as Record<string, Record<string, unknown>>
-    expect(agents["multimodal-looker"].model).toBe("anthropic/claude-haiku-4-5")
+    expect(agents.metis.model).toBe("anthropic/claude-opus-4-6")
     expect(agents.oracle.model).toBe("openai/gpt-5.4")
     expect(agents["my-custom-agent"].model).toBe("google/gemini-3.1-pro")
   })
@@ -1108,7 +1108,7 @@ describe("migrateConfigFile with backup", () => {
     const testConfigPath = "/tmp/test-config-preserve-category.json"
     const rawConfig: Record<string, unknown> = {
       agents: {
-        "multimodal-looker": { category: "quick" },
+        metis: { category: "ultrabrain" },
         oracle: { category: "ultrabrain" },
       },
     }
@@ -1123,7 +1123,7 @@ describe("migrateConfigFile with backup", () => {
     expect(needsWrite).toBe(false)
 
     const agents = rawConfig.agents as Record<string, Record<string, unknown>>
-    expect(agents["multimodal-looker"].category).toBe("quick")
+    expect(agents.metis.category).toBe("ultrabrain")
     expect(agents.oracle.category).toBe("ultrabrain")
   })
 

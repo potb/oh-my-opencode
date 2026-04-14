@@ -13,7 +13,6 @@ export const FIXED_PRODUCT_AGENT_NAMES = [
 export const REMOVED_AGENT_NAMES = [
   "atlas",
   "hephaestus",
-  "multimodal-looker",
 ] as const
 
 export const REMOVED_TOOL_NAMES = [
@@ -21,7 +20,6 @@ export const REMOVED_TOOL_NAMES = [
   "background_output",
   "call_omo_agent",
   "interactive_bash",
-  "look_at",
   "session_info",
   "session_list",
   "session_read",

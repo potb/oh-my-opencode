@@ -4,7 +4,6 @@ export const ALLOWED_AGENTS = [
   "oracle",
   "metis",
   "momus",
-  "multimodal-looker",
 ] as const
 
 export const CALL_OMO_AGENT_DESCRIPTION = `Spawn a fixed built-in subagent. run_in_background REQUIRED (true=async with task_id, false=sync).

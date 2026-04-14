@@ -119,7 +119,6 @@ export type BuiltinAgentName =
   | "oracle"
   | "librarian"
   | "explore"
-  | "multimodal-looker"
   | "metis"
   | "momus"
   | "atlas"

@@ -112,16 +112,6 @@ describe("getAgentDisplayName", () => {
     expect(result).toBe("explore")
   })
 
-  it("returns display name for multimodal-looker", () => {
-    // given config key "multimodal-looker"
-    const configKey = "multimodal-looker"
-
-    // when getAgentDisplayName called
-    const result = getAgentDisplayName(configKey)
-
-    // then returns "multimodal-looker"
-    expect(result).toBe("multimodal-looker")
-  })
 })
 
 describe("getAgentConfigKey", () => {
@@ -242,7 +232,6 @@ describe("AGENT_DISPLAY_NAMES", () => {
       oracle: "oracle",
       librarian: "librarian",
       explore: "explore",
-      "multimodal-looker": "multimodal-looker",
       "council-member": "council-member",
     }
 

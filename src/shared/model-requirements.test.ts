@@ -121,33 +121,6 @@ describe("AGENT_MODEL_REQUIREMENTS", () => {
     expect(fifth.model).toBe("gpt-5-nano")
   })
 
-  test("multimodal-looker has valid fallbackChain with gpt-5.4 as primary", () => {
-    // given - multimodal-looker agent requirement
-    const multimodalLooker = AGENT_MODEL_REQUIREMENTS["multimodal-looker"]
-
-    // when - accessing multimodal-looker requirement
-    // then - fallbackChain: gpt-5.4 -> opencode-go/kimi-k2.5 -> glm-4.6v -> gpt-5-nano
-    expect(multimodalLooker).toBeDefined()
-    expect(multimodalLooker.fallbackChain).toBeArray()
-    expect(multimodalLooker.fallbackChain).toHaveLength(4)
-
-    const primary = multimodalLooker.fallbackChain[0]
-    expect(primary.providers).toEqual(["openai", "opencode", "vercel"])
-    expect(primary.model).toBe("gpt-5.4")
-    expect(primary.variant).toBe("medium")
-
-    const secondary = multimodalLooker.fallbackChain[1]
-    expect(secondary.providers).toEqual(["opencode-go", "vercel"])
-    expect(secondary.model).toBe("kimi-k2.5")
-
-    const tertiary = multimodalLooker.fallbackChain[2]
-    expect(tertiary.model).toBe("glm-4.6v")
-
-    const last = multimodalLooker.fallbackChain[3]
-    expect(last.providers).toEqual(["openai", "github-copilot", "opencode", "vercel"])
-    expect(last.model).toBe("gpt-5-nano")
-  })
-
   test("metis has claude-opus-4-6 as primary", () => {
     // #given - metis agent requirement
     const metis = AGENT_MODEL_REQUIREMENTS["metis"]
@@ -238,14 +211,13 @@ describe("AGENT_MODEL_REQUIREMENTS", () => {
     expect(bigPickleIndex).toBeGreaterThan(minimaxIndex)
   })
 
-  test("all 9 builtin agents have valid fallbackChain arrays", () => {
-    // #given - list of 9 agent names
+  test("all 8 builtin agents have valid fallbackChain arrays", () => {
+    // #given - list of 8 agent names
     const expectedAgents = [
       "sisyphus",
       "oracle",
       "librarian",
       "explore",
-      "multimodal-looker",
       "metis",
       "momus",
       "atlas",
@@ -256,7 +228,7 @@ describe("AGENT_MODEL_REQUIREMENTS", () => {
     const definedAgents = Object.keys(AGENT_MODEL_REQUIREMENTS)
 
     // #then - all agents present with valid fallbackChain
-    expect(definedAgents).toHaveLength(9)
+    expect(definedAgents).toHaveLength(8)
     for (const agent of expectedAgents) {
       const requirement = AGENT_MODEL_REQUIREMENTS[agent]
       expect(requirement).toBeDefined()

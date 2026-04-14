@@ -62,7 +62,6 @@ describe("applyToolConfig", () => {
     expect(tools.background_output).toBe(false)
     expect(tools.call_omo_agent).toBe(false)
     expect(tools.interactive_bash).toBe(false)
-    expect(tools.look_at).toBe(false)
     expect(tools.session_info).toBe(false)
     expect(tools.session_list).toBe(false)
     expect(tools.session_read).toBe(false)

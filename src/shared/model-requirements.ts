@@ -82,14 +82,6 @@ export const AGENT_MODEL_REQUIREMENTS: Record<string, ModelRequirement> = {
       { providers: ["opencode", "vercel"], model: "gpt-5-nano" },
     ],
   },
-  "multimodal-looker": {
-    fallbackChain: [
-      { providers: ["openai", "opencode", "vercel"], model: "gpt-5.4", variant: "medium" },
-      { providers: ["opencode-go", "vercel"], model: "kimi-k2.5" },
-      { providers: ["zai-coding-plan", "vercel"], model: "glm-4.6v" },
-      { providers: ["openai", "github-copilot", "opencode", "vercel"], model: "gpt-5-nano" },
-    ],
-  },
   metis: {
     fallbackChain: [
       {

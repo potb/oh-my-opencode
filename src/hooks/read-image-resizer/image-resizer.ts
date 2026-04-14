@@ -1,5 +1,5 @@
 import type { ImageDimensions, ResizeResult } from "./types"
-import { extractBase64Data } from "../../tools/look-at/mime-type-inference"
+import { extractBase64Data } from "./base64-data"
 import { log } from "../../shared"
 import { resizeImageFallback } from "./png-fallback-resizer"
 

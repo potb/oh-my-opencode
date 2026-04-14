@@ -11,7 +11,6 @@ export const AGENT_NAMES = [
   "sisyphus-junior",
   "build",
   "plan",
-  "multimodal-looker",
 ]
 
 export const agentPattern = new RegExp(

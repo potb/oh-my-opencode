@@ -1,6 +1,6 @@
 import type { ImageDimensions } from "./types"
 
-import { extractBase64Data } from "../../tools/look-at/mime-type-inference"
+import { extractBase64Data } from "./base64-data"
 
 const HEADER_BYTES = 32_768
 const HEADER_BASE64_CHARS = Math.ceil(HEADER_BYTES / 3) * 4

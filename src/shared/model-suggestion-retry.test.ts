@@ -524,17 +524,17 @@ describe("promptSyncWithModelSuggestionRetry", () => {
     await promptSyncWithModelSuggestionRetry(client as any, {
       path: { id: "session-1" },
       body: {
-        agent: "multimodal-looker",
+        agent: "atlas",
         tools: { task: false },
         parts: [{ type: "text", text: "analyze" }],
         model: { providerID: "google", modelID: "gemini-3-flash" },
         variant: "max",
       },
     })
-
+    
     // then call should pass all fields through unchanged
     const call = promptMock.mock.calls[0][0]
-    expect(call.body.agent).toBe("multimodal-looker")
+    expect(call.body.agent).toBe("atlas")
     expect(call.body.tools).toEqual({ task: false })
     expect(call.body.variant).toBe("max")
   })

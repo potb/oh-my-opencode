@@ -35,10 +35,6 @@ const AGENT_RESTRICTIONS: Record<string, Record<string, boolean>> = {
     task: false,
   },
 
-  "multimodal-looker": {
-    read: true,
-  },
-
   "sisyphus-junior": {
     task: false,
   },

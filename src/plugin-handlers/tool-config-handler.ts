@@ -37,7 +37,6 @@ export function applyToolConfig(params: {
     background_output: false,
     call_omo_agent: false,
     interactive_bash: false,
-    look_at: false,
     session_info: false,
     session_list: false,
     session_read: false,
