@@ -1,8 +1,7 @@
-import { beforeEach, describe, expect, mock, spyOn, test } from "bun:test"
+import { beforeEach, describe, expect, mock, test } from "bun:test"
 import { tool } from "@opencode-ai/plugin"
 
 import type { OhMyOpenCodeConfig } from "../config"
-import * as openclawRuntimeDispatch from "../openclaw/runtime-dispatch"
 import type { ToolsRecord } from "./types"
 
 const fakeTool = tool({
@@ -25,32 +24,17 @@ const syncSessionCreatedCallbacks: Array<
   ((event: { sessionID: string; parentID: string; title: string }) => Promise<void>) | undefined
 > = []
 
-const trackedPaneBySession = new Map<string, string>()
-let dispatchOpenClawEvent: ReturnType<typeof spyOn>
-
 const { createToolRegistry, trimToolsToCap } = await import("./tool-registry")
 
 const toolFactories: NonNullable<Parameters<typeof createToolRegistry>[0]["toolFactories"]> = {
   builtinTools: { bash: fakeTool, read: fakeTool },
-  createBackgroundTools: mock(() => ({})),
-  createCallOmoAgent: mock(() => fakeTool),
-  createLookAt: mock(() => fakeTool),
-  createSkillMcpTool: mock(() => fakeTool),
-  createSkillTool: mock(() => fakeTool),
-  createGrepTools: mock(() => ({})),
-  createGlobTools: mock(() => ({})),
-  createAstGrepTools: mock(() => ({})),
-  createSessionManagerTools: mock(() => ({})),
+  createGrepTools: mock(() => ({ grep: fakeTool })),
+  createGlobTools: mock(() => ({ glob: fakeTool })),
+  createAstGrepTools: mock(() => ({ ast_grep_search: fakeTool, ast_grep_replace: fakeTool })),
   createDelegateTask: mock((options: { onSyncSessionCreated?: typeof syncSessionCreatedCallbacks[number] }) => {
     syncSessionCreatedCallbacks.push(options.onSyncSessionCreated)
     return delegateTaskTool
   }),
-  discoverCommandsSync: mock(() => []),
-  interactive_bash: fakeTool,
-  createTaskCreateTool: mock(() => fakeTool),
-  createTaskGetTool: mock(() => fakeTool),
-  createTaskList: mock(() => fakeTool),
-  createTaskUpdateTool: mock(() => fakeTool),
   createHashlineEditTool: mock(() => fakeTool),
 }
 
@@ -66,12 +50,11 @@ function createPluginConfig(overrides: Partial<OhMyOpenCodeConfig> = {}): OhMyOp
 }
 
 beforeEach(() => {
-  dispatchOpenClawEvent = spyOn(openclawRuntimeDispatch, "dispatchOpenClawEvent")
   syncSessionCreatedCallbacks.length = 0
 })
 
-describe("#given tool trimming prioritization", () => {
-  test("#when max_tools trims a hashline edit registration named edit #then edit is removed before higher-priority tools", () => {
+describe("trimToolsToCap", () => {
+  test("removes lower-priority tools like edit before higher-priority core tools", () => {
     const filteredTools = {
       bash: fakeTool,
       edit: fakeTool,
@@ -86,193 +69,90 @@ describe("#given tool trimming prioritization", () => {
   })
 })
 
-describe("#given task_system configuration", () => {
-  test("#when task_system is omitted #then task tools are not registered by default", () => {
-    syncSessionCreatedCallbacks.length = 0
-
+describe("createToolRegistry", () => {
+  test("registers only the trimmed core tool surface", () => {
     const result = createToolRegistry({
       ctx: { directory: "/tmp" } as Parameters<typeof createToolRegistry>[0]["ctx"],
       pluginConfig: createPluginConfig(),
       managers: {
         backgroundManager: {},
         tmuxSessionManager: {},
-        skillMcpManager: {},
       } as Parameters<typeof createToolRegistry>[0]["managers"],
-      skillContext: {
-        mergedSkills: [],
-        availableSkills: [],
-        browserProvider: "playwright",
-        disabledSkills: new Set(),
-      },
-      availableCategories: [],
       toolFactories,
     })
 
     expect(result.taskSystemEnabled).toBe(false)
-    expect(result.filteredTools).not.toHaveProperty("task_create")
-    expect(result.filteredTools).not.toHaveProperty("task_get")
-    expect(result.filteredTools).not.toHaveProperty("task_list")
-    expect(result.filteredTools).not.toHaveProperty("task_update")
-  })
-
-  test("#when task_system is enabled #then task tools are registered", () => {
-    syncSessionCreatedCallbacks.length = 0
-
-    const result = createToolRegistry({
-      ctx: { directory: "/tmp" } as Parameters<typeof createToolRegistry>[0]["ctx"],
-      pluginConfig: createPluginConfig({
-        experimental: { task_system: true },
-      }),
-      managers: {
-        backgroundManager: {},
-        tmuxSessionManager: {},
-        skillMcpManager: {},
-      } as Parameters<typeof createToolRegistry>[0]["managers"],
-      skillContext: {
-        mergedSkills: [],
-        availableSkills: [],
-        browserProvider: "playwright",
-        disabledSkills: new Set(),
-      },
-      availableCategories: [],
-      toolFactories,
-    })
-
-    expect(result.taskSystemEnabled).toBe(true)
-    expect(result.filteredTools).toHaveProperty("task_create")
-    expect(result.filteredTools).toHaveProperty("task_get")
-    expect(result.filteredTools).toHaveProperty("task_list")
-    expect(result.filteredTools).toHaveProperty("task_update")
-  })
-})
-
-describe("#given tmux integration is disabled", () => {
-  test("#when system tmux is available #then interactive_bash remains registered", () => {
-    syncSessionCreatedCallbacks.length = 0
-
-    const result = createToolRegistry({
-      ctx: { directory: "/tmp" } as Parameters<typeof createToolRegistry>[0]["ctx"],
-      pluginConfig: createPluginConfig({
-        tmux: {
-          enabled: false,
-          layout: "main-vertical",
-          main_pane_size: 60,
-          main_pane_min_width: 120,
-          agent_pane_min_width: 40,
-          isolation: "inline",
-        },
-      }),
-      managers: {
-        backgroundManager: {},
-        tmuxSessionManager: {},
-        skillMcpManager: {},
-      } as Parameters<typeof createToolRegistry>[0]["managers"],
-      skillContext: {
-        mergedSkills: [],
-        availableSkills: [],
-        browserProvider: "playwright",
-        disabledSkills: new Set(),
-      },
-      availableCategories: [],
-      interactiveBashEnabled: true,
-      toolFactories,
-    })
-
-    expect(result.filteredTools).toHaveProperty("interactive_bash")
-  })
-
-  test("#when system tmux is unavailable #then interactive_bash is not registered", () => {
-    syncSessionCreatedCallbacks.length = 0
-
-    const result = createToolRegistry({
-      ctx: { directory: "/tmp" } as Parameters<typeof createToolRegistry>[0]["ctx"],
-      pluginConfig: createPluginConfig({
-        tmux: {
-          enabled: false,
-          layout: "main-vertical",
-          main_pane_size: 60,
-          main_pane_min_width: 120,
-          agent_pane_min_width: 40,
-          isolation: "inline",
-        },
-      }),
-      managers: {
-        backgroundManager: {},
-        tmuxSessionManager: {},
-        skillMcpManager: {},
-      } as Parameters<typeof createToolRegistry>[0]["managers"],
-      skillContext: {
-        mergedSkills: [],
-        availableSkills: [],
-        browserProvider: "playwright",
-        disabledSkills: new Set(),
-      },
-      availableCategories: [],
-      interactiveBashEnabled: false,
-      toolFactories,
-    })
-
+    expect(result.filteredTools).toHaveProperty("bash")
+    expect(result.filteredTools).toHaveProperty("read")
+    expect(result.filteredTools).toHaveProperty("grep")
+    expect(result.filteredTools).toHaveProperty("glob")
+    expect(result.filteredTools).toHaveProperty("ast_grep_search")
+    expect(result.filteredTools).toHaveProperty("task")
+    expect(result.filteredTools).not.toHaveProperty("background_cancel")
+    expect(result.filteredTools).not.toHaveProperty("background_output")
+    expect(result.filteredTools).not.toHaveProperty("call_omo_agent")
     expect(result.filteredTools).not.toHaveProperty("interactive_bash")
+    expect(result.filteredTools).not.toHaveProperty("look_at")
+    expect(result.filteredTools).not.toHaveProperty("session_list")
+    expect(result.filteredTools).not.toHaveProperty("skill")
+    expect(result.filteredTools).not.toHaveProperty("skill_mcp")
+    expect(result.filteredTools).not.toHaveProperty("task_create")
   })
-})
 
-describe("#given openclaw is enabled for sync task sessions", () => {
-  test("#when the sync session-created callback runs #then it dispatches openclaw with the tracked pane id", async () => {
-    syncSessionCreatedCallbacks.length = 0
-    dispatchOpenClawEvent.mockReset()
-    trackedPaneBySession.clear()
+  test("adds hashline edit only when the feature flag is enabled", () => {
+    const withoutEdit = createToolRegistry({
+      ctx: { directory: "/tmp" } as Parameters<typeof createToolRegistry>[0]["ctx"],
+      pluginConfig: createPluginConfig({ hashline_edit: false }),
+      managers: {
+        backgroundManager: {},
+        tmuxSessionManager: {},
+      } as Parameters<typeof createToolRegistry>[0]["managers"],
+      toolFactories,
+    })
+    const withEdit = createToolRegistry({
+      ctx: { directory: "/tmp" } as Parameters<typeof createToolRegistry>[0]["ctx"],
+      pluginConfig: createPluginConfig({ hashline_edit: true }),
+      managers: {
+        backgroundManager: {},
+        tmuxSessionManager: {},
+      } as Parameters<typeof createToolRegistry>[0]["managers"],
+      toolFactories,
+    })
 
-    const tmuxSessionManager = {
-      async onSessionCreated(event: { properties?: { info?: { id?: string } } }): Promise<void> {
-        const sessionID = event.properties?.info?.id
-        if (sessionID) {
-          trackedPaneBySession.set(sessionID, `%pane-${sessionID}`)
-        }
-      },
-      getTrackedPaneId(sessionID: string): string | undefined {
-        return trackedPaneBySession.get(sessionID)
-      },
-    }
+    expect(withoutEdit.filteredTools).not.toHaveProperty("edit")
+    expect(withEdit.filteredTools).toHaveProperty("edit")
+  })
 
-    const openclawConfig = {
-      enabled: true,
-      gateways: {},
-      hooks: {},
-    }
+  test("forwards sync session creation events only to the tmux session manager callback", async () => {
+    const onSessionCreated = mock(async () => {})
 
     createToolRegistry({
       ctx: { directory: "/tmp/project" } as Parameters<typeof createToolRegistry>[0]["ctx"],
-      pluginConfig: createPluginConfig({ openclaw: openclawConfig }),
+      pluginConfig: createPluginConfig(),
       managers: {
         backgroundManager: {},
-        tmuxSessionManager,
-        skillMcpManager: {},
+        tmuxSessionManager: {
+          onSessionCreated,
+        },
       } as Parameters<typeof createToolRegistry>[0]["managers"],
-      skillContext: {
-        mergedSkills: [],
-        availableSkills: [],
-        browserProvider: "playwright",
-        disabledSkills: new Set(),
-      },
-      availableCategories: [],
       toolFactories,
     })
 
-    const onSyncSessionCreated = syncSessionCreatedCallbacks[syncSessionCreatedCallbacks.length - 1]
-    await onSyncSessionCreated?.({
+    await syncSessionCreatedCallbacks[0]?.({
       sessionID: "ses-sync-1",
       parentID: "ses-parent",
       title: "sync task",
     })
 
-    expect(dispatchOpenClawEvent).toHaveBeenCalledTimes(1)
-    expect(dispatchOpenClawEvent).toHaveBeenCalledWith({
-      config: openclawConfig,
-      rawEvent: "session.created",
-      context: {
-        sessionId: "ses-sync-1",
-        projectPath: "/tmp/project",
-        tmuxPaneId: "%pane-ses-sync-1",
+    expect(onSessionCreated).toHaveBeenCalledTimes(1)
+    expect(onSessionCreated).toHaveBeenCalledWith({
+      type: "session.created",
+      properties: {
+        info: {
+          id: "ses-sync-1",
+          parentID: "ses-parent",
+          title: "sync task",
+        },
       },
     })
   })

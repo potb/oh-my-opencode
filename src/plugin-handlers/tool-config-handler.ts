@@ -1,6 +1,5 @@
 import type { OhMyOpenCodeConfig } from "../config";
 import { getAgentDisplayName, getAgentListDisplayName } from "../shared/agent-display-names";
-import { isTaskSystemEnabled } from "../shared";
 
 type AgentWithPermission = { permission?: Record<string, unknown> };
 
@@ -26,13 +25,7 @@ export function applyToolConfig(params: {
   pluginConfig: OhMyOpenCodeConfig;
   agentResult: Record<string, unknown>;
 }): void {
-  const taskSystemEnabled = isTaskSystemEnabled(params.pluginConfig)
-  const denyTodoTools = taskSystemEnabled
-    ? { todowrite: "deny", todoread: "deny" }
-    : {}
-
   const existingPermission = params.config.permission as Record<string, unknown> | undefined;
-  const skillDeniedByHost = existingPermission?.skill === "deny";
 
   params.config.tools = {
     ...(params.config.tools as Record<string, unknown>),
@@ -40,14 +33,21 @@ export function applyToolConfig(params: {
     LspHover: false,
     LspCodeActions: false,
     LspCodeActionResolve: false,
+    background_cancel: false,
+    background_output: false,
+    call_omo_agent: false,
+    interactive_bash: false,
+    look_at: false,
+    session_info: false,
+    session_list: false,
+    session_read: false,
+    session_search: false,
+    skill: false,
+    skill_mcp: false,
     "task_*": false,
     teammate: false,
-    ...(taskSystemEnabled
-      ? { todowrite: false, todoread: false }
-      : {}),
-    ...(skillDeniedByHost
-      ? { skill: false, skill_mcp: false }
-      : {}),
+    todoread: false,
+    todowrite: false,
   };
 
   const isCliRunMode = process.env.OPENCODE_CLI_RUN_MODE === "true";
@@ -63,53 +63,12 @@ export function applyToolConfig(params: {
   if (librarian) {
     librarian.permission = { ...librarian.permission, "grep_app_*": "allow" };
   }
-  const looker = agentByKey(params.agentResult, "multimodal-looker");
-  if (looker) {
-    looker.permission = { ...looker.permission, task: "deny", look_at: "deny" };
-  }
-  const atlas = agentByKey(params.agentResult, "atlas");
-  if (atlas) {
-    atlas.permission = {
-      ...atlas.permission,
-      task: "allow",
-      call_omo_agent: "deny",
-      "task_*": "allow",
-      teammate: "allow",
-      ...denyTodoTools,
-    };
-  }
   const sisyphus = agentByKey(params.agentResult, "sisyphus");
   if (sisyphus) {
     sisyphus.permission = {
       ...sisyphus.permission,
-      call_omo_agent: "deny",
       task: "allow",
       question: questionPermission,
-      "task_*": "allow",
-      teammate: "allow",
-      ...denyTodoTools,
-    };
-  }
-  const hephaestus = agentByKey(params.agentResult, "hephaestus");
-  if (hephaestus) {
-    hephaestus.permission = {
-      ...hephaestus.permission,
-      call_omo_agent: "deny",
-      task: "allow",
-      question: questionPermission,
-      ...denyTodoTools,
-    };
-  }
-  const prometheus = agentByKey(params.agentResult, "prometheus");
-  if (prometheus) {
-    prometheus.permission = {
-      ...prometheus.permission,
-      call_omo_agent: "deny",
-      task: "allow",
-      question: questionPermission,
-      "task_*": "allow",
-      teammate: "allow",
-      ...denyTodoTools,
     };
   }
   const junior = agentByKey(params.agentResult, "sisyphus-junior");
@@ -117,9 +76,6 @@ export function applyToolConfig(params: {
     junior.permission = {
       ...junior.permission,
       task: "allow",
-      "task_*": "allow",
-      teammate: "allow",
-      ...denyTodoTools,
     };
   }
 

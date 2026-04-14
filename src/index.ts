@@ -7,7 +7,7 @@ import { createHooks } from "./create-hooks"
 import { createManagers } from "./create-managers"
 import { createRuntimeTmuxConfig, isTmuxIntegrationEnabled } from "./create-runtime-tmux-config"
 import { createTools } from "./create-tools"
-import { initializeOpenClaw } from "./openclaw"
+import { applyFixedProductTrim } from "./fixed-product"
 import { createPluginInterface } from "./plugin-interface"
 import { createPluginDispose, type PluginDispose } from "./plugin-dispose"
 
@@ -16,7 +16,6 @@ import { createModelCacheState } from "./plugin-state"
 import { createFirstMessageVariantGate } from "./shared/first-message-variant"
 import { injectServerAuthIntoClient, log, logLegacyPluginStartupWarning } from "./shared"
 import { detectExternalSkillPlugin, getSkillPluginConflictWarning } from "./shared/external-plugin-detector"
-import { startBackgroundCheck as startTmuxCheck } from "./tools/interactive-bash"
 import { lspManager } from "./tools/lsp/client"
 import { createPluginPostHog, getPostHogDistinctId } from "./shared/posthog"
 
@@ -37,7 +36,7 @@ const OhMyOpenCodePlugin: Plugin = async (ctx) => {
   injectServerAuthIntoClient(ctx.client)
   await activePluginDispose?.()
 
-  const pluginConfig = loadPluginConfig(ctx.directory, ctx)
+  const pluginConfig = applyFixedProductTrim(loadPluginConfig(ctx.directory, ctx))
 
   const posthog = createPluginPostHog()
   const distinctId = getPostHogDistinctId()
@@ -48,23 +47,16 @@ const OhMyOpenCodePlugin: Plugin = async (ctx) => {
   }
   try {
     posthog.capture({
-      distinctId,
-      event: "plugin_loaded",
-      properties: {
-        entry_point: "plugin",
-        has_openclaw: !!pluginConfig.openclaw,
-        tmux_enabled: isTmuxIntegrationEnabled(pluginConfig),
-      },
-    })
+        distinctId,
+        event: "plugin_loaded",
+        properties: {
+          entry_point: "plugin",
+          has_openclaw: false,
+          tmux_enabled: isTmuxIntegrationEnabled(pluginConfig),
+        },
+      })
   } catch {
     // telemetry failure is non-fatal, silently ignore
-  }
-  if (pluginConfig.openclaw) {
-    await initializeOpenClaw(pluginConfig.openclaw)
-  }
-  const tmuxIntegrationEnabled = isTmuxIntegrationEnabled(pluginConfig)
-  if (tmuxIntegrationEnabled) {
-    startTmuxCheck()
   }
   const disabledHooks = new Set(pluginConfig.disabled_hooks ?? [])
 
