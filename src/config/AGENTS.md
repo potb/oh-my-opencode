@@ -16,7 +16,6 @@ config/schema/
 ├── categories.ts               # 8 built-in + custom categories
 ├── hooks.ts                    # HookNameSchema (48 hooks)
 ├── skills.ts                   # SkillsConfigSchema (sources, paths, recursive)
-├── commands.ts                 # BuiltinCommandNameSchema
 ├── experimental.ts             # Feature flags (plugin_load_timeout_ms min 1000)
 ├── sisyphus.ts                 # SisyphusConfigSchema (task system)
 ├── sisyphus-agent.ts           # SisyphusAgentConfigSchema

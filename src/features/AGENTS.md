@@ -17,7 +17,6 @@ Standalone feature modules wired into plugin/ layer. Each is self-contained with
 | **builtin-skills** | 17 | LOW | 8 skills: git-master, playwright, playwright-cli, agent-browser, dev-browser, frontend-ui-ux, review-work, ai-slop-remover |
 | **skill-mcp-manager** | 18 | HIGH | Tier-3 MCP client lifecycle per session (stdio + HTTP + OAuth step-up) |
 | **claude-code-plugin-loader** | 15 | MEDIUM | Unified plugin discovery from .opencode/plugins/ |
-| **builtin-commands** | 11 | LOW | Command templates: refactor, init-deep, handoff, etc. |
 | **claude-tasks** | 7 | MEDIUM | Task schema + file storage + OpenCode todo sync |
 | **claude-code-mcp-loader** | 6 | MEDIUM | .mcp.json loading with ${VAR} env expansion |
 | **context-injector** | 6 | MEDIUM | AGENTS.md/README.md injection into context |
