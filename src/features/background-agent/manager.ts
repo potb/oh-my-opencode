@@ -23,10 +23,6 @@ import { ConcurrencyManager } from "./concurrency"
 import type { BackgroundTaskConfig, TmuxConfig } from "../../config/schema"
 import { isInsideTmux } from "../../shared/tmux"
 import {
-  shouldRetryError,
-  hasMoreFallbacks,
-} from "../../shared/model-error-classifier"
-import {
   POLLING_INTERVAL_MS,
   TASK_CLEANUP_DELAY_MS,
   TASK_TTL_MS,
@@ -46,7 +42,6 @@ import {
   getSessionErrorMessage,
   isRecord,
 } from "./error-classifier"
-import { tryFallbackRetry } from "./fallback-retry-handler"
 import { registerManagerForCleanup, unregisterManagerForCleanup } from "./process-cleanup"
 import {
   findNearestMessageExcludingCompaction,
@@ -1008,11 +1003,9 @@ export class BackgroundManager {
         name: extractErrorName(assistantError),
         message: extractErrorMessage(assistantError),
       }
-      void this.tryFallbackRetry(task, errorInfo, "message.updated").catch((error) => {
-        log("[background-agent] Error handling message.updated fallback retry:", {
-          error,
-          taskId: task.id,
-        })
+      log("[background-agent] Assistant error observed for running task", {
+        taskId: task.id,
+        errorInfo,
       })
     }
 
@@ -1228,13 +1221,10 @@ export class BackgroundManager {
       const task = this.findBySession(sessionID)
       if (!task || task.status !== "running") return
 
-      const errorMessage = typeof status.message === "string" ? status.message : undefined
-      const errorInfo = { name: "SessionRetry", message: errorMessage }
-      void this.tryFallbackRetry(task, errorInfo, "session.status").catch((error) => {
-        log("[background-agent] Error handling session.status fallback retry:", {
-          error,
-          taskId: task.id,
-        })
+      log("[background-agent] Session entered retry state; keeping task running without auto-retry", {
+        taskId: task.id,
+        sessionID,
+        message: typeof status.message === "string" ? status.message : undefined,
       })
     }
   }
@@ -1257,21 +1247,11 @@ export class BackgroundManager {
       return
     }
 
-    if (await this.tryFallbackRetry(task, errorInfo, "session.error")) {
-      return
-    }
-
     const errorMsg = errorMessage ?? "Session error"
-    const canRetry =
-      shouldRetryError(errorInfo) &&
-      !!task.fallbackChain &&
-      hasMoreFallbacks(task.fallbackChain, task.attemptCount ?? 0)
-    log("[background-agent] Session error - no retry:", {
+    log("[background-agent] Session error:", {
       taskId: task.id,
       errorName,
       errorMessage: errorMsg?.slice(0, 100),
-      hasFallbackChain: !!task.fallbackChain,
-      canRetry,
     })
 
     task.status = "error"
@@ -1313,32 +1293,6 @@ export class BackgroundManager {
     this.markForNotification(task)
     this.enqueueNotificationForParent(task.parentSessionID, () => this.notifyParentSession(task)).catch(err => {
       log("[background-agent] Error in notifyParentSession for errored task:", { taskId: task.id, error: err })
-    })
-  }
-
-  private tryFallbackRetry(
-    task: BackgroundTask,
-    errorInfo: { name?: string; message?: string },
-    source: string,
-  ): Promise<boolean> {
-    const previousSessionID = task.sessionID
-    const result = tryFallbackRetry({
-      task,
-      errorInfo,
-      source,
-      concurrencyManager: this.concurrencyManager,
-      client: this.client,
-      idleDeferralTimers: this.idleDeferralTimers,
-      queuesByKey: this.queuesByKey,
-      processKey: (key: string) => this.processKey(key),
-    })
-    return result.then((retried) => {
-      if (retried && previousSessionID) {
-        this.clearSessionOutputObserved(previousSessionID)
-        this.clearSessionTodoObservation(previousSessionID)
-        subagentSessions.delete(previousSessionID)
-      }
-      return retried
     })
   }
 
@@ -2018,17 +1972,6 @@ export class BackgroundManager {
 
       try {
         const sessionStatus = allStatuses[sessionID]
-        // Handle retry before checking running state
-        if (sessionStatus?.type === "retry") {
-          const retryMessage = typeof (sessionStatus as { message?: string }).message === "string"
-            ? (sessionStatus as { message?: string }).message
-            : undefined
-          const errorInfo = { name: "SessionRetry", message: retryMessage }
-          if (await this.tryFallbackRetry(task, errorInfo, "polling:session.status")) {
-            continue
-          }
-        }
-
         // Only skip completion when session status is actively running.
         // Unknown or terminal statuses (like "interrupted") fall through to completion.
         if (sessionStatus && isActiveSessionStatus(sessionStatus.type)) {
