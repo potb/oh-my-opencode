@@ -15,7 +15,7 @@ Phase 1: Implement     → Do the work, atomic commits
 Phase 2: PR Creation   → Push, create PR targeting dev
 Phase 3: Verify Loop   → Unbounded iteration until ALL gates pass:
   ├─ Gate A: CI         → gh pr checks (bun test, typecheck, build)
-  ├─ Gate B: review-work → 5-agent parallel review
+├─ Gate B: review-work → 5 parallel Oracle reviews
   └─ Gate C: Cubic      → cubic-dev-ai[bot] "No issues found"
 Phase 4: Merge         → Squash merge, worktree cleanup
 ```
@@ -199,7 +199,7 @@ Read the logs, fix the issue, commit atomically, push, and re-enter the loop.
 
 ### Gate B: review-work
 
-The review-work skill launches 5 parallel sub-agents (goal verification, QA, code quality, security, context mining). All 5 must pass.
+The review-work skill launches 5 parallel Oracle reviews (goal verification, QA readiness, code quality, security, context review). All 5 must pass.
 
 Invoke review-work after CI passes — there's no point reviewing code that doesn't build:
 

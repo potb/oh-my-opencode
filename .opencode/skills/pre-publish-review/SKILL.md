@@ -1,6 +1,6 @@
 ---
 name: pre-publish-review
-description: "Nuclear-grade 16-agent pre-publish release gate. Runs /get-unpublished-changes to detect all changes since last npm release, spawns up to 10 ultrabrain agents for deep per-change analysis, invokes /review-work (5 agents) for holistic review, and 1 oracle for overall release synthesis. Use before EVERY npm publish. Triggers: 'pre-publish review', 'review before publish', 'release review', 'pre-release review', 'ready to publish?', 'can I publish?', 'pre-publish', 'safe to publish', 'publishing review', 'pre-publish check'."
+description: "Nuclear-grade 16-agent pre-publish release gate. Detects all unpublished changes, spawns up to 10 deep analysis agents for per-change review, invokes /review-work for holistic review, and 1 oracle for overall release synthesis. Use before EVERY npm publish. Triggers: 'pre-publish review', 'review before publish', 'release review', 'pre-release review', 'ready to publish?', 'can I publish?', 'pre-publish', 'safe to publish', 'publishing review', 'pre-publish check'."
 ---
 
 # Pre-Publish Review — 16-Agent Release Gate
@@ -10,7 +10,7 @@ Three-layer review before publishing to npm. Every layer covers a different angl
 | Layer | Agents | Type | What They Check |
 |-------|--------|------|-----------------|
 | Per-Change Deep Dive | up to 10 | ultrabrain | Each logical change group individually — correctness, edge cases, pattern adherence |
-| Holistic Review | 5 | review-work | Goal compliance, QA execution, code quality, security, context mining across full changeset |
+| Holistic Review | 5 Oracle reviews | review-work | Goal compliance, QA readiness, code quality, security, context review across full changeset |
 | Release Synthesis | 1 | oracle | Overall release readiness, version bump, breaking changes, deployment risk |
 
 ---
@@ -151,7 +151,7 @@ OUTPUT FORMAT:
 
 ### Layer 2: Holistic Review via /review-work (5 agents)
 
-Spawn a sub-agent that loads the `/review-work` skill. The review-work skill internally launches 5 parallel agents: Oracle (goal verification), unspecified-high (QA execution), Oracle (code quality), Oracle (security), unspecified-high (context mining). All 5 must pass for the review to pass.
+Spawn a sub-agent that loads the `/review-work` skill. The review-work skill internally launches 5 parallel Oracle reviews: goal verification, QA readiness, code quality, security, and context review. All 5 must pass for the review to pass.
 
 ```
 task(
@@ -174,7 +174,7 @@ BACKGROUND: Pre-publish review of oh-my-opencode, an OpenCode plugin with 1268 T
 
 The diff base is: git diff v{PUBLISHED}..HEAD
 
-Follow the /review-work skill flow exactly — launch all 5 review agents and collect results. Do NOT skip any of the 5 agents.
+Follow the /review-work skill flow exactly — launch all 5 Oracle review agents and collect results. Do NOT skip any of the 5 agents.
 """)
 ```
 
@@ -289,7 +289,7 @@ Track completion in a table:
 | # | Agent | Type | Status | Verdict |
 |---|-------|------|--------|---------|
 | 1-10 | Ultrabrain: {group_name} | ultrabrain | pending | — |
-| 11 | Review-Work Coordinator | unspecified-high | pending | — |
+| 11 | Review-Work Coordinator | oracle | pending | — |
 | 12 | Release Synthesis Oracle | oracle | pending | — |
 
 Do NOT deliver the final report until ALL agents have completed.
