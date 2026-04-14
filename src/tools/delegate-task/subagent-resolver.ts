@@ -54,7 +54,7 @@ Sisyphus-Junior is spawned automatically when you specify a category. Pick the a
     return {
       agentToUse: "",
       categoryModel: undefined,
-    error: `You are a plan-family agent (plan/prometheus). You cannot delegate to other plan-family agents via task.
+    error: `You are a plan-family agent (plan). You cannot delegate to other plan-family agents via task.
 
 Create the work plan directly - that's your job as the planning agent.`,
     }

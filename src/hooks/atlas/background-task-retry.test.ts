@@ -401,7 +401,7 @@ describe("atlas background task retry", () => {
     // when
     await hook.handler({ event: { type: "session.idle", properties: { sessionID: descendantSessionID } } })
     expect(capturedTimers.size).toBe(1)
-    descendantAgent = "prometheus"
+    descendantAgent = "custom-agent"
     clearSessionAgent(descendantSessionID)
     backgroundRunning = false
     await firePendingTimers()

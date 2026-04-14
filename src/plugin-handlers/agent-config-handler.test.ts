@@ -47,7 +47,6 @@ describe("applyAgentConfig", () => {
       oracle: { name: "oracle", prompt: "oracle prompt", mode: "subagent" },
       hephaestus: { name: "hephaestus", prompt: "hephaestus prompt", mode: "primary" },
       atlas: { name: "atlas", prompt: "atlas prompt", mode: "primary" },
-      prometheus: { name: "prometheus", prompt: "prometheus prompt", mode: "primary" },
       "multimodal-looker": {
         name: "multimodal-looker",
         prompt: "multimodal prompt",
@@ -79,7 +78,6 @@ describe("applyAgentConfig", () => {
     )
     expect(result[getAgentListDisplayName("atlas")]).toBeUndefined()
     expect(result[getAgentListDisplayName("hephaestus")]).toBeUndefined()
-    expect(result[getAgentListDisplayName("prometheus")]).toBeUndefined()
     expect(result[getAgentListDisplayName("multimodal-looker")]).toBeUndefined()
 
     for (const key of Object.keys(result)) {

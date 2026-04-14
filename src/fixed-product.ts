@@ -14,7 +14,6 @@ export const REMOVED_AGENT_NAMES = [
   "atlas",
   "hephaestus",
   "multimodal-looker",
-  "prometheus",
 ] as const
 
 export const REMOVED_TOOL_NAMES = [
@@ -42,7 +41,6 @@ export const REMOVED_HOOK_NAMES = [
   "interactive-bash-session",
   "model-fallback",
   "no-hephaestus-non-gpt",
-  "prometheus-md-only",
   "ralph-loop",
   "runtime-fallback",
   "start-work",

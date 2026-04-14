@@ -100,25 +100,6 @@ export const AGENT_MODEL_REQUIREMENTS: Record<string, ModelRequirement> = {
       { providers: ["openai", "github-copilot", "opencode", "vercel"], model: "gpt-5-nano" },
     ],
   },
-  prometheus: {
-    fallbackChain: [
-      {
-        providers: ["anthropic", "github-copilot", "opencode", "vercel"],
-        model: "claude-opus-4-6",
-        variant: "max",
-      },
-      {
-        providers: ["openai", "github-copilot", "opencode", "vercel"],
-        model: "gpt-5.4",
-        variant: "high",
-      },
-      { providers: ["opencode-go", "vercel"], model: "glm-5" },
-      {
-        providers: ["google", "github-copilot", "opencode", "vercel"],
-        model: "gemini-3.1-pro",
-      },
-    ],
-  },
   metis: {
     fallbackChain: [
       {

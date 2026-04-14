@@ -86,7 +86,7 @@ describe("Agent Config Integration", () => {
   describe("Display name resolution", () => {
     test("returns correct display names for all builtin agents", () => {
       // given - lowercase config keys
-      const agents = ["sisyphus", "hephaestus", "prometheus", "atlas", "metis", "momus", "oracle", "librarian", "explore", "multimodal-looker"]
+      const agents = ["sisyphus", "hephaestus", "atlas", "metis", "momus", "oracle", "librarian", "explore", "multimodal-looker"]
 
       // when - display names are requested
       const displayNames = agents.map((agent) => getAgentDisplayName(agent))
@@ -94,7 +94,6 @@ describe("Agent Config Integration", () => {
       // then - display names are correct
       expect(displayNames).toContain("Sisyphus - Ultraworker")
       expect(displayNames).toContain("Hephaestus - Deep Agent")
-      expect(displayNames).toContain("Prometheus - Plan Builder")
       expect(displayNames).toContain("Atlas - Plan Executor")
       expect(displayNames).toContain("Metis - Plan Consultant")
       expect(displayNames).toContain("Momus - Plan Critic")
@@ -106,7 +105,7 @@ describe("Agent Config Integration", () => {
 
     test("handles lowercase keys case-insensitively", () => {
       // given - various case formats of lowercase keys
-      const keys = ["Sisyphus", "Atlas", "SISYPHUS", "atlas", "prometheus", "PROMETHEUS"]
+      const keys = ["Sisyphus", "Atlas", "SISYPHUS", "atlas", "hephaestus", "HEPHAESTUS"]
 
       // when - display names are requested
       const displayNames = keys.map((key) => getAgentDisplayName(key))
@@ -116,8 +115,8 @@ describe("Agent Config Integration", () => {
       expect(displayNames[1]).toBe("Atlas - Plan Executor")
       expect(displayNames[2]).toBe("Sisyphus - Ultraworker")
       expect(displayNames[3]).toBe("Atlas - Plan Executor")
-      expect(displayNames[4]).toBe("Prometheus - Plan Builder")
-      expect(displayNames[5]).toBe("Prometheus - Plan Builder")
+      expect(displayNames[4]).toBe("Hephaestus - Deep Agent")
+      expect(displayNames[5]).toBe("Hephaestus - Deep Agent")
     })
 
     test("returns original key for unknown agents", () => {
@@ -146,7 +145,7 @@ describe("Agent Config Integration", () => {
 
     test("model requirements include all builtin agents", () => {
       // given - expected builtin agents
-      const expectedAgents = ["sisyphus", "hephaestus", "prometheus", "atlas", "metis", "momus", "oracle", "librarian", "explore", "multimodal-looker"]
+      const expectedAgents = ["sisyphus", "hephaestus", "atlas", "metis", "momus", "oracle", "librarian", "explore", "multimodal-looker"]
 
       // when - checking AGENT_MODEL_REQUIREMENTS
       const agentKeys = Object.keys(AGENT_MODEL_REQUIREMENTS)
@@ -174,7 +173,7 @@ describe("Agent Config Integration", () => {
       // given - old format config
       const oldConfig = {
         Sisyphus: { model: "anthropic/claude-opus-4-6", temperature: 0.1 },
-        "Prometheus - Plan Builder": { model: "anthropic/claude-opus-4-6" },
+        Atlas: { model: "anthropic/claude-opus-4-6" },
       }
 
       // when - config is migrated
@@ -182,19 +181,19 @@ describe("Agent Config Integration", () => {
 
       // then - keys are lowercase
       expect(result.migrated).toHaveProperty("sisyphus")
-      expect(result.migrated).toHaveProperty("prometheus")
+      expect(result.migrated).toHaveProperty("atlas")
 
       // when - display names are retrieved
       const sisyphusDisplay = getAgentDisplayName("sisyphus")
-      const prometheusDisplay = getAgentDisplayName("prometheus")
+      const atlasDisplay = getAgentDisplayName("atlas")
 
       // then - display names are correct
       expect(sisyphusDisplay).toBe("Sisyphus - Ultraworker")
-      expect(prometheusDisplay).toBe("Prometheus - Plan Builder")
+      expect(atlasDisplay).toBe("Atlas - Plan Executor")
 
       // then - config values are preserved
       expect(result.migrated.sisyphus).toEqual({ model: "anthropic/claude-opus-4-6", temperature: 0.1 })
-      expect(result.migrated.prometheus).toEqual({ model: "anthropic/claude-opus-4-6" })
+      expect(result.migrated.atlas).toEqual({ model: "anthropic/claude-opus-4-6" })
     })
 
     test("new config works without migration", () => {

@@ -422,7 +422,7 @@ describe("Sisyphus-Junior agent override", () => {
     }
   })
 
-  test("schema accepts lowercase agent names (sisyphus, atlas, prometheus)", () => {
+  test("schema accepts lowercase agent names (sisyphus, atlas, metis)", () => {
     // given
     const config = {
       agents: {
@@ -432,7 +432,7 @@ describe("Sisyphus-Junior agent override", () => {
         atlas: {
           temperature: 0.2,
         },
-        prometheus: {
+        metis: {
           temperature: 0.3,
         },
       },
@@ -446,7 +446,7 @@ describe("Sisyphus-Junior agent override", () => {
     if (result.success) {
       expect(result.data.agents?.sisyphus?.temperature).toBe(0.1)
       expect(result.data.agents?.atlas?.temperature).toBe(0.2)
-      expect(result.data.agents?.prometheus?.temperature).toBe(0.3)
+      expect(result.data.agents?.metis?.temperature).toBe(0.3)
     }
   })
 

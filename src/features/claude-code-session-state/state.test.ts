@@ -29,7 +29,7 @@ describe("claude-code-session-state", () => {
     test("should store agent for session", () => {
       // given
       const sessionID = "test-session-1"
-      const agent = "Prometheus - Plan Builder"
+      const agent = "Atlas - Plan Executor"
 
       // when
       setSessionAgent(sessionID, agent)
@@ -41,25 +41,25 @@ describe("claude-code-session-state", () => {
     test("should strip zero-width ordering prefixes before storing agent for session", () => {
       // given
       const sessionID = "test-session-prefixed"
-      const agent = "\u200B\u200B\u200BPrometheus - Plan Builder"
+      const agent = "\u200B\u200B\u200BAtlas - Plan Executor"
 
       // when
       setSessionAgent(sessionID, agent)
 
       // then
-      expect(getSessionAgent(sessionID)).toBe("Prometheus - Plan Builder")
+      expect(getSessionAgent(sessionID)).toBe("Atlas - Plan Executor")
     })
 
     test("should NOT overwrite existing agent (first-write wins)", () => {
       // given
       const sessionID = "test-session-1"
-      setSessionAgent(sessionID, "Prometheus - Plan Builder")
+      setSessionAgent(sessionID, "Atlas - Plan Executor")
 
       // when - try to overwrite
       setSessionAgent(sessionID, "sisyphus")
 
       // then - first agent preserved
-      expect(getSessionAgent(sessionID)).toBe("Prometheus - Plan Builder")
+      expect(getSessionAgent(sessionID)).toBe("Atlas - Plan Executor")
     })
 
     test("should return undefined for unknown session", () => {
@@ -74,7 +74,7 @@ describe("claude-code-session-state", () => {
     test("should overwrite existing agent", () => {
       // given
       const sessionID = "test-session-1"
-      setSessionAgent(sessionID, "Prometheus - Plan Builder")
+      setSessionAgent(sessionID, "Atlas - Plan Executor")
 
       // when - force update
       updateSessionAgent(sessionID, "sisyphus")
@@ -100,8 +100,8 @@ describe("claude-code-session-state", () => {
     test("should remove agent from session", () => {
       // given
       const sessionID = "test-session-1"
-      setSessionAgent(sessionID, "Prometheus - Plan Builder")
-      expect(getSessionAgent(sessionID)).toBe("Prometheus - Plan Builder")
+      setSessionAgent(sessionID, "Atlas - Plan Executor")
+      expect(getSessionAgent(sessionID)).toBe("Atlas - Plan Executor")
 
       // when
       clearSessionAgent(sessionID)
@@ -166,24 +166,24 @@ describe("claude-code-session-state", () => {
     })
   })
 
-  describe("prometheus-md-only integration scenario", () => {
-    test("should correctly identify Prometheus agent for permission checks", () => {
-      // given - Prometheus session
-      const sessionID = "test-prometheus-session"
-      const prometheusAgent = "Prometheus - Plan Builder"
+  describe("display-name integration scenario", () => {
+    test("should correctly identify Atlas display names for downstream hooks", () => {
+      // given - Atlas session
+      const sessionID = "test-atlas-session"
+      const atlasAgent = "Atlas - Plan Executor"
 
       // when - agent is set (simulating chat.message hook)
-      setSessionAgent(sessionID, prometheusAgent)
+      setSessionAgent(sessionID, atlasAgent)
 
-      // then - getSessionAgent returns correct agent for prometheus-md-only hook
+      // then - getSessionAgent returns the exact display name
       const agent = getSessionAgent(sessionID)
-      expect(agent).toBe("Prometheus - Plan Builder")
-      expect(["Prometheus - Plan Builder"].includes(agent!)).toBe(true)
+      expect(agent).toBe("Atlas - Plan Executor")
+      expect(["Atlas - Plan Executor"].includes(agent!)).toBe(true)
     })
 
     test("should return undefined when agent not set (bug scenario)", () => {
       // given - session exists but no agent set (the bug)
-      const sessionID = "test-prometheus-session"
+      const sessionID = "test-atlas-session"
 
       // when / then - this is the bug: agent is undefined
       expect(getSessionAgent(sessionID)).toBe(undefined)

@@ -12,7 +12,6 @@
 export const AGENT_DISPLAY_NAMES: Record<string, string> = {
   sisyphus: "Sisyphus - Ultraworker",
   hephaestus: "Hephaestus - Deep Agent",
-  prometheus: "Prometheus - Plan Builder",
   atlas: "Atlas - Plan Executor",
   "sisyphus-junior": "Sisyphus-Junior",
   metis: "Metis - Plan Consultant",
@@ -29,8 +28,7 @@ export const AGENT_DISPLAY_NAMES: Record<string, string> = {
 const AGENT_LIST_SORT_PREFIXES: Record<string, string> = {
   sisyphus: "\u200B",
   hephaestus: "\u200B\u200B",
-  prometheus: "\u200B\u200B\u200B",
-  atlas: "\u200B\u200B\u200B\u200B",
+  atlas: "\u200B\u200B\u200B",
 }
 
 const INVISIBLE_AGENT_CHARACTERS_REGEX = /[\u200B\u200C\u200D\uFEFF]/g
@@ -86,6 +84,7 @@ const REVERSE_DISPLAY_NAMES: Record<string, string> = Object.fromEntries(
 const LEGACY_DISPLAY_NAMES: Record<string, string> = {
   "sisyphus (ultraworker)": "sisyphus",
   "hephaestus (deep agent)": "hephaestus",
+  "prometheus - plan builder": "prometheus",
   "prometheus (plan builder)": "prometheus",
   "atlas (plan executor)": "atlas",
   "metis (plan consultant)": "metis",

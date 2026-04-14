@@ -605,8 +605,8 @@ describe("executeSyncContinuation - toast cleanup error paths", () => {
     })
   })
 
-  test("keeps task delegation enabled during prometheus sync continuation", async () => {
-    //#given - a resumed prometheus session should keep plan-family task permission
+  test("keeps task delegation enabled during plan sync continuation", async () => {
+    //#given - a resumed plan session should keep plan-family task permission
     const promptAsyncCalls: Array<{ path: { id: string }; body: Record<string, unknown> }> = []
     const mockClient = {
       session: {
@@ -619,7 +619,7 @@ describe("executeSyncContinuation - toast cleanup error paths", () => {
                 role: "assistant",
                 time: { created: 2000 },
                 finish: "end_turn",
-                agent: "prometheus",
+                agent: "plan",
               },
               parts: [{ type: "text", text: "Response" }],
             },
@@ -656,7 +656,7 @@ describe("executeSyncContinuation - toast cleanup error paths", () => {
     const args = {
       session_id: "ses_test_12345678",
       prompt: "continue planning",
-      description: "resume prometheus task",
+      description: "resume plan task",
       load_skills: [],
       run_in_background: false,
     }

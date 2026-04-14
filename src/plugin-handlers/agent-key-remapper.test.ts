@@ -37,7 +37,6 @@ describe("remapAgentKeysToDisplayNames", () => {
     const agents = {
       sisyphus: {},
       hephaestus: {},
-      prometheus: {},
       atlas: {},
       athena: {},
       metis: {},
@@ -53,8 +52,6 @@ describe("remapAgentKeysToDisplayNames", () => {
     expect(result["sisyphus"]).toBeUndefined()
     expect(result[getAgentListDisplayName("hephaestus")]).toBeDefined()
     expect(result["hephaestus"]).toBeUndefined()
-    expect(result[getAgentListDisplayName("prometheus")]).toBeDefined()
-    expect(result["prometheus"]).toBeUndefined()
     expect(result[getAgentListDisplayName("atlas")]).toBeDefined()
     expect(result["atlas"]).toBeUndefined()
     expect(result[getAgentDisplayName("athena")]).toBeDefined()
@@ -86,7 +83,6 @@ describe("remapAgentKeysToDisplayNames", () => {
     // given
     const result = remapAgentKeysToDisplayNames({
       atlas: {},
-      prometheus: {},
       hephaestus: {},
       sisyphus: {},
     })
@@ -97,7 +93,6 @@ describe("remapAgentKeysToDisplayNames", () => {
     // then
     expect(remappedNames).toEqual([
       getAgentListDisplayName("atlas"),
-      getAgentListDisplayName("prometheus"),
       getAgentListDisplayName("hephaestus"),
       getAgentListDisplayName("sisyphus"),
     ])
@@ -108,7 +103,6 @@ describe("remapAgentKeysToDisplayNames", () => {
     const agents = {
       sisyphus: { name: "sisyphus", prompt: "test", mode: "primary" },
       hephaestus: { name: "hephaestus", prompt: "test", mode: "primary" },
-      prometheus: { name: "prometheus", prompt: "test", mode: "primary" },
       atlas: { name: "atlas", prompt: "test", mode: "primary" },
       oracle: { name: "oracle", prompt: "test", mode: "subagent" },
     }
@@ -117,10 +111,9 @@ describe("remapAgentKeysToDisplayNames", () => {
     const result = remapAgentKeysToDisplayNames(agents)
 
     // then keys and names both use the same runtime-facing list names
-    expect(Object.keys(result).slice(0, 4)).toEqual([
+    expect(Object.keys(result).slice(0, 3)).toEqual([
       getAgentListDisplayName("sisyphus"),
       getAgentListDisplayName("hephaestus"),
-      getAgentListDisplayName("prometheus"),
       getAgentListDisplayName("atlas"),
     ])
     expect(result[getAgentListDisplayName("sisyphus")]).toEqual({
@@ -130,11 +123,6 @@ describe("remapAgentKeysToDisplayNames", () => {
     })
     expect(result[getAgentListDisplayName("hephaestus")]).toEqual({
       name: getAgentRuntimeName("hephaestus"),
-      prompt: "test",
-      mode: "primary",
-    })
-    expect(result[getAgentListDisplayName("prometheus")]).toEqual({
-      name: getAgentRuntimeName("prometheus"),
       prompt: "test",
       mode: "primary",
     })
@@ -151,7 +139,6 @@ describe("remapAgentKeysToDisplayNames", () => {
     const agents = {
       sisyphus: { prompt: "test", mode: "primary" },
       hephaestus: { prompt: "test", mode: "primary" },
-      prometheus: { prompt: "test", mode: "primary" },
       atlas: { prompt: "test", mode: "primary" },
     }
 
@@ -166,11 +153,6 @@ describe("remapAgentKeysToDisplayNames", () => {
     })
     expect(result[getAgentListDisplayName("hephaestus")]).toEqual({
       name: getAgentRuntimeName("hephaestus"),
-      prompt: "test",
-      mode: "primary",
-    })
-    expect(result[getAgentListDisplayName("prometheus")]).toEqual({
-      name: getAgentRuntimeName("prometheus"),
       prompt: "test",
       mode: "primary",
     })

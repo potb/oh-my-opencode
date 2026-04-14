@@ -208,7 +208,7 @@ describe("parseConfigPartially", () => {
         agents: {
           oracle: { model: "openai/gpt-5.4" },
           momus: { model: "openai/gpt-5.4" },
-          prometheus: {
+          atlas: {
             permission: {
               edit: { "*": "ask", ".sisyphus/**": "allow" },
             },

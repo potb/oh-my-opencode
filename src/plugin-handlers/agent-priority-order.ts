@@ -2,7 +2,7 @@ import { getAgentListDisplayName } from "../shared/agent-display-names"
 
 /**
  * CRITICAL: This is the ONLY source of truth for core agent ordering.
- * The order is: sisyphus → hephaestus → prometheus → atlas
+ * The order is: sisyphus → hephaestus → atlas
  *
  * DO NOT CHANGE THIS ORDER. Any PR attempting to modify this order
  * or introduce alternative ordering mechanisms (ZWSP prefixes, sort
@@ -13,7 +13,6 @@ import { getAgentListDisplayName } from "../shared/agent-display-names"
 export const CANONICAL_CORE_AGENT_ORDER = [
   "sisyphus",
   "hephaestus",
-  "prometheus",
   "atlas",
 ] as const
 
@@ -28,8 +27,6 @@ const CORE_AGENT_ORDER: ReadonlyArray<{
   displayName: getAgentListDisplayName(configKey),
   order: index + 1,
 }))
-
-const CORE_DISPLAY_NAMES = new Set(CORE_AGENT_ORDER.map((a) => a.displayName))
 
 function injectOrderField(agentConfig: unknown, order: number): unknown {
   if (typeof agentConfig === "object" && agentConfig !== null) {

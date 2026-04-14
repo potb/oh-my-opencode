@@ -5,7 +5,6 @@ export const AGENT_NAMES = [
   "oracle",
   "librarian",
   "explore",
-  "prometheus",
   "atlas",
   "metis",
   "momus",

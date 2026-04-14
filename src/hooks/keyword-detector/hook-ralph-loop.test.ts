@@ -152,7 +152,7 @@ describe("keyword-detector ultrawork routing", () => {
     }
 
     // when
-    await hook["chat.message"]({ sessionID: "main-session", agent: "prometheus" }, output)
+    await hook["chat.message"]({ sessionID: "main-session", agent: "plan" }, output)
 
     // then
     expect(startLoopCalls).toHaveLength(0)

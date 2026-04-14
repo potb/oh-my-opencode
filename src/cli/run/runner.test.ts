@@ -20,7 +20,7 @@ describe("resolveRunAgent", () => {
 
   it("uses CLI agent over env and config", () => {
     // given
-    const config = createConfig({ default_run_agent: "prometheus" })
+    const config = createConfig({ default_run_agent: "atlas" })
     const env = { OPENCODE_DEFAULT_AGENT: "Atlas" }
 
     // when
@@ -36,7 +36,7 @@ describe("resolveRunAgent", () => {
 
   it("uses env agent over config", () => {
     // given
-    const config = createConfig({ default_run_agent: "prometheus" })
+    const config = createConfig({ default_run_agent: "hephaestus" })
     const env = { OPENCODE_DEFAULT_AGENT: "Atlas" }
 
     // when
@@ -48,13 +48,13 @@ describe("resolveRunAgent", () => {
 
   it("uses config agent over default", () => {
     // given
-    const config = createConfig({ default_run_agent: "Prometheus" })
+    const config = createConfig({ default_run_agent: "Atlas" })
 
     // when
     const agent = resolveRunAgent({ message: "test" }, config, {})
 
     // then
-    expect(agent).toBe("Prometheus - Plan Builder")
+    expect(agent).toBe("Atlas - Plan Executor")
   })
 
   it("falls back to sisyphus when none set", () => {

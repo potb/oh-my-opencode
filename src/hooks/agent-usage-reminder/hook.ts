@@ -38,7 +38,6 @@ const ORCHESTRATOR_AGENTS = new Set([
   "sisyphus-junior",
   "atlas",
   "hephaestus",
-  "prometheus",
 ]);
 
 function isOrchestratorAgent(agentName: string): boolean {
