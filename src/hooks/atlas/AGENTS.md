@@ -55,10 +55,6 @@ interface SessionState {
 }
 ```
 
-Max consecutive failures before 5min pause: 5 (exponential backoff in todo-continuation-enforcer).
-
 ## RELATIONSHIP TO OTHER HOOKS
 
 - **atlasHook** (Continuation Tier): Master orchestrator, handles boulder sessions
-- **todoContinuationEnforcer** (Continuation Tier): "Boulder" mechanism for main Sisyphus sessions
-- Both inject into session.idle but serve different session types

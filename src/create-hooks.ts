@@ -13,14 +13,12 @@ type DisposableHook = { dispose?: () => void } | null | undefined
 export type DisposableCreatedHooks = {
   claudeCodeHooks?: DisposableHook
   commentChecker?: DisposableHook
-  todoContinuationEnforcer?: DisposableHook
   anthropicContextWindowLimitRecovery?: DisposableHook
 }
 
 export function disposeCreatedHooks(hooks: DisposableCreatedHooks): void {
   hooks.claudeCodeHooks?.dispose?.()
   hooks.commentChecker?.dispose?.()
-  hooks.todoContinuationEnforcer?.dispose?.()
   hooks.anthropicContextWindowLimitRecovery?.dispose?.()
 }
 
@@ -55,7 +53,6 @@ export function createHooks(args: {
     isHookEnabled,
     safeHookEnabled,
     backgroundManager,
-    sessionRecovery: core.sessionRecovery,
   })
 
   const hooks = {

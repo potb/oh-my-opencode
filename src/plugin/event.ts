@@ -229,7 +229,6 @@ export function createEventHandler(args: {
     await runEventHookSafely("claudeCodeHooks", hooks.claudeCodeHooks?.event, input);
     await runEventHookSafely("backgroundNotificationHook", hooks.backgroundNotificationHook?.event, input);
     await runEventHookSafely("sessionNotification", hooks.sessionNotification, input);
-    await runEventHookSafely("todoContinuationEnforcer", hooks.todoContinuationEnforcer?.handler, input);
     await runEventHookSafely("unstableAgentBabysitter", hooks.unstableAgentBabysitter?.event, input);
     await runEventHookSafely("contextWindowMonitor", hooks.contextWindowMonitor?.event, input);
     await runEventHookSafely("preemptiveCompaction", hooks.preemptiveCompaction?.event, input);

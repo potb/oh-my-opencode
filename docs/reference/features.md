@@ -446,7 +446,7 @@ Commands are slash-triggered workflows that execute predefined templates.
 | -------------------- | ------------------------------------------------------------------------------------------ |
 | `/init-deep`         | Initialize hierarchical AGENTS.md knowledge base                                           |
 | `/refactor`          | Intelligent refactoring with LSP, AST-grep, architecture analysis, and TDD verification    |
-| `/stop-continuation` | Stop all continuation mechanisms (todo continuation, boulder) for this session             |
+| `/stop-continuation` | Stop all continuation mechanisms (boulder and related flows) for this session               |
 | `/handoff`           | Create a detailed context summary for continuing work in a new session                     |
 
 ### /init-deep
@@ -490,9 +490,9 @@ project/
 
 ### /stop-continuation
 
-**Purpose**: Stop all continuation mechanisms for this session
+**Purpose**: Stop all remaining continuation mechanisms for this session
 
-Stops ralph loop, todo continuation, and boulder state. Use when you want the agent to stop its current multi-step workflow.
+Stops boulder state and related continuation flows. Use when you want the agent to stop its current multi-step workflow.
 
 ### /handoff
 
@@ -757,11 +757,10 @@ Hooks intercept and modify behavior at key points in the agent lifecycle across 
 
 #### Continuation
 
-| Hook                           | Event | Description                                                |
-| ------------------------------ | ----- | ---------------------------------------------------------- |
-| **todo-continuation-enforcer** | Event | Enforces todo completion — yanks idle agents back to work. |
-| **compaction-todo-preserver**  | Event | Preserves todo state during session compaction.            |
-| **unstable-agent-babysitter**  | Event | Handles unstable agent behavior with recovery strategies.  |
+| Hook                          | Event | Description                                               |
+| ----------------------------- | ----- | --------------------------------------------------------- |
+| **compaction-todo-preserver** | Event | Preserves todo state during session compaction.           |
+| **unstable-agent-babysitter** | Event | Handles unstable agent behavior with recovery strategies. |
 
 #### Integration
 

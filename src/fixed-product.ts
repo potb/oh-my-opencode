@@ -41,7 +41,6 @@ export const REMOVED_HOOK_NAMES = [
   "runtime-fallback",
   "start-work",
   "stop-continuation-guard",
-  "todo-continuation-enforcer",
 ] as const
 
 function mergeUnique<T extends string>(existing: readonly T[] | undefined, additions: readonly T[]): T[] {

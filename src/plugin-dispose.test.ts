@@ -26,12 +26,10 @@ describe("createPluginDispose", () => {
   test("calls hook disposers", async () => {
     const claudeCodeHooks = { dispose: (): void => {} }
     const commentChecker = { dispose: (): void => {} }
-    const todoContinuationEnforcer = { dispose: (): void => {} }
     const lspManager = { stopAll: async (): Promise<void> => {} }
 
     const claudeCodeHooksDisposeSpy = spyOn(claudeCodeHooks, "dispose")
     const commentCheckerDisposeSpy = spyOn(commentChecker, "dispose")
-    const todoContinuationEnforcerDisposeSpy = spyOn(todoContinuationEnforcer, "dispose")
 
     const dispose = createPluginDispose({
       backgroundManager: {
@@ -42,7 +40,6 @@ describe("createPluginDispose", () => {
         disposeCreatedHooks({
           claudeCodeHooks,
           commentChecker,
-          todoContinuationEnforcer,
         })
       },
     })
@@ -51,7 +48,6 @@ describe("createPluginDispose", () => {
 
     expect(claudeCodeHooksDisposeSpy).toHaveBeenCalledTimes(1)
     expect(commentCheckerDisposeSpy).toHaveBeenCalledTimes(1)
-    expect(todoContinuationEnforcerDisposeSpy).toHaveBeenCalledTimes(1)
   })
 
   test("is idempotent", async () => {

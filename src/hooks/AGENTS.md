@@ -50,7 +50,6 @@ hooks/
 ├── tasks-todowrite-disabler/   # Disable TodoWrite when task system active
 ├── think-mode/                 # Dynamic thinking budget
 ├── thinking-block-validator/   # Ensures valid <thinking>
-├── todo-continuation-enforcer/ # Force TODO completion
 ├── todo-description-override/  # Override todo descriptions
 ├── tool-pair-validator/        # Validate tool pair usage
 ├── unstable-agent-babysitter/  # Monitor unstable agent behavior
@@ -119,7 +118,6 @@ hooks/
 | stopContinuationGuard | chat.message | `/stop-continuation` command handler |
 | compactionContextInjector | session.compacted | Re-inject context after compaction |
 | compactionTodoPreserver | session.compacted | Preserve todos through compaction |
-| todoContinuationEnforcer | session.idle | **Boulder**: force continuation on incomplete todos |
 | unstableAgentBabysitter | session.idle | Monitor unstable agent behavior |
 | backgroundNotificationHook | event | Background task completion notifications |
 | atlasHook | event | Master orchestrator for boulder/background sessions |
@@ -138,9 +136,6 @@ Multi-strategy recovery when hitting context limits. Strategies: truncation, com
 
 ### atlas (17 files, ~1976 LOC)
 Master orchestrator for boulder sessions. Decision gates: session type → abort check → failure count → background tasks → agent match → plan completeness → cooldown (5s). Injects continuation prompts on session.idle.
-
-### todo-continuation-enforcer (13 files, ~2061 LOC)
-"Boulder" mechanism. Forces agent to continue when todos remain incomplete. 2s countdown toast → continuation injection. Exponential backoff: 30s base, ×2 per failure, max 5 consecutive failures then 5min pause.
 
 ### keyword-detector (~1665 LOC)
 Detects modes from user input: ultrawork, search, analyze, prove-yourself. Injects mode-specific system prompts.
