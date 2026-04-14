@@ -10,9 +10,7 @@ Browser automation that maintains page state across script executions.
 
 ## Setup
 
-This repo does not bundle the dev-browser runtime. Install and run dev-browser from an external checkout or upstream distribution.
-
-See [references/installation.md](references/installation.md) for the minimal current guidance.
+This repo does not bundle the dev-browser runtime. Before using this skill, make sure the external \`dev-browser\` tool is already installed and runnable in your environment.
 
 ## Modes
 
