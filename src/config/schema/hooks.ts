@@ -43,7 +43,6 @@ export const HookNameSchema = z.enum([
   "task-resume-info",
   "stop-continuation-guard",
   "tasks-todowrite-disabler",
-  "runtime-fallback",
   "write-existing-file-guard",
   "bash-file-read-guard",
   "anthropic-effort",

@@ -16,7 +16,6 @@ import {
   setSessionFallbackChain,
   setPendingModelFallback,
 } from "../hooks/model-fallback/hook";
-import { getRawFallbackModels } from "../hooks/runtime-fallback/fallback-models";
 import {
   clearBackgroundOutputConsumptionsForParentSession,
   clearBackgroundOutputConsumptionsForTaskSession,
@@ -29,6 +28,7 @@ import { log } from "../shared/logger";
 import { shouldRetryError } from "../shared/model-error-classifier";
 import { buildFallbackChainFromModels } from "../shared/fallback-chain-from-models";
 import { extractRetryAttempt, normalizeRetryStatusMessage } from "../shared/retry-status-utils";
+import { getRawFallbackModels } from "../shared/session-fallback-models";
 import { clearSessionModel, getSessionModel, setSessionModel } from "../shared/session-model-state";
 import { clearSessionPromptParams } from "../shared/session-prompt-params-state";
 import { deleteSessionTools } from "../shared/session-tools-store";
@@ -159,13 +159,6 @@ export function createEventHandler(args: {
       };
     };
   };
-  const isRuntimeFallbackEnabled =
-    hooks.runtimeFallback !== null &&
-    hooks.runtimeFallback !== undefined &&
-    (typeof args.pluginConfig.runtime_fallback === "boolean"
-      ? args.pluginConfig.runtime_fallback
-      : (args.pluginConfig.runtime_fallback?.enabled ?? false));
-
   const isModelFallbackEnabled =
     hooks.modelFallback !== null && hooks.modelFallback !== undefined;
 
@@ -249,7 +242,6 @@ export function createEventHandler(args: {
       hooks.anthropicContextWindowLimitRecovery?.event,
       input,
     );
-    await runEventHookSafely("runtimeFallback", hooks.runtimeFallback?.event, input);
     await runEventHookSafely("agentUsageReminder", hooks.agentUsageReminder?.event, input);
     await runEventHookSafely("ralphLoop", hooks.ralphLoop?.event, input);
     await runEventHookSafely("stopContinuationGuard", hooks.stopContinuationGuard?.event, input);
@@ -397,7 +389,7 @@ export function createEventHandler(args: {
 
       // Model fallback: in practice, API/model failures often surface as assistant message errors.
       // session.error events are not guaranteed for all providers, so we also observe message.updated.
-      if (sessionID && role === "assistant" && !isRuntimeFallbackEnabled && isModelFallbackEnabled) {
+      if (sessionID && role === "assistant" && isModelFallbackEnabled) {
         try {
           const assistantMessageID = info?.id as string | undefined;
           const assistantError = info?.error;
@@ -460,7 +452,7 @@ export function createEventHandler(args: {
         lastHandledRetryStatusKey.delete(sessionID);
       }
 
-      if (sessionID && status?.type === "retry" && isModelFallbackEnabled && !isRuntimeFallbackEnabled) {
+      if (sessionID && status?.type === "retry" && isModelFallbackEnabled) {
         try {
           const retryMessage = typeof status.message === "string" ? status.message : "";
           const parsedForKey = extractProviderModelFromErrorMessage(retryMessage);
@@ -555,7 +547,7 @@ export function createEventHandler(args: {
           }
         }
         // Second, try model fallback for model errors (rate limit, quota, provider issues, etc.)
-        else if (sessionID && shouldRetryError(errorInfo) && !isRuntimeFallbackEnabled && isModelFallbackEnabled) {
+        else if (sessionID && shouldRetryError(errorInfo) && isModelFallbackEnabled) {
           let agentName = getSessionAgent(sessionID);
 
           if (!agentName && sessionID === getMainSessionID()) {

@@ -43,7 +43,6 @@ hooks/
 ├── ralph-loop/                 # Self-referential dev loop
 ├── read-image-resizer/         # Resize images for context efficiency
 ├── rules-injector/             # Conditional rules
-├── runtime-fallback/           # Auto-switch models on API errors
 ├── session-recovery/           # Auto-recovers from crashes
 ├── sisyphus-junior-notepad/    # Sisyphus Junior notepad
 ├── stop-continuation-guard/    # Guards stop continuation
@@ -84,7 +83,6 @@ hooks/
 | modelFallback | chat.params | Provider-level model fallback on errors |
 | noSisyphusGpt | chat.message | Block Sisyphus from using GPT models (toast warning) |
 | noHephaestusNonGpt | chat.message | Block Hephaestus from using non-GPT models |
-| runtimeFallback | event | Auto-switch models on API provider errors |
 | legacyPluginToast | chat.message | Show toast when legacy plugin name detected |
 
 ### Tier 2: Tool Guard Hooks (14) — `create-tool-guard-hooks.ts`

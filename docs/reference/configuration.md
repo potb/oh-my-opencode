@@ -29,7 +29,6 @@ Complete reference for Oh My OpenCode plugin configuration. During the rename tr
   - [MCPs](#mcps)
   - [LSP](#lsp)
 - [Advanced](#advanced)
-  - [Runtime Fallback](#runtime-fallback)
   - [Model Capabilities](#model-capabilities)
   - [Hashline Edit](#hashline-edit)
   - [Experimental](#experimental)
@@ -509,7 +508,7 @@ Disable built-in hooks via `disabled_hooks`:
 { "disabled_hooks": ["comment-checker"] }
 ```
 
-Available hooks: `todo-continuation-enforcer`, `context-window-monitor`, `session-recovery`, `session-notification`, `comment-checker`, `grep-output-truncator`, `tool-output-truncator`, `directory-agents-injector`, `directory-readme-injector`, `empty-task-response-detector`, `think-mode`, `anthropic-context-window-limit-recovery`, `rules-injector`, `background-notification`, `auto-update-checker`, `startup-toast`, `keyword-detector`, `agent-usage-reminder`, `non-interactive-env`, `interactive-bash-session`, `compaction-context-injector`, `thinking-block-validator`, `claude-code-hooks`, `ralph-loop`, `preemptive-compaction`, `auto-slash-command`, `sisyphus-junior-notepad`, `no-sisyphus-gpt`, `runtime-fallback`
+Available hooks: `todo-continuation-enforcer`, `context-window-monitor`, `session-recovery`, `session-notification`, `comment-checker`, `grep-output-truncator`, `tool-output-truncator`, `directory-agents-injector`, `directory-readme-injector`, `empty-task-response-detector`, `think-mode`, `anthropic-context-window-limit-recovery`, `rules-injector`, `background-notification`, `auto-update-checker`, `startup-toast`, `keyword-detector`, `agent-usage-reminder`, `non-interactive-env`, `interactive-bash-session`, `compaction-context-injector`, `thinking-block-validator`, `claude-code-hooks`, `ralph-loop`, `preemptive-compaction`, `auto-slash-command`, `sisyphus-junior-notepad`, `no-sisyphus-gpt`
 
 **Notes:**
 
@@ -636,41 +635,6 @@ Configure Language Server Protocol integration:
 ---
 
 ## Advanced
-
-### Runtime Fallback
-
-Auto-switches to backup models on API errors.
-
-**Simple configuration** (enable/disable with defaults):
-
-```json
-{ "runtime_fallback": true }
-{ "runtime_fallback": false }
-```
-
-**Advanced configuration** (full control):
-
-```json
-{
-  "runtime_fallback": {
-    "enabled": true,
-    "retry_on_errors": [400, 429, 503, 529],
-    "max_fallback_attempts": 3,
-    "cooldown_seconds": 60,
-    "timeout_seconds": 30,
-    "notify_on_fallback": true
-  }
-}
-```
-
-| Option                  | Default             | Description                                                                                                                    |
-| ----------------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `enabled`               | `false`             | Enable runtime fallback                                                                                                        |
-| `retry_on_errors`       | `[400,429,503,529]` | HTTP codes that trigger fallback. Also handles classified provider key errors.                                                 |
-| `max_fallback_attempts` | `3`                 | Max fallback attempts per session (1–20)                                                                                       |
-| `cooldown_seconds`      | `60`                | Seconds before retrying a failed model                                                                                         |
-| `timeout_seconds`       | `30`                | Seconds before forcing next fallback. **Set to `0` to disable timeout-based escalation and provider retry message detection.** |
-| `notify_on_fallback`    | `true`              | Toast notification on model switch                                                                                             |
 
 Define `fallback_models` per agent or category:
 

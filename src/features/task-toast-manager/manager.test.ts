@@ -217,14 +217,14 @@ describe("TaskToastManager", () => {
       expect(call.body.message).toContain("(inherited from parent)")
     })
 
-    test("should display warning when model is runtime fallback", () => {
-      // given - runtime-fallback indicates a model swap mid-run
+    test("should display warning when model is system default fallback", () => {
+      // given - system-default indicates a fallback model swap
       const task = {
         id: "task_runtime",
         description: "Task with runtime fallback model",
         agent: "explore",
         isBackground: false,
-        modelInfo: { model: "anthropic/oswe-vscode-prime", type: "runtime-fallback" as const },
+        modelInfo: { model: "anthropic/oswe-vscode-prime", type: "system-default" as const },
       }
 
       // when - addTask is called
@@ -235,7 +235,7 @@ describe("TaskToastManager", () => {
       const call = mockClient.tui.showToast.mock.calls[0][0]
       expect(call.body.message).toContain("[FALLBACK]")
       expect(call.body.message).toContain("anthropic/oswe-vscode-prime")
-      expect(call.body.message).toContain("(runtime fallback)")
+      expect(call.body.message).toContain("(system default fallback)")
     })
 
     test("should not display model info when user-defined", () => {
@@ -402,10 +402,10 @@ describe("TaskToastManager", () => {
       toastManager.addTask(task)
       mockClient.tui.showToast.mockClear()
 
-      // when - runtime fallback applied by session
+      // when - fallback applied by session
       toastManager.updateTaskModelBySession("ses_update_1", {
         model: "nvidia/stepfun-ai/step-3.5-flash",
-        type: "runtime-fallback",
+        type: "system-default",
       })
 
       // then - new toast shows fallback model
@@ -413,7 +413,7 @@ describe("TaskToastManager", () => {
       const call = mockClient.tui.showToast.mock.calls[0][0]
       expect(call.body.message).toContain("[FALLBACK]")
       expect(call.body.message).toContain("nvidia/stepfun-ai/step-3.5-flash")
-      expect(call.body.message).toContain("(runtime fallback)")
+      expect(call.body.message).toContain("(system default fallback)")
     })
   })
 })

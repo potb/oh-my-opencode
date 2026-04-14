@@ -14,7 +14,6 @@ export type {
   RalphLoopConfig,
   SisyphusConfig,
   SisyphusTasksConfig,
-  RuntimeFallbackConfig,
   ModelCapabilitiesConfig,
   FallbackModels,
 } from "./schema"

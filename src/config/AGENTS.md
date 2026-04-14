@@ -29,7 +29,6 @@ config/schema/
 ├── browser-automation.ts       # provider: playwright | agent-browser | playwright-cli
 ├── background-task.ts          # Concurrency limits per model/provider
 ├── fallback-models.ts          # FallbackModelsConfigSchema
-├── runtime-fallback.ts         # RuntimeFallbackConfigSchema
 ├── babysitting.ts              # Unstable agent monitoring
 ├── dynamic-context-pruning.ts  # Context pruning settings
 ├── openclaw.ts                # OpenClaw integration settings

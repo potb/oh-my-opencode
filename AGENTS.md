@@ -71,7 +71,6 @@ OhMyOpenCodePlugin(ctx)
 | Add new doctor check | `src/cli/doctor/checks/` | Register in checks/index.ts |
 | Modify config schema | `src/config/schema/` + update root schema | Zod v4, add to OhMyOpenCodeConfigSchema |
 | Add new category | `src/tools/delegate-task/constants.ts` | DEFAULT_CATEGORIES + CATEGORY_MODEL_REQUIREMENTS |
-| Debug provider errors | `src/hooks/runtime-fallback/` | Reactive error recovery (distinct from model-fallback) |
 | External notifications | `src/openclaw/` | Bidirectional Discord/Telegram/webhook integration |
 | Skill-embedded MCP | `src/features/skill-mcp-manager/` | Tier 3 MCPs (stdio + HTTP, per-session) |
 
@@ -159,7 +158,6 @@ bunx oh-my-opencode run     # Non-interactive session
 - Background tasks: 5 concurrent per model/provider (configurable, circuit breaker support)
 - Plugin load timeout: 10s for Claude Code plugins
 - Model fallback: per-agent chains in `shared/model-requirements.ts`, not a single global priority
-- Two fallback systems: `model-fallback` (proactive, chat.params) vs `runtime-fallback` (reactive, session.error)
 - Config migration: idempotent via `_migrations` tracking, creates timestamped backups before atomic writes
 - Build: bun build (ESM) + tsc --emitDeclarationOnly, externals: @ast-grep/napi
 - Test setup: `test-setup.ts` preloaded via bunfig.toml, resets session/cache state between tests

@@ -607,7 +607,7 @@ describe("createEventHandler - session recovery compaction", () => {
 
 	it("continues dispatching later event hooks when an earlier hook throws", async () => {
 		//#given
-		const runtimeFallbackCalls: EventInput[] = []
+		const agentUsageReminderCalls: EventInput[] = []
 
 		const eventHandler = createEventHandler({
 			ctx: asEventHandlerContext({
@@ -631,9 +631,9 @@ describe("createEventHandler - session recovery compaction", () => {
 						throw new Error("upstream hook failed")
 					},
 				},
-				runtimeFallback: {
+				agentUsageReminder: {
 					event: async (input: EventInput) => {
-						runtimeFallbackCalls.push(input)
+						agentUsageReminderCalls.push(input)
 					},
 				},
 				stopContinuationGuard: { isStopped: () => false },
@@ -658,7 +658,7 @@ describe("createEventHandler - session recovery compaction", () => {
 
 		//#then
 		expect(thrownError).toBeUndefined()
-		expect(runtimeFallbackCalls).toHaveLength(1)
-		expect(runtimeFallbackCalls[0]?.event.type).toBe("session.error")
+		expect(agentUsageReminderCalls).toHaveLength(1)
+		expect(agentUsageReminderCalls[0]?.event.type).toBe("session.error")
 	})
 })

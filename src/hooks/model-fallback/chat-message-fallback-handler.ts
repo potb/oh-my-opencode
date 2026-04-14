@@ -66,7 +66,7 @@ export async function applyFallbackToChatMessage(params: {
     const variantLabel = fallback.variant ? ` (${fallback.variant})` : ""
     toastManager.updateTaskModelBySession(sessionID, {
       model: `${fallback.providerID}/${fallback.modelID}${variantLabel}`,
-      type: "runtime-fallback",
+      type: "system-default",
     })
   }
 

@@ -69,7 +69,6 @@ export function applyFixedProductTrim(config: OhMyOpenCodeConfig): OhMyOpenCodeC
     disabled_tools: mergeUnique(config.disabled_tools, REMOVED_TOOL_NAMES),
     model_fallback: false,
     new_task_system_enabled: false,
-    runtime_fallback: false,
     skills: undefined,
   }
 }

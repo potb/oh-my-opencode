@@ -138,16 +138,14 @@ export class TaskToastManager {
 
     const isFallback = newTask.modelInfo && (
       newTask.modelInfo.type === "inherited" ||
-      newTask.modelInfo.type === "system-default" ||
-      newTask.modelInfo.type === "runtime-fallback"
+      newTask.modelInfo.type === "system-default"
     )
     if (isFallback) {
-      const suffixMap: Record<"inherited" | "system-default" | "runtime-fallback", string> = {
+      const suffixMap: Record<"inherited" | "system-default", string> = {
         inherited: " (inherited from parent)",
         "system-default": " (system default fallback)",
-        "runtime-fallback": " (runtime fallback)",
       }
-      const suffix = suffixMap[newTask.modelInfo!.type as "inherited" | "system-default" | "runtime-fallback"]
+      const suffix = suffixMap[newTask.modelInfo!.type as "inherited" | "system-default"]
       lines.push(`[FALLBACK] Model: ${newTask.modelInfo!.model}${suffix}`)
       lines.push("")
     }

@@ -20,7 +20,6 @@ import {
   createNoSisyphusGptHook,
   createQuestionLabelTruncatorHook,
   createPreemptiveCompactionHook,
-  createRuntimeFallbackHook,
   createLegacyPluginToastHook,
 } from "../../hooks"
 import { createAnthropicEffortHook } from "../../hooks/anthropic-effort"
@@ -52,7 +51,6 @@ export type SessionHooks = {
   questionLabelTruncator: ReturnType<typeof createQuestionLabelTruncatorHook> | null
   taskResumeInfo: ReturnType<typeof createTaskResumeInfoHook> | null
   anthropicEffort: ReturnType<typeof createAnthropicEffortHook> | null
-  runtimeFallback: ReturnType<typeof createRuntimeFallbackHook> | null
   legacyPluginToast: ReturnType<typeof createLegacyPluginToastHook> | null
 }
 
@@ -223,19 +221,6 @@ export function createSessionHooks(args: {
     ? safeHook("anthropic-effort", () => createAnthropicEffortHook())
     : null
 
-  const runtimeFallbackConfig =
-    typeof pluginConfig.runtime_fallback === "boolean"
-      ? { enabled: pluginConfig.runtime_fallback }
-      : pluginConfig.runtime_fallback
-
-  const runtimeFallback = isHookEnabled("runtime-fallback")
-    ? safeHook("runtime-fallback", () =>
-        createRuntimeFallbackHook(ctx, {
-          config: runtimeFallbackConfig,
-          pluginConfig,
-        }))
-    : null
-
   const legacyPluginToast = isHookEnabled("legacy-plugin-toast")
     ? safeHook("legacy-plugin-toast", () => createLegacyPluginToastHook(ctx))
     : null
@@ -259,7 +244,6 @@ export function createSessionHooks(args: {
     questionLabelTruncator,
     taskResumeInfo,
     anthropicEffort,
-    runtimeFallback,
     legacyPluginToast,
   }
 }
