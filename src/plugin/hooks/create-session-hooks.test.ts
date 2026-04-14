@@ -20,37 +20,18 @@ const mockContext = {
 const mockModelCacheState = {} as ModelCacheState
 
 describe("createSessionHooks", () => {
-  it("keeps model fallback disabled when config is unset", () => {
-    // given
+  it("creates session hooks without the removed model fallback surface", () => {
     const pluginConfig = {} as OhMyOpenCodeConfig
 
-    // when
     const result = createSessionHooks({
       ctx: mockContext,
       pluginConfig,
       modelCacheState: mockModelCacheState,
-      isHookEnabled: (hookName) => hookName === "model-fallback",
+      isHookEnabled: () => true,
       safeHookEnabled: true,
     })
 
-    // then
-    expect(result.modelFallback).toBeNull()
-  })
-
-  it("creates model fallback hook when config explicitly enables it", () => {
-    // given
-    const pluginConfig = { model_fallback: true } as OhMyOpenCodeConfig
-
-    // when
-    const result = createSessionHooks({
-      ctx: mockContext,
-      pluginConfig,
-      modelCacheState: mockModelCacheState,
-      isHookEnabled: (hookName) => hookName === "model-fallback",
-      safeHookEnabled: true,
-    })
-
-    // then
-    expect(result.modelFallback).not.toBeNull()
+    expect(result.thinkMode).not.toBeNull()
+    expect(result.autoUpdateChecker).not.toBeNull()
   })
 })

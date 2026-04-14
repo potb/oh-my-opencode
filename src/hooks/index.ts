@@ -13,7 +13,6 @@ export { createEmptyTaskResponseDetectorHook } from "./empty-task-response-detec
 export { createAnthropicContextWindowLimitRecoveryHook, type AnthropicContextWindowLimitRecoveryOptions } from "./anthropic-context-window-limit-recovery";
 
 export { createThinkModeHook } from "./think-mode";
-export { createModelFallbackHook, setPendingModelFallback, clearPendingModelFallback, type ModelFallbackState } from "./model-fallback/hook";
 export { createClaudeCodeHooksHook } from "./claude-code-hooks";
 export { createRulesInjectorHook } from "./rules-injector";
 export { createBackgroundNotificationHook } from "./background-notification"

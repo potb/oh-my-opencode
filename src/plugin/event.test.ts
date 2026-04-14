@@ -3,7 +3,6 @@ import { describe, it, expect, afterEach, mock, spyOn } from "bun:test"
 import { createEventHandler } from "./event"
 import { createChatMessageHandler } from "./chat-message"
 import { _resetForTesting, setMainSession } from "../features/claude-code-session-state"
-import { clearPendingModelFallback, createModelFallbackHook } from "../hooks/model-fallback/hook"
 import { getSessionPromptParams, setSessionPromptParams } from "../shared/session-prompt-params-state"
 
 type EventInput = { event: { type: string; properties?: unknown } }

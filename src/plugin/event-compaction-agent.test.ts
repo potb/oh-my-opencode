@@ -34,7 +34,6 @@ function createMinimalEventHandler() {
       rulesInjector: { event: async () => {} },
       thinkMode: { event: async () => {} },
       anthropicContextWindowLimitRecovery: { event: async () => {} },
-      modelFallback: undefined,
       agentUsageReminder: { event: async () => {} },
       interactiveBashSession: { event: async () => {} },
       compactionTodoPreserver: { event: async () => {} },

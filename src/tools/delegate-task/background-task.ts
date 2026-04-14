@@ -9,7 +9,6 @@ import { formatDetailedError } from "./error-formatting"
 import { getSessionTools } from "../../shared/session-tools-store"
 import { SessionCategoryRegistry } from "../../shared/session-category-registry"
 import { QUESTION_DENIED_SESSION_PERMISSION } from "../../shared/question-denied-session-permission"
-import { setSessionFallbackChain } from "../../hooks/model-fallback/hook"
 import { stripAgentListSortPrefix } from "../../shared/agent-display-names"
 
 function continueSessionSetup(args: {
@@ -19,7 +18,7 @@ function continueSessionSetup(args: {
   fallbackChain?: FallbackEntry[]
   category?: string
 }): void {
-  if (!args.fallbackChain && !args.category) {
+  if (!args.category) {
     return
   }
 
@@ -40,7 +39,6 @@ function continueSessionSetup(args: {
         continue
       }
 
-      setSessionFallbackChain(sessionId, args.fallbackChain)
       if (args.category) {
         SessionCategoryRegistry.register(sessionId, args.category)
       }
@@ -111,9 +109,6 @@ export async function executeBackgroundTask(
       await new Promise(resolve => setTimeout(resolve, timing.WAIT_FOR_SESSION_INTERVAL_MS))
     }
 
-    if (sessionId) {
-      setSessionFallbackChain(sessionId, fallbackChain)
-    }
     if (args.category && sessionId) {
       SessionCategoryRegistry.register(sessionId, args.category)
     }
