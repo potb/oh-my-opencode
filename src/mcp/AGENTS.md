@@ -45,7 +45,7 @@ export function createWebsearchConfig(config?: WebsearchConfig): RemoteMcpConfig
 |------|--------|-----------|
 | 1. Built-in | `src/mcp/` | 3 remote HTTP, created by `createBuiltinMcps()` |
 | 2. Claude Code | `.mcp.json` | `${VAR}` expansion via `claude-code-mcp-loader` |
-| 3. Skill-embedded | SKILL.md YAML | Managed by `SkillMcpManager` (stdio + HTTP) |
+| 3. Skill-embedded | SKILL.md YAML | Managed by the skill loader/runtime integration |
 
 ## FILES
 

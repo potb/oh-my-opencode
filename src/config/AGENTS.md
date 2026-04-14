@@ -4,20 +4,20 @@
 
 ## OVERVIEW
 
-32 schema files composing `OhMyOpenCodeConfigSchema`. Zod v4 validation with `safeParse()`. All fields optional — omitted fields use plugin defaults.
+Schema files composing `OhMyOpenCodeConfigSchema`. Zod v4 validation with `safeParse()`. All fields optional — omitted fields use plugin defaults.
 
 ## SCHEMA TREE
 
 ```
 config/schema/
 ├── oh-my-opencode-config.ts    # ROOT: OhMyOpenCodeConfigSchema (composes all below)
-├── agent-names.ts              # BuiltinAgentNameSchema (11), OverridableAgentNameSchema (14)
+├── agent-names.ts              # BuiltinAgentNameSchema, OverridableAgentNameSchema
 ├── agent-overrides.ts          # AgentOverrideConfigSchema (21 fields per agent)
-├── categories.ts               # 8 built-in + custom categories
+├── categories.ts               # Built-in + custom categories
 ├── hooks.ts                    # HookNameSchema (48 hooks)
 ├── experimental.ts             # Feature flags (plugin_load_timeout_ms min 1000)
 ├── sisyphus.ts                 # SisyphusConfigSchema (task system)
-├── tmux.ts                     # TmuxConfigSchema + TmuxLayoutSchema
+├── tmux.ts                     # Legacy tmux schema module (no longer part of root config)
 ├── websearch.ts                # provider: "exa" | "tavily"
 ├── claude-code.ts              # CC compatibility settings
 ├── comment-checker.ts          # AI comment detection config
@@ -36,7 +36,7 @@ config/schema/
 
 `$schema`, `new_task_system_enabled`, `default_run_agent`, `disabled_mcps`, `disabled_agents`, `disabled_hooks`, `disabled_commands`, `disabled_tools`, `hashline_edit`, `agents`, `categories`, `claude_code`, `comment_checker`, `experimental`, `background_task`, `git_master`, `browser_automation_engine`, `websearch`, `sisyphus`, `_migrations`
 
-## AGENT OVERRIDE FIELDS (21)
+## AGENT OVERRIDE FIELDS
 
 `model`, `variant`, `category`, `skills`, `temperature`, `top_p`, `prompt`, `prompt_append`, `tools`, `disable`, `description`, `mode`, `color`, `permission`, `maxTokens`, `thinking`, `reasoningEffort`, `textVerbosity`, `providerOptions`
 

@@ -32,7 +32,7 @@ LaunchInput → pending → [ConcurrencyManager queue] → running → polling �
 | `background-session-creator.ts` | Create OpenCode session for background task |
 | `concurrency-key-from-launch-input.ts` | Derive concurrency key from model/provider |
 | `parent-directory-resolver.ts` | Resolve working directory for child session |
-| `tmux-callback-invoker.ts` | Notify TmuxSessionManager on session creation |
+| `tmux-callback-invoker.ts` | Legacy callback bridge for removed tmux integration |
 
 ## COMPLETION DETECTION
 

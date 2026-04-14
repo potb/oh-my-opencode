@@ -12,8 +12,8 @@ Entry point `index.ts` orchestrates 5-step initialization: loadConfig → create
 |------|---------|
 | `index.ts` | Plugin entry, exports `OhMyOpenCodePlugin` |
 | `plugin-config.ts` | JSONC parse, multi-level merge, Zod v4 validation |
-| `create-managers.ts` | TmuxSessionManager, BackgroundManager, SkillMcpManager, ConfigHandler |
-| `create-tools.ts` | AvailableCategories + ToolRegistry wiring |
+| `create-managers.ts` | BackgroundManager and config/runtime managers |
+| `create-tools.ts` | ToolRegistry wiring |
 | `create-hooks.ts` | Core + continuation hook composition |
 | `plugin-interface.ts` | 10 OpenCode hook handlers: config, tool, chat.message, chat.params, chat.headers, event, tool.execute.before, tool.execute.after, experimental.chat.messages.transform, experimental.session.compacting |
 

@@ -48,11 +48,11 @@ Core orchestration engine. `BackgroundManager` manages task lifecycle:
 
 ### tmux-subagent (34 files, ~3.6k LOC)
 
-State-first tmux integration:
-- `TmuxSessionManager`: pane lifecycle, grid planning
-- Spawn action decider + target finder
-- Polling manager for session health
-- Event handlers for pane creation/destruction
+Legacy tmux integration module kept only as historical/internal context:
+- pane lifecycle and grid planning
+- spawn action decider + target finder
+- polling manager for session health
+- event handlers for pane creation/destruction
 
 ### builtin-skills (8 skill objects)
 
