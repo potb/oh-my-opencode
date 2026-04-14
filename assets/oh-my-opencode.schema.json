@@ -35,9 +35,6 @@
     "hashline_edit": {
       "type": "boolean"
     },
-    "model_fallback": {
-      "type": "boolean"
-    },
     "agents": {
       "type": "object",
       "properties": {
@@ -3990,9 +3987,6 @@
           "type": "boolean"
         },
         "hashline_edit": {
-          "type": "boolean"
-        },
-        "model_fallback_title": {
           "type": "boolean"
         },
         "max_tools": {
