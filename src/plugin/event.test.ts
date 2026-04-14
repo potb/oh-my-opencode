@@ -70,11 +70,7 @@ function createIdleTrackingEventHandler(dispatchCalls: EventInput[]): ReturnType
 			markSessionCreated: () => {},
 			clear: () => {},
 		},
-		managers: createEventHandlerManagers({
-			skillMcpManager: {
-				disconnectSession: async () => {},
-			},
-		}),
+		managers: createEventHandlerManagers(),
 		hooks: createEventHandlerHooks({
 			autoUpdateChecker: {
 				event: async (input: EventInput) => {
@@ -528,7 +524,6 @@ describe("createEventHandler - event forwarding", () => {
 	it("forwards session.deleted to write-existing-file-guard hook", async () => {
 		//#given
 		const forwardedEvents: EventInput[] = []
-		const disconnectedSessions: string[] = []
 		const deletedSessions: string[] = []
 		const eventHandler = createEventHandler({
 			ctx: {} as never,
@@ -547,11 +542,6 @@ describe("createEventHandler - event forwarding", () => {
 				clear: () => {},
 			},
 			managers: {
-				skillMcpManager: {
-					disconnectSession: async (sessionID: string) => {
-						disconnectedSessions.push(sessionID)
-					},
-				},
 				tmuxSessionManager: {
 					onSessionCreated: async () => {},
 					onSessionDeleted: async ({ sessionID }: { sessionID: string }) => {
@@ -580,7 +570,6 @@ describe("createEventHandler - event forwarding", () => {
 		//#then
 		expect(forwardedEvents.length).toBe(1)
 		expect(forwardedEvents[0]?.event.type).toBe("session.deleted")
-		expect(disconnectedSessions).toEqual([sessionID])
 		expect(deletedSessions).toEqual([sessionID])
 	})
 
@@ -595,9 +584,6 @@ describe("createEventHandler - event forwarding", () => {
 				clear: () => {},
 			},
 			managers: {
-				skillMcpManager: {
-					disconnectSession: async () => {},
-				},
 				tmuxSessionManager: {
 					onSessionCreated: async () => {},
 					onSessionDeleted: async () => {},

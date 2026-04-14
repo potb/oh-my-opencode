@@ -15,7 +15,6 @@ const mockCreateRuntimeTmuxConfig = mock(() => ({
 }))
 const mockCreateManagers = mock(() => ({
   backgroundManager: { shutdown: async () => {} },
-  skillMcpManager: { disconnectAll: async () => {} },
   configHandler: async () => {},
 }))
 const mockCreateTools = mock(async () => ({

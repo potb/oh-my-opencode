@@ -6,15 +6,12 @@ export function createPluginDispose(args: {
   backgroundManager: {
     shutdown: () => void | Promise<void>
   }
-  skillMcpManager: {
-    disconnectAll: () => Promise<void>
-  }
   lspManager: {
     stopAll: () => Promise<void>
   }
   disposeHooks: () => void
 }): PluginDispose {
-  const { backgroundManager, skillMcpManager, lspManager, disposeHooks } = args
+  const { backgroundManager, lspManager, disposeHooks } = args
   let disposePromise: Promise<void> | null = null
 
   return async (): Promise<void> => {
@@ -28,11 +25,6 @@ export function createPluginDispose(args: {
         await backgroundManager.shutdown()
       } catch (error) {
         log("[plugin-dispose] backgroundManager.shutdown() error:", error)
-      }
-      try {
-        await skillMcpManager.disconnectAll()
-      } catch (error) {
-        log("[plugin-dispose] skillMcpManager.disconnectAll() error:", error)
       }
       try {
         await lspManager.stopAll()

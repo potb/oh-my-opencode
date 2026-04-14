@@ -28,10 +28,6 @@ class MockBackgroundManager {
   }
 }
 
-class MockSkillMcpManager {
-  constructor(..._args: unknown[]) {}
-}
-
 class MockTmuxSessionManager {
   constructor(_ctx: PluginInput, _config: unknown) {}
 
@@ -54,7 +50,6 @@ function registerManagerForCleanup(): void {}
 function createDeps(): NonNullable<Parameters<typeof createManagers>[0]["deps"]> {
   return {
     BackgroundManagerClass: MockBackgroundManager as typeof import("./features/background-agent").BackgroundManager,
-    SkillMcpManagerClass: MockSkillMcpManager as typeof import("./features/skill-mcp-manager").SkillMcpManager,
     TmuxSessionManagerClass: MockTmuxSessionManager as typeof import("./features/tmux-subagent").TmuxSessionManager,
     registerManagerForCleanupFn: registerManagerForCleanup,
     createConfigHandlerFn: createConfigHandler,

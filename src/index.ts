@@ -94,7 +94,6 @@ const OhMyOpenCodePlugin: Plugin = async (ctx) => {
 
   const dispose = createPluginDispose({
     backgroundManager: managers.backgroundManager,
-    skillMcpManager: managers.skillMcpManager,
     lspManager,
     disposeHooks: hooks.disposeHooks,
   })

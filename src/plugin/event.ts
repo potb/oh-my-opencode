@@ -393,7 +393,6 @@ export function createEventHandler(args: {
           subagentSessions.delete(sessionInfo.id);
         }
         deleteSessionTools(sessionInfo.id);
-        await managers.skillMcpManager.disconnectSession(sessionInfo.id);
         await lspManager.cleanupTempDirectoryClients();
         if (tmuxIntegrationEnabled) {
           await managers.tmuxSessionManager.onSessionDeleted({
