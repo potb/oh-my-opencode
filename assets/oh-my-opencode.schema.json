@@ -3398,13 +3398,10 @@
       "type": "object",
       "properties": {
         "provider": {
-          "default": "playwright",
+          "default": "agent-browser",
           "type": "string",
           "enum": [
-            "playwright",
-            "agent-browser",
-            "dev-browser",
-            "playwright-cli"
+            "agent-browser"
           ]
         }
       },

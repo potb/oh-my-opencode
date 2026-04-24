@@ -11,13 +11,10 @@ const BuiltinAgentNameSchema = z.enum([
 ])
 
 const BuiltinSkillNameSchema = z.enum([
-  "playwright",
   "agent-browser",
-  "dev-browser",
   "frontend-ui-ux",
   "git-master",
   "review-work",
-  "ai-slop-remover",
 ])
 
 const OverridableAgentNameSchema = z.enum([

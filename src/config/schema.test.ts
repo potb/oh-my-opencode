@@ -465,18 +465,6 @@ describe("Sisyphus-Junior agent override", () => {
 })
 
 describe("BrowserAutomationProviderSchema", () => {
-  test("accepts 'playwright' as valid provider", () => {
-    // given
-    const input = "playwright"
-
-    // when
-    const result = BrowserAutomationProviderSchema.safeParse(input)
-
-    // then
-    expect(result.success).toBe(true)
-    expect(result.data).toBe("playwright")
-  })
-
   test("accepts 'agent-browser' as valid provider", () => {
     // given
     const input = "agent-browser"
@@ -489,6 +477,39 @@ describe("BrowserAutomationProviderSchema", () => {
     expect(result.data).toBe("agent-browser")
   })
 
+  test("rejects removed 'playwright' provider", () => {
+    // given
+    const input = "playwright"
+
+    // when
+    const result = BrowserAutomationProviderSchema.safeParse(input)
+
+    // then
+    expect(result.success).toBe(false)
+  })
+
+  test("rejects removed 'playwright-cli' provider", () => {
+    // given
+    const input = "playwright-cli"
+
+    // when
+    const result = BrowserAutomationProviderSchema.safeParse(input)
+
+    // then
+    expect(result.success).toBe(false)
+  })
+
+  test("rejects removed 'dev-browser' provider", () => {
+    // given
+    const input = "dev-browser"
+
+    // when
+    const result = BrowserAutomationProviderSchema.safeParse(input)
+
+    // then
+    expect(result.success).toBe(false)
+  })
+
   test("rejects invalid provider", () => {
     // given
     const input = "invalid-provider"
@@ -499,22 +520,10 @@ describe("BrowserAutomationProviderSchema", () => {
     // then
     expect(result.success).toBe(false)
   })
-
-  test("accepts 'playwright-cli' as valid provider", () => {
-    // given
-    const input = "playwright-cli"
-
-    // when
-    const result = BrowserAutomationProviderSchema.safeParse(input)
-
-    // then
-    expect(result.success).toBe(true)
-    expect(result.data).toBe("playwright-cli")
-  })
 })
 
 describe("BrowserAutomationConfigSchema", () => {
-  test("defaults provider to 'playwright' when not specified", () => {
+  test("defaults provider to 'agent-browser' when not specified", () => {
     // given
     const input = {}
 
@@ -522,7 +531,7 @@ describe("BrowserAutomationConfigSchema", () => {
     const result = BrowserAutomationConfigSchema.parse(input)
 
     // then
-    expect(result.provider).toBe("playwright")
+    expect(result.provider).toBe("agent-browser")
   })
 
   test("accepts agent-browser provider", () => {
@@ -536,15 +545,15 @@ describe("BrowserAutomationConfigSchema", () => {
     expect(result.provider).toBe("agent-browser")
   })
 
-  test("accepts playwright-cli provider in config", () => {
+  test("rejects removed provider in config", () => {
     // given
     const input = { provider: "playwright-cli" }
 
     // when
-    const result = BrowserAutomationConfigSchema.parse(input)
+    const result = BrowserAutomationConfigSchema.safeParse(input)
 
     // then
-    expect(result.provider).toBe("playwright-cli")
+    expect(result.success).toBe(false)
   })
 })
 
@@ -577,7 +586,7 @@ describe("OhMyOpenCodeConfigSchema - browser_automation_engine", () => {
     expect(result.data?.browser_automation_engine).toBeUndefined()
   })
 
-  test("accepts browser_automation_engine with playwright-cli", () => {
+  test("rejects browser_automation_engine with removed provider", () => {
     // given
     const input = { browser_automation_engine: { provider: "playwright-cli" } }
 
@@ -585,8 +594,7 @@ describe("OhMyOpenCodeConfigSchema - browser_automation_engine", () => {
     const result = OhMyOpenCodeConfigSchema.safeParse(input)
 
     // then
-    expect(result.success).toBe(true)
-    expect(result.data?.browser_automation_engine?.provider).toBe("playwright-cli")
+    expect(result.success).toBe(false)
   })
 })
 

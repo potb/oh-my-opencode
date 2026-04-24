@@ -22,7 +22,7 @@ config/schema/
 ├── claude-code.ts              # CC compatibility settings
 ├── comment-checker.ts          # AI comment detection config
 ├── git-master.ts               # commit_footer: boolean | string
-├── browser-automation.ts       # provider: playwright | agent-browser | playwright-cli
+├── browser-automation.ts       # provider: agent-browser
 ├── background-task.ts          # Concurrency limits per model/provider
 ├── fallback-models.ts          # FallbackModelsConfigSchema
 ├── dynamic-context-pruning.ts  # Context pruning settings
