@@ -13,7 +13,7 @@ export interface RuleMetadata {
 /**
  * Rule information with path context and content
  */
-export interface RuleInfo {
+interface RuleInfo {
   /** Absolute path to the rule file */
   path: string;
   /** Path relative to project root */

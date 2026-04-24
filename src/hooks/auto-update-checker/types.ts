@@ -16,14 +16,6 @@ export interface PackageJson {
   [key: string]: unknown
 }
 
-export interface UpdateCheckResult {
-  needsUpdate: boolean
-  currentVersion: string | null
-  latestVersion: string | null
-  isLocalDev: boolean
-  isPinned: boolean
-}
-
 export interface AutoUpdateCheckerOptions {
   showStartupToast?: boolean
   isSisyphusEnabled?: boolean

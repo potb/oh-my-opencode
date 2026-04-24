@@ -5,10 +5,6 @@ import { ACCEPTED_PACKAGE_NAMES } from "../constants"
 import { getConfigPaths } from "./config-paths"
 import { stripJsonComments } from "./jsonc-strip"
 
-export function isLocalDevMode(directory: string): boolean {
-  return getLocalDevPath(directory) !== null
-}
-
 export function getLocalDevPath(directory: string): string | null {
   for (const configPath of getConfigPaths(directory)) {
     try {

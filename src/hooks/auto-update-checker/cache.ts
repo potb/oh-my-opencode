@@ -93,7 +93,7 @@ export function invalidatePackage(packageName: string = PACKAGE_NAME): boolean {
 }
 
 /** @deprecated Use invalidatePackage instead - this nukes ALL plugins */
-export function invalidateCache(): boolean {
+function invalidateCache(): boolean {
   log("[auto-update-checker] WARNING: invalidateCache is deprecated, use invalidatePackage")
   return invalidatePackage()
 }

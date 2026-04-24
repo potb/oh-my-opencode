@@ -7,6 +7,6 @@ export {
   extractChannel,
 } from "./version-channel"
 
-export { checkForUpdate } from "./checker"
-export { invalidatePackage, invalidateCache } from "./cache"
-export type { UpdateCheckResult, AutoUpdateCheckerOptions } from "./types"
+
+
+
