@@ -131,8 +131,6 @@ export function createChatMessageHandler(args: {
     } else if (input.model) {
       setSessionModel(input.sessionID, input.model)
     }
-    await hooks.thinkMode?.["chat.message"]?.(input, output)
-
     if (!isModelCacheAvailable()) {
       pluginContext.client.tui
         .showToast({

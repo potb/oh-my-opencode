@@ -27,8 +27,7 @@ afterEach(() => {
 })
 
 describe("createChatMessageHandler", () => {
-  test("marks the first-message gate and calls the remaining message hooks", async () => {
-    const thinkHook = mock(async () => {})
+  test("marks the first-message gate", async () => {
     const appliedSessions: string[] = []
 
     const handler = createChatMessageHandler({
@@ -40,15 +39,12 @@ describe("createChatMessageHandler", () => {
           appliedSessions.push(sessionID)
         },
       },
-      hooks: {
-        thinkMode: { "chat.message": thinkHook },
-      } as never,
+      hooks: {} as never,
     })
 
     await handler({ sessionID: "test-session", agent: "sisyphus" }, createMockOutput())
 
     expect(appliedSessions).toEqual(["test-session"])
-    expect(thinkHook).toHaveBeenCalledTimes(1)
   })
 
   test("reuses the stored main-session model when no explicit model is provided", async () => {

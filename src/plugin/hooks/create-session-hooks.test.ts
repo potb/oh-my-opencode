@@ -31,8 +31,8 @@ describe("createSessionHooks", () => {
       safeHookEnabled: true,
     })
 
-    expect(result.thinkMode).not.toBeNull()
-    expect(result.autoUpdateChecker).not.toBeNull()
+    expect(result.questionLabelTruncator).not.toBeNull()
+    expect(result.anthropicEffort).not.toBeNull()
   })
 
   it("returns null for all session hooks when every hook is disabled", () => {

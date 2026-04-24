@@ -3,32 +3,22 @@ import type { ModelCacheState } from "../../plugin-state"
 import type { PluginContext } from "../types"
 
 import {
-  createContextWindowMonitorHook,
-  createThinkModeHook,
-  createAutoUpdateCheckerHook,
   createNonInteractiveEnvHook,
   createEditErrorRecoveryHook,
   createDelegateTaskRetryHook,
-  createTaskResumeInfoHook,
   createSisyphusJuniorNotepadHook,
   createQuestionLabelTruncatorHook,
-  createLegacyPluginToastHook,
 } from "../../hooks"
 import { createAnthropicEffortHook } from "../../hooks/anthropic-effort"
 import { safeCreateHook } from "../../shared/safe-create-hook"
 
 type SessionHooks = {
-  contextWindowMonitor: ReturnType<typeof createContextWindowMonitorHook> | null
-  thinkMode: ReturnType<typeof createThinkModeHook> | null
-  autoUpdateChecker: ReturnType<typeof createAutoUpdateCheckerHook> | null
   nonInteractiveEnv: ReturnType<typeof createNonInteractiveEnvHook> | null
   editErrorRecovery: ReturnType<typeof createEditErrorRecoveryHook> | null
   delegateTaskRetry: ReturnType<typeof createDelegateTaskRetryHook> | null
   sisyphusJuniorNotepad: ReturnType<typeof createSisyphusJuniorNotepadHook> | null
   questionLabelTruncator: ReturnType<typeof createQuestionLabelTruncatorHook> | null
-  taskResumeInfo: ReturnType<typeof createTaskResumeInfoHook> | null
   anthropicEffort: ReturnType<typeof createAnthropicEffortHook> | null
-  legacyPluginToast: ReturnType<typeof createLegacyPluginToastHook> | null
 }
 
 export function createSessionHooks(args: {
@@ -38,28 +28,9 @@ export function createSessionHooks(args: {
   isHookEnabled: (hookName: HookName) => boolean
   safeHookEnabled: boolean
 }): SessionHooks {
-  const { ctx, pluginConfig, modelCacheState, isHookEnabled, safeHookEnabled } = args
+  const { ctx, isHookEnabled, safeHookEnabled } = args
   const safeHook = <T>(hookName: HookName, factory: () => T): T | null =>
     safeCreateHook(hookName, factory, { enabled: safeHookEnabled })
-
-  const contextWindowMonitor = isHookEnabled("context-window-monitor")
-    ? safeHook("context-window-monitor", () =>
-        createContextWindowMonitorHook(ctx, modelCacheState))
-    : null
-
-  const thinkMode = isHookEnabled("think-mode")
-    ? safeHook("think-mode", () => createThinkModeHook())
-    : null
-
-  const autoUpdateChecker = isHookEnabled("auto-update-checker")
-    ? safeHook("auto-update-checker", () =>
-        createAutoUpdateCheckerHook(ctx, {
-          showStartupToast: true,
-          isSisyphusEnabled: true,
-          autoUpdate: false,
-          modelCapabilities: undefined,
-        }))
-    : null
 
   const nonInteractiveEnv = isHookEnabled("non-interactive-env")
     ? safeHook("non-interactive-env", () => createNonInteractiveEnvHook(ctx))
@@ -80,29 +51,17 @@ export function createSessionHooks(args: {
   const questionLabelTruncator = isHookEnabled("question-label-truncator")
     ? safeHook("question-label-truncator", () => createQuestionLabelTruncatorHook())
     : null
-  const taskResumeInfo = isHookEnabled("task-resume-info")
-    ? safeHook("task-resume-info", () => createTaskResumeInfoHook())
-    : null
 
   const anthropicEffort = isHookEnabled("anthropic-effort")
     ? safeHook("anthropic-effort", () => createAnthropicEffortHook())
     : null
 
-  const legacyPluginToast = isHookEnabled("legacy-plugin-toast")
-    ? safeHook("legacy-plugin-toast", () => createLegacyPluginToastHook(ctx))
-    : null
-
   return {
-    contextWindowMonitor,
-    thinkMode,
-    autoUpdateChecker,
     nonInteractiveEnv,
     editErrorRecovery,
     delegateTaskRetry,
     sisyphusJuniorNotepad,
     questionLabelTruncator,
-    taskResumeInfo,
     anthropicEffort,
-    legacyPluginToast,
   }
 }
