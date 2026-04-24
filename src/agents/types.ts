@@ -84,11 +84,6 @@ export function isGpt5_4Model(model: string): boolean {
   return modelName.includes("gpt-5.4") || modelName.includes("gpt-5-4");
 }
 
-export function isGpt5_3CodexModel(model: string): boolean {
-  const modelName = extractModelName(model).toLowerCase();
-  return modelName.includes("gpt-5.3-codex") || modelName.includes("gpt-5-3-codex");
-}
-
 const GEMINI_PROVIDERS = ["google/", "google-vertex/"];
 
 export function isMiniMaxModel(model: string): boolean {
@@ -124,8 +119,6 @@ export type BuiltinAgentName =
   | "sisyphus-junior";
 
 export type OverridableAgentName = BuiltinAgentName;
-
-export type AgentName = BuiltinAgentName;
 
 export type AgentOverrideConfig = Partial<AgentConfig> & {
   prompt_append?: string;
