@@ -18,7 +18,7 @@ describe("buildCategorySkillsDelegationGuide", () => {
   ]
 
   const builtinSkills: AvailableSkill[] = [
-    { name: "playwright", description: "Browser automation via Playwright", location: "plugin" },
+    { name: "agent-browser", description: "Browser automation via agent-browser", location: "plugin" },
     { name: "frontend-ui-ux", description: "Designer-turned-developer", location: "plugin" },
   ]
 
@@ -66,7 +66,7 @@ describe("buildUltraworkSection", () => {
   it("should separate builtin and custom skills", () => {
     //#given: mix of builtin and custom skills
     const skills: AvailableSkill[] = [
-      { name: "playwright", description: "Browser automation", location: "plugin" },
+      { name: "agent-browser", description: "Browser automation", location: "plugin" },
       { name: "react-19", description: "React 19 patterns", location: "user" },
     ]
 
@@ -82,7 +82,7 @@ describe("buildUltraworkSection", () => {
   it("should not separate when only builtin skills", () => {
     //#given: only builtin skills
     const skills: AvailableSkill[] = [
-      { name: "playwright", description: "Browser automation", location: "plugin" },
+      { name: "agent-browser", description: "Browser automation", location: "plugin" },
     ]
 
     //#when: building ultrawork section

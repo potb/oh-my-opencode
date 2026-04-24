@@ -244,9 +244,9 @@ task(subagent_type="librarian", prompt="I'm looking for proven implementations o
 ### QA/Acceptance Criteria Directives (MANDATORY)
 > **ZERO USER INTERVENTION PRINCIPLE**: All acceptance criteria AND QA scenarios MUST be executable by agents.
 
-- MUST: Write acceptance criteria as executable commands (curl, bun test, playwright actions)
+- MUST: Write acceptance criteria as executable commands (curl, bun test, browser actions)
 - MUST: Include exact expected outputs, not vague descriptions
-- MUST: Specify verification tool for each deliverable type (playwright for UI, curl for API, etc.)
+- MUST: Specify verification tool for each deliverable type (browser automation for UI, curl for API, etc.)
 - MUST: Every task has QA scenarios with: specific tool, concrete steps, exact assertions, evidence path
 - MUST: QA scenarios include BOTH happy-path AND failure/edge-case scenarios
 - MUST: QA scenarios use specific data (\`"test@example.com"\`, not \`"[email]"\`) and selectors (\`.login-button\`, not "the login button")

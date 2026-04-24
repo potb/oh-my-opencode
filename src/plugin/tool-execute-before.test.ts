@@ -243,7 +243,7 @@ describe("createToolRegistry", () => {
       skillContext: {
         mergedSkills: [],
         availableSkills: [],
-        browserProvider: "playwright",
+        browserProvider: "agent-browser",
         disabledSkills: new Set(),
       },
       availableCategories: [],

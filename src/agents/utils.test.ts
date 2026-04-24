@@ -218,13 +218,13 @@ describe("createBuiltinAgents with model overrides", () => {
     const providerModelsSpy = spyOn(connectedProvidersCache, "readProviderModelsCache").mockReturnValue(null)
     const connectedSpy = spyOn(connectedProvidersCache, "readConnectedProvidersCache").mockReturnValue(null)
     const fetchSpy = spyOn(shared, "fetchAvailableModels").mockResolvedValue(new Set())
-    const disabledSkills = new Set(["playwright"])
+    const disabledSkills = new Set(["agent-browser"])
 
     // #when
     const agents = await createBuiltinAgents([], {}, undefined, TEST_DEFAULT_MODEL, undefined, undefined, [], undefined, undefined, undefined, disabledSkills)
 
     // #then
-    expect(agents.sisyphus.prompt).not.toContain("playwright")
+    expect(agents.sisyphus.prompt).not.toContain("agent-browser")
     expect(agents.sisyphus.prompt).toContain("Category-based task routing has been removed")
     expect(agents.sisyphus.prompt).toContain("subagent_type")
     providerModelsSpy.mockRestore()
@@ -957,7 +957,7 @@ describe("buildAgent with category and skills", () => {
     expect(agent.prompt).toContain("Base prompt")
   })
 
-  test("agent with agent-browser skill NOT resolved when browserProvider not set", () => {
+  test("agent with agent-browser skill resolves when browserProvider is omitted", () => {
     // #given
     const source = {
       "test-agent": () =>
@@ -968,12 +968,12 @@ describe("buildAgent with category and skills", () => {
         }) as AgentConfig,
     }
 
-    // #when - no browserProvider (defaults to playwright)
+    // #when - no browserProvider (defaults to agent-browser)
     const agent = buildAgent(source["test-agent"], TEST_MODEL)
 
-    // #then - agent-browser skill not found, only base prompt remains
-    expect(agent.prompt).toBe("Base prompt")
-    expect(agent.prompt).not.toContain("agent-browser open")
+    // #then - agent-browser skill content should be included by default
+    expect(agent.prompt).toContain("Base prompt")
+	    expect(agent.prompt).toContain("agent-browser open")
   })
 })
 

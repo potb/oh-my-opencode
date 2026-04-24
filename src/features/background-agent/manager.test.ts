@@ -825,11 +825,11 @@ describe("LaunchInput.skillContent", () => {
       agent: "explore",
       parentSessionID: "parent-session",
       parentMessageID: "parent-msg",
-      skillContent: "You are a playwright expert",
+      skillContent: "You are a browser automation expert",
     }
 
     // when / #then
-    expect(input.skillContent).toBe("You are a playwright expert")
+    expect(input.skillContent).toBe("You are a browser automation expert")
   })
 })
 
