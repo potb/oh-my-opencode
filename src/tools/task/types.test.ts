@@ -1,13 +1,9 @@
 import { describe, test, expect } from "bun:test"
-import {
-  TaskStatusSchema,
-  TaskSchema,
-  TaskCreateInputSchema,
-  TaskUpdateInputSchema,
-  TaskListInputSchema,
-  TaskGetInputSchema,
-  TaskDeleteInputSchema,
-} from "./types"
+import { TaskStatusSchema, TaskObjectSchema, TaskCreateInputSchema,
+TaskUpdateInputSchema,
+TaskListInputSchema,
+TaskGetInputSchema,
+TaskDeleteInputSchema, } from "./types"
 
 describe("TaskStatusSchema", () => {
   test("accepts valid status values", () => {
@@ -33,7 +29,7 @@ describe("TaskStatusSchema", () => {
   })
 })
 
-describe("TaskSchema", () => {
+describe("TaskObjectSchema", () => {
   test("validates complete task object with all fields", () => {
     //#given
     const task = {
@@ -52,7 +48,7 @@ describe("TaskSchema", () => {
     }
 
     //#when
-    const result = TaskSchema.safeParse(task)
+    const result = TaskObjectSchema.safeParse(task)
 
     //#then
     expect(result.success).toBe(true)
@@ -71,7 +67,7 @@ describe("TaskSchema", () => {
     }
 
     //#when
-    const result = TaskSchema.safeParse(task)
+    const result = TaskObjectSchema.safeParse(task)
 
     //#then
     expect(result.success).toBe(true)
@@ -89,7 +85,7 @@ describe("TaskSchema", () => {
     }
 
     //#when
-    const result = TaskSchema.safeParse(task)
+    const result = TaskObjectSchema.safeParse(task)
 
     //#then
     expect(result.success).toBe(false)
@@ -108,7 +104,7 @@ describe("TaskSchema", () => {
     }
 
     //#when
-    const result = TaskSchema.safeParse(task)
+    const result = TaskObjectSchema.safeParse(task)
 
     //#then
     expect(result.success).toBe(false)
@@ -127,7 +123,7 @@ describe("TaskSchema", () => {
     }
 
     //#when
-    const result = TaskSchema.safeParse(task)
+    const result = TaskObjectSchema.safeParse(task)
 
     //#then
     expect(result.success).toBe(true)
@@ -146,7 +142,7 @@ describe("TaskSchema", () => {
     }
 
     //#when
-    const result = TaskSchema.safeParse(task)
+    const result = TaskObjectSchema.safeParse(task)
 
     //#then
     expect(result.success).toBe(true)
@@ -171,7 +167,7 @@ describe("TaskSchema", () => {
     }
 
     //#when
-    const result = TaskSchema.safeParse(task)
+    const result = TaskObjectSchema.safeParse(task)
 
     //#then
     expect(result.success).toBe(true)
@@ -191,7 +187,7 @@ describe("TaskSchema", () => {
     }
 
     //#when
-    const result = TaskSchema.safeParse(task)
+    const result = TaskObjectSchema.safeParse(task)
 
     //#then
     expect(result.success).toBe(false)
@@ -209,7 +205,7 @@ describe("TaskSchema", () => {
     }
 
     //#when
-    const result = TaskSchema.safeParse(task)
+    const result = TaskObjectSchema.safeParse(task)
 
     //#then
     if (result.success) {
@@ -229,7 +225,7 @@ describe("TaskSchema", () => {
     }
 
     //#when
-    const result = TaskSchema.safeParse(task)
+    const result = TaskObjectSchema.safeParse(task)
 
     //#then
     if (result.success) {

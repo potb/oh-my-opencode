@@ -6,7 +6,7 @@ import { getAgentConfigKey } from "../../shared/agent-display-names"
 import { truncateDescription } from "../../shared/truncate-description"
 export {
   CATEGORY_DESCRIPTIONS,
-  CATEGORY_PROMPT_APPENDS,
+  
   DEFAULT_CATEGORIES,
 } from "./builtin-categories"
 
@@ -16,7 +16,7 @@ export {
  * then summarize user requirements and clarify uncertainties before proceeding.
  * Also MANDATES dependency graphs, parallel execution analysis, and category+skill recommendations.
  */
-export const PLAN_AGENT_SYSTEM_PREPEND_STATIC_BEFORE_SKILLS = `<system>
+const PLAN_AGENT_SYSTEM_PREPEND_STATIC_BEFORE_SKILLS = `<system>
 BEFORE you begin planning, you MUST first understand the user's request deeply.
 
 MANDATORY CONTEXT GATHERING PROTOCOL:
@@ -124,7 +124,7 @@ FOR EVERY TASK, YOU MUST RECOMMEND:
 2. Whether it should run in background or foreground
 `
 
-export const PLAN_AGENT_SYSTEM_PREPEND_STATIC_AFTER_SKILLS = `### REQUIRED OUTPUT FORMAT
+const PLAN_AGENT_SYSTEM_PREPEND_STATIC_AFTER_SKILLS = `### REQUIRED OUTPUT FORMAT
 
 For EACH task, include a recommendation block:
 
@@ -273,7 +273,7 @@ function renderPlanAgentSkillRows(skills: AvailableSkill[]): string[] {
    })
  }
 
-export function buildPlanAgentSkillsSection(
+function buildPlanAgentSkillsSection(
   categories: AvailableCategory[] = [],
   skills: AvailableSkill[] = []
 ): string {
@@ -311,7 +311,7 @@ export function buildPlanAgentSystemPrepend(
  * List of agent names that should be treated as plan agents (receive plan system prompt).
  * Case-insensitive matching is used.
  */
-export const PLAN_AGENT_NAMES = ["plan"]
+const PLAN_AGENT_NAMES = ["plan"]
 
 /**
  * Check if the given agent name is a plan agent (receives plan system prompt).
@@ -326,7 +326,7 @@ export function isPlanAgent(agentName: string | undefined): boolean {
  * Plan family: plan. Shares mutual delegation blocking and task tool permission.
  * Does NOT share system prompt (only isPlanAgent controls that).
  */
-export const PLAN_FAMILY_NAMES = ["plan"]
+const PLAN_FAMILY_NAMES = ["plan"]
 
 /**
  * Check if the given agent belongs to the plan family (blocking + task permission).

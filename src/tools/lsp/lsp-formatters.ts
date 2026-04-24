@@ -28,11 +28,11 @@ export function formatLocation(loc: Location | LocationLink): string {
   return `${uri}:${line}:${char}`
 }
 
-export function formatSymbolKind(kind: number): string {
+function formatSymbolKind(kind: number): string {
   return SYMBOL_KIND_MAP[kind] || `Unknown(${kind})`
 }
 
-export function formatSeverity(severity: number | undefined): string {
+function formatSeverity(severity: number | undefined): string {
   if (!severity) return "unknown"
   return SEVERITY_MAP[severity] || `unknown(${severity})`
 }
@@ -119,7 +119,7 @@ export function formatPrepareRenameResult(
   return "Cannot rename at this position"
 }
 
-export function formatTextEdit(edit: TextEdit): string {
+function formatTextEdit(edit: TextEdit): string {
   const startLine = edit.range.start.line + 1
   const startChar = edit.range.start.character
   const endLine = edit.range.end.line + 1
@@ -131,7 +131,7 @@ export function formatTextEdit(edit: TextEdit): string {
   return `  ${rangeStr}: "${preview}"`
 }
 
-export function formatWorkspaceEdit(edit: WorkspaceEdit | null): string {
+function formatWorkspaceEdit(edit: WorkspaceEdit | null): string {
   if (!edit) return "No changes"
 
   const lines: string[] = []

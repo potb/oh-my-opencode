@@ -16,12 +16,6 @@ export { createGrepTools } from "./grep"
 export { createGlobTools } from "./glob"
 
 export { createDelegateTask } from "./delegate-task"
-export {
-  createTaskCreateTool,
-  createTaskGetTool,
-  createTaskList,
-  createTaskUpdateTool,
-} from "./task"
 export { createHashlineEditTool } from "./hashline-edit"
 
 export const builtinTools: Record<string, ToolDefinition> = {

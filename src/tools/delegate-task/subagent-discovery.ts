@@ -1,7 +1,7 @@
 import { getAgentConfigKey, getAgentDisplayName, stripAgentListSortPrefix } from "../../shared/agent-display-names"
 import { loadUserAgents, loadProjectAgents } from "../../features/claude-code-agent-loader"
 
-export type AgentMode = "subagent" | "primary" | "all" | undefined
+type AgentMode = "subagent" | "primary" | "all" | undefined
 
 export type AgentInfo = {
   name: string
@@ -58,7 +58,7 @@ function matchesRequestedAgent(agent: AgentInfo, requestedAgentName: string): bo
   return comparableNames.has(listedAgentName) || comparableNames.has(listedAgentConfigKey)
 }
 
-export function isTaskCallableAgentMode(mode: AgentMode): boolean {
+function isTaskCallableAgentMode(mode: AgentMode): boolean {
   return mode === "all" || mode === "subagent"
 }
 

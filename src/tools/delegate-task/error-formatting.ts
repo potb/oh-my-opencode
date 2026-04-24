@@ -3,7 +3,7 @@ import type { DelegateTaskArgs } from "./types"
 /**
  * Context for error formatting.
  */
-export interface ErrorContext {
+interface ErrorContext {
   operation: string
   args?: DelegateTaskArgs
   sessionID?: string

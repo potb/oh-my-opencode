@@ -2,7 +2,7 @@
  * Simple counting semaphore to limit concurrent process execution.
  * Used to prevent multiple ripgrep processes from saturating CPU.
  */
-export class Semaphore {
+class Semaphore {
   private queue: (() => void)[] = []
   private running = 0
 

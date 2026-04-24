@@ -14,7 +14,7 @@ import type { GlobOptions, GlobResult, FileMatch } from "./types"
 import { stat } from "node:fs/promises"
 import { rgSemaphore } from "../shared/semaphore"
 
-export interface ResolvedCli {
+interface ResolvedCli {
   path: string
   backend: GrepBackend
 }

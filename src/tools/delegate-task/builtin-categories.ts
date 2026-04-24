@@ -24,7 +24,7 @@ export const DEFAULT_CATEGORIES: Record<string, CategoryConfig> = buildCategoryR
   (definition) => definition.config
 )
 
-export const CATEGORY_PROMPT_APPENDS: Record<string, string> = buildCategoryRecord(
+const CATEGORY_PROMPT_APPENDS: Record<string, string> = buildCategoryRecord(
   (definition) => definition.promptAppend
 )
 
