@@ -8,7 +8,5 @@ export type {
   AgentOverrides,
   AgentName,
   HookName,
-  SisyphusAgentConfig,
   ExperimentalConfig,
-  ModelCapabilitiesConfig,
 } from "./schema"

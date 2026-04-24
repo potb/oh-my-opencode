@@ -23,7 +23,6 @@ export const NPM_FETCH_TIMEOUT = 5000
 
 const CACHE_ROOT_DIR = getOpenCodeCacheDir()
 export const CACHE_DIR = path.join(CACHE_ROOT_DIR, "packages")
-const VERSION_FILE = path.join(CACHE_ROOT_DIR, "version")
 
 export function getWindowsAppdataDir(): string | null {
   if (process.platform !== "win32") return null
@@ -41,13 +40,6 @@ export function getUserOpencodeConfig(): string {
 export function getUserOpencodeConfigJsonc(): string {
   return path.join(getUserConfigDir(), "opencode.jsonc")
 }
-
-export const INSTALLED_PACKAGE_JSON = path.join(
-  CACHE_DIR,
-  "node_modules",
-  PACKAGE_NAME,
-  "package.json"
-)
 
 /**
  * Candidate paths where the installed package.json may live, in priority order.

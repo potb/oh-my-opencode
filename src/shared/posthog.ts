@@ -153,14 +153,6 @@ export function getPostHogDistinctId(): string {
     .digest("hex")
 }
 
-export function createCliPostHog(): PostHogClient {
-  return createPostHogClient("cli", {
-    enableExceptionAutocapture: true,
-    flushAt: 1,
-    flushInterval: 0,
-  })
-}
-
 export function createPluginPostHog(): PostHogClient {
   return createPostHogClient("plugin", {
     enableExceptionAutocapture: true,
