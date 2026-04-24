@@ -1,4 +1,4 @@
-export const HOOK_NAME = "tasks-todowrite-disabler"
+const HOOK_NAME = "tasks-todowrite-disabler"
 export const BLOCKED_TOOLS = ["TodoWrite", "TodoRead"]
 export const REPLACEMENT_MESSAGE = `TodoRead/TodoWrite are DISABLED because experimental.task_system is enabled.
 

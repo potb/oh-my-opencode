@@ -15,7 +15,7 @@ function ensureTodoDir(): void {
   }
 }
 
-export interface OpenCodeTodo {
+interface OpenCodeTodo {
   content: string
   status: string
   priority: string
@@ -30,7 +30,7 @@ function toClaudeCodeFormat(item: OpenCodeTodo | TodoItem): ClaudeCodeTodoItem {
   }
 }
 
-export function loadTodoFile(sessionId: string): TodoFile | null {
+function loadTodoFile(sessionId: string): TodoFile | null {
    const path = getTodoPath(sessionId)
    if (!existsSync(path)) return null
    try {
@@ -54,21 +54,21 @@ export function loadTodoFile(sessionId: string): TodoFile | null {
    }
 }
 
-export function saveTodoFile(sessionId: string, file: TodoFile): void {
+function saveTodoFile(sessionId: string, file: TodoFile): void {
    ensureTodoDir()
    const path = getTodoPath(sessionId)
    const claudeCodeFormat: ClaudeCodeTodoItem[] = file.items.map(toClaudeCodeFormat)
    writeFileSync(path, JSON.stringify(claudeCodeFormat, null, 2))
 }
 
-export function saveOpenCodeTodos(sessionId: string, todos: OpenCodeTodo[]): void {
+function saveOpenCodeTodos(sessionId: string, todos: OpenCodeTodo[]): void {
    ensureTodoDir()
    const path = getTodoPath(sessionId)
    const claudeCodeFormat: ClaudeCodeTodoItem[] = todos.map(toClaudeCodeFormat)
    writeFileSync(path, JSON.stringify(claudeCodeFormat, null, 2))
 }
 
-export function deleteTodoFile(sessionId: string): void {
+function deleteTodoFile(sessionId: string): void {
    const path = getTodoPath(sessionId)
    if (existsSync(path)) {
      unlinkSync(path)

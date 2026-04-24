@@ -15,7 +15,7 @@ interface SessionMessage {
   parts?: MessagePart[]
 }
 
-export function isStepOnlyNoTextParts(parts: unknown): boolean {
+function isStepOnlyNoTextParts(parts: unknown): boolean {
   if (!Array.isArray(parts) || parts.length === 0) return false
 
   return parts.every((part) => {

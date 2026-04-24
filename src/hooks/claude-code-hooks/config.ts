@@ -52,7 +52,7 @@ function normalizeHooksConfig(raw: RawClaudeHooksConfig): ClaudeHooksConfig {
   return result
 }
 
-export function getClaudeSettingsPaths(customPath?: string): string[] {
+function getClaudeSettingsPaths(customPath?: string): string[] {
   const claudeConfigDir = getClaudeConfigDir()
   const paths = [
     join(claudeConfigDir, "settings.json"),

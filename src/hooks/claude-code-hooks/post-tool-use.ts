@@ -26,7 +26,7 @@ export interface PostToolUseContext {
   permissionMode?: "default" | "plan" | "acceptEdits" | "bypassPermissions"
 }
 
-export interface PostToolUseResult {
+interface PostToolUseResult {
   block: boolean
   reason?: string
   message?: string

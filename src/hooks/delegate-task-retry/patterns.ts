@@ -1,4 +1,4 @@
-export interface DelegateTaskErrorPattern {
+interface DelegateTaskErrorPattern {
   pattern: string
   errorType: string
   fixHint: string

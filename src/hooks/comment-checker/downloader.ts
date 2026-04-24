@@ -45,7 +45,7 @@ const PLATFORM_MAP: Record<string, PlatformInfo> = {
  * On Windows: Uses %LOCALAPPDATA% or %APPDATA% (Windows conventions)
  * On Unix: Follows XDG Base Directory Specification
  */
-export function getCacheDir(): string {
+function getCacheDir(): string {
   if (process.platform === "win32") {
     const localAppData = process.env.LOCALAPPDATA || process.env.APPDATA
     const base = localAppData || join(homedir(), "AppData", "Local")
@@ -60,7 +60,7 @@ export function getCacheDir(): string {
 /**
  * Get the binary name based on platform.
  */
-export function getBinaryName(): string {
+function getBinaryName(): string {
   return process.platform === "win32" ? "comment-checker.exe" : "comment-checker"
 }
 
@@ -89,7 +89,7 @@ function getPackageVersion(): string {
  * Download the comment-checker binary from GitHub Releases.
  * Returns the path to the downloaded binary, or null on failure.
  */
-export async function downloadCommentChecker(): Promise<string | null> {
+async function downloadCommentChecker(): Promise<string | null> {
   const platformKey = `${process.platform}-${process.arch}`
   const platformInfo = PLATFORM_MAP[platformKey]
   

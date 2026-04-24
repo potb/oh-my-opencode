@@ -40,7 +40,7 @@ interface ClientLike {
   }
 }
 
-export interface AssistantCompactionMessageInfo {
+interface AssistantCompactionMessageInfo {
   sessionID: string
   id?: string
 }

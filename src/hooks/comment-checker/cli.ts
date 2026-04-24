@@ -137,7 +137,7 @@ export interface HookInput {
   tool_response?: unknown
 }
 
-export interface CheckResult {
+interface CheckResult {
   hasComments: boolean
   message: string
 }
@@ -255,7 +255,7 @@ export async function runCommentChecker(input: HookInput, cliPath?: string, cust
 /**
  * Check if CLI is available (sync check, no download).
  */
-export function isCliAvailable(): boolean {
+function isCliAvailable(): boolean {
   const path = getCommentCheckerPathSync()
   return path !== null && existsSync(path)
 }
@@ -263,7 +263,7 @@ export function isCliAvailable(): boolean {
 /**
  * Check if CLI will be available (async, may trigger download).
  */
-export async function ensureCliAvailable(): Promise<boolean> {
+async function ensureCliAvailable(): Promise<boolean> {
   const path = await getCommentCheckerPath()
   return path !== null && existsSync(path)
 }

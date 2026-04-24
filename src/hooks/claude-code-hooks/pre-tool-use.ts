@@ -18,7 +18,7 @@ export interface PreToolUseContext {
   permissionMode?: "default" | "plan" | "acceptEdits" | "bypassPermissions"
 }
 
-export interface PreToolUseResult {
+interface PreToolUseResult {
   decision: PermissionDecision
   reason?: string
   modifiedInput?: Record<string, unknown>

@@ -11,11 +11,11 @@ import { isHookCommandDisabled, type PluginExtendedConfig } from "./config-loade
 // Module-level state to track stop_hook_active per session
 const stopHookActiveState = new Map<string, boolean>()
 
-export function setStopHookActive(sessionId: string, active: boolean): void {
+function setStopHookActive(sessionId: string, active: boolean): void {
   stopHookActiveState.set(sessionId, active)
 }
 
-export function getStopHookActive(sessionId: string): boolean {
+function getStopHookActive(sessionId: string): boolean {
   return stopHookActiveState.get(sessionId) ?? false
 }
 
@@ -28,7 +28,7 @@ export interface StopContext {
   stopHookActive?: boolean
 }
 
-export interface StopResult {
+interface StopResult {
   block: boolean
   reason?: string
   stopHookActive?: boolean

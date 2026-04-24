@@ -140,7 +140,7 @@ export interface PostToolUseOutput extends HookCommonOutput {
   }
 }
 
-export interface HookResult {
+interface HookResult {
   exitCode: number
   stdout?: string
   stderr?: string
@@ -195,12 +195,12 @@ export interface PreCompactOutput extends HookCommonOutput {
   }
 }
 
-export type ClaudeCodeContent =
+type ClaudeCodeContent =
   | { type: "text"; text: string }
   | { type: "tool_use"; id: string; name: string; input: Record<string, unknown> }
   | { type: "tool_result"; tool_use_id: string; content: string }
 
-export interface ClaudeCodeMessage {
+interface ClaudeCodeMessage {
   type: "user" | "assistant"
   message: {
     role: "user" | "assistant"

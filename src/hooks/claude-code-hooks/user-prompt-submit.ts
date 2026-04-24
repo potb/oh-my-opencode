@@ -25,7 +25,7 @@ export interface UserPromptSubmitContext {
   permissionMode?: "default" | "acceptEdits" | "bypassPermissions"
 }
 
-export interface UserPromptSubmitResult {
+interface UserPromptSubmitResult {
   block: boolean
   reason?: string
   modifiedParts: MessagePart[]

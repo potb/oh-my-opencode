@@ -12,7 +12,7 @@ export interface PreCompactContext {
   cwd: string
 }
 
-export interface PreCompactResult {
+interface PreCompactResult {
   context: string[]
   elapsedMs?: number
   hookName?: string
