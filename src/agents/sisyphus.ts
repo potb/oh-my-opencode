@@ -14,7 +14,7 @@ import { buildTaskManagementSection } from "./sisyphus/default";
 import { getGptApplyPatchPermission } from "./gpt-apply-patch-guard";
 
 const MODE: AgentMode = "primary";
-export const SISYPHUS_PROMPT_METADATA: AgentPromptMetadata = {
+const SISYPHUS_PROMPT_METADATA: AgentPromptMetadata = {
   category: "utility",
   cost: "EXPENSIVE",
   promptAlias: "Sisyphus",

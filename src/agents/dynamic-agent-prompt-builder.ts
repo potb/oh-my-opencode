@@ -24,7 +24,7 @@ export { buildCategorySkillsDelegationGuide } from "./dynamic-agent-category-ski
 export {
   buildHardBlocksSection,
   buildAntiPatternsSection,
-  buildToolCallFormatSection,
+  
   buildUltraworkSection,
   buildAntiDuplicationSection,
 } from "./dynamic-agent-policy-sections"

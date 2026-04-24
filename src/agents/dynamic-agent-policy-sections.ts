@@ -36,7 +36,7 @@ export function buildAntiPatternsSection(): string {
 ${patterns.join("\n")}`
 }
 
-export function buildToolCallFormatSection(): string {
+function buildToolCallFormatSection(): string {
   return `## Tool Call Format (CRITICAL)
 
 **ALWAYS use the native tool calling mechanism. NEVER output tool calls as text.**

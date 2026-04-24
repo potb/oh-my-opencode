@@ -5,7 +5,7 @@ import type { BrowserAutomationProvider } from "../config/schema"
 import { mergeCategories } from "../shared/merge-categories"
 import { resolveMultipleSkills } from "../features/opencode-skill-loader/skill-content"
 
-export type AgentSource = AgentFactory | AgentConfig
+type AgentSource = AgentFactory | AgentConfig
 
 export function isFactory(source: AgentSource): source is AgentFactory {
   return typeof source === "function"

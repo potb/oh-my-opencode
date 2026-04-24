@@ -446,4 +446,4 @@ ${tasksSection}
 ${styleBlock}`;
 }
 
-export { categorizeTools };
+;

@@ -135,7 +135,7 @@ Should I proceed with [recommendation], or would you prefer differently?
 </Task_Management>`;
 }
 
-export function buildDefaultSisyphusPrompt(
+function buildDefaultSisyphusPrompt(
   model: string,
   availableAgents: AvailableAgent[],
   availableTools: AvailableTool[] = [],
@@ -538,4 +538,4 @@ ${antiPatterns}
 `;
 }
 
-export { categorizeTools };
+;

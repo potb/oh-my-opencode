@@ -10,7 +10,7 @@ import { resolvePromptAppend } from "./resolve-file-uri"
  * because the user's chosen category should take priority over factory base values.
  * Direct override properties applied later via mergeAgentConfig() will supersede these.
  */
-export function applyCategoryOverride(
+function applyCategoryOverride(
   config: AgentConfig,
   categoryName: string,
   mergedCategories: Record<string, CategoryConfig>
