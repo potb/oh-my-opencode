@@ -30,6 +30,12 @@
       "exports",
       "types"
     ],
+    "src/hooks/auto-update-checker/constants.ts": [
+      "exports"
+    ],
+    "src/hooks/auto-update-checker/hook/background-update-check.ts": [
+      "exports"
+    ],
     "src/features/claude-code-command-loader/index.ts": [
       "exports",
       "types"
@@ -42,13 +48,28 @@
       "exports",
       "types"
     ],
+    "src/plugin/ultrawork-model-override.ts": [
+      "exports"
+    ],
     "src/plugin-handlers/index.ts": [
       "exports",
       "types"
     ],
+    "src/shared/connected-providers-cache.ts": [
+      "exports"
+    ],
+    "src/shared/posthog.ts": [
+      "exports"
+    ],
+    "src/shared/zip-entry-listing/tar-zip-entry-listing.ts": [
+      "exports"
+    ],
     "src/tools/index.ts": [
       "exports",
       "types"
+    ],
+    "src/hooks/session-recovery/storage/parts-reader.ts": [
+      "exports"
     ]
   },
   "project": [
