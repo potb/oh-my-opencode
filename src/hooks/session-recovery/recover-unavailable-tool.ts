@@ -1,8 +1,7 @@
 import type { createOpencodeClient } from "@opencode-ai/sdk"
 import { extractUnavailableToolName } from "./detect-error-type"
-import { readParts } from "./storage"
+import { readParts, readPartsFromSDK } from "./storage"
 import type { MessageData } from "./types"
-import { normalizeSDKResponse } from "../../shared"
 import { isSqliteBackend } from "../../shared/opencode-storage-detection"
 
 type Client = ReturnType<typeof createOpencodeClient>
@@ -37,27 +36,6 @@ function extractToolUseParts(parts: MessagePart[]): ToolUsePart[] {
   )
 }
 
-async function readPartsFromSDKFallback(
-  client: Client,
-  sessionID: string,
-  messageID: string
-): Promise<MessagePart[]> {
-  try {
-    const response = await client.session.messages({ path: { id: sessionID } })
-    const messages = normalizeSDKResponse(response, [] as MessageData[], { preferResponseOnMissingData: true })
-    const target = messages.find((message) => message.info?.id === messageID)
-    if (!target?.parts) return []
-
-    return target.parts.map((part) => ({
-      type: part.type === "tool" ? "tool_use" : part.type,
-      id: "callID" in part ? (part as { callID?: string }).callID : part.id,
-      name: "name" in part && typeof part.name === "string" ? part.name : ("tool" in part && typeof (part as { tool?: unknown }).tool === "string" ? (part as { tool: string }).tool : undefined),
-    }))
-  } catch {
-    return []
-  }
-}
-
 export async function recoverUnavailableTool(
   client: Client,
   sessionID: string,
@@ -66,7 +44,12 @@ export async function recoverUnavailableTool(
   let parts = failedAssistantMsg.parts || []
   if (parts.length === 0 && failedAssistantMsg.info?.id) {
     if (isSqliteBackend()) {
-      parts = await readPartsFromSDKFallback(client, sessionID, failedAssistantMsg.info.id)
+      const sdkParts = await readPartsFromSDK(client, sessionID, failedAssistantMsg.info.id)
+      parts = sdkParts.map((part) => ({
+        type: part.type === "tool" ? "tool_use" : part.type,
+        id: "callID" in part ? (part as { callID?: string }).callID : part.id,
+        name: "tool" in part && typeof part.tool === "string" ? part.tool : undefined,
+      }))
     } else {
       const storedParts = readParts(failedAssistantMsg.info.id)
       parts = storedParts.map((part) => ({

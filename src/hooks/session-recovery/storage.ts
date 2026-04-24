@@ -2,7 +2,7 @@
 
 
 
-export { readParts } from "./storage/parts-reader"
+export { readParts, readPartsFromSDK } from "./storage/parts-reader"
 
 
 export { injectTextPart } from "./storage/text-part-injector"
@@ -28,7 +28,6 @@ export {
 export { prependThinkingPart } from "./storage/thinking-prepend"
 export { stripThinkingParts } from "./storage/thinking-strip"
 export { replaceEmptyTextParts } from "./storage/empty-text"
-
 
 
 
