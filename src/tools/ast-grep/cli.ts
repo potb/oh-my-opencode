@@ -11,14 +11,9 @@ import { getAstGrepPath } from "./cli-binary-path-resolution"
 import { collectProcessOutputWithTimeout } from "./process-output-timeout"
 import { createSgResultFromStdout } from "./sg-compact-json-output"
 
-export {
-	ensureCliAvailable,
-	getAstGrepPath,
-	isCliAvailable,
-	startBackgroundInit,
-} from "./cli-binary-path-resolution"
 
-export interface RunOptions {
+
+interface RunOptions {
 	pattern: string
 	lang: CliLanguage
 	paths?: string[]

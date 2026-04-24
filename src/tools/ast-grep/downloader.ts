@@ -44,7 +44,7 @@ const PLATFORM_MAP: Record<string, PlatformInfo> = {
   "win32-ia32": { arch: "i686", os: "pc-windows-msvc" },
 }
 
-export function getCacheDir(): string {
+function getCacheDir(): string {
   if (process.platform === "win32") {
     const localAppData = process.env.LOCALAPPDATA || process.env.APPDATA
     const base = localAppData || join(homedir(), "AppData", "Local")
@@ -56,7 +56,7 @@ export function getCacheDir(): string {
   return join(base, CACHE_DIR_NAME, "bin")
 }
 
-export function getBinaryName(): string {
+function getBinaryName(): string {
   return process.platform === "win32" ? "sg.exe" : "sg"
 }
 
@@ -66,7 +66,7 @@ export function getCachedBinaryPath(): string | null {
 
 
 
-export async function downloadAstGrep(version: string = DEFAULT_VERSION): Promise<string | null> {
+async function downloadAstGrep(version: string = DEFAULT_VERSION): Promise<string | null> {
   const platformKey = `${process.platform}-${process.arch}`
   const platformInfo = PLATFORM_MAP[platformKey]
 

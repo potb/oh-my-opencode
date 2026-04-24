@@ -69,7 +69,7 @@ export function formatReplaceResult(result: SgResult, isDryRun: boolean): string
   return lines.join("\n")
 }
 
-export function formatAnalyzeResult(results: AnalyzeResult[], extractedMetaVars: boolean): string {
+function formatAnalyzeResult(results: AnalyzeResult[], extractedMetaVars: boolean): string {
   if (results.length === 0) {
     return "No matches found"
   }
@@ -93,7 +93,7 @@ export function formatAnalyzeResult(results: AnalyzeResult[], extractedMetaVars:
   return lines.join("\n")
 }
 
-export function formatTransformResult(_original: string, transformed: string, editCount: number): string {
+function formatTransformResult(_original: string, transformed: string, editCount: number): string {
   if (editCount === 0) {
     return "No matches found to transform"
   }
