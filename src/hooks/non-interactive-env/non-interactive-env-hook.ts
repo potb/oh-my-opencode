@@ -4,8 +4,6 @@ import { log, buildEnvPrefix } from "../../shared"
 import { detectShellType } from "../../shared/shell-env"
 
 export * from "./constants"
-export * from "./detector"
-export * from "./types"
 
 const BANNED_COMMAND_PATTERNS = SHELL_COMMAND_PATTERNS.banned
   .filter((command) => !command.includes("("))

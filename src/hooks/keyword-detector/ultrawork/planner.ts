@@ -3,7 +3,7 @@
  * Planner agents should NOT be told to call plan agent - they ARE the planner.
  */
 
-export const ULTRAWORK_PLANNER_SECTION = `## CRITICAL: YOU ARE A PLANNER, NOT AN IMPLEMENTER
+const ULTRAWORK_PLANNER_SECTION = `## CRITICAL: YOU ARE A PLANNER, NOT AN IMPLEMENTER
 
 **IDENTITY CONSTRAINT (NON-NEGOTIABLE):**
 You ARE the planner. You ARE NOT an implementer. You DO NOT write code. You DO NOT execute tasks.

@@ -33,10 +33,10 @@ export function isNonOmoAgent(agentName?: string): boolean {
   return lowerName.includes("builder") || lowerName === "plan"
 }
 
-export { isGptModel, isGeminiModel }
+
 
 /** Ultrawork message source type */
-export type UltraworkSource = "planner" | "gpt" | "gemini" | "default"
+type UltraworkSource = "planner" | "gpt" | "gemini" | "default"
 
 /**
  * Determines which ultrawork message source to use.

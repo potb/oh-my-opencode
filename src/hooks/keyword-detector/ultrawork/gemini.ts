@@ -14,7 +14,7 @@
  * - GPT respects MUST NOT; Gemini treats constraints as suggestions
  */
 
-export const ULTRAWORK_GEMINI_MESSAGE = `<ultrawork-mode>
+const ULTRAWORK_GEMINI_MESSAGE = `<ultrawork-mode>
 
 **MANDATORY**: You MUST say "ULTRAWORK MODE ENABLED!" to the user as your first response when this mode activates. This is non-negotiable.
 

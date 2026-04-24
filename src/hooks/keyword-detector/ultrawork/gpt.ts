@@ -8,7 +8,7 @@
  * - Deterministic tool usage and explicit decision criteria
  */
 
-export const ULTRAWORK_GPT_MESSAGE = `<ultrawork-mode>
+const ULTRAWORK_GPT_MESSAGE = `<ultrawork-mode>
 
 **MANDATORY**: You MUST say "ULTRAWORK MODE ENABLED!" to the user as your first response when this mode activates. This is non-negotiable.
 

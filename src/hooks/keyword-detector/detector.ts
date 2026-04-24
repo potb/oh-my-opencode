@@ -4,12 +4,12 @@ import {
   INLINE_CODE_PATTERN,
 } from "./constants"
 
-export interface DetectedKeyword {
+interface DetectedKeyword {
   type: "ultrawork" | "search" | "analyze"
   message: string
 }
 
-export function removeCodeBlocks(text: string): string {
+function removeCodeBlocks(text: string): string {
   return text.replace(CODE_BLOCK_PATTERN, "").replace(INLINE_CODE_PATTERN, "")
 }
 
@@ -24,7 +24,7 @@ function resolveMessage(
   return typeof message === "function" ? message(agentName, modelID) : message
 }
 
-export function detectKeywords(text: string, agentName?: string, modelID?: string): string[] {
+function detectKeywords(text: string, agentName?: string, modelID?: string): string[] {
   const textWithoutCode = removeCodeBlocks(text)
   return KEYWORD_DETECTORS.filter(({ pattern }) =>
     pattern.test(textWithoutCode)

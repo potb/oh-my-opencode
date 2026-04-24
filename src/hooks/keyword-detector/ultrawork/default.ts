@@ -7,7 +7,7 @@
  * - Simple workflow: EXPLORES → GATHER → PLAN → DELEGATE
  */
 
-export const ULTRAWORK_DEFAULT_MESSAGE = `<ultrawork-mode>
+const ULTRAWORK_DEFAULT_MESSAGE = `<ultrawork-mode>
 
 **MANDATORY**: You MUST say "ULTRAWORK MODE ENABLED!" to the user as your first response when this mode activates. This is non-negotiable.
 
