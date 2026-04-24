@@ -3,10 +3,10 @@ import { z } from "zod"
 const GIT_ENV_ASSIGNMENT_PATTERN =
 	/^(?:[A-Za-z_][A-Za-z0-9_]*=[A-Za-z0-9_-]*)(?: [A-Za-z_][A-Za-z0-9_]*=[A-Za-z0-9_-]*)*$/
 
-export const GIT_ENV_PREFIX_VALIDATION_MESSAGE =
+const GIT_ENV_PREFIX_VALIDATION_MESSAGE =
 	'git_env_prefix must be empty or use shell-safe env assignments like "GIT_MASTER=1"'
 
-export function isValidGitEnvPrefix(value: string): boolean {
+function isValidGitEnvPrefix(value: string): boolean {
 	if (value === "") {
 		return true
 	}

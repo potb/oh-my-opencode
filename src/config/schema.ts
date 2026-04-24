@@ -19,5 +19,3 @@ export * from "./schema/skills"
 export * from "./schema/sisyphus"
 export * from "./schema/sisyphus-agent"
 export * from "./schema/websearch"
-
-export { AnyMcpNameSchema, type AnyMcpName, McpNameSchema, type McpName } from "../mcp/types"

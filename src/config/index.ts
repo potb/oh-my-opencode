@@ -10,9 +10,5 @@ export type {
   HookName,
   SisyphusAgentConfig,
   ExperimentalConfig,
-  DynamicContextPruningConfig,
-  SisyphusConfig,
-  SisyphusTasksConfig,
   ModelCapabilitiesConfig,
-  FallbackModels,
 } from "./schema"

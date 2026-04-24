@@ -1,6 +1,6 @@
 import { z } from "zod"
 
-export const BuiltinAgentNameSchema = z.enum([
+const BuiltinAgentNameSchema = z.enum([
   "sisyphus",
   "oracle",
   "librarian",
@@ -10,7 +10,7 @@ export const BuiltinAgentNameSchema = z.enum([
   "sisyphus-junior",
 ])
 
-export const BuiltinSkillNameSchema = z.enum([
+const BuiltinSkillNameSchema = z.enum([
   "playwright",
   "agent-browser",
   "dev-browser",
@@ -20,7 +20,7 @@ export const BuiltinSkillNameSchema = z.enum([
   "ai-slop-remover",
 ])
 
-export const OverridableAgentNameSchema = z.enum([
+const OverridableAgentNameSchema = z.enum([
   "plan",
   "sisyphus",
   "sisyphus-junior",
@@ -31,7 +31,7 @@ export const OverridableAgentNameSchema = z.enum([
   "explore",
 ])
 
-export const AgentNameSchema = BuiltinAgentNameSchema
+const AgentNameSchema = BuiltinAgentNameSchema
 export type AgentName = z.infer<typeof AgentNameSchema>
 
-export type BuiltinSkillName = z.infer<typeof BuiltinSkillNameSchema>
+type BuiltinSkillName = z.infer<typeof BuiltinSkillNameSchema>

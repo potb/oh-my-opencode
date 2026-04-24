@@ -21,4 +21,4 @@ export const BrowserAutomationConfigSchema = z.object({
 export type BrowserAutomationProvider = z.infer<
   typeof BrowserAutomationProviderSchema
 >
-export type BrowserAutomationConfig = z.infer<typeof BrowserAutomationConfigSchema>
+type BrowserAutomationConfig = z.infer<typeof BrowserAutomationConfigSchema>

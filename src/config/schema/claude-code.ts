@@ -10,4 +10,4 @@ export const ClaudeCodeConfigSchema = z.object({
   plugins_override: z.record(z.string(), z.boolean()).optional(),
 })
 
-export type ClaudeCodeConfig = z.infer<typeof ClaudeCodeConfigSchema>
+type ClaudeCodeConfig = z.infer<typeof ClaudeCodeConfigSchema>
