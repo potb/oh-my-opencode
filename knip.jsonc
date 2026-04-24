@@ -4,30 +4,14 @@
     "script/**/*.ts",
     "tests/**/*.ts"
   ],
-  "ignoreFiles": [
-    "src/agents/sisyphus/index.ts",
-    "src/features/claude-code-command-loader/index.ts",
-    "src/features/opencode-skill-loader/index.ts",
-    "src/features/run-continuation-state/index.ts"
-  ],
   "ignoreIssues": {
     "tests/hashline/**": [
       "unlisted"
     ],
-    "src/agents/sisyphus/index.ts": [
-      "exports",
-      "types"
-    ],
     "src/agents/sisyphus-junior/index.ts": [
-      "exports",
-      "types"
+      "exports"
     ],
     "src/config/index.ts": [
-      "exports",
-      "types"
-    ],
-    "src/config/schema.ts": [
-      "exports",
       "types"
     ],
     "src/hooks/auto-update-checker/constants.ts": [
@@ -36,24 +20,8 @@
     "src/hooks/auto-update-checker/hook/background-update-check.ts": [
       "exports"
     ],
-    "src/features/claude-code-command-loader/index.ts": [
-      "exports",
-      "types"
-    ],
-    "src/features/opencode-skill-loader/index.ts": [
-      "exports",
-      "types"
-    ],
-    "src/features/run-continuation-state/index.ts": [
-      "exports",
-      "types"
-    ],
     "src/plugin/ultrawork-model-override.ts": [
       "exports"
-    ],
-    "src/plugin-handlers/index.ts": [
-      "exports",
-      "types"
     ],
     "src/shared/connected-providers-cache.ts": [
       "exports"
@@ -63,10 +31,6 @@
     ],
     "src/shared/zip-entry-listing/tar-zip-entry-listing.ts": [
       "exports"
-    ],
-    "src/tools/index.ts": [
-      "exports",
-      "types"
     ],
     "src/hooks/session-recovery/storage/parts-reader.ts": [
       "exports"
