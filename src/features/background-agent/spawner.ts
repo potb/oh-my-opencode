@@ -39,7 +39,7 @@ export function buildFallbackBody(
   }
 }
 
-export interface SpawnerContext {
+interface SpawnerContext {
   client: OpencodeClient
   directory: string
   concurrencyManager: ConcurrencyManager
@@ -187,7 +187,7 @@ export async function startTask(
   })
 }
 
-export async function resumeTask(
+async function resumeTask(
   task: BackgroundTask,
   input: ResumeInput,
   ctx: Pick<SpawnerContext, "client" | "concurrencyManager" | "onTaskError">

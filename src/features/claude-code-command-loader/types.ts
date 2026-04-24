@@ -1,4 +1,4 @@
-export type CommandScope = "user" | "project" | "opencode" | "opencode-project"
+type CommandScope = "user" | "project" | "opencode" | "opencode-project"
 
 /**
  * Handoff definition for command workflows.
@@ -28,7 +28,7 @@ export interface CommandDefinition {
   handoffs?: HandoffDefinition[]
 }
 
-export interface CommandFrontmatter {
+interface CommandFrontmatter {
   description?: string
   "argument-hint"?: string
   agent?: string
@@ -38,7 +38,7 @@ export interface CommandFrontmatter {
   handoffs?: HandoffDefinition[]
 }
 
-export interface LoadedCommand {
+interface LoadedCommand {
   name: string
   path: string
   definition: CommandDefinition

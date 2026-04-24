@@ -7,7 +7,7 @@ import { mergeSkillDefinitions } from "./merger/skill-definition-merger"
 import { normalizeSkillsConfig } from "./merger/skills-config-normalizer"
 import { SCOPE_PRIORITY } from "./merger/scope-priority"
 
-export interface MergeSkillsOptions {
+interface MergeSkillsOptions {
   configDir?: string
 }
 

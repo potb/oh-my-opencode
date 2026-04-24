@@ -1,6 +1,6 @@
 import type { BackgroundTaskStatus } from "./types"
 
-export type BackgroundTaskNotificationStatus = "COMPLETED" | "CANCELLED" | "INTERRUPTED" | "ERROR"
+type BackgroundTaskNotificationStatus = "COMPLETED" | "CANCELLED" | "INTERRUPTED" | "ERROR"
 
 export interface BackgroundTaskNotificationTask {
   id: string

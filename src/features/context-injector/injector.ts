@@ -14,7 +14,7 @@ interface InjectionResult {
   contextLength: number
 }
 
-export function injectPendingContext(
+function injectPendingContext(
   collector: ContextCollector,
   sessionID: string,
   parts: OutputPart[]
@@ -50,7 +50,7 @@ interface ChatMessageOutput {
   parts: OutputPart[]
 }
 
-export function createContextInjectorHook(collector: ContextCollector) {
+function createContextInjectorHook(collector: ContextCollector) {
   return {
     "chat.message": async (
       input: ChatMessageInput,

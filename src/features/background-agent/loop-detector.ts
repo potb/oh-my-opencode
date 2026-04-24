@@ -12,7 +12,7 @@ export interface CircuitBreakerSettings {
   consecutiveThreshold: number
 }
 
-export interface ToolLoopDetectionResult {
+interface ToolLoopDetectionResult {
   triggered: boolean
   toolName?: string
   repeatedCount?: number

@@ -2,7 +2,7 @@ import type { BackgroundTaskStatus } from "./types"
 
 const MAX_ENTRIES_PER_PARENT = 100
 
-export interface TaskHistoryEntry {
+interface TaskHistoryEntry {
   id: string
   sessionID?: string
   agent: string

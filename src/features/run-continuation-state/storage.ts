@@ -71,7 +71,7 @@ export function isContinuationMarkerActive(marker: ContinuationMarker | null): b
   return Object.values(marker.sources).some((entry) => entry?.state === "active")
 }
 
-export function getActiveContinuationMarkerReason(marker: ContinuationMarker | null): string | null {
+function getActiveContinuationMarkerReason(marker: ContinuationMarker | null): string | null {
   if (!marker) return null
   const active = Object.entries(marker.sources).find(([, entry]) => entry?.state === "active")
   if (!active || !active[1]) return null

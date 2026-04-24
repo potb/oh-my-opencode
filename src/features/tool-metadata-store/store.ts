@@ -16,7 +16,7 @@
  *   processor → Session.updatePart(status:"completed", metadata: result.metadata)
  */
 
-export interface PendingToolMetadata {
+interface PendingToolMetadata {
   title?: string
   metadata?: Record<string, unknown>
 }

@@ -12,7 +12,7 @@ import {
   aiSlopRemoverSkill,
 } from "./skills/index"
 
-export interface CreateBuiltinSkillsOptions {
+interface CreateBuiltinSkillsOptions {
   browserProvider?: BrowserAutomationProvider
   disabledSkills?: Set<string>
 }

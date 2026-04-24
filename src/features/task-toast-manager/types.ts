@@ -21,7 +21,7 @@ export interface TrackedTask {
   modelInfo?: ModelFallbackInfo
 }
 
-export interface TaskToastOptions {
+interface TaskToastOptions {
   title: string
   message: string
   variant: "info" | "success" | "warning" | "error"

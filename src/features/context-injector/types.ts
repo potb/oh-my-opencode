@@ -65,7 +65,7 @@ export interface PendingContext {
  * Message context from the original user message
  * Used when injecting to match the message format
  */
-export interface MessageContext {
+interface MessageContext {
   agent?: string
   model?: {
     providerID?: string
@@ -81,11 +81,11 @@ export interface MessageContext {
 /**
  * Output parts from chat.message hook
  */
-export interface OutputParts {
+interface OutputParts {
   parts: Array<{ type: string; text?: string; [key: string]: unknown }>
 }
 
 /**
  * Injection strategy
  */
-export type InjectionStrategy = "prepend-parts" | "storage" | "auto"
+type InjectionStrategy = "prepend-parts" | "storage" | "auto"

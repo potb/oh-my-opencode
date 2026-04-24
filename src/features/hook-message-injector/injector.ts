@@ -222,7 +222,7 @@ export function findNearestMessageWithFields(messageDir: string): StoredMessage 
  *
  * @deprecated Use findFirstMessageWithAgentFromSDK for beta/SQLite backend
  */
-export function findFirstMessageWithAgent(messageDir: string): string | null {
+function findFirstMessageWithAgent(messageDir: string): string | null {
   // On beta SQLite backend, skip JSON file reads entirely
   if (isSqliteBackend()) {
     return null
