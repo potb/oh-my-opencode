@@ -12,13 +12,10 @@ type MessagesTransformOutput = { messages: MessageWithParts[] }
 export function createMessagesTransformHandler(args: {
   hooks: CreatedHooks
 }): (input: Record<string, never>, output: MessagesTransformOutput) => Promise<void> {
-  return async (input, output): Promise<void> => {
-    await args.hooks.thinkingBlockValidator?.[
-      "experimental.chat.messages.transform"
-    ]?.(input, output)
+  void args
 
-    await args.hooks.toolPairValidator?.[
-      "experimental.chat.messages.transform"
-    ]?.(input, output)
+  return async (_input, _output): Promise<void> => {
+    void _input
+    void _output
   }
 }
