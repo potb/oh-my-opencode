@@ -1,6 +1,5 @@
 import type { OhMyOpenCodeConfig } from "../config"
 import type { AgentOverrides } from "../config/schema/agent-overrides"
-import { getSessionAgent } from "../features/claude-code-session-state"
 import { log } from "../shared"
 import { getAgentConfigKey } from "../shared/agent-display-names"
 import { scheduleDeferredModelOverride } from "./ultrawork-db-model-override"
@@ -64,15 +63,13 @@ export function resolveUltraworkOverride(
     message: Record<string, unknown>
     parts: Array<{ type: string; text?: string; [key: string]: unknown }>
   },
-  sessionID?: string,
 ): UltraworkOverrideResult | null {
   const promptText = extractPromptText(output.parts)
   if (!detectUltrawork(promptText)) return null
 
   const messageAgentName =
     typeof output.message["agent"] === "string" ? (output.message["agent"] as string) : undefined
-  const sessionAgentName = sessionID ? getSessionAgent(sessionID) : undefined
-  const rawAgentName = inputAgentName ?? messageAgentName ?? sessionAgentName
+  const rawAgentName = inputAgentName ?? messageAgentName
   if (!rawAgentName || !pluginConfig.agents) return null
 
   const agentConfigKey = getAgentConfigKey(rawAgentName)
@@ -156,7 +153,7 @@ export function applyUltraworkModelOverrideOnMessage(
   sessionID?: string,
   client?: unknown,
 ): void | Promise<void> {
-  const override = resolveUltraworkOverride(pluginConfig, inputAgentName, output, sessionID)
+  const override = resolveUltraworkOverride(pluginConfig, inputAgentName, output)
   if (!override) return
 
   const currentModel = getMessageModel(output.message.model)

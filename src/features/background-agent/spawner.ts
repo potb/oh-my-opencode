@@ -2,8 +2,8 @@ import type { BackgroundTask, LaunchInput, ResumeInput } from "./types"
 import type { OpencodeClient, QueueItem } from "./constants"
 import { log, getAgentToolRestrictions, promptWithModelSuggestionRetry, createInternalAgentTextPart } from "../../shared"
 import { applySessionPromptParams } from "../../shared/session-prompt-params-helpers"
-import { subagentSessions } from "../claude-code-session-state"
 import { stripAgentListSortPrefix } from "../../shared/agent-display-names"
+import { addSubagentSession } from "../../shared/subagent-session-registry"
 import type { ConcurrencyManager } from "./concurrency"
 
 export const FALLBACK_AGENT = "general"
@@ -107,7 +107,7 @@ export async function startTask(
   }
 
   const sessionID = createResult.data.id
-  subagentSessions.add(sessionID)
+  addSubagentSession(sessionID)
 
   task.status = "running"
   task.startedAt = new Date()
@@ -219,7 +219,7 @@ async function resumeTask(
     lastUpdate: new Date(),
   }
 
-  subagentSessions.add(task.sessionID)
+  addSubagentSession(task.sessionID)
 
   log("[background-agent] Resuming task:", { taskId: task.id, sessionID: task.sessionID })
 

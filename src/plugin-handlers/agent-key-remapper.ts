@@ -26,8 +26,6 @@ export function remapAgentKeysToDisplayNames(
       result[displayName] = rewriteAgentNameForListDisplay(key, value)
       // Regression guard: do not also assign result[key].
       // This line was repeatedly re-added and caused duplicate agent rows in the UI.
-      // Runtime callers that previously depended on config-key aliases were fixed in:
-      // - features/claude-code-session-state/state.ts (dual registration for display + config forms)
     } else {
       result[key] = value
     }

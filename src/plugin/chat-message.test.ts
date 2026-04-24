@@ -1,11 +1,11 @@
 import { afterEach, describe, expect, mock, test } from "bun:test"
 
 import { createChatMessageHandler } from "./chat-message"
+import { resetMainSessionIDForTesting, setMainSessionID } from "../shared/main-session-id"
 import {
-  _resetForTesting,
-  setMainSession,
-  subagentSessions,
-} from "../features/claude-code-session-state"
+  addSubagentSession,
+  resetSubagentSessionsForTesting,
+} from "../shared/subagent-session-registry"
 import { clearSessionModel, getSessionModel, setSessionModel } from "../shared/session-model-state"
 
 type ChatMessagePart = { type: string; text?: string; [key: string]: unknown }
@@ -19,7 +19,8 @@ function createMockOutput(): ChatMessageHandlerOutput {
 }
 
 afterEach(() => {
-  _resetForTesting()
+  resetMainSessionIDForTesting()
+  resetSubagentSessionsForTesting()
   clearSessionModel("test-session")
   clearSessionModel("main-session")
   clearSessionModel("subagent-session")
@@ -51,7 +52,7 @@ describe("createChatMessageHandler", () => {
   })
 
   test("reuses the stored main-session model when no explicit model is provided", async () => {
-    setMainSession("main-session")
+    setMainSessionID("main-session")
     setSessionModel("main-session", { providerID: "openai", modelID: "gpt-5.4" })
 
     const handler = createChatMessageHandler({
@@ -97,8 +98,8 @@ describe("createChatMessageHandler", () => {
   })
 
   test("does not reuse the stored model for subagent sessions", async () => {
-    subagentSessions.add("subagent-session")
-    setMainSession("main-session")
+    addSubagentSession("subagent-session")
+    setMainSessionID("main-session")
     setSessionModel("subagent-session", { providerID: "openai", modelID: "gpt-5.4" })
 
     const handler = createChatMessageHandler({

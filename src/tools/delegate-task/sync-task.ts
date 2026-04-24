@@ -1,9 +1,7 @@
 import type { DelegateTaskArgs, ToolContextWithMetadata, DelegatedModelConfig } from "./types"
 import type { ExecutorContext, ParentContext } from "./executor-types"
-import { storeToolMetadata } from "../../features/tool-metadata-store"
-import { resolveCallID } from "./resolve-call-id"
-import { subagentSessions, syncSubagentSessions, setSessionAgent } from "../../features/claude-code-session-state"
 import { log } from "../../shared/logger"
+import { addSubagentSession, removeSubagentSession } from "../../shared/subagent-session-registry"
 import { SessionCategoryRegistry } from "../../shared/session-category-registry"
 import { formatDuration } from "./time-formatter"
 import { formatDetailedError } from "./error-formatting"
@@ -79,9 +77,7 @@ export async function executeSyncTask(
     const sessionID = createSessionResult.sessionID
     spawnReservation?.commit()
     syncSessionID = sessionID
-    subagentSessions.add(sessionID)
-    syncSubagentSessions.add(sessionID)
-    setSessionAgent(sessionID, agentToUse)
+    addSubagentSession(sessionID)
 
     if (args.category) {
       SessionCategoryRegistry.register(sessionID, args.category)
@@ -119,10 +115,6 @@ export async function executeSyncTask(
       },
     }
     await ctx.metadata?.(syncTaskMeta)
-    const callID = resolveCallID(ctx)
-    if (callID) {
-      storeToolMetadata(ctx.sessionID, callID, syncTaskMeta)
-    }
 
     let effectiveCategoryModel = categoryModel
     let promptError = await deps.sendSyncPrompt(client, {
@@ -213,8 +205,7 @@ session_id: ${sessionID}
     })
   } finally {
     if (syncSessionID) {
-      subagentSessions.delete(syncSessionID)
-      syncSubagentSessions.delete(syncSessionID)
+      removeSubagentSession(syncSessionID)
       SessionCategoryRegistry.remove(syncSessionID)
     }
   }

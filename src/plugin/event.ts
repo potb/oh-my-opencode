@@ -2,13 +2,9 @@ import type { OhMyOpenCodeConfig } from "../config";
 import type { PluginContext } from "./types";
 
 import {
-  clearSessionAgent,
   getMainSessionID,
-  setMainSession,
-  subagentSessions,
-  syncSubagentSessions,
-  updateSessionAgent,
-} from "../features/claude-code-session-state";
+  setMainSessionID,
+} from "../shared/main-session-id";
 import {
   clearBackgroundOutputConsumptionsForParentSession,
   clearBackgroundOutputConsumptionsForTaskSession,
@@ -18,6 +14,7 @@ import { resetMessageCursor } from "../shared";
 import { log } from "../shared/logger";
 import { clearSessionModel, setSessionModel } from "../shared/session-model-state";
 import { clearSessionPromptParams } from "../shared/session-prompt-params-state";
+import { removeSubagentSession } from "../shared/subagent-session-registry";
 import { deleteSessionTools } from "../shared/session-tools-store";
 import { lspManager } from "../tools";
 
@@ -162,7 +159,7 @@ export function createEventHandler(args: {
       const sessionInfo = props?.info as { id?: string; title?: string; parentID?: string } | undefined;
 
       if (!sessionInfo?.parentID) {
-        setMainSession(sessionInfo?.id);
+        setMainSessionID(sessionInfo?.id);
       }
 
       firstMessageVariantGate.markSessionCreated(sessionInfo);
@@ -171,12 +168,10 @@ export function createEventHandler(args: {
     if (event.type === "session.deleted") {
       const sessionInfo = props?.info as { id?: string } | undefined;
       if (sessionInfo?.id === getMainSessionID()) {
-        setMainSession(undefined);
+        setMainSessionID(undefined);
       }
 
       if (sessionInfo?.id) {
-        const wasSyncSubagentSession = syncSubagentSessions.has(sessionInfo.id);
-        clearSessionAgent(sessionInfo.id);
         lastKnownModelBySession.delete(sessionInfo.id);
         resetMessageCursor(sessionInfo.id);
         clearBackgroundOutputConsumptionsForParentSession(sessionInfo.id);
@@ -184,10 +179,7 @@ export function createEventHandler(args: {
         firstMessageVariantGate.clear(sessionInfo.id);
         clearSessionModel(sessionInfo.id);
         clearSessionPromptParams(sessionInfo.id);
-        syncSubagentSessions.delete(sessionInfo.id);
-        if (wasSyncSubagentSession) {
-          subagentSessions.delete(sessionInfo.id);
-        }
+        removeSubagentSession(sessionInfo.id);
         deleteSessionTools(sessionInfo.id);
         await lspManager.cleanupTempDirectoryClients();
       }
@@ -206,9 +198,6 @@ export function createEventHandler(args: {
       const role = info?.role as string | undefined;
       if (sessionID && role === "user") {
         const isCompactionMessage = agent ? isCompactionAgent(agent) : false;
-        if (agent && !isCompactionMessage) {
-          updateSessionAgent(sessionID, agent);
-        }
         const providerID = info?.providerID as string | undefined;
         const modelID = info?.modelID as string | undefined;
         if (providerID && modelID && !isCompactionMessage) {

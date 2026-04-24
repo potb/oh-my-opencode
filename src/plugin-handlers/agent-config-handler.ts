@@ -2,7 +2,6 @@ import { createBuiltinAgents } from "../agents";
 import type { OhMyOpenCodeConfig } from "../config";
 import { log } from "../shared";
 import { getAgentRuntimeName } from "../shared/agent-display-names";
-import { registerAgentName } from "../features/claude-code-session-state";
 import { FIXED_PRODUCT_AGENT_NAMES, REMOVED_AGENT_NAMES } from "../fixed-product";
 import { reorderAgentsByPriority } from "./agent-priority-order";
 import { remapAgentKeysToDisplayNames } from "./agent-key-remapper";
@@ -48,9 +47,6 @@ export async function applyAgentConfig(params: {
   }
 
   const agentResult = params.config.agent as Record<string, unknown>;
-  for (const name of Object.keys(agentResult)) {
-    registerAgentName(name);
-  }
   log("[config-handler] agents loaded", { agentKeys: Object.keys(agentResult) });
   return agentResult;
 }

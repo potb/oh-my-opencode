@@ -1,7 +1,6 @@
 import { describe, expect, test, beforeEach, afterEach, spyOn } from "bun:test"
 import * as sharedModule from "../shared"
 import * as dbOverrideModule from "./ultrawork-db-model-override"
-import * as sessionStateModule from "../features/claude-code-session-state"
 
 let resolveUltraworkOverride: (typeof import("./ultrawork-model-override"))["resolveUltraworkOverride"]
 let detectUltrawork: (typeof import("./ultrawork-model-override"))["detectUltrawork"]
@@ -218,22 +217,6 @@ describe("resolveUltraworkOverride", () => {
     expect(result).toEqual({ providerID: "anthropic", modelID: "claude-opus-4-6", variant: undefined })
   })
 
-  test("should use session agent when input and message agents are undefined", () => {
-    //#given
-    const config = createConfig("sisyphus", { model: "anthropic/claude-opus-4-6", variant: "max" })
-    const output = createOutput("ultrawork do something")
-    const getSessionAgentSpy = spyOn(sessionStateModule, "getSessionAgent")
-    getSessionAgentSpy.mockReturnValue("sisyphus")
-
-    //#when
-    const result = resolveUltraworkOverride(config, undefined, output, "ses_test")
-
-    //#then
-    expect(getSessionAgentSpy).toHaveBeenCalledWith("ses_test")
-    expect(result).toEqual({ providerID: "anthropic", modelID: "claude-opus-4-6", variant: "max" })
-
-    getSessionAgentSpy.mockRestore()
-  })
 })
 
 describe("applyUltraworkModelOverrideOnMessage", () => {

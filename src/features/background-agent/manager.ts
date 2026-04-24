@@ -27,7 +27,6 @@ import {
   TASK_TTL_MS,
 } from "./constants"
 
-import { subagentSessions } from "../claude-code-session-state"
 import { formatDuration } from "./duration-formatter"
 import {
   buildBackgroundTaskNotificationText,
@@ -70,6 +69,10 @@ import {
   resolveSubagentSpawnContext,
   type SubagentSpawnContext,
 } from "./subagent-spawn-limits"
+import {
+  addSubagentSession,
+  removeSubagentSession,
+} from "../../shared/subagent-session-registry"
 
 type OpencodeClient = PluginInput["client"]
 
@@ -445,11 +448,11 @@ export class BackgroundManager {
     }
 
     this.settlePreStartDescendantReservation(task)
-    subagentSessions.add(sessionID)
+    addSubagentSession(sessionID)
 
     if (this.tasks.get(task.id)?.status === "cancelled") {
       await this.abortSessionWithLogging(sessionID, "cancelled during pre-run setup")
-      subagentSessions.delete(sessionID)
+      removeSubagentSession(sessionID)
       if (task.rootSessionID) {
         this.unregisterRootDescendant(task.rootSessionID)
       }
@@ -643,7 +646,7 @@ export class BackgroundManager {
       }
 
       if (existingTask.sessionID) {
-        subagentSessions.add(existingTask.sessionID)
+        addSubagentSession(existingTask.sessionID)
       }
       this.startPolling()
 
@@ -689,7 +692,7 @@ export class BackgroundManager {
     }
 
     this.tasks.set(task.id, task)
-    subagentSessions.add(input.sessionID)
+    addSubagentSession(input.sessionID)
     this.startPolling()
     this.taskHistory.record(input.parentSessionID, { id: task.id, sessionID: input.sessionID, agent: input.agent || "task", description: input.description, status: "running", startedAt: task.startedAt })
 
@@ -758,7 +761,7 @@ export class BackgroundManager {
 
     this.startPolling()
     if (existingTask.sessionID) {
-      subagentSessions.add(existingTask.sessionID)
+      addSubagentSession(existingTask.sessionID)
     }
 
     if (input.parentSessionID) {
@@ -1375,7 +1378,7 @@ export class BackgroundManager {
       this.tasks.delete(taskId)
       this.clearTaskHistoryWhenParentTasksGone(task.parentSessionID)
       if (task.sessionID) {
-        subagentSessions.delete(task.sessionID)
+        removeSubagentSession(task.sessionID)
         SessionCategoryRegistry.remove(task.sessionID)
       }
       log("[background-agent] Removed completed task from memory:", taskId)
@@ -1991,7 +1994,7 @@ export class BackgroundManager {
     this.idleDeferralTimers.clear()
 
     for (const sessionID of trackedSessionIDs) {
-      subagentSessions.delete(sessionID)
+      removeSubagentSession(sessionID)
       SessionCategoryRegistry.remove(sessionID)
     }
 

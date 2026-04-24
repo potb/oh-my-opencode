@@ -1,4 +1,3 @@
-import { consumeToolMetadata } from "../features/tool-metadata-store"
 import type { CreatedHooks } from "../create-hooks"
 import { log } from "../shared"
 import type { PluginContext } from "./types"
@@ -19,16 +18,6 @@ export function createToolExecuteAfterHandler(args: {
     output: { title: string; output: string; metadata: Record<string, unknown> } | undefined,
   ): Promise<void> => {
     if (!output) return
-
-    const stored = consumeToolMetadata(input.sessionID, input.callID)
-    if (stored) {
-      if (stored.title) {
-        output.title = stored.title
-      }
-      if (stored.metadata) {
-        output.metadata = { ...output.metadata, ...stored.metadata }
-      }
-    }
 
     const runToolExecuteAfterHooks = async (): Promise<void> => {
       await hooks.toolOutputTruncator?.["tool.execute.after"]?.(input, output)

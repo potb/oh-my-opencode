@@ -3,8 +3,9 @@ import type { PluginContext } from "./types"
 
 import { isModelCacheAvailable } from "../shared"
 import { getAgentConfigKey } from "../shared/agent-display-names"
+import { getMainSessionID } from "../shared/main-session-id"
 import { getSessionModel, setSessionModel } from "../shared/session-model-state"
-import { getMainSessionID, setSessionAgent, subagentSessions } from "../features/claude-code-session-state"
+import { isSubagentSession } from "../shared/subagent-session-registry"
 import { applyUltraworkModelOverrideOnMessage } from "./ultrawork-model-override"
 
 import type { CreatedHooks } from "../create-hooks"
@@ -49,7 +50,7 @@ function getStoredMainSessionModel(
     return undefined
   }
 
-  if (subagentSessions.has(input.sessionID)) {
+  if (isSubagentSession(input.sessionID)) {
     return undefined
   }
 
@@ -100,10 +101,6 @@ export function createChatMessageHandler(args: {
     input: ChatMessageInput,
     output: ChatMessageHandlerOutput
   ): Promise<void> => {
-    if (input.agent) {
-      setSessionAgent(input.sessionID, input.agent)
-    }
-
     const isFirstMessage = firstMessageVariantGate.shouldOverride(input.sessionID)
     if (isFirstMessage) {
       firstMessageVariantGate.markApplied(input.sessionID)

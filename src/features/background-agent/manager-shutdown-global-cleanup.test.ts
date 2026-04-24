@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, test } from "bun:test"
 import { tmpdir } from "node:os"
 
-import { _resetForTesting, subagentSessions } from "../claude-code-session-state"
+import { resetSubagentSessionsForTesting, getSubagentSessions } from "../../shared/subagent-session-registry"
 import { SessionCategoryRegistry } from "../../shared/session-category-registry"
 import { BackgroundManager } from "./manager"
 import type { BackgroundTask } from "./types"
@@ -53,13 +53,13 @@ function createBackgroundManager(): BackgroundManager {
 describe("BackgroundManager shutdown global cleanup", () => {
   beforeEach(() => {
     // given
-    _resetForTesting()
+    resetSubagentSessionsForTesting()
     SessionCategoryRegistry.clear()
   })
 
   afterEach(() => {
     // given
-    _resetForTesting()
+    resetSubagentSessionsForTesting()
     SessionCategoryRegistry.clear()
   })
 
@@ -90,6 +90,7 @@ describe("BackgroundManager shutdown global cleanup", () => {
 
     Object.assign(manager, { tasks })
 
+    const subagentSessions = getSubagentSessions()
     subagentSessions.add(runningSessionID)
     subagentSessions.add(completedSessionID)
     subagentSessions.add(unrelatedSessionID)

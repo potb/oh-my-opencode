@@ -1,8 +1,9 @@
 import { afterEach, beforeEach, mock } from "bun:test"
 import { rmSync } from "node:fs"
-import { _resetForTesting as resetClaudeSessionState } from "./src/features/claude-code-session-state/state"
 import { _resetMemCacheForTesting as resetConnectedProvidersCache } from "./src/shared/connected-providers-cache"
 import { getOmoOpenCodeCacheDir } from "./src/shared/data-path"
+import { resetMainSessionIDForTesting } from "./src/shared/main-session-id"
+import { resetSubagentSessionsForTesting } from "./src/shared/subagent-session-registry"
 import { installModuleMockLifecycle } from "./src/testing/module-mock-lifecycle"
 
 const { restoreModuleMocks } = installModuleMockLifecycle(mock)
@@ -18,7 +19,8 @@ beforeEach(() => {
   workingDirectorySnapshot = process.cwd()
   process.env.OMO_DISABLE_POSTHOG = "true"
   cleanupOmoCacheDir(getOmoOpenCodeCacheDir())
-  resetClaudeSessionState()
+  resetMainSessionIDForTesting()
+  resetSubagentSessionsForTesting()
   resetConnectedProvidersCache()
 })
 

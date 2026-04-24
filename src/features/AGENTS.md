@@ -13,10 +13,7 @@ Standalone feature modules wired into plugin/ layer. Each is self-contained with
 | **background-agent** | 47 | HIGH | Task lifecycle, concurrency, polling, spawner pattern, circuit breaker |
 | **builtin-skills** | 13 | LOW | Built-in skill definitions and templates |
 | **claude-code-plugin-loader** | 15 | MEDIUM | Unified plugin discovery from .opencode/plugins/ |
-| **claude-tasks** | 7 | MEDIUM | Task schema + file storage + OpenCode todo sync |
 | **claude-code-mcp-loader** | 6 | MEDIUM | .mcp.json loading with ${VAR} env expansion |
-| **tool-metadata-store** | 3 | LOW | Tool execution metadata cache |
-| **claude-code-session-state** | 3 | LOW | Subagent session state tracking |
 
 ## KEY MODULES
 
