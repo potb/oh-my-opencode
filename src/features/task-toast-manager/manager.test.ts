@@ -43,7 +43,7 @@ describe("TaskToastManager", () => {
         description: "Test task",
         agent: "sisyphus-junior",
         isBackground: true,
-        skills: ["playwright", "git-master"],
+        skills: ["agent-browser", "git-master"],
       }
 
       // when - addTask is called
@@ -52,7 +52,7 @@ describe("TaskToastManager", () => {
       // then - toast message should include skills
       expect(mockClient.tui.showToast).toHaveBeenCalled()
       const call = mockClient.tui.showToast.mock.calls[0][0]
-      expect(call.body.message).toContain("playwright")
+        expect(call.body.message).toContain("agent-browser")
       expect(call.body.message).toContain("git-master")
     })
 

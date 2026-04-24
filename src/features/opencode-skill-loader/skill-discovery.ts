@@ -10,7 +10,7 @@ export function clearSkillCache(): void {
 }
 
 export async function getAllSkills(options?: SkillResolutionOptions): Promise<LoadedSkill[]> {
-	const cacheKey = options?.browserProvider ?? "playwright"
+  const cacheKey = "agent-browser"
 	const hasDisabledSkills = options?.disabledSkills && options.disabledSkills.size > 0
 
 	// Skip cache if disabledSkills is provided (varies between calls)
@@ -47,9 +47,8 @@ export async function getAllSkills(options?: SkillResolutionOptions): Promise<Lo
 		mcpConfig: skill.mcpConfig,
 	}))
 
-	// Provider-gated skill names that should be filtered based on browserProvider
-	const providerGatedSkillNames = new Set(["agent-browser", "playwright"])
-	const browserProvider = options?.browserProvider ?? "playwright"
+  const providerGatedSkillNames = new Set(["agent-browser"])
+  const browserProvider = "agent-browser"
 
 	// Filter discovered skills to exclude provider-gated names that don't match the selected provider
 	const filteredDiscoveredSkills = discoveredSkills.filter((skill) => {
