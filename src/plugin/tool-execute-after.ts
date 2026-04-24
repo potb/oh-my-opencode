@@ -21,15 +21,10 @@ export function createToolExecuteAfterHandler(args: {
 
     const runToolExecuteAfterHooks = async (): Promise<void> => {
       await hooks.toolOutputTruncator?.["tool.execute.after"]?.(input, output)
-      await hooks.contextWindowMonitor?.["tool.execute.after"]?.(input, output)
-      await hooks.emptyTaskResponseDetector?.["tool.execute.after"]?.(input, output)
       await hooks.editErrorRecovery?.["tool.execute.after"]?.(input, output)
       await hooks.delegateTaskRetry?.["tool.execute.after"]?.(input, output)
-      await hooks.taskResumeInfo?.["tool.execute.after"]?.(input, output)
-      await hooks.readImageResizer?.["tool.execute.after"]?.(input, output)
       await hooks.hashlineReadEnhancer?.["tool.execute.after"]?.(input, output)
       await hooks.webfetchRedirectGuard?.["tool.execute.after"]?.(input, output)
-      await hooks.jsonErrorRecovery?.["tool.execute.after"]?.(input, output)
     }
 
     if (input.tool === "extract" || input.tool === "discard") {

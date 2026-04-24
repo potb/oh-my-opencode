@@ -16,7 +16,7 @@ type ToolExecuteAfterInput = {
 describe("createToolExecuteAfterHandler", () => {
   it("#given truncator changes output #when tool.execute.after runs #then later hooks receive truncated output", async () => {
     const callOrder: string[] = []
-    let detectorSawOutput = ""
+    let enhancerSawOutput = ""
 
     const handler = createToolExecuteAfterHandler({
       ctx: { directory: "/repo" } as never,
@@ -27,10 +27,10 @@ describe("createToolExecuteAfterHandler", () => {
             output.output = "truncated output"
           },
         },
-        emptyTaskResponseDetector: {
+        hashlineReadEnhancer: {
           "tool.execute.after": async (_input: ToolExecuteAfterInput, output: ToolExecuteAfterOutput) => {
-            callOrder.push("emptyTaskResponseDetector")
-            detectorSawOutput = output.output
+            callOrder.push("hashlineReadEnhancer")
+            enhancerSawOutput = output.output
           },
         },
       } as never,
@@ -41,8 +41,8 @@ describe("createToolExecuteAfterHandler", () => {
       { title: "result", output: "original output", metadata: {} }
     )
 
-    expect(callOrder).toEqual(["truncator", "emptyTaskResponseDetector"])
-    expect(detectorSawOutput).toBe("truncated output")
+    expect(callOrder).toEqual(["truncator", "hashlineReadEnhancer"])
+    expect(enhancerSawOutput).toBe("truncated output")
   })
 
   it("runs later hooks after truncation", async () => {
@@ -54,11 +54,6 @@ describe("createToolExecuteAfterHandler", () => {
         toolOutputTruncator: {
           "tool.execute.after": async () => {
             callOrder.push("truncator")
-          },
-        },
-        emptyTaskResponseDetector: {
-          "tool.execute.after": async () => {
-            callOrder.push("emptyTaskResponseDetector")
           },
         },
         hashlineReadEnhancer: {
@@ -74,6 +69,6 @@ describe("createToolExecuteAfterHandler", () => {
       { title: "result", output: "original output", metadata: {} },
     )
 
-    expect(callOrder).toEqual(["truncator", "emptyTaskResponseDetector", "hashlineReadEnhancer"])
+    expect(callOrder).toEqual(["truncator", "hashlineReadEnhancer"])
   })
 })

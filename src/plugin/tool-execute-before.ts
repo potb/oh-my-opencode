@@ -28,8 +28,6 @@ export function createToolExecuteBeforeHandler(args: {
     await hooks.writeExistingFileGuard?.["tool.execute.before"]?.(input, output)
     await hooks.questionLabelTruncator?.["tool.execute.before"]?.(input, output)
     await hooks.nonInteractiveEnv?.["tool.execute.before"]?.(input, output)
-    await hooks.bashFileReadGuard?.["tool.execute.before"]?.(input, output)
-    await hooks.tasksTodowriteDisabler?.["tool.execute.before"]?.(input, output)
     await hooks.webfetchRedirectGuard?.["tool.execute.before"]?.(input, output)
     await hooks.sisyphusJuniorNotepad?.["tool.execute.before"]?.(input, output)
 
