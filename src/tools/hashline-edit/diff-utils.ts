@@ -1,7 +1,7 @@
 import { createTwoFilesPatch } from "diff"
 import { computeLineHash } from "./hash-computation"
 
-export function toHashlineContent(content: string): string {
+function toHashlineContent(content: string): string {
 	if (!content) return content
 	const lines = content.split("\n")
 	const lastLine = lines[lines.length - 1]

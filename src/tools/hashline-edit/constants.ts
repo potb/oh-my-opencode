@@ -1,4 +1,4 @@
-export const NIBBLE_STR = "ZPMQVRWSNKTXJBYH"
+const NIBBLE_STR = "ZPMQVRWSNKTXJBYH"
 
 export const HASHLINE_DICT = Array.from({ length: 256 }, (_, i) => {
   const high = i >>> 4
@@ -7,4 +7,4 @@ export const HASHLINE_DICT = Array.from({ length: 256 }, (_, i) => {
 })
 
 export const HASHLINE_REF_PATTERN = /^([0-9]+)#([ZPMQVRWSNKTXJBYH]{2})$/
-export const HASHLINE_OUTPUT_PATTERN = /^([0-9]+)#([ZPMQVRWSNKTXJBYH]{2})\|(.*)$/
+const HASHLINE_OUTPUT_PATTERN = /^([0-9]+)#([ZPMQVRWSNKTXJBYH]{2})\|(.*)$/

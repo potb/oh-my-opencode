@@ -12,7 +12,7 @@ function leadingWhitespace(text: string): string {
   return match ? match[0] : ""
 }
 
-export function stripLinePrefixes(lines: string[]): string[] {
+function stripLinePrefixes(lines: string[]): string[] {
   let hashPrefixCount = 0
   let diffPlusCount = 0
   let nonEmpty = 0

@@ -1,7 +1,7 @@
 import { computeLegacyLineHash, computeLineHash } from "./hash-computation"
 import { HASHLINE_REF_PATTERN } from "./constants"
 
-export interface LineRef {
+interface LineRef {
   line: number
   hash: string
 }
