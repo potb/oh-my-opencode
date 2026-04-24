@@ -467,12 +467,12 @@ describe("createEventHandler - event forwarding", () => {
 			},
 			managers: createEventHandlerManagers(),
 				hooks: createEventHandlerHooks({
-					autoUpdateChecker: {
+					writeExistingFileGuard: {
 						event: async () => {
 							throw new Error("upstream hook failed")
 						},
 					},
-					writeExistingFileGuard: {
+					questionLabelTruncator: {
 						event: async (input: EventInput) => {
 							laterHookCalls.push(input)
 						},

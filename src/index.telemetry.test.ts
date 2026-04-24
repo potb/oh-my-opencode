@@ -6,7 +6,7 @@ const mockLogLegacyPluginStartupWarning = mock(() => {})
 const mockLoadPluginConfig = mock(() => ({}))
 const mockCreateManagers = mock(() => ({
   backgroundManager: { shutdown: async () => {} },
-  configHandler: async () => {},
+  configHook: async () => {},
 }))
 const mockCreateTools = mock(async () => ({
   mergedSkills: [],
