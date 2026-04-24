@@ -40,7 +40,6 @@ Core glue layer. Source files assemble the 10 OpenCode hook handlers and compose
 | `session-agent-resolver.ts` | Resolve which agent owns a session |
 | `session-status-normalizer.ts` | Normalize session status across OpenCode versions |
 | `recent-synthetic-idles.ts` | Dedup rapid idle events |
-| `unstable-agent-babysitter.ts` | Track unstable agent behavior across sessions |
 | `types.ts` | `PluginContext`, `PluginInterface`, `ToolsRecord`, `TmuxConfig` |
 | `ultrawork-model-override.ts` | Ultrawork mode model override logic |
 | `ultrawork-db-model-override.ts` | DB-level model override for ultrawork |

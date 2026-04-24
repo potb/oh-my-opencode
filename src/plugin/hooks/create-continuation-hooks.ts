@@ -3,18 +3,14 @@ import type { BackgroundManager } from "../../features/background-agent"
 import type { PluginContext } from "../types"
 
 import {
-  createBackgroundNotificationHook,
   createCompactionContextInjector,
   createCompactionTodoPreserverHook,
 } from "../../hooks"
 import { safeCreateHook } from "../../shared/safe-create-hook"
-import { createUnstableAgentBabysitter } from "../unstable-agent-babysitter"
 
 type ContinuationHooks = {
   compactionContextInjector: ReturnType<typeof createCompactionContextInjector> | null
   compactionTodoPreserver: ReturnType<typeof createCompactionTodoPreserverHook> | null
-  unstableAgentBabysitter: ReturnType<typeof createUnstableAgentBabysitter> | null
-  backgroundNotificationHook: ReturnType<typeof createBackgroundNotificationHook> | null
 }
 
 export function createContinuationHooks(args: {
@@ -23,12 +19,7 @@ export function createContinuationHooks(args: {
   safeHookEnabled: boolean
   backgroundManager: BackgroundManager
 }): ContinuationHooks {
-  const {
-    ctx,
-    isHookEnabled,
-    safeHookEnabled,
-    backgroundManager,
-  } = args
+  const { ctx, isHookEnabled, safeHookEnabled, backgroundManager } = args
 
   const safeHook = <T>(hookName: HookName, factory: () => T): T | null =>
     safeCreateHook(hookName, factory, { enabled: safeHookEnabled })
@@ -42,19 +33,8 @@ export function createContinuationHooks(args: {
     ? safeHook("compaction-todo-preserver", () => createCompactionTodoPreserverHook(ctx))
     : null
 
-  const unstableAgentBabysitter = isHookEnabled("unstable-agent-babysitter")
-    ? safeHook("unstable-agent-babysitter", () =>
-        createUnstableAgentBabysitter({ ctx, backgroundManager }))
-    : null
-
-  const backgroundNotificationHook = isHookEnabled("background-notification")
-    ? safeHook("background-notification", () => createBackgroundNotificationHook(backgroundManager))
-    : null
-
   return {
     compactionContextInjector,
     compactionTodoPreserver,
-    unstableAgentBabysitter,
-    backgroundNotificationHook,
   }
 }

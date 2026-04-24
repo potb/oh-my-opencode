@@ -5,11 +5,9 @@ import type { PluginContext } from "../types"
 import {
   createContextWindowMonitorHook,
   createSessionRecoveryHook,
-  createSessionNotification,
   createThinkModeHook,
   createAnthropicContextWindowLimitRecoveryHook,
   createAutoUpdateCheckerHook,
-  createAgentUsageReminderHook,
   createNonInteractiveEnvHook,
   createEditErrorRecoveryHook,
   createDelegateTaskRetryHook,
@@ -20,22 +18,15 @@ import {
   createLegacyPluginToastHook,
 } from "../../hooks"
 import { createAnthropicEffortHook } from "../../hooks/anthropic-effort"
-import {
-  detectExternalNotificationPlugin,
-  getNotificationConflictWarning,
-  log,
-} from "../../shared"
 import { safeCreateHook } from "../../shared/safe-create-hook"
 
 type SessionHooks = {
   contextWindowMonitor: ReturnType<typeof createContextWindowMonitorHook> | null
   preemptiveCompaction: ReturnType<typeof createPreemptiveCompactionHook> | null
   sessionRecovery: ReturnType<typeof createSessionRecoveryHook> | null
-  sessionNotification: ReturnType<typeof createSessionNotification> | null
   thinkMode: ReturnType<typeof createThinkModeHook> | null
   anthropicContextWindowLimitRecovery: ReturnType<typeof createAnthropicContextWindowLimitRecoveryHook> | null
   autoUpdateChecker: ReturnType<typeof createAutoUpdateCheckerHook> | null
-  agentUsageReminder: ReturnType<typeof createAgentUsageReminderHook> | null
   nonInteractiveEnv: ReturnType<typeof createNonInteractiveEnvHook> | null
   editErrorRecovery: ReturnType<typeof createEditErrorRecoveryHook> | null
   delegateTaskRetry: ReturnType<typeof createDelegateTaskRetryHook> | null
@@ -74,16 +65,6 @@ export function createSessionHooks(args: {
         createSessionRecoveryHook(ctx, { experimental: pluginConfig.experimental }))
     : null
 
-  let sessionNotification: ReturnType<typeof createSessionNotification> | null = null
-  if (isHookEnabled("session-notification")) {
-    const externalNotifier = detectExternalNotificationPlugin(ctx.directory)
-    if (externalNotifier.detected) {
-      log(getNotificationConflictWarning(externalNotifier.pluginName!))
-    } else {
-      sessionNotification = safeHook("session-notification", () => createSessionNotification(ctx))
-    }
-  }
-
   const thinkMode = isHookEnabled("think-mode")
     ? safeHook("think-mode", () => createThinkModeHook())
     : null
@@ -101,10 +82,6 @@ export function createSessionHooks(args: {
           autoUpdate: false,
           modelCapabilities: undefined,
         }))
-    : null
-
-  const agentUsageReminder = isHookEnabled("agent-usage-reminder")
-    ? safeHook("agent-usage-reminder", () => createAgentUsageReminderHook(ctx))
     : null
 
   const nonInteractiveEnv = isHookEnabled("non-interactive-env")
@@ -142,11 +119,9 @@ export function createSessionHooks(args: {
     contextWindowMonitor,
     preemptiveCompaction,
     sessionRecovery,
-    sessionNotification,
     thinkMode,
     anthropicContextWindowLimitRecovery,
     autoUpdateChecker,
-    agentUsageReminder,
     nonInteractiveEnv,
     editErrorRecovery,
     delegateTaskRetry,

@@ -68,7 +68,6 @@ describe("createManagers", () => {
       ctx: createContext("/tmp"),
       pluginConfig: OhMyOpenCodeConfigSchema.parse({}),
       modelCacheState: createModelCacheState(),
-      backgroundNotificationHookEnabled: false,
       deps: createDeps(),
     })
 

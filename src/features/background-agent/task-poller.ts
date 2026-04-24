@@ -15,7 +15,6 @@ import {
   TASK_TTL_MS,
 } from "./constants"
 import { abortWithTimeout } from "./abort-with-timeout"
-import { removeTaskToastTracking } from "./remove-task-toast-tracking"
 import { MIN_SESSION_GONE_POLLS, verifySessionExists } from "./session-existence"
 
 import { isActiveSessionStatus } from "./session-status-classifier"
@@ -53,7 +52,6 @@ export function pruneStaleTasksAndNotifications(args: {
       const age = now - completedAt
       if (age <= TERMINAL_TASK_TTL_MS) continue
 
-      removeTaskToastTracking(taskId)
       tasks.delete(taskId)
       continue
     }
@@ -118,7 +116,7 @@ export async function checkAndInterruptStaleTasks(args: {
     concurrencyManager,
     notifyParentSession,
     sessionStatuses,
-    onTaskInterrupted = (task) => removeTaskToastTracking(task.id),
+    onTaskInterrupted = () => {},
   } = args
   const staleTimeoutMs = config?.staleTimeoutMs ?? DEFAULT_STALE_TIMEOUT_MS
   const sessionGoneTimeoutMs = config?.sessionGoneTimeoutMs ?? DEFAULT_SESSION_GONE_TIMEOUT_MS

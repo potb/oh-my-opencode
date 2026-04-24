@@ -94,7 +94,13 @@ export function createDelegateTask(options: DelegateTaskToolOptions): ToolDefini
 
       let agentToUse: string
       let categoryModel: DelegatedModelConfig | undefined
-      let modelInfo: import("../../features/task-toast-manager/types").ModelFallbackInfo | undefined
+      let modelInfo:
+        | {
+            model: string
+            type: "user-defined" | "inherited" | "category-default" | "system-default"
+            source?: import("../../shared/model-resolver").ModelSource
+          }
+        | undefined
       let fallbackChain: import("../../shared/model-requirements").FallbackEntry[] | undefined
       let maxPromptTokens: number | undefined
 

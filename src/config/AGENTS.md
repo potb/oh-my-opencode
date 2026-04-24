@@ -14,13 +14,12 @@ config/schema/
 ├── agent-names.ts              # BuiltinAgentNameSchema, OverridableAgentNameSchema
 ├── agent-overrides.ts          # AgentOverrideConfigSchema (21 fields per agent)
 ├── categories.ts               # Built-in + custom categories
-├── hooks.ts                    # HookNameSchema (48 hooks)
+├── hooks.ts                    # HookNameSchema
 ├── experimental.ts             # Feature flags (plugin_load_timeout_ms min 1000)
 ├── sisyphus.ts                 # SisyphusConfigSchema (task system)
 ├── tmux.ts                     # Legacy tmux schema module (no longer part of root config)
 ├── websearch.ts                # provider: "exa" | "tavily"
 ├── claude-code.ts              # CC compatibility settings
-├── comment-checker.ts          # AI comment detection config
 ├── git-master.ts               # commit_footer: boolean | string
 ├── browser-automation.ts       # provider: agent-browser
 ├── background-task.ts          # Concurrency limits per model/provider
@@ -34,7 +33,7 @@ config/schema/
 
 ## ROOT SCHEMA FIELDS
 
-`$schema`, `new_task_system_enabled`, `disabled_mcps`, `disabled_agents`, `disabled_hooks`, `disabled_commands`, `disabled_tools`, `hashline_edit`, `agents`, `categories`, `claude_code`, `comment_checker`, `experimental`, `background_task`, `git_master`, `browser_automation_engine`, `websearch`, `sisyphus`, `_migrations`
+`$schema`, `new_task_system_enabled`, `disabled_mcps`, `disabled_agents`, `disabled_hooks`, `disabled_commands`, `disabled_tools`, `hashline_edit`, `agents`, `categories`, `claude_code`, `experimental`, `background_task`, `git_master`, `browser_automation_engine`, `websearch`, `sisyphus`, `_migrations`
 
 ## AGENT OVERRIDE FIELDS
 

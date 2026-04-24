@@ -1,5 +1,4 @@
 export { createAnthropicContextWindowLimitRecoveryHook } from "./recovery-hook"
-export type { AnthropicContextWindowLimitRecoveryOptions } from "./recovery-hook"
 
 
 

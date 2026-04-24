@@ -8,21 +8,16 @@ Session, tool-guard, transform, and continuation hooks compose the runtime surfa
 
 ## HOOK TIERS
 
-### Tier 1: Session Hooks (24) — `create-session-hooks.ts`
+### Tier 1: Session Hooks — `create-session-hooks.ts`
 ## STRUCTURE
 ```
 hooks/
-├── agent-usage-reminder/         # Reminds about available agents
 ├── anthropic-context-window-limit-recovery/ # Auto-summarize
 ├── anthropic-effort/            # Reasoning effort level adjustment
 ├── auto-update-checker/        # Plugin update check
-├── background-notification/    # OS notification
-├── comment-checker/            # Prevents AI slop
 ├── compaction-context-injector/ # Injects context on compaction
 ├── compaction-todo-preserver/  # Preserves todos through compaction
 ├── delegate-task-retry/        # Retries failed delegations
-├── directory-agents-injector/  # Auto-injects AGENTS.md
-├── directory-readme-injector/  # Auto-injects README.md
 ├── edit-error-recovery/        # Recovers from failures
 ├── hashline-edit-diff-enhancer/ # Enhanced diff output for hashline edits
 ├── hashline-read-enhancer/     # Adds LINE#ID hashes to Read output
@@ -31,7 +26,6 @@ hooks/
 ├── non-interactive-env/        # Non-TTY environment handling
 ├── question-label-truncator/   # Auto-truncates question labels
 ├── read-image-resizer/         # Resize images for context efficiency
-├── rules-injector/             # Conditional rules
 ├── session-recovery/           # Auto-recovers from crashes
 ├── sisyphus-junior-notepad/    # Sisyphus Junior notepad
 ├── task-reminder/              # Task system usage reminders
@@ -41,7 +35,6 @@ hooks/
 ├── thinking-block-validator/   # Ensures valid <thinking>
 ├── todo-description-override/  # Override todo descriptions
 ├── tool-pair-validator/        # Validate tool pair usage
-├── unstable-agent-babysitter/  # Monitor unstable agent behavior
 ├── webfetch-redirect-guard/    # Guard webfetch redirect behavior
 ├── write-existing-file-guard/  # Require Read before Write
 └── index.ts                    # Hook aggregation + registration
@@ -52,11 +45,9 @@ hooks/
 | contextWindowMonitor | session.idle | Track context window usage |
 | preemptiveCompaction | session.idle | Trigger compaction before limit |
 | sessionRecovery | session.error | Auto-retry on recoverable errors |
-| sessionNotification | session.idle | OS notifications on completion |
 | thinkMode | chat.params | Model variant switching (extended thinking) |
 | anthropicContextWindowLimitRecovery | session.error | Multi-strategy context recovery (truncation, compaction) |
 | autoUpdateChecker | session.created | Check npm for plugin updates |
-| agentUsageReminder | chat.message | Remind about available agents |
 | nonInteractiveEnv | chat.message | Adjust behavior for `run` command |
 | editErrorRecovery | tool.execute.after | Retry failed file edits |
 | delegateTaskRetry | tool.execute.after | Retry failed task delegations |
@@ -66,16 +57,12 @@ hooks/
 | anthropicEffort | chat.params | Adjust reasoning effort level |
 | legacyPluginToast | chat.message | Show toast when legacy plugin name detected |
 
-### Tier 2: Tool Guard Hooks (14) — `create-tool-guard-hooks.ts`
+### Tier 2: Tool Guard Hooks — `create-tool-guard-hooks.ts`
 
 | Hook | Event | Purpose |
 |------|-------|---------|
-| commentChecker | tool.execute.after | Block AI-generated comment patterns |
 | toolOutputTruncator | tool.execute.after | Truncate oversized tool output |
-| directoryAgentsInjector | tool.execute.before | Inject dir AGENTS.md into context |
-| directoryReadmeInjector | tool.execute.before | Inject dir README.md into context |
 | emptyTaskResponseDetector | tool.execute.after | Detect empty task responses |
-| rulesInjector | tool.execute.before | Conditional rules injection (AGENTS.md, config) |
 | tasksTodowriteDisabler | tool.execute.before | Disable TodoWrite when task system active |
 | writeExistingFileGuard | tool.execute.before | Require Read before Write on existing files |
 | bashFileReadGuard | tool.execute.before | Guard bash commands that read files |
@@ -92,22 +79,17 @@ hooks/
 | thinkingBlockValidator | messages.transform | Validate thinking block structure |
 | toolPairValidator | messages.transform | Validate tool call/result pairs |
 
-### Tier 4: Continuation Hooks (4) — `create-continuation-hooks.ts`
+### Tier 4: Continuation Hooks — `create-continuation-hooks.ts`
 
 | Hook | Event | Purpose |
 |------|-------|---------|
 | compactionContextInjector | session.compacted | Re-inject context after compaction |
 | compactionTodoPreserver | session.compacted | Preserve todos through compaction |
-| unstableAgentBabysitter | session.idle | Monitor unstable agent behavior |
-| backgroundNotificationHook | event | Background task completion notifications |
 
 ## KEY HOOKS (COMPLEX)
 
 ### anthropic-context-window-limit-recovery (31 files, ~2232 LOC)
 Multi-strategy recovery when hitting context limits. Strategies: truncation, compaction, summarization.
-
-### rules-injector (19 files, ~1604 LOC)
-Conditional rules injection from AGENTS.md, config, skill rules. Evaluates conditions to determine which rules apply.
 
 ## STANDALONE HOOKS (in src/hooks/ root)
 
@@ -116,7 +98,6 @@ Conditional rules injection from AGENTS.md, config, skill rules. Evaluates condi
 | context-window-monitor.ts | Track context window percentage |
 | preemptive-compaction.ts | Trigger compaction before hard limit |
 | tool-output-truncator.ts | Truncate tool output by token count |
-| session-notification.ts + 4 helpers | OS notification on session completion |
 | empty-task-response-detector.ts | Detect empty/failed task responses |
 | session-todo-status.ts | Todo completion status tracking |
 

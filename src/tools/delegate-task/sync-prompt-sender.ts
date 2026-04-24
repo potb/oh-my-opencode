@@ -58,7 +58,6 @@ export async function sendSyncPrompt(
     args: DelegateTaskArgs
     systemContent: string | undefined
     categoryModel: DelegatedModelConfig | undefined
-    toastManager: { removeTask: (id: string) => void } | null | undefined
     taskId: string | undefined
     sisyphusAgentConfig?: SisyphusAgentConfig
   },
@@ -108,9 +107,6 @@ export async function sendSyncPrompt(
       }
     }
 
-    if (input.toastManager && input.taskId !== undefined) {
-      input.toastManager.removeTask(input.taskId)
-    }
     const errorMessage = promptError instanceof Error ? promptError.message : String(promptError)
     if (errorMessage.includes("agent.name") || errorMessage.includes("undefined")) {
       return formatDetailedError(new Error(`Agent "${input.agentToUse}" not found. Make sure the agent is registered in your opencode.json or provided by a plugin.`), {

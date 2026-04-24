@@ -43,7 +43,7 @@ export function createEventHandler(args: {
   managers: Managers;
   hooks: CreatedHooks;
 }): (input: EventInput) => Promise<void> {
-  const { ctx, firstMessageVariantGate, hooks } = args;
+  const { ctx, firstMessageVariantGate, hooks, managers } = args;
   const pluginContext = ctx as {
     directory: string;
     client: {
@@ -99,23 +99,26 @@ export function createEventHandler(args: {
   };
 
   const dispatchToHooks = async (input: EventInput): Promise<void> => {
+    try {
+      managers.backgroundManager.handleEvent(input.event);
+    } catch (error) {
+      log("[event] background manager event handling failed", {
+        eventType: input.event.type,
+        sessionID: getEventSessionID(input),
+        error,
+      });
+    }
+
     await runEventHookSafely("autoUpdateChecker", hooks.autoUpdateChecker?.event, input);
     await runEventHookSafely("legacyPluginToast", hooks.legacyPluginToast?.event, input);
-    await runEventHookSafely("backgroundNotificationHook", hooks.backgroundNotificationHook?.event, input);
-    await runEventHookSafely("sessionNotification", hooks.sessionNotification, input);
-    await runEventHookSafely("unstableAgentBabysitter", hooks.unstableAgentBabysitter?.event, input);
     await runEventHookSafely("contextWindowMonitor", hooks.contextWindowMonitor?.event, input);
     await runEventHookSafely("preemptiveCompaction", hooks.preemptiveCompaction?.event, input);
-    await runEventHookSafely("directoryAgentsInjector", hooks.directoryAgentsInjector?.event, input);
-    await runEventHookSafely("directoryReadmeInjector", hooks.directoryReadmeInjector?.event, input);
-    await runEventHookSafely("rulesInjector", hooks.rulesInjector?.event, input);
     await runEventHookSafely("thinkMode", hooks.thinkMode?.event, input);
     await runEventHookSafely(
       "anthropicContextWindowLimitRecovery",
       hooks.anthropicContextWindowLimitRecovery?.event,
       input,
     );
-    await runEventHookSafely("agentUsageReminder", hooks.agentUsageReminder?.event, input);
     await runEventHookSafely("compactionContextInjector", hooks.compactionContextInjector?.event, input);
     await runEventHookSafely("compactionTodoPreserver", hooks.compactionTodoPreserver?.event, input);
     await runEventHookSafely("writeExistingFileGuard", hooks.writeExistingFileGuard?.event, input);

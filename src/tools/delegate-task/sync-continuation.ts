@@ -3,7 +3,6 @@ import type { ExecutorContext, SessionMessage } from "./executor-types"
 import { isPlanFamily } from "./constants"
 import { storeToolMetadata } from "../../features/tool-metadata-store"
 import { resolveCallID } from "./resolve-call-id"
-import { getTaskToastManager } from "../../features/task-toast-manager"
 import { getAgentToolRestrictions } from "../../shared/agent-tool-restrictions"
 import { getMessageDir } from "../../shared"
 import { promptWithModelSuggestionRetry } from "../../shared/model-suggestion-retry"
@@ -21,18 +20,8 @@ export async function executeSyncContinuation(
   deps: SyncContinuationDeps = syncContinuationDeps
 ): Promise<string> {
   const { client, syncPollTimeoutMs, sisyphusAgentConfig } = executorCtx
-  const toastManager = getTaskToastManager()
   const taskId = `resume_sync_${args.session_id!.slice(0, 8)}`
   const startTime = new Date()
-
-  if (toastManager) {
-    toastManager.addTask({
-      id: taskId,
-      description: args.description,
-      agent: "continue",
-      isBackground: false,
-    })
-  }
 
   let syncContMeta: { title: string; metadata: Record<string, unknown> } | undefined
 
@@ -105,33 +94,28 @@ export async function executeSyncContinuation(
       },
     })
    } catch (promptError) {
-     if (toastManager) {
-       toastManager.removeTask(taskId)
-     }
-     const errorMessage = promptError instanceof Error ? promptError.message : String(promptError)
-     return `Failed to send continuation prompt: ${errorMessage}\n\nSession ID: ${args.session_id}`
+      const errorMessage = promptError instanceof Error ? promptError.message : String(promptError)
+      return `Failed to send continuation prompt: ${errorMessage}\n\nSession ID: ${args.session_id}`
    }
 
-    try {
-      const pollError = await deps.pollSyncSession(ctx, client, {
-        sessionID: args.session_id!,
-        agentToUse: resumeAgent ?? "continue",
-        toastManager,
-        taskId,
-        anchorMessageCount,
-      }, syncPollTimeoutMs)
-      if (pollError) {
-        return pollError
-      }
+    const pollError = await deps.pollSyncSession(ctx, client, {
+      sessionID: args.session_id!,
+      agentToUse: resumeAgent ?? "continue",
+      taskId,
+      anchorMessageCount,
+    }, syncPollTimeoutMs)
+    if (pollError) {
+      return pollError
+    }
 
-      const result = await deps.fetchSyncResult(client, args.session_id!, anchorMessageCount)
-      if (!result.ok) {
-        return result.error
-      }
+    const result = await deps.fetchSyncResult(client, args.session_id!, anchorMessageCount)
+    if (!result.ok) {
+      return result.error
+    }
 
-     const duration = formatDuration(startTime)
+    const duration = formatDuration(startTime)
 
-     return `Task continued and completed in ${duration}.
+    return `Task continued and completed in ${duration}.
 
 ---
 
@@ -140,9 +124,4 @@ ${result.textContent || "(No text output)"}
 <task_metadata>
 session_id: ${args.session_id}
 ${resumeAgent ? `subagent: ${resumeAgent}\n` : ""}</task_metadata>`
-   } finally {
-     if (toastManager) {
-       toastManager.removeTask(taskId)
-     }
-   }
 }

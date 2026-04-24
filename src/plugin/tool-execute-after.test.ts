@@ -16,7 +16,7 @@ type ToolExecuteAfterInput = {
 describe("createToolExecuteAfterHandler", () => {
   it("#given truncator changes output #when tool.execute.after runs #then later hooks receive truncated output", async () => {
     const callOrder: string[] = []
-    let commentCheckerSawOutput = ""
+    let detectorSawOutput = ""
 
     const handler = createToolExecuteAfterHandler({
       ctx: { directory: "/repo" } as never,
@@ -27,10 +27,10 @@ describe("createToolExecuteAfterHandler", () => {
             output.output = "truncated output"
           },
         },
-        commentChecker: {
+        emptyTaskResponseDetector: {
           "tool.execute.after": async (_input: ToolExecuteAfterInput, output: ToolExecuteAfterOutput) => {
-            callOrder.push("commentChecker")
-            commentCheckerSawOutput = output.output
+            callOrder.push("emptyTaskResponseDetector")
+            detectorSawOutput = output.output
           },
         },
       } as never,
@@ -41,11 +41,11 @@ describe("createToolExecuteAfterHandler", () => {
       { title: "result", output: "original output", metadata: {} }
     )
 
-    expect(callOrder).toEqual(["truncator", "commentChecker"])
-    expect(commentCheckerSawOutput).toBe("truncated output")
+    expect(callOrder).toEqual(["truncator", "emptyTaskResponseDetector"])
+    expect(detectorSawOutput).toBe("truncated output")
   })
 
-  it("runs comment checker and hashline enhancer after truncation", async () => {
+  it("runs later hooks after truncation", async () => {
     const callOrder: string[] = []
 
     const handler = createToolExecuteAfterHandler({
@@ -56,9 +56,9 @@ describe("createToolExecuteAfterHandler", () => {
             callOrder.push("truncator")
           },
         },
-        commentChecker: {
+        emptyTaskResponseDetector: {
           "tool.execute.after": async () => {
-            callOrder.push("commentChecker")
+            callOrder.push("emptyTaskResponseDetector")
           },
         },
         hashlineReadEnhancer: {
@@ -74,6 +74,6 @@ describe("createToolExecuteAfterHandler", () => {
       { title: "result", output: "original output", metadata: {} },
     )
 
-    expect(callOrder).toEqual(["truncator", "commentChecker", "hashlineReadEnhancer"])
+    expect(callOrder).toEqual(["truncator", "emptyTaskResponseDetector", "hashlineReadEnhancer"])
   })
 })

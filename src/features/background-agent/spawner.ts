@@ -3,7 +3,6 @@ import type { OpencodeClient, QueueItem } from "./constants"
 import { log, getAgentToolRestrictions, promptWithModelSuggestionRetry, createInternalAgentTextPart } from "../../shared"
 import { applySessionPromptParams } from "../../shared/session-prompt-params-helpers"
 import { subagentSessions } from "../claude-code-session-state"
-import { getTaskToastManager } from "../task-toast-manager"
 import { stripAgentListSortPrefix } from "../../shared/agent-display-names"
 import type { ConcurrencyManager } from "./concurrency"
 
@@ -122,11 +121,6 @@ export async function startTask(
 
   log("[background-agent] Launching task:", { taskId: task.id, sessionID, agent: input.agent })
 
-  const toastManager = getTaskToastManager()
-  if (toastManager) {
-    toastManager.updateTask(task.id, "running")
-  }
-
   log("[background-agent] Calling prompt (fire-and-forget) for launch with:", {
     sessionID,
     agent: input.agent,
@@ -226,16 +220,6 @@ async function resumeTask(
   }
 
   subagentSessions.add(task.sessionID)
-
-  const toastManager = getTaskToastManager()
-  if (toastManager) {
-    toastManager.addTask({
-      id: task.id,
-      description: task.description,
-      agent: task.agent,
-      isBackground: true,
-    })
-  }
 
   log("[background-agent] Resuming task:", { taskId: task.id, sessionID: task.sessionID })
 

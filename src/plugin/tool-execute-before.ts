@@ -1,6 +1,5 @@
 import type { PluginContext } from "./types"
 
-import { getMainSessionID } from "../features/claude-code-session-state"
 import { log } from "../shared"
 import { resolveSessionAgent } from "./session-agent-resolver"
 
@@ -30,31 +29,9 @@ export function createToolExecuteBeforeHandler(args: {
     await hooks.questionLabelTruncator?.["tool.execute.before"]?.(input, output)
     await hooks.nonInteractiveEnv?.["tool.execute.before"]?.(input, output)
     await hooks.bashFileReadGuard?.["tool.execute.before"]?.(input, output)
-    await hooks.commentChecker?.["tool.execute.before"]?.(input, output)
-    await hooks.directoryAgentsInjector?.["tool.execute.before"]?.(input, output)
-    await hooks.directoryReadmeInjector?.["tool.execute.before"]?.(input, output)
-    await hooks.rulesInjector?.["tool.execute.before"]?.(input, output)
     await hooks.tasksTodowriteDisabler?.["tool.execute.before"]?.(input, output)
     await hooks.webfetchRedirectGuard?.["tool.execute.before"]?.(input, output)
     await hooks.sisyphusJuniorNotepad?.["tool.execute.before"]?.(input, output)
-    const normalizedToolName = input.tool.toLowerCase()
-    if (
-      normalizedToolName === "question"
-      || normalizedToolName === "ask_user_question"
-      || normalizedToolName === "askuserquestion"
-    ) {
-      const sessionID = input.sessionID || getMainSessionID()
-      await hooks.sessionNotification?.({
-        event: {
-          type: "tool.execute.before",
-          properties: {
-            sessionID,
-            tool: input.tool,
-            args: output.args,
-          },
-        },
-      })
-    }
 
     if (input.tool === "task") {
       const argsObject = output.args

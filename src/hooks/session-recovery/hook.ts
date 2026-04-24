@@ -18,11 +18,11 @@ interface MessageInfo {
   error?: unknown
 }
 
-export interface SessionRecoveryOptions {
+interface SessionRecoveryOptions {
   experimental?: ExperimentalConfig
 }
 
-export interface SessionRecoveryHook {
+interface SessionRecoveryHook {
   handleSessionRecovery: (info: MessageInfo) => Promise<boolean>
   isRecoverableError: (error: unknown) => boolean
   setOnAbortCallback: (callback: (sessionID: string) => void) => void

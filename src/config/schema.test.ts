@@ -625,7 +625,7 @@ describe("OhMyOpenCodeConfigSchema - hashline_edit", () => {
 
   test("hashline_edit is optional", () => {
     //#given
-    const input = { comment_checker: { custom_prompt: "x" } }
+    const input = { experimental: { safe_hook_creation: true } }
 
     //#when
     const result = OhMyOpenCodeConfigSchema.safeParse(input)

@@ -1,7 +1,5 @@
-import type { ModelFallbackInfo } from "../../features/task-toast-manager/types"
 import type { DelegateTaskArgs, ToolContextWithMetadata, DelegatedModelConfig } from "./types"
 import type { ExecutorContext, ParentContext } from "./executor-types"
-import { getTaskToastManager } from "../../features/task-toast-manager"
 import { storeToolMetadata } from "../../features/tool-metadata-store"
 import { resolveCallID } from "./resolve-call-id"
 import { subagentSessions, syncSubagentSessions, setSessionAgent } from "../../features/claude-code-session-state"
@@ -11,6 +9,12 @@ import { formatDuration } from "./time-formatter"
 import { formatDetailedError } from "./error-formatting"
 import { syncTaskDeps, type SyncTaskDeps } from "./sync-task-deps"
 import { retrySyncPromptWithFallbacks } from "./sync-task-fallback"
+
+type ModelFallbackInfo = {
+  model: string
+  type: "user-defined" | "inherited" | "category-default" | "system-default"
+  source?: import("../../shared/model-resolver").ModelSource
+}
 
 export async function executeSyncTask(
   args: DelegateTaskArgs,
@@ -25,7 +29,6 @@ export async function executeSyncTask(
   deps: SyncTaskDeps = syncTaskDeps
 ): Promise<string> {
   const { manager, client, directory, onSyncSessionCreated, syncPollTimeoutMs } = executorCtx
-  const toastManager = getTaskToastManager()
   let taskId: string | undefined
   let syncSessionID: string | undefined
   let spawnReservation:
@@ -99,19 +102,6 @@ export async function executeSyncTask(
     taskId = `sync_${sessionID.slice(0, 8)}`
     const startTime = new Date()
 
-    if (toastManager) {
-      toastManager.addTask({
-        id: taskId,
-        sessionID,
-        description: args.description,
-        agent: agentToUse,
-        isBackground: false,
-        category: args.category,
-        skills: args.load_skills,
-        modelInfo,
-      })
-    }
-
     const syncTaskMeta = {
       title: args.description,
       metadata: {
@@ -141,7 +131,6 @@ export async function executeSyncTask(
       args,
       systemContent,
       categoryModel: effectiveCategoryModel,
-      toastManager,
       taskId,
       sisyphusAgentConfig: executorCtx.sisyphusAgentConfig,
     })
@@ -158,7 +147,6 @@ export async function executeSyncTask(
             args,
             systemContent,
             categoryModel: fallbackModel,
-            toastManager,
             taskId,
             sisyphusAgentConfig: executorCtx.sisyphusAgentConfig,
           })
@@ -173,39 +161,37 @@ export async function executeSyncTask(
       }
     }
 
-    try {
-      const pollError = await deps.pollSyncSession(ctx, client, {
-        sessionID,
-        agentToUse,
-        toastManager,
-        taskId,
-      }, syncPollTimeoutMs)
-      if (pollError) {
-        return pollError
-      }
+    const pollError = await deps.pollSyncSession(ctx, client, {
+      sessionID,
+      agentToUse,
+      taskId,
+    }, syncPollTimeoutMs)
+    if (pollError) {
+      return pollError
+    }
 
-      const result = await deps.fetchSyncResult(client, sessionID)
-      if (!result.ok) {
-        return result.error
-      }
+    const result = await deps.fetchSyncResult(client, sessionID)
+    if (!result.ok) {
+      return result.error
+    }
 
-      const duration = formatDuration(startTime)
+    const duration = formatDuration(startTime)
 
-      // 检测模型路由是否与父 session 不同，给用户可见的提示
-      const actualModelStr = effectiveCategoryModel
-        ? `${effectiveCategoryModel.providerID}/${effectiveCategoryModel.modelID}`
-        : undefined
-      const parentModelStr = parentContext.model
-        ? `${parentContext.model.providerID}/${parentContext.model.modelID}`
-        : undefined
-      const modelRoutingNote =
-        actualModelStr && parentModelStr && actualModelStr !== parentModelStr
-          ? `\n⚠️  Model routing: parent used ${parentModelStr}, this subagent used ${actualModelStr} (via category: ${args.category ?? "unknown"})`
-          : actualModelStr
-            ? `\nModel: ${actualModelStr}${args.category ? ` (category: ${args.category})` : ""}`
-            : ""
+    // 检测模型路由是否与父 session 不同，给用户可见的提示
+    const actualModelStr = effectiveCategoryModel
+      ? `${effectiveCategoryModel.providerID}/${effectiveCategoryModel.modelID}`
+      : undefined
+    const parentModelStr = parentContext.model
+      ? `${parentContext.model.providerID}/${parentContext.model.modelID}`
+      : undefined
+    const modelRoutingNote =
+      actualModelStr && parentModelStr && actualModelStr !== parentModelStr
+        ? `\n⚠️  Model routing: parent used ${parentModelStr}, this subagent used ${actualModelStr} (via category: ${args.category ?? "unknown"})`
+        : actualModelStr
+          ? `\nModel: ${actualModelStr}${args.category ? ` (category: ${args.category})` : ""}`
+          : ""
 
-      return `Task completed in ${duration}.
+    return `Task completed in ${duration}.
 
 Agent: ${agentToUse}${args.category ? ` (category: ${args.category})` : ""}${modelRoutingNote}
 
@@ -216,11 +202,6 @@ ${result.textContent || "(No text output)"}
 <task_metadata>
 session_id: ${sessionID}
 </task_metadata>`
-    } finally {
-      if (toastManager && taskId !== undefined) {
-        toastManager.removeTask(taskId)
-      }
-    }
   } catch (error) {
     spawnReservation?.rollback()
     return formatDetailedError(error, {

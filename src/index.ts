@@ -69,7 +69,6 @@ const OhMyOpenCodePlugin: Plugin = async (ctx) => {
     ctx,
     pluginConfig,
     modelCacheState,
-    backgroundNotificationHookEnabled: isHookEnabled("background-notification"),
   })
 
   const toolsResult = await createTools({

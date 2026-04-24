@@ -24,10 +24,10 @@ describe("createPluginDispose", () => {
   })
 
   test("calls hook disposers", async () => {
-    const commentChecker = { dispose: (): void => {} }
+    const anthropicContextWindowLimitRecovery = { dispose: (): void => {} }
     const lspManager = { stopAll: async (): Promise<void> => {} }
 
-    const commentCheckerDisposeSpy = spyOn(commentChecker, "dispose")
+    const recoveryDisposeSpy = spyOn(anthropicContextWindowLimitRecovery, "dispose")
 
     const dispose = createPluginDispose({
       backgroundManager: {
@@ -36,14 +36,14 @@ describe("createPluginDispose", () => {
       lspManager,
       disposeHooks: (): void => {
         disposeCreatedHooks({
-          commentChecker,
+          anthropicContextWindowLimitRecovery,
         })
       },
     })
 
     await dispose()
 
-    expect(commentCheckerDisposeSpy).toHaveBeenCalledTimes(1)
+    expect(recoveryDisposeSpy).toHaveBeenCalledTimes(1)
   })
 
   test("is idempotent", async () => {

@@ -169,17 +169,10 @@ afterEach(() => {
 			} as any,
 			hooks: {
 				autoUpdateChecker: { event: async () => {} },
-				backgroundNotificationHook: { event: async () => {} },
-				sessionNotification: async () => {},
-				unstableAgentBabysitter: { event: async () => {} },
 				contextWindowMonitor: { event: async () => {} },
-				directoryAgentsInjector: { event: async () => {} },
-				directoryReadmeInjector: { event: async () => {} },
-				rulesInjector: { event: async () => {} },
 				thinkMode: { event: async () => {} },
 				anthropicContextWindowLimitRecovery: { event: async () => {} },
-        agentUsageReminder: { event: async () => {} },
-        interactiveBashSession: { event: async () => {} },
+		        interactiveBashSession: { event: async () => {} },
 				compactionTodoPreserver: { event: async () => {} },
 			} as any,
 		})
@@ -250,25 +243,18 @@ afterEach(() => {
 					onSessionDeleted: async () => {},
 				},
 			} as any,
-			hooks: {
-				autoUpdateChecker: {
-					event: async (input: EventInput) => {
-						dispatchCalls.push(input)
+				hooks: {
+					autoUpdateChecker: {
+						event: async (input: EventInput) => {
+							dispatchCalls.push(input)
+						},
 					},
-				},
-				backgroundNotificationHook: { event: async () => {} },
-				sessionNotification: async () => {},
-				unstableAgentBabysitter: { event: async () => {} },
-				contextWindowMonitor: { event: async () => {} },
-				directoryAgentsInjector: { event: async () => {} },
-				directoryReadmeInjector: { event: async () => {} },
-				rulesInjector: { event: async () => {} },
-				thinkMode: { event: async () => {} },
-				anthropicContextWindowLimitRecovery: { event: async () => {} },
-        agentUsageReminder: { event: async () => {} },
-        interactiveBashSession: { event: async () => {} },
-				ralphLoop: { event: async () => {} },
-				compactionTodoPreserver: { event: async () => {} },
+					contextWindowMonitor: { event: async () => {} },
+					thinkMode: { event: async () => {} },
+					anthropicContextWindowLimitRecovery: { event: async () => {} },
+		        interactiveBashSession: { event: async () => {} },
+					ralphLoop: { event: async () => {} },
+					compactionTodoPreserver: { event: async () => {} },
 			} as any,
 		})
 
@@ -301,27 +287,20 @@ afterEach(() => {
 					onSessionDeleted: async () => {},
 				},
 			} as any,
-			hooks: {
-				autoUpdateChecker: {
-					event: async (input: EventInput) => {
-						if (input.event.type === "session.idle") {
-							dispatchCalls.push(input)
-						}
+				hooks: {
+					autoUpdateChecker: {
+						event: async (input: EventInput) => {
+							if (input.event.type === "session.idle") {
+								dispatchCalls.push(input)
+							}
+						},
 					},
-				},
-				backgroundNotificationHook: { event: async () => {} },
-				sessionNotification: async () => {},
-				unstableAgentBabysitter: { event: async () => {} },
-				contextWindowMonitor: { event: async () => {} },
-				directoryAgentsInjector: { event: async () => {} },
-				directoryReadmeInjector: { event: async () => {} },
-				rulesInjector: { event: async () => {} },
-				thinkMode: { event: async () => {} },
-				anthropicContextWindowLimitRecovery: { event: async () => {} },
-        agentUsageReminder: { event: async () => {} },
-        interactiveBashSession: { event: async () => {} },
-				ralphLoop: { event: async () => {} },
-				compactionTodoPreserver: { event: async () => {} },
+					contextWindowMonitor: { event: async () => {} },
+					thinkMode: { event: async () => {} },
+					anthropicContextWindowLimitRecovery: { event: async () => {} },
+		        interactiveBashSession: { event: async () => {} },
+					ralphLoop: { event: async () => {} },
+					compactionTodoPreserver: { event: async () => {} },
 			} as any,
 		})
 
@@ -588,7 +567,7 @@ describe("createEventHandler - session recovery compaction", () => {
 
 	it("continues dispatching later event hooks when an earlier hook throws", async () => {
 		//#given
-		const agentUsageReminderCalls: EventInput[] = []
+		const laterHookCalls: EventInput[] = []
 
 		const eventHandler = createEventHandler({
 			ctx: asEventHandlerContext({
@@ -612,9 +591,9 @@ describe("createEventHandler - session recovery compaction", () => {
 							throw new Error("upstream hook failed")
 						},
 					},
-					agentUsageReminder: {
+					compactionTodoPreserver: {
 						event: async (input: EventInput) => {
-							agentUsageReminderCalls.push(input)
+							laterHookCalls.push(input)
 						},
 					},
 				}),
@@ -638,7 +617,7 @@ describe("createEventHandler - session recovery compaction", () => {
 
 		//#then
 		expect(thrownError).toBeUndefined()
-		expect(agentUsageReminderCalls).toHaveLength(1)
-		expect(agentUsageReminderCalls[0]?.event.type).toBe("session.error")
+		expect(laterHookCalls).toHaveLength(1)
+		expect(laterHookCalls[0]?.event.type).toBe("session.error")
 	})
 })

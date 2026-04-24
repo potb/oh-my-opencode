@@ -11,7 +11,6 @@ import type { BackgroundTask, ResumeInput } from "./types"
 import { MIN_IDLE_TIME_MS } from "./constants"
 import { BackgroundManager } from "./manager"
 import { ConcurrencyManager } from "./concurrency"
-import { initTaskToastManager, _resetTaskToastManagerForTesting } from "../task-toast-manager/manager"
 import { _resetForTesting as resetProcessCleanupState } from "./process-cleanup"
 
 mock.module("../../shared/connected-providers-cache", () => ({
@@ -251,23 +250,6 @@ function stubNotifyParentSession(manager: BackgroundManager): void {
 async function flushBackgroundNotifications(): Promise<void> {
   for (let i = 0; i < 12; i++) {
     await Promise.resolve()
-  }
-}
-
-function createToastRemoveTaskTracker(): { removeTaskCalls: string[]; resetToastManager: () => void } {
-  _resetTaskToastManagerForTesting()
-  const toastManager = initTaskToastManager({
-    tui: { showToast: async () => {} },
-  } as unknown as PluginInput["client"])
-  const removeTaskCalls: string[] = []
-  const originalRemoveTask = toastManager.removeTask.bind(toastManager)
-  toastManager.removeTask = (taskId: string): void => {
-    removeTaskCalls.push(taskId)
-    originalRemoveTask(taskId)
-  }
-  return {
-    removeTaskCalls,
-    resetToastManager: _resetTaskToastManagerForTesting,
   }
 }
 
@@ -1136,63 +1118,6 @@ describe("BackgroundManager.notifyParentSession - aborted parent", () => {
   })
 })
 
-describe("BackgroundManager.notifyParentSession - notifications toggle", () => {
-  test("should skip parent prompt injection when notifications are disabled", async () => {
-    //#given
-    let promptCalled = false
-    const promptMock = async () => {
-      promptCalled = true
-      return {}
-    }
-    const client = {
-      session: {
-        prompt: promptMock,
-        promptAsync: promptMock,
-        abort: async () => ({}),
-        messages: async () => ({
-          data: [{
-            info: {
-              agent: "explore",
-              model: {
-                providerID: "anthropic",
-                modelID: "claude-opus-4.6",
-                variant: "high",
-              },
-            },
-          }],
-        }),
-      },
-    }
-    const manager = new BackgroundManager(
-      { client, directory: tmpdir() } as unknown as PluginInput,
-      undefined,
-      { enableParentSessionNotifications: false },
-    )
-    const task: BackgroundTask = {
-      id: "task-no-parent-notification",
-      sessionID: "session-child",
-      parentSessionID: "session-parent",
-      parentMessageID: "msg-parent",
-      description: "task notifications disabled",
-      prompt: "test",
-      agent: "explore",
-      status: "completed",
-      startedAt: new Date(),
-      completedAt: new Date(),
-    }
-    getPendingByParent(manager).set("session-parent", new Set([task.id]))
-
-    //#when
-    await (manager as unknown as { notifyParentSession: (task: BackgroundTask) => Promise<void> })
-      .notifyParentSession(task)
-
-    //#then
-    expect(promptCalled).toBe(false)
-
-    manager.shutdown()
-  })
-})
-
 describe("BackgroundManager.notifyParentSession - variant propagation", () => {
   test("should prefer parent session variant over child task variant in parent notification promptAsync body", async () => {
     //#given
@@ -1479,10 +1404,7 @@ describe("BackgroundManager.tryCompleteTask", () => {
     expect(getPendingByParent(manager).get(task.parentSessionID)).toBeUndefined()
   })
 
-  test("should remove toast tracking before notifying completed task", async () => {
-    // given
-    const { removeTaskCalls, resetToastManager } = createToastRemoveTaskTracker()
-
+  test("should complete without scheduling delayed cleanup timer", async () => {
     const task: BackgroundTask = {
       id: "task-toast-complete",
       sessionID: "session-toast-complete",
@@ -1495,15 +1417,11 @@ describe("BackgroundManager.tryCompleteTask", () => {
       startedAt: new Date(),
     }
 
-    try {
-      // when
-      await tryCompleteTaskForTest(manager, task)
+    // when
+    await tryCompleteTaskForTest(manager, task)
 
-      // then
-      expect(removeTaskCalls).toContain(task.id)
-    } finally {
-      resetToastManager()
-    }
+    // then
+    expect(getCompletionTimers(manager).has(task.id)).toBe(false)
   })
 
   test("should release task concurrencyKey when startTask throws after assigning it", async () => {
@@ -3043,9 +2961,8 @@ describe("BackgroundManager - Non-blocking Queue Integration", () => {
       expect(pendingSet?.has(task.id) ?? false).toBe(false)
     })
 
-    test("should remove task from toast manager when notification is skipped", async () => {
+    test("should schedule delayed cleanup when notification is skipped", async () => {
       //#given
-      const { removeTaskCalls, resetToastManager } = createToastRemoveTaskTracker()
       const manager = createBackgroundManager()
       const task = createMockTask({
         id: "task-cancel-skip-notification",
@@ -3060,13 +2977,12 @@ describe("BackgroundManager - Non-blocking Queue Integration", () => {
         source: "test",
         skipNotification: true,
       })
-
+      
       //#then
       expect(cancelled).toBe(true)
-      expect(removeTaskCalls).toContain(task.id)
+      expect(getCompletionTimers(manager).has(task.id)).toBe(true)
 
       manager.shutdown()
-      resetToastManager()
     })
   })
 
@@ -4012,9 +3928,8 @@ describe("BackgroundManager.handleEvent - session.deleted cascade", () => {
     manager.shutdown()
   })
 
-  test("should remove cancelled tasks from toast manager while preserving delayed cleanup", async () => {
+  test("should preserve delayed cleanup for cancelled descendant tasks", async () => {
     //#given
-    const { removeTaskCalls, resetToastManager } = createToastRemoveTaskTracker()
     const manager = createBackgroundManager()
     const parentSessionID = "session-parent-toast"
     const childTask = createMockTask({
@@ -4044,13 +3959,10 @@ describe("BackgroundManager.handleEvent - session.deleted cascade", () => {
     await flushBackgroundNotifications()
 
     //#then
-    expect(removeTaskCalls).toContain(childTask.id)
-    expect(removeTaskCalls).toContain(grandchildTask.id)
     expect(getCompletionTimers(manager).has(childTask.id)).toBe(true)
     expect(getCompletionTimers(manager).has(grandchildTask.id)).toBe(true)
 
     manager.shutdown()
-    resetToastManager()
   })
 
   test("should clean pending notifications for deleted sessions", () => {
@@ -4157,9 +4069,8 @@ describe("BackgroundManager.handleEvent - session.error", () => {
     manager.shutdown()
   })
 
-  test("should remove errored task from toast manager while preserving delayed cleanup", async () => {
+  test("should preserve delayed cleanup for errored tasks", async () => {
     //#given
-    const { removeTaskCalls, resetToastManager } = createToastRemoveTaskTracker()
     const manager = createBackgroundManager()
     const sessionID = "ses_error_toast"
     const task = createMockTask({
@@ -4182,11 +4093,9 @@ describe("BackgroundManager.handleEvent - session.error", () => {
     await flushBackgroundNotifications()
 
     //#then
-    expect(removeTaskCalls).toContain(task.id)
     expect(getCompletionTimers(manager).has(task.id)).toBe(true)
 
     manager.shutdown()
-    resetToastManager()
   })
 
   test("ignores session.error for non-running tasks", () => {
@@ -4336,9 +4245,8 @@ describe("BackgroundManager.pruneStaleTasksAndNotifications - removes pruned tas
     manager.shutdown()
   })
 
-  test("removes stale task from toast manager", async () => {
+  test("prunes stale task state", async () => {
     //#given
-    const { removeTaskCalls, resetToastManager } = createToastRemoveTaskTracker()
     const manager = createBackgroundManager()
     const staleTask = createMockTask({
       id: "task-stale-toast",
@@ -4354,16 +4262,14 @@ describe("BackgroundManager.pruneStaleTasksAndNotifications - removes pruned tas
     await flushBackgroundNotifications()
 
     //#then
-    expect(removeTaskCalls).toContain(staleTask.id)
+    expect(getTaskMap(manager).get(staleTask.id)?.status).toBe("error")
 
     manager.shutdown()
-    resetToastManager()
   })
 
   test("keeps stale task until notification cleanup after notifying parent", async () => {
     //#given
     const notifications: string[] = []
-    const { removeTaskCalls, resetToastManager } = createToastRemoveTaskTracker()
     const client = {
       session: {
         prompt: async () => ({}),
@@ -4401,10 +4307,8 @@ describe("BackgroundManager.pruneStaleTasksAndNotifications - removes pruned tas
     expect(notifications[0]).toContain("[ALL BACKGROUND TASKS FINISHED")
     expect(notifications[0]).toContain(staleTask.description)
     expect(getCompletionTimers(manager).has(staleTask.id)).toBe(true)
-    expect(removeTaskCalls).toContain(staleTask.id)
 
     manager.shutdown()
-    resetToastManager()
   })
 })
 

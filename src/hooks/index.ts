@@ -1,23 +1,12 @@
 export { createContextWindowMonitorHook } from "./context-window-monitor";
-export { createSessionNotification } from "./session-notification";
-export { sendSessionNotification, playSessionNotificationSound, detectPlatform, getDefaultSoundPath } from "./session-notification-sender";
-export { buildWindowsToastScript, escapeAppleScriptText, escapePowerShellSingleQuotedText } from "./session-notification-formatting";
-export { hasIncompleteTodos } from "./session-todo-status";
-export { createIdleNotificationScheduler } from "./session-notification-scheduler";
-export { createSessionRecoveryHook, type SessionRecoveryHook, type SessionRecoveryOptions } from "./session-recovery";
-export { createCommentCheckerHooks } from "./comment-checker";
+export { createSessionRecoveryHook } from "./session-recovery";
 export { createToolOutputTruncatorHook } from "./tool-output-truncator";
-export { createDirectoryAgentsInjectorHook } from "./directory-agents-injector";
-export { createDirectoryReadmeInjectorHook } from "./directory-readme-injector";
 export { createEmptyTaskResponseDetectorHook } from "./empty-task-response-detector";
-export { createAnthropicContextWindowLimitRecoveryHook, type AnthropicContextWindowLimitRecoveryOptions } from "./anthropic-context-window-limit-recovery";
+export { createAnthropicContextWindowLimitRecoveryHook } from "./anthropic-context-window-limit-recovery";
 
 export { createThinkModeHook } from "./think-mode";
-export { createRulesInjectorHook } from "./rules-injector";
-export { createBackgroundNotificationHook } from "./background-notification"
 export { createAutoUpdateCheckerHook } from "./auto-update-checker";
 
-export { createAgentUsageReminderHook } from "./agent-usage-reminder";
 export { createNonInteractiveEnvHook } from "./non-interactive-env";
 
 export { createThinkingBlockValidatorHook } from "./thinking-block-validator";
@@ -30,13 +19,12 @@ export { createDelegateTaskRetryHook } from "./delegate-task-retry";
 export { createQuestionLabelTruncatorHook } from "./question-label-truncator";
 export { createCompactionContextInjector } from "./compaction-context-injector";
 export { createCompactionTodoPreserverHook } from "./compaction-todo-preserver";
-export { createUnstableAgentBabysitterHook } from "./unstable-agent-babysitter";
 export { createPreemptiveCompactionHook } from "./preemptive-compaction";
 export { createTasksTodowriteDisablerHook } from "./tasks-todowrite-disabler";
 export { createWriteExistingFileGuardHook } from "./write-existing-file-guard";
 export { createBashFileReadGuardHook } from "./bash-file-read-guard";
 export { createHashlineReadEnhancerHook } from "./hashline-read-enhancer";
-export { createJsonErrorRecoveryHook, JSON_ERROR_TOOL_EXCLUDE_LIST, JSON_ERROR_PATTERNS, JSON_ERROR_REMINDER } from "./json-error-recovery";
+export { createJsonErrorRecoveryHook } from "./json-error-recovery";
 export { createReadImageResizerHook } from "./read-image-resizer"
 export { createTodoDescriptionOverrideHook } from "./todo-description-override"
 export { createWebFetchRedirectGuardHook } from "./webfetch-redirect-guard"

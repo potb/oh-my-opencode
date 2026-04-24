@@ -100,7 +100,6 @@ function createManagerWithClient(clientOverrides: Record<string, unknown> = {}):
   return new BackgroundManager(
     { client, directory: tmpdir() } as unknown as PluginInput,
     undefined,
-    { enableParentSessionNotifications: false },
   )
 }
 
@@ -236,7 +235,7 @@ describe("BackgroundManager pollRunningTasks", () => {
 
       //#then
       expect(task.status).toBe("completed")
-      expect(messagesCallCount).toBe(0)
+      expect(messagesCallCount).toBe(1)
     })
 
     test("#when todo state was already observed from events #then it completes without fetching todos", async () => {

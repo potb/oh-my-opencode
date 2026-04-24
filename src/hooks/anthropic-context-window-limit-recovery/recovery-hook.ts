@@ -9,7 +9,7 @@ import { clearSessionState } from "./state"
 import { clearAllSessionTimeouts, clearSessionTimeout } from "./session-timeout-map"
 import { log } from "../../shared/logger"
 
-export interface AnthropicContextWindowLimitRecoveryOptions {
+interface AnthropicContextWindowLimitRecoveryOptions {
   experimental?: ExperimentalConfig
   pluginConfig: OhMyOpenCodeConfig
   dependencies?: {

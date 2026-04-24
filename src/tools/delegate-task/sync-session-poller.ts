@@ -58,7 +58,6 @@ export async function pollSyncSession(
   input: {
     sessionID: string
     agentToUse: string
-    toastManager: { removeTask: (id: string) => void } | null | undefined
     taskId: string | undefined
     anchorMessageCount?: number
     maxAssistantTurns?: number
@@ -95,7 +94,6 @@ export async function pollSyncSession(
 
       log("[task] Aborted by user", { sessionID: input.sessionID })
       abortSyncSession(client, input.sessionID, "parent_abort")
-      if (input.toastManager && input.taskId) input.toastManager.removeTask(input.taskId)
       return `Task aborted.\n\nSession ID: ${input.sessionID}`
     }
 
@@ -154,7 +152,6 @@ export async function pollSyncSession(
           maxTurns,
         })
         abortSyncSession(client, input.sessionID, "max_turns_exceeded")
-        if (input.toastManager && input.taskId) input.toastManager.removeTask(input.taskId)
         return `Task aborted: subagent exceeded ${maxTurns} assistant turns without completing. This usually indicates an infinite tool-call loop. Session ID: ${input.sessionID}`
       }
     }

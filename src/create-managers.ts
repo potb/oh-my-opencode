@@ -27,18 +27,14 @@ export function createManagers(args: {
   ctx: PluginContext
   pluginConfig: OhMyOpenCodeConfig
   modelCacheState: ModelCacheState
-  backgroundNotificationHookEnabled: boolean
   deps?: Partial<CreateManagersDeps>
 }): Managers {
-  const { ctx, pluginConfig, modelCacheState, backgroundNotificationHookEnabled } = args
+  const { ctx, pluginConfig, modelCacheState } = args
   const deps = { ...defaultCreateManagersDeps, ...args.deps }
 
   const backgroundManager = new deps.BackgroundManagerClass(
     ctx,
     pluginConfig.background_task,
-    {
-      enableParentSessionNotifications: backgroundNotificationHookEnabled,
-    },
   )
 
   const configHandler = deps.createConfigHandlerFn({
