@@ -37,6 +37,6 @@ builtin-skills/
 
 Config `browser_automation_engine` uses `"agent-browser"`.
 
-## SKILL LOADING
+## FIXED-PRODUCT USAGE
 
-Skills loaded by `opencode-skill-loader` with priority: project > opencode > user > builtin. User-installed skills with same name override built-ins.
+Built-in skills remain repo-local definitions used for prompt metadata and static guidance. The fixed-product runtime does not load external skill files.

@@ -9,7 +9,7 @@ import { applyFallbackEntrySettings } from "./fallback-entry-settings"
 import {
   type AgentInfo,
   sanitizeSubagentType,
-  mergeWithClaudeCodeAgents,
+  normalizeAvailableAgents,
   findPrimaryAgentMatch,
   findCallableAgentMatch,
   listCallableAgentNames,
@@ -30,7 +30,7 @@ export async function resolveSubagentExecution(
   args: DelegateTaskArgs,
   executorCtx: ExecutorContext,
   parentAgent: string | undefined,
-  categoryExamples: string
+  _categoryExamples: string
 ): Promise<{ agentToUse: string; categoryModel: DelegatedModelConfig | undefined; fallbackChain?: FallbackEntry[]; error?: string }> {
   const { client, agentOverrides, userCategories } = executorCtx
 
@@ -70,7 +70,7 @@ Create the work plan directly - that's your job as the planning agent.`,
       preferResponseOnMissingData: true,
     })
 
-    const mergedAgents = mergeWithClaudeCodeAgents(agents, executorCtx.directory)
+    const mergedAgents = normalizeAvailableAgents(agents)
     const matchedPrimaryAgent = findPrimaryAgentMatch(mergedAgents, agentToUse)
 
     if (matchedPrimaryAgent) {

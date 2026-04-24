@@ -1,5 +1,4 @@
 import { getAgentConfigKey, getAgentDisplayName, stripAgentListSortPrefix } from "../../shared/agent-display-names"
-import { loadUserAgents, loadProjectAgents } from "../../features/claude-code-agent-loader"
 
 type AgentMode = "subagent" | "primary" | "all" | undefined
 
@@ -13,20 +12,7 @@ export function sanitizeSubagentType(subagentType: string): string {
   return subagentType.trim().replace(/^[\\\/"']+|[\\\/"']+$/g, "").trim()
 }
 
-export function mergeWithClaudeCodeAgents(
-  serverAgents: AgentInfo[],
-  directory: string | undefined,
-): AgentInfo[] {
-  const userAgentsRecord = loadUserAgents()
-  const projectAgentsRecord = loadProjectAgents(directory)
-
-  const toAgentInfoList = (record: Record<string, { mode?: string; model?: AgentInfo["model"] }>): AgentInfo[] =>
-    Object.entries(record).map(([name, config]) => ({
-      name,
-      mode: config.mode as AgentInfo["mode"],
-      model: config.model,
-    }))
-
+export function normalizeAvailableAgents(serverAgents: AgentInfo[]): AgentInfo[] {
   const mergedAgentMap = new Map<string, AgentInfo>()
   const addIfAbsent = (agent: AgentInfo): void => {
     const key = agent.name.toLowerCase()
@@ -36,8 +22,6 @@ export function mergeWithClaudeCodeAgents(
   }
 
   for (const agent of serverAgents) addIfAbsent(agent)
-  for (const agent of toAgentInfoList(projectAgentsRecord)) addIfAbsent(agent)
-  for (const agent of toAgentInfoList(userAgentsRecord)) addIfAbsent(agent)
 
   return Array.from(mergedAgentMap.values())
 }

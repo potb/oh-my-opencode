@@ -3,7 +3,6 @@ import type { AgentFactory } from "./types"
 import type { CategoriesConfig, CategoryConfig, GitMasterConfig } from "../config/schema"
 import type { BrowserAutomationProvider } from "../config/schema"
 import { mergeCategories } from "../shared/merge-categories"
-import { resolveMultipleSkills } from "../features/opencode-skill-loader/skill-content"
 
 type AgentSource = AgentFactory | AgentConfig
 
@@ -15,9 +14,9 @@ export function buildAgent(
   source: AgentSource,
   model: string,
   categories?: CategoriesConfig,
-  gitMasterConfig?: GitMasterConfig,
-  browserProvider?: BrowserAutomationProvider,
-  disabledSkills?: Set<string>
+  _gitMasterConfig?: GitMasterConfig,
+  _browserProvider?: BrowserAutomationProvider,
+  _disabledSkills?: Set<string>
 ): AgentConfig {
   const base = isFactory(source) ? source(model) : { ...source }
   const categoryConfigs: Record<string, CategoryConfig> = mergeCategories(categories)
@@ -35,14 +34,6 @@ export function buildAgent(
       if (base.variant === undefined && categoryConfig.variant !== undefined) {
         base.variant = categoryConfig.variant
       }
-    }
-  }
-
-  if (agentWithCategory.skills?.length) {
-    const { resolved } = resolveMultipleSkills(agentWithCategory.skills, { gitMasterConfig, browserProvider, disabledSkills })
-    if (resolved.size > 0) {
-      const skillContent = Array.from(resolved.values()).join("\n\n")
-      base.prompt = skillContent + (base.prompt ? "\n\n" + base.prompt : "")
     }
   }
 

@@ -1,4 +1,4 @@
-# src/plugin-handlers/ — 6-Phase Config Loading Pipeline
+# src/plugin-handlers/ — Fixed-Product Config Pipeline
 
 **Generated:** 2026-04-11
 
@@ -38,28 +38,24 @@ PRs attempting these patterns will be rejected.
 
 ## OVERVIEW
 
-14 non-test files implementing the `ConfigHandler` — the `config` hook handler. Executes 6 sequential phases to register agents, tools, MCPs, and commands with OpenCode.
+Config-handler files implement the fixed-product `config` hook. The runtime applies provider state, builtin agents, tool permissions, and clears removed command/MCP surfaces.
 
-## 6-PHASE PIPELINE
+## ACTIVE PIPELINE
 
-| Phase | Handler | Purpose |
-|-------|---------|---------|
+| Step | Handler | Purpose |
+|------|---------|---------|
 | 1 | `applyProviderConfig` | Cache model context limits, detect anthropic-beta headers |
-| 2 | `loadPluginComponents` | Discover Claude Code plugins (10s timeout, error isolation) |
-| 3 | `applyAgentConfig` | Load agents from 5 sources, skill discovery, plan demotion |
-| 4 | `applyToolConfig` | Agent-specific tool permissions |
-| 5 | `applyMcpConfig` | Merge builtin + CC + plugin MCPs |
-| 6 | `applyCommandConfig` | Merge commands/skills from 9 parallel sources |
+| 2 | `applyAgentConfig` | Build the builtin fixed-product agent surface |
+| 3 | `applyToolConfig` | Agent-specific tool permissions |
+| 4 | `config.command = {}; config.mcp = {};` | Clear removed command and MCP loading surfaces |
 
 ## FILES
 
 | File | Lines | Purpose |
 |------|-------|---------|
-| `config-handler.ts` | ~200 | Main orchestrator, 6-phase sequential |
+| `config-handler.ts` | ~200 | Main orchestrator for fixed-product config wiring |
 | `plugin-components-loader.ts` | ~100 | CC plugin discovery (10s timeout) |
-| `agent-config-handler.ts` | ~300 | Agent loading + skill discovery from 5 sources |
-| `mcp-config-handler.ts` | ~150 | Builtin + CC + plugin MCP merge |
-| `command-config-handler.ts` | ~200 | 9 parallel sources for commands/skills |
+| `agent-config-handler.ts` | ~300 | Builtin agent loading and ordering |
 | `tool-config-handler.ts` | ~100 | Agent-specific tool grants/denials |
 | `provider-config-handler.ts` | ~80 | Provider config + model cache |
 | `plan-model-inheritance.ts` | 28 | Plan demotion logic |

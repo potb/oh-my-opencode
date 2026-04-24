@@ -1,4 +1,12 @@
-import type { SkillMcpConfig } from "../opencode-skill-loader/types"
+export interface SkillMcpServerConfig {
+  type: string
+  command?: string
+  args?: string[]
+  env?: Record<string, string>
+  url?: string
+}
+
+export type SkillMcpConfig = Record<string, SkillMcpServerConfig>
 
 export interface BuiltinSkill {
   name: string

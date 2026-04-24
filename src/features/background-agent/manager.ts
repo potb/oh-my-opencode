@@ -46,7 +46,7 @@ import {
   resolvePromptContextFromSessionMessages,
 } from "./compaction-aware-message-resolver"
 import { handleSessionIdleBackgroundEvent } from "./session-idle-event-handler"
-import { MESSAGE_STORAGE } from "../hook-message-injector"
+import { MESSAGE_STORAGE } from "../../shared/opencode-storage-paths"
 import { join } from "node:path"
 import { pruneStaleTasksAndNotifications } from "./task-poller"
 import { checkAndInterruptStaleTasks } from "./task-poller"

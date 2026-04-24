@@ -14,7 +14,7 @@ function isValidGitEnvPrefix(value: string): boolean {
 	return GIT_ENV_ASSIGNMENT_PATTERN.test(value)
 }
 
-export function assertValidGitEnvPrefix(value: string): string {
+function assertValidGitEnvPrefix(value: string): string {
 	if (!isValidGitEnvPrefix(value)) {
 		throw new Error(GIT_ENV_PREFIX_VALIDATION_MESSAGE)
 	}

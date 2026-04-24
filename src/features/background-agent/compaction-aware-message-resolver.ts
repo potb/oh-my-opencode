@@ -1,6 +1,6 @@
 import { readdirSync, readFileSync } from "node:fs"
 import { join } from "node:path"
-import type { StoredMessage } from "../hook-message-injector"
+import type { StoredMessage } from "../../shared/session-message-context"
 import { getCompactionAgentConfigCheckpoint } from "../../shared/compaction-agent-config-checkpoint"
 import {
   hasCompactionPartInStorage,

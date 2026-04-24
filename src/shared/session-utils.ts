@@ -1,4 +1,4 @@
-import { findNearestMessageWithFields, findNearestMessageWithFieldsFromSDK } from "../features/hook-message-injector"
+import { findNearestMessageWithFields, findNearestMessageWithFieldsFromSDK } from "./session-message-context"
 import { getMessageDir } from "./opencode-message-dir"
 import { isSqliteBackend } from "./opencode-storage-detection"
 import { log } from "./logger"
