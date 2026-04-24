@@ -158,8 +158,8 @@ describe("migrateHookNames", () => {
   test("preserves current hook names unchanged", () => {
     // given: Config with current hook names
     const hooks = [
-      "context-window-monitor",
-      "think-mode",
+      "non-interactive-env",
+      "anthropic-effort",
     ]
 
     // when: Migrate hook names
@@ -193,20 +193,20 @@ describe("migrateHookNames", () => {
 
     // then: sisyphus-orchestrator should be removed
     expect(changed).toBe(true)
-    expect(migrated).toEqual(["think-mode"])
-    expect(removed).toEqual(["sisyphus-orchestrator"])
+    expect(migrated).toEqual([])
+    expect(removed).toEqual(["sisyphus-orchestrator", "think-mode"])
   })
 
   test("removes obsolete hooks and returns them in removed array", () => {
     // given: Config with removed hooks from v3.0.0
-    const hooks = ["context-window-monitor", "empty-message-sanitizer", "think-mode"]
+    const hooks = ["non-interactive-env", "empty-message-sanitizer", "anthropic-effort"]
 
     // when: Migrate hook names
     const { migrated, changed, removed } = migrateHookNames(hooks)
 
     // then: Removed hooks should be filtered out
     expect(changed).toBe(true)
-    expect(migrated).toEqual(["context-window-monitor", "think-mode"])
+    expect(migrated).toEqual(["non-interactive-env", "anthropic-effort"])
     expect(removed).toContain("empty-message-sanitizer")
     expect(removed).toHaveLength(1)
   })
@@ -220,20 +220,20 @@ describe("migrateHookNames", () => {
 
     // then: Removed hook should be filtered out
     expect(changed).toBe(true)
-    expect(migrated).toEqual(["think-mode"])
-    expect(removed).toEqual(["gpt-permission-continuation"])
+    expect(migrated).toEqual([])
+    expect(removed).toEqual(["gpt-permission-continuation", "think-mode"])
   })
 
   test("handles removed hooks alongside passthrough hooks", () => {
     // given: Config with removed and current hooks
-      const hooks = ["context-window-monitor", "sisyphus-orchestrator"]
+      const hooks = ["non-interactive-env", "sisyphus-orchestrator"]
 
     // when: Migrate hook names
     const { migrated, changed, removed } = migrateHookNames(hooks)
 
     // then: Removed hooks should be filtered while current hooks pass through
     expect(changed).toBe(true)
-      expect(migrated).toContain("context-window-monitor")
+      expect(migrated).toContain("non-interactive-env")
       expect(migrated).not.toContain("atlas")
       expect(removed).toEqual(["sisyphus-orchestrator"])
   })
@@ -326,7 +326,7 @@ describe("migrateConfigFile", () => {
     const needsWrite = migrateConfigFile(testConfigPath, rawConfig)
 
     expect(needsWrite).toBe(true)
-    expect(rawConfig.disabled_hooks).toEqual(["think-mode"])
+    expect(rawConfig.disabled_hooks).toEqual([])
   })
 
   test("removes gpt-permission-continuation from disabled_hooks", () => {
@@ -340,7 +340,7 @@ describe("migrateConfigFile", () => {
 
     // then: Removed hook should be filtered out
     expect(needsWrite).toBe(true)
-    expect(rawConfig.disabled_hooks).toEqual(["think-mode"])
+    expect(rawConfig.disabled_hooks).toEqual([])
   })
 
   test("does not write if no migration needed", () => {
@@ -349,7 +349,7 @@ describe("migrateConfigFile", () => {
       agents: {
         sisyphus: { model: "test" },
       },
-      disabled_hooks: ["context-window-monitor"],
+      disabled_hooks: ["non-interactive-env"],
     }
 
     // when: Migrate config file

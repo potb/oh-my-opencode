@@ -13,12 +13,12 @@ Core glue layer. Source files assemble the 10 OpenCode hook handlers and compose
 | `config.ts` | `config` | 6-phase config loading pipeline |
 | `tool-registry.ts` | `tool` | 26 tools assembled from factories |
 | `chat-message.ts` | `chat.message` | First-message variant and session setup |
-| `chat-params.ts` | `chat.params` | Anthropic effort level, think mode |
+| `chat-params.ts` | `chat.params` | Anthropic effort level |
 | `chat-headers.ts` | `chat.headers` | Copilot x-initiator header injection |
 | `event.ts` | `event` | Session lifecycle (created, deleted, idle, error) |
 | `tool-execute-before.ts` | `tool.execute.before` | Pre-tool guards (file guard, label truncator) |
 | `tool-execute-after.ts` | `tool.execute.after` | Post-tool hooks (output truncation) |
-| `messages-transform.ts` | `experimental.chat.messages.transform` | Thinking block and tool-pair validation |
+| `messages-transform.ts` | `experimental.chat.messages.transform` | Transform pass-through |
 | `session-compacting.ts` | `experimental.session.compacting` | Compatibility no-op hook |
 | `skill-context.ts` | — | Skill/browser/category context for tool creation |
 
@@ -27,8 +27,8 @@ Core glue layer. Source files assemble the 10 OpenCode hook handlers and compose
 | File | Tier | Count |
 |------|------|-------|
 | `create-session-hooks.ts` | Session | Runtime session hooks |
-| `create-tool-guard-hooks.ts` | Tool Guard | 14 |
-| `create-transform-hooks.ts` | Transform | 2 |
+| `create-tool-guard-hooks.ts` | Tool Guard | Runtime guard hooks |
+| `create-transform-hooks.ts` | Transform | Empty surface |
 | `create-core-hooks.ts` | Aggregator | Session + Guard + Transform |
 
 ## SUPPORT FILES
@@ -42,7 +42,7 @@ Core glue layer. Source files assemble the 10 OpenCode hook handlers and compose
 | `types.ts` | `PluginContext`, `PluginInterface`, `ToolsRecord`, `TmuxConfig` |
 | `ultrawork-model-override.ts` | Ultrawork mode model override logic |
 | `ultrawork-db-model-override.ts` | DB-level model override for ultrawork |
-| `config-handler.ts` | Runtime config loading and caching |
+| `runtime-config-hook.ts` | Runtime config loading and caching |
 
 ## KEY PATTERNS
 

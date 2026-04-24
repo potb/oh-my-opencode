@@ -5,9 +5,6 @@
     "tests/**/*.ts"
   ],
   "ignoreIssues": {
-    "src/hooks/auto-update-checker/hook/background-update-check.ts": [
-      "exports"
-    ],
     "src/plugin/ultrawork-model-override.ts": [
       "exports"
     ],

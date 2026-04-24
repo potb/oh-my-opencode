@@ -123,18 +123,18 @@ describe("mergeConfigs", () => {
 
     it("should merge disabled arrays without duplicates", () => {
       const base = createConfig({
-        disabled_hooks: ["context-window-monitor", "think-mode"],
+        disabled_hooks: ["non-interactive-env", "anthropic-effort"],
       });
 
       const override = createConfig({
-        disabled_hooks: ["think-mode", "auto-update-checker"],
+        disabled_hooks: ["anthropic-effort", "write-existing-file-guard"],
       });
 
       const result = mergeConfigs(base, override);
 
-      expect(result.disabled_hooks).toContain("context-window-monitor");
-      expect(result.disabled_hooks).toContain("think-mode");
-      expect(result.disabled_hooks).toContain("auto-update-checker");
+      expect(result.disabled_hooks).toContain("non-interactive-env");
+      expect(result.disabled_hooks).toContain("anthropic-effort");
+      expect(result.disabled_hooks).toContain("write-existing-file-guard");
       expect(result.disabled_hooks?.length).toBe(3);
     });
 
@@ -186,7 +186,7 @@ describe("parseConfigPartially", () => {
           oracle: { model: "openai/gpt-5.4" },
           momus: { model: "openai/gpt-5.4" },
         },
-      disabled_hooks: ["context-window-monitor"],
+      disabled_hooks: ["non-interactive-env"],
       };
 
       const result = parseConfigPartially(rawConfig);
@@ -194,7 +194,7 @@ describe("parseConfigPartially", () => {
       expect(result).not.toBeNull();
       expect(result!.agents?.oracle).toMatchObject({ model: "openai/gpt-5.4" });
       expect(result!.agents?.momus).toMatchObject({ model: "openai/gpt-5.4" });
-      expect(result!.disabled_hooks).toEqual(["context-window-monitor"]);
+      expect(result!.disabled_hooks).toEqual(["non-interactive-env"]);
     });
   });
 
@@ -214,13 +214,13 @@ describe("parseConfigPartially", () => {
             },
           },
         },
-      disabled_hooks: ["context-window-monitor"],
+      disabled_hooks: ["non-interactive-env"],
       };
 
       const result = parseConfigPartially(rawConfig);
 
       expect(result).not.toBeNull();
-      expect(result!.disabled_hooks).toEqual(["context-window-monitor"]);
+      expect(result!.disabled_hooks).toEqual(["non-interactive-env"]);
       expect(result!.agents).toBeUndefined();
     });
 
