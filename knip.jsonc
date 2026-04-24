@@ -5,18 +5,6 @@
     "tests/**/*.ts"
   ],
   "ignoreIssues": {
-    "tests/hashline/**": [
-      "unlisted"
-    ],
-    "src/agents/sisyphus-junior/index.ts": [
-      "exports"
-    ],
-    "src/config/index.ts": [
-      "types"
-    ],
-    "src/hooks/auto-update-checker/constants.ts": [
-      "exports"
-    ],
     "src/hooks/auto-update-checker/hook/background-update-check.ts": [
       "exports"
     ],
@@ -26,13 +14,7 @@
     "src/shared/connected-providers-cache.ts": [
       "exports"
     ],
-    "src/shared/posthog.ts": [
-      "exports"
-    ],
     "src/shared/zip-entry-listing/tar-zip-entry-listing.ts": [
-      "exports"
-    ],
-    "src/hooks/session-recovery/storage/parts-reader.ts": [
       "exports"
     ]
   },
