@@ -1,4 +1,4 @@
-export type SessionModel = { providerID: string; modelID: string }
+type SessionModel = { providerID: string; modelID: string }
 
 const sessionModels = new Map<string, SessionModel>()
 

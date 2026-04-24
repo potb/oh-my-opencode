@@ -6,5 +6,3 @@ const ModelCapabilitiesConfigSchema = z.object({
   refresh_timeout_ms: z.number().int().positive().optional(),
   source_url: z.string().url().optional(),
 })
-
-export type ModelCapabilitiesConfig = z.infer<typeof ModelCapabilitiesConfigSchema>
