@@ -169,7 +169,6 @@ afterEach(() => {
 			} as any,
 			hooks: {
 				autoUpdateChecker: { event: async () => {} },
-				claudeCodeHooks: { event: async () => {} },
 				backgroundNotificationHook: { event: async () => {} },
 				sessionNotification: async () => {},
 				unstableAgentBabysitter: { event: async () => {} },
@@ -257,7 +256,6 @@ afterEach(() => {
 						dispatchCalls.push(input)
 					},
 				},
-				claudeCodeHooks: { event: async () => {} },
 				backgroundNotificationHook: { event: async () => {} },
 				sessionNotification: async () => {},
 				unstableAgentBabysitter: { event: async () => {} },
@@ -311,7 +309,6 @@ afterEach(() => {
 						}
 					},
 				},
-				claudeCodeHooks: { event: async () => {} },
 				backgroundNotificationHook: { event: async () => {} },
 				sessionNotification: async () => {},
 				unstableAgentBabysitter: { event: async () => {} },

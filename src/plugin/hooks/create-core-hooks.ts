@@ -32,8 +32,6 @@ export function createCoreHooks(args: {
   })
 
   const transform = createTransformHooks({
-    ctx,
-    pluginConfig,
     isHookEnabled: (name) => isHookEnabled(name as HookName),
     safeHookEnabled,
   })

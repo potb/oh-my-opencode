@@ -11,13 +11,11 @@ export type CreatedHooks = ReturnType<typeof createHooks>
 type DisposableHook = { dispose?: () => void } | null | undefined
 
 type DisposableCreatedHooks = {
-  claudeCodeHooks?: DisposableHook
   commentChecker?: DisposableHook
   anthropicContextWindowLimitRecovery?: DisposableHook
 }
 
 export function disposeCreatedHooks(hooks: DisposableCreatedHooks): void {
-  hooks.claudeCodeHooks?.dispose?.()
   hooks.commentChecker?.dispose?.()
   hooks.anthropicContextWindowLimitRecovery?.dispose?.()
 }

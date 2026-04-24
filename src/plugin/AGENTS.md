@@ -12,13 +12,13 @@ Core glue layer. Source files assemble the 10 OpenCode hook handlers and compose
 |------|---------------|---------|
 | `config.ts` | `config` | 6-phase config loading pipeline |
 | `tool-registry.ts` | `tool` | 26 tools assembled from factories |
-| `chat-message.ts` | `chat.message` | First-message variant, session setup, keyword detection |
+| `chat-message.ts` | `chat.message` | First-message variant and session setup |
 | `chat-params.ts` | `chat.params` | Anthropic effort level, think mode |
 | `chat-headers.ts` | `chat.headers` | Copilot x-initiator header injection |
 | `event.ts` | `event` | Session lifecycle (created, deleted, idle, error) |
 | `tool-execute-before.ts` | `tool.execute.before` | Pre-tool guards (file guard, label truncator, rules injector) |
 | `tool-execute-after.ts` | `tool.execute.after` | Post-tool hooks (output truncation, comment checker, metadata) |
-| `messages-transform.ts` | `experimental.chat.messages.transform` | Context injection, thinking block validation |
+| `messages-transform.ts` | `experimental.chat.messages.transform` | Thinking block and tool-pair validation |
 | `session-compacting.ts` | `experimental.session.compacting` | Context + todo preservation during compaction |
 | `skill-context.ts` | — | Skill/browser/category context for tool creation |
 
@@ -28,7 +28,7 @@ Core glue layer. Source files assemble the 10 OpenCode hook handlers and compose
 |------|------|-------|
 | `create-session-hooks.ts` | Session | Runtime session hooks |
 | `create-tool-guard-hooks.ts` | Tool Guard | 14 |
-| `create-transform-hooks.ts` | Transform | 5 |
+| `create-transform-hooks.ts` | Transform | 2 |
 | `create-continuation-hooks.ts` | Continuation | Background + compaction hooks |
 | `create-core-hooks.ts` | Aggregator | Session + Guard + Transform |
 

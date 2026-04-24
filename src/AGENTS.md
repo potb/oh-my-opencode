@@ -35,6 +35,6 @@ createHooks()
   ├─→ createCoreHooks()           # Session + guard + transform hooks
   │   ├─ createSessionHooks()     # Session-facing runtime hooks
   │   ├─ createToolGuardHooks()   # 14: commentChecker, rulesInjector, writeExistingFileGuard, jsonErrorRecovery, hashlineReadEnhancer, bashFileReadGuard, readImageResizer, todoDescriptionOverride, webfetchRedirectGuard...
-  │   └─ createTransformHooks()   # 5: claudeCodeHooks, keywordDetector, contextInjector, thinkingBlockValidator, toolPairValidator
+  │   └─ createTransformHooks()   # 2: thinkingBlockValidator, toolPairValidator
   └─→ createContinuationHooks()   # Continuation and background-notification hooks
 ```

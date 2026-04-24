@@ -16,7 +16,6 @@ Standalone feature modules wired into plugin/ layer. Each is self-contained with
 | **claude-code-plugin-loader** | 15 | MEDIUM | Unified plugin discovery from .opencode/plugins/ |
 | **claude-tasks** | 7 | MEDIUM | Task schema + file storage + OpenCode todo sync |
 | **claude-code-mcp-loader** | 6 | MEDIUM | .mcp.json loading with ${VAR} env expansion |
-| **context-injector** | 6 | MEDIUM | AGENTS.md/README.md injection into context |
 | **hook-message-injector** | 5 | MEDIUM | System message injection for hooks |
 | **task-toast-manager** | 4 | MEDIUM | Task progress notifications |
 | **tool-metadata-store** | 3 | LOW | Tool execution metadata cache |

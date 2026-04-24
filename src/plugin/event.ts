@@ -4,7 +4,6 @@ import type { PluginContext } from "./types";
 import {
   clearSessionAgent,
   getMainSessionID,
-  getSessionAgent,
   setMainSession,
   subagentSessions,
   syncSubagentSessions,
@@ -17,7 +16,7 @@ import {
 } from "../shared/background-output-consumption";
 import { resetMessageCursor } from "../shared";
 import { log } from "../shared/logger";
-import { clearSessionModel, getSessionModel, setSessionModel } from "../shared/session-model-state";
+import { clearSessionModel, setSessionModel } from "../shared/session-model-state";
 import { clearSessionPromptParams } from "../shared/session-prompt-params-state";
 import { deleteSessionTools } from "../shared/session-tools-store";
 import { lspManager } from "../tools";
@@ -32,10 +31,6 @@ type FirstMessageVariantGate = {
   clear: (sessionID: string) => void;
 };
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null;
-}
-
 function isCompactionAgent(agent: string): boolean {
   return agent.toLowerCase() === "compaction";
 }
@@ -48,7 +43,7 @@ export function createEventHandler(args: {
   managers: Managers;
   hooks: CreatedHooks;
 }): (input: EventInput) => Promise<void> {
-  const { ctx, pluginConfig, firstMessageVariantGate, managers, hooks } = args;
+  const { ctx, firstMessageVariantGate, hooks } = args;
   const pluginContext = ctx as {
     directory: string;
     client: {
@@ -106,7 +101,6 @@ export function createEventHandler(args: {
   const dispatchToHooks = async (input: EventInput): Promise<void> => {
     await runEventHookSafely("autoUpdateChecker", hooks.autoUpdateChecker?.event, input);
     await runEventHookSafely("legacyPluginToast", hooks.legacyPluginToast?.event, input);
-    await runEventHookSafely("claudeCodeHooks", hooks.claudeCodeHooks?.event, input);
     await runEventHookSafely("backgroundNotificationHook", hooks.backgroundNotificationHook?.event, input);
     await runEventHookSafely("sessionNotification", hooks.sessionNotification, input);
     await runEventHookSafely("unstableAgentBabysitter", hooks.unstableAgentBabysitter?.event, input);
@@ -228,11 +222,6 @@ export function createEventHandler(args: {
         }
       }
 
-    }
-
-    if (event.type === "session.status") {
-      const sessionID = props?.sessionID as string | undefined;
-      const status = props?.status as { type?: string; attempt?: number; message?: string; next?: number } | undefined;
     }
 
     if (event.type === "session.error") {

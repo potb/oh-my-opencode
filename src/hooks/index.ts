@@ -13,18 +13,15 @@ export { createEmptyTaskResponseDetectorHook } from "./empty-task-response-detec
 export { createAnthropicContextWindowLimitRecoveryHook, type AnthropicContextWindowLimitRecoveryOptions } from "./anthropic-context-window-limit-recovery";
 
 export { createThinkModeHook } from "./think-mode";
-export { createClaudeCodeHooksHook } from "./claude-code-hooks";
 export { createRulesInjectorHook } from "./rules-injector";
 export { createBackgroundNotificationHook } from "./background-notification"
 export { createAutoUpdateCheckerHook } from "./auto-update-checker";
 
 export { createAgentUsageReminderHook } from "./agent-usage-reminder";
-export { createKeywordDetectorHook } from "./keyword-detector";
 export { createNonInteractiveEnvHook } from "./non-interactive-env";
 
 export { createThinkingBlockValidatorHook } from "./thinking-block-validator";
 export { createToolPairValidatorHook } from "./tool-pair-validator";
-export { createNoSisyphusGptHook } from "./no-sisyphus-gpt";
 export { createEditErrorRecoveryHook } from "./edit-error-recovery";
 
 export { createSisyphusJuniorNotepadHook } from "./sisyphus-junior-notepad";

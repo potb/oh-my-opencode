@@ -24,11 +24,9 @@ describe("createPluginDispose", () => {
   })
 
   test("calls hook disposers", async () => {
-    const claudeCodeHooks = { dispose: (): void => {} }
     const commentChecker = { dispose: (): void => {} }
     const lspManager = { stopAll: async (): Promise<void> => {} }
 
-    const claudeCodeHooksDisposeSpy = spyOn(claudeCodeHooks, "dispose")
     const commentCheckerDisposeSpy = spyOn(commentChecker, "dispose")
 
     const dispose = createPluginDispose({
@@ -38,7 +36,6 @@ describe("createPluginDispose", () => {
       lspManager,
       disposeHooks: (): void => {
         disposeCreatedHooks({
-          claudeCodeHooks,
           commentChecker,
         })
       },
@@ -46,7 +43,6 @@ describe("createPluginDispose", () => {
 
     await dispose()
 
-    expect(claudeCodeHooksDisposeSpy).toHaveBeenCalledTimes(1)
     expect(commentCheckerDisposeSpy).toHaveBeenCalledTimes(1)
   })
 

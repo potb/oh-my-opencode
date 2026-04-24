@@ -1,7 +1,7 @@
 import type { OhMyOpenCodeConfig } from "../config"
 import type { PluginContext } from "./types"
 
-import { isModelCacheAvailable, log } from "../shared"
+import { isModelCacheAvailable } from "../shared"
 import { getAgentConfigKey } from "../shared/agent-display-names"
 import { getSessionModel, setSessionModel } from "../shared/session-model-state"
 import { getMainSessionID, setSessionAgent, subagentSessions } from "../features/claude-code-session-state"
@@ -134,10 +134,7 @@ export function createChatMessageHandler(args: {
     } else if (input.model) {
       setSessionModel(input.sessionID, input.model)
     }
-    await hooks.keywordDetector?.["chat.message"]?.(input, output)
     await hooks.thinkMode?.["chat.message"]?.(input, output)
-    await hooks.claudeCodeHooks?.["chat.message"]?.(input, output)
-    await hooks.noSisyphusGpt?.["chat.message"]?.(input, output)
 
     if (!isModelCacheAvailable()) {
       pluginContext.client.tui

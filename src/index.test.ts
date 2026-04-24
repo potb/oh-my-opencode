@@ -7,12 +7,6 @@ describe("experimental.session.compacting handler", () => {
       inject: (sessionID: string) => string
     }
     compactionTodoPreserver?: { capture: (sessionID: string) => Promise<void> }
-    claudeCodeHooks?: {
-      "experimental.session.compacting"?: (
-        input: { sessionID: string },
-        output: { context: string[] },
-      ) => Promise<void>
-    }
   }) {
     return async (
       input: { sessionID: string },
@@ -20,7 +14,6 @@ describe("experimental.session.compacting handler", () => {
     ): Promise<void> => {
       await hooks.compactionContextInjector?.capture(input.sessionID)
       await hooks.compactionTodoPreserver?.capture(input.sessionID)
-      await hooks.claudeCodeHooks?.["experimental.session.compacting"]?.(input, output)
       if (hooks.compactionContextInjector) {
         output.context.push(hooks.compactionContextInjector.inject(input.sessionID))
       }
@@ -45,34 +38,21 @@ describe("experimental.session.compacting handler", () => {
           callOrder.push("capture")
         }),
       },
-      claudeCodeHooks: {
-        "experimental.session.compacting": mock(async (_input, output) => {
-          callOrder.push("preCompact")
-          output.context.push("precompact-injected-context")
-        }),
-      },
     })
 
     const output = { context: [] as string[] }
     await handler({ sessionID: "ses_test" }, output)
 
-    expect(callOrder).toEqual(["checkpointCapture", "capture", "preCompact", "contextInjector"])
-    expect(output.context).toEqual(["precompact-injected-context", "context-for-ses_test"])
+    expect(callOrder).toEqual(["checkpointCapture", "capture", "contextInjector"])
+    expect(output.context).toEqual(["context-for-ses_test"])
   })
 
   it("handles missing optional compaction hooks gracefully", async () => {
-    const preCompactMock = mock(async () => {})
-
-    const handler = createCompactingHandler({
-      claudeCodeHooks: {
-        "experimental.session.compacting": preCompactMock,
-      },
-    })
+    const handler = createCompactingHandler({})
 
     const output = { context: [] as string[] }
     await handler({ sessionID: "ses_test" }, output)
 
-    expect(preCompactMock).toHaveBeenCalledTimes(1)
     expect(output.context).toEqual([])
   })
 })

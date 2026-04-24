@@ -15,7 +15,6 @@ import {
   createDelegateTaskRetryHook,
   createTaskResumeInfoHook,
   createSisyphusJuniorNotepadHook,
-  createNoSisyphusGptHook,
   createQuestionLabelTruncatorHook,
   createPreemptiveCompactionHook,
   createLegacyPluginToastHook,
@@ -41,7 +40,6 @@ type SessionHooks = {
   editErrorRecovery: ReturnType<typeof createEditErrorRecoveryHook> | null
   delegateTaskRetry: ReturnType<typeof createDelegateTaskRetryHook> | null
   sisyphusJuniorNotepad: ReturnType<typeof createSisyphusJuniorNotepadHook> | null
-  noSisyphusGpt: ReturnType<typeof createNoSisyphusGptHook> | null
   questionLabelTruncator: ReturnType<typeof createQuestionLabelTruncatorHook> | null
   taskResumeInfo: ReturnType<typeof createTaskResumeInfoHook> | null
   anthropicEffort: ReturnType<typeof createAnthropicEffortHook> | null
@@ -125,10 +123,6 @@ export function createSessionHooks(args: {
     ? safeHook("sisyphus-junior-notepad", () => createSisyphusJuniorNotepadHook(ctx))
     : null
 
-  const noSisyphusGpt = isHookEnabled("no-sisyphus-gpt")
-    ? safeHook("no-sisyphus-gpt", () => createNoSisyphusGptHook(ctx))
-    : null
-
   const questionLabelTruncator = isHookEnabled("question-label-truncator")
     ? safeHook("question-label-truncator", () => createQuestionLabelTruncatorHook())
     : null
@@ -157,7 +151,6 @@ export function createSessionHooks(args: {
     editErrorRecovery,
     delegateTaskRetry,
     sisyphusJuniorNotepad,
-    noSisyphusGpt,
     questionLabelTruncator,
     taskResumeInfo,
     anthropicEffort,

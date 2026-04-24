@@ -45,13 +45,13 @@ OhMyOpenCodePlugin(ctx)
 |---------|---------|
 | `config` | 6-phase: provider → plugin-components → agents → tools → MCPs → commands |
 | `tool` | 26 registered tools |
-| `chat.message` | First-message variant, session setup, keyword detection (ultrawork/search/analyze) |
+| `chat.message` | First-message variant and session setup |
 | `chat.params` | Anthropic effort level, think mode, runtime fallback override |
 | `chat.headers` | Copilot x-initiator header injection |
 | `event` | Session lifecycle (created, deleted, idle, error), openclaw dispatch, runtime fallback |
 | `tool.execute.before` | Pre-tool hooks (file guard, label truncator, rules injector, prometheus md-only) |
 | `tool.execute.after` | Post-tool hooks (output truncation, comment checker, hashline read enhancer) |
-| `experimental.chat.messages.transform` | Context injection, thinking block validation, tool pair validation |
+| `experimental.chat.messages.transform` | Thinking block validation and tool pair validation |
 | `experimental.session.compacting` | Context + todo preservation during compaction |
 
 ## WHERE TO LOOK

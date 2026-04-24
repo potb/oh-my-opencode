@@ -17,7 +17,6 @@ hooks/
 ├── anthropic-effort/            # Reasoning effort level adjustment
 ├── auto-update-checker/        # Plugin update check
 ├── background-notification/    # OS notification
-├── claude-code-hooks/          # settings.json compat layer
 ├── comment-checker/            # Prevents AI slop
 ├── compaction-context-injector/ # Injects context on compaction
 ├── compaction-todo-preserver/  # Preserves todos through compaction
@@ -28,9 +27,7 @@ hooks/
 ├── hashline-edit-diff-enhancer/ # Enhanced diff output for hashline edits
 ├── hashline-read-enhancer/     # Adds LINE#ID hashes to Read output
 ├── json-error-recovery/        # JSON parse error correction
-├── keyword-detector/           # ultrawork/search/analyze modes
 ├── legacy-plugin-toast/        # Legacy plugin name migration toast
-├── no-sisyphus-gpt/            # Block Sisyphus from GPT
 ├── non-interactive-env/        # Non-TTY environment handling
 ├── question-label-truncator/   # Auto-truncates question labels
 ├── read-image-resizer/         # Resize images for context efficiency
@@ -67,7 +64,6 @@ hooks/
 | questionLabelTruncator | tool.execute.before | Truncate long question labels |
 | taskResumeInfo | chat.message | Inject task context on resume |
 | anthropicEffort | chat.params | Adjust reasoning effort level |
-| noSisyphusGpt | chat.message | Block Sisyphus from using GPT models (toast warning) |
 | legacyPluginToast | chat.message | Show toast when legacy plugin name detected |
 
 ### Tier 2: Tool Guard Hooks (14) — `create-tool-guard-hooks.ts`
@@ -89,13 +85,10 @@ hooks/
 | hashlineReadEnhancer | tool.execute.after | Enhance Read output with line hashes |
 | jsonErrorRecovery | tool.execute.after | Detect JSON parse errors, inject correction reminder |
 
-### Tier 3: Transform Hooks (5) — `create-transform-hooks.ts`
+### Tier 3: Transform Hooks (2) — `create-transform-hooks.ts`
 
 | Hook | Event | Purpose |
 |------|-------|---------|
-| claudeCodeHooks | messages.transform | Claude Code settings.json compatibility |
-| keywordDetector | messages.transform | Detect ultrawork/search/analyze modes |
-| contextInjectorMessagesTransform | messages.transform | Inject AGENTS.md/README.md into context |
 | thinkingBlockValidator | messages.transform | Validate thinking block structure |
 | toolPairValidator | messages.transform | Validate tool call/result pairs |
 
@@ -112,9 +105,6 @@ hooks/
 
 ### anthropic-context-window-limit-recovery (31 files, ~2232 LOC)
 Multi-strategy recovery when hitting context limits. Strategies: truncation, compaction, summarization.
-
-### keyword-detector (~1665 LOC)
-Detects modes from user input: ultrawork, search, analyze, prove-yourself. Injects mode-specific system prompts.
 
 ### rules-injector (19 files, ~1604 LOC)
 Conditional rules injection from AGENTS.md, config, skill rules. Evaluates conditions to determine which rules apply.
