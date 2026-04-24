@@ -12,7 +12,7 @@ Standalone feature modules wired into plugin/ layer. Each is self-contained with
 |--------|-------|------------|---------|
 | **opencode-skill-loader** | 33 | HIGH | YAML frontmatter skill loading from multiple scopes |
 | **background-agent** | 47 | HIGH | Task lifecycle, concurrency, polling, spawner pattern, circuit breaker |
-| **builtin-skills** | 17 | LOW | Built-in skill definitions and templates |
+| **builtin-skills** | 13 | LOW | Built-in skill definitions and templates |
 | **claude-code-plugin-loader** | 15 | MEDIUM | Unified plugin discovery from .opencode/plugins/ |
 | **claude-tasks** | 7 | MEDIUM | Task schema + file storage + OpenCode todo sync |
 | **claude-code-mcp-loader** | 6 | MEDIUM | .mcp.json loading with ${VAR} env expansion |
@@ -48,12 +48,8 @@ Core orchestration engine. `BackgroundManager` manages task lifecycle:
 | Skill | Size | MCP | Tools |
 |-------|------|-----|-------|
 | git-master | 1111 LOC | — | Bash |
-| playwright | 312 LOC | @playwright/mcp | — |
 | agent-browser | (in playwright.ts) | — | Bash(agent-browser:*) |
-| playwright-cli | 268 LOC | — | Bash(playwright-cli:*) |
-| dev-browser | 221 LOC | — | Bash |
 | frontend-ui-ux | 79 LOC | — | — |
 | review-work | ~LOC | --- | --- |
-| ai-slop-remover | ~LOC | --- | --- |
 
-Browser variant selected by `browserProvider` config: playwright (default) | playwright-cli | agent-browser.
+Browser automation uses `agent-browser` only.
