@@ -16,7 +16,7 @@
     ]
   },
   "project": [
-    "src/**/*.ts",
+    "src/**/*.ts!",
     "script/**/*.ts",
     "tests/**/*.ts"
   ]
