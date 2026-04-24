@@ -26,7 +26,7 @@ import {
 } from "../../shared"
 import { safeCreateHook } from "../../shared/safe-create-hook"
 
-export type ToolGuardHooks = {
+type ToolGuardHooks = {
   commentChecker: ReturnType<typeof createCommentCheckerHooks> | null
   toolOutputTruncator: ReturnType<typeof createToolOutputTruncatorHook> | null
   directoryAgentsInjector: ReturnType<typeof createDirectoryAgentsInjectorHook> | null

@@ -15,8 +15,8 @@ type FirstMessageVariantGate = {
 }
 
 type ChatMessagePart = { type: string; text?: string; [key: string]: unknown }
-export type ChatMessageHandlerOutput = { message: Record<string, unknown>; parts: ChatMessagePart[] }
-export type ChatMessageInput = {
+type ChatMessageHandlerOutput = { message: Record<string, unknown>; parts: ChatMessagePart[] }
+type ChatMessageInput = {
   sessionID: string
   agent?: string
   model?: { providerID: string; modelID: string }

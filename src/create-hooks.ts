@@ -10,7 +10,7 @@ export type CreatedHooks = ReturnType<typeof createHooks>
 
 type DisposableHook = { dispose?: () => void } | null | undefined
 
-export type DisposableCreatedHooks = {
+type DisposableCreatedHooks = {
   claudeCodeHooks?: DisposableHook
   commentChecker?: DisposableHook
   anthropicContextWindowLimitRecovery?: DisposableHook

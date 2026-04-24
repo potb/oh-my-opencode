@@ -7,7 +7,7 @@ import { applyToolConfig } from "./tool-config-handler";
 import { clearFormatterCache } from "../tools/hashline-edit/formatter-trigger"
 
 
-export interface ConfigHandlerDeps {
+interface ConfigHandlerDeps {
   ctx: { directory: string; client?: any };
   pluginConfig: OhMyOpenCodeConfig;
   modelCacheState: ModelCacheState;

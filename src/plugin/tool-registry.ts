@@ -34,7 +34,7 @@ const defaultToolRegistryFactories: ToolRegistryFactories = {
   createHashlineEditTool,
 }
 
-export type ToolRegistryResult = {
+type ToolRegistryResult = {
   filteredTools: ToolsRecord
   taskSystemEnabled: boolean
 }

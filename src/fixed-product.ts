@@ -15,7 +15,7 @@ export const REMOVED_AGENT_NAMES = [
   "hephaestus",
 ] as const
 
-export const REMOVED_TOOL_NAMES = [
+const REMOVED_TOOL_NAMES = [
   "background_cancel",
   "background_output",
   "interactive_bash",
@@ -31,7 +31,7 @@ export const REMOVED_TOOL_NAMES = [
   "task_update",
 ] as const
 
-export const REMOVED_HOOK_NAMES = [
+const REMOVED_HOOK_NAMES = [
   "atlas",
   "auto-slash-command",
   "category-skill-reminder",

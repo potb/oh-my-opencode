@@ -31,7 +31,7 @@ function showToast(tui: unknown, title: string, message: string): void {
   }).catch(() => {})
 }
 
-export type UltraworkOverrideResult = {
+type UltraworkOverrideResult = {
   providerID?: string
   modelID?: string
   variant?: string

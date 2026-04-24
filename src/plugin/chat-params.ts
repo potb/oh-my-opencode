@@ -1,7 +1,7 @@
 import { getSessionPromptParams } from "../shared/session-prompt-params-state"
 import { getModelCapabilities, resolveCompatibleModelSettings } from "../shared"
 
-export type ChatParamsInput = {
+type ChatParamsInput = {
   sessionID: string
   agent: { name?: string }
   model: { providerID: string; modelID: string }

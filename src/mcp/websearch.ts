@@ -41,4 +41,4 @@ export function createWebsearchConfig(config?: WebsearchConfig): RemoteMcpConfig
   }
 }
 
-export const websearch = createWebsearchConfig()
+const websearch = createWebsearchConfig()

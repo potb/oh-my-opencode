@@ -47,7 +47,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value)
 }
 
-export function sanitizeJsonSchema(value: unknown, depth = 0, isPropertyName = false): unknown {
+function sanitizeJsonSchema(value: unknown, depth = 0, isPropertyName = false): unknown {
   if (Array.isArray(value)) {
     return value.map((item) => sanitizeJsonSchema(item, depth + 1, false))
   }

@@ -28,7 +28,7 @@ import {
 } from "../../shared"
 import { safeCreateHook } from "../../shared/safe-create-hook"
 
-export type SessionHooks = {
+type SessionHooks = {
   contextWindowMonitor: ReturnType<typeof createContextWindowMonitorHook> | null
   preemptiveCompaction: ReturnType<typeof createPreemptiveCompactionHook> | null
   sessionRecovery: ReturnType<typeof createSessionRecoveryHook> | null

@@ -10,7 +10,7 @@ import {
 import { safeCreateHook } from "../../shared/safe-create-hook"
 import { createUnstableAgentBabysitter } from "../unstable-agent-babysitter"
 
-export type ContinuationHooks = {
+type ContinuationHooks = {
   compactionContextInjector: ReturnType<typeof createCompactionContextInjector> | null
   compactionTodoPreserver: ReturnType<typeof createCompactionTodoPreserverHook> | null
   unstableAgentBabysitter: ReturnType<typeof createUnstableAgentBabysitter> | null

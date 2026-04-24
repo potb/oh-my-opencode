@@ -83,7 +83,7 @@ export function parseConfigPartially(
   return partialConfig as OhMyOpenCodeConfig;
 }
 
-export function loadConfigFromPath(
+function loadConfigFromPath(
   configPath: string,
   _ctx: unknown
 ): OhMyOpenCodeConfig | null {
