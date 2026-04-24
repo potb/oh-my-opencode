@@ -20,7 +20,7 @@ const defaultCreateManagersDeps: CreateManagersDeps = {
 
 export type Managers = {
   backgroundManager: BackgroundManager
-  configHandler: ReturnType<typeof createRuntimeConfigHook>
+  configHook: ReturnType<typeof createRuntimeConfigHook>
 }
 
 export function createManagers(args: {
@@ -37,7 +37,7 @@ export function createManagers(args: {
     pluginConfig.background_task,
   )
 
-  const configHandler = deps.createRuntimeConfigHookFn({
+  const configHook = deps.createRuntimeConfigHookFn({
     ctx: { directory: ctx.directory, client: ctx.client },
     pluginConfig,
     modelCacheState,
@@ -45,6 +45,6 @@ export function createManagers(args: {
 
   return {
     backgroundManager,
-    configHandler,
+    configHook,
   }
 }

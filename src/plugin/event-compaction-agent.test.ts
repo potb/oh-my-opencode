@@ -24,10 +24,6 @@ function createMinimalEventHandler() {
       },
     } as never,
     hooks: {
-      autoUpdateChecker: { event: async () => {} },
-      contextWindowMonitor: { event: async () => {} },
-      thinkMode: { event: async () => {} },
-      interactiveBashSession: { event: async () => {} },
       writeExistingFileGuard: { event: async () => {} },
     } as never,
   })

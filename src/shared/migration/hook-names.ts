@@ -8,21 +8,6 @@ export const HOOK_NAME_MAP: Record<string, string | null> = {
   "empty-message-sanitizer": null,
   "delegate-task-english-directive": null,
   "gpt-permission-continuation": null,
-
-  // Removed hooks (trimmed runtime surface)
-  "context-window-monitor": null,
-  "think-mode": null,
-  "auto-update-checker": null,
-  "task-resume-info": null,
-  "legacy-plugin-toast": null,
-  "empty-task-response-detector": null,
-  "tasks-todowrite-disabler": null,
-  "bash-file-read-guard": null,
-  "json-error-recovery": null,
-  "read-image-resizer": null,
-  "todo-description-override": null,
-  "thinking-block-validator": null,
-  "tool-pair-validator": null,
 }
 
 export function migrateHookNames(

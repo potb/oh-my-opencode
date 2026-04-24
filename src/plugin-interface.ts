@@ -55,7 +55,7 @@ export function createPluginInterface(args: {
 
     "experimental.chat.system.transform": createSystemTransformHandler(),
 
-    config: managers.configHandler,
+    config: managers.configHook,
 
     event: createEventHandler({
       ctx,

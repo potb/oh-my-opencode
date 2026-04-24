@@ -72,7 +72,7 @@ describe("createManagers", () => {
     })
 
     expect(managers.backgroundManager).toBeInstanceOf(MockBackgroundManager)
-    expect(typeof managers.configHandler).toBe("function")
+    expect(typeof managers.configHook).toBe("function")
     expect("tmuxSessionManager" in managers).toBe(false)
   })
 })

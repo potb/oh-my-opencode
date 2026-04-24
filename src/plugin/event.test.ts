@@ -63,19 +63,19 @@ function createChatMessageHandlerHooks(
 }
 
 function createIdleTrackingEventHandler(dispatchCalls: EventInput[]): ReturnType<typeof createEventHandler> {
-	return createEventHandler({
+  return createEventHandler({
 		ctx: asEventHandlerContext({}),
 		pluginConfig: asPluginConfig({}),
 		firstMessageVariantGate: {
 			markSessionCreated: () => {},
 			clear: () => {},
 		},
-		managers: createEventHandlerManagers(),
-		hooks: createEventHandlerHooks({
-			autoUpdateChecker: {
-				event: async (input: EventInput) => {
-					if (input.event.type === "session.idle") {
-						dispatchCalls.push(input)
+    managers: createEventHandlerManagers(),
+    hooks: createEventHandlerHooks({
+      writeExistingFileGuard: {
+        event: async (input: EventInput) => {
+          if (input.event.type === "session.idle") {
+            dispatchCalls.push(input)
 					}
 				},
 			},
@@ -170,10 +170,7 @@ afterEach(() => {
 				},
 			} as any,
 			hooks: {
-				autoUpdateChecker: { event: async () => {} },
-				contextWindowMonitor: { event: async () => {} },
-				thinkMode: { event: async () => {} },
-		        interactiveBashSession: { event: async () => {} },
+				writeExistingFileGuard: { event: async () => {} },
 			} as any,
 		})
 
@@ -244,14 +241,11 @@ afterEach(() => {
 				},
 			} as any,
 				hooks: {
-					autoUpdateChecker: {
+					writeExistingFileGuard: {
 						event: async (input: EventInput) => {
 							dispatchCalls.push(input)
 						},
 					},
-					contextWindowMonitor: { event: async () => {} },
-					thinkMode: { event: async () => {} },
-		        interactiveBashSession: { event: async () => {} },
 					ralphLoop: { event: async () => {} },
 			} as any,
 		})
@@ -286,16 +280,13 @@ afterEach(() => {
 				},
 			} as any,
 				hooks: {
-					autoUpdateChecker: {
+					writeExistingFileGuard: {
 						event: async (input: EventInput) => {
 							if (input.event.type === "session.idle") {
 								dispatchCalls.push(input)
 							}
 						},
 					},
-					contextWindowMonitor: { event: async () => {} },
-					thinkMode: { event: async () => {} },
-		        interactiveBashSession: { event: async () => {} },
 					ralphLoop: { event: async () => {} },
 			} as any,
 		})

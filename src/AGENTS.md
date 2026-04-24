@@ -34,7 +34,7 @@ loadPluginConfig(directory, ctx)
 createHooks()
   ├─→ createCoreHooks()           # Session + guard + transform hooks
   │   ├─ createSessionHooks()     # Session-facing runtime hooks
-  │   ├─ createToolGuardHooks()   # Tool guard hooks: writeExistingFileGuard, jsonErrorRecovery, hashlineReadEnhancer, bashFileReadGuard, readImageResizer, todoDescriptionOverride, webfetchRedirectGuard...
-  │   └─ createTransformHooks()   # 2: thinkingBlockValidator, toolPairValidator
+  │   ├─ createToolGuardHooks()   # Tool guard hooks: writeExistingFileGuard, hashlineReadEnhancer, webfetchRedirectGuard...
+  │   └─ createTransformHooks()   # Empty transform surface
   └─→ experimental.session.compacting compatibility no-op
 ```

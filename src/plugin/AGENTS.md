@@ -10,7 +10,7 @@ Core glue layer. Source files assemble the 10 OpenCode hook handlers and compose
 
 | File | OpenCode Hook | Purpose |
 |------|---------------|---------|
-| `config.ts` | `config` | 6-phase config loading pipeline |
+| `config.ts` | `config` | Runtime config hook |
 | `tool-registry.ts` | `tool` | 26 tools assembled from factories |
 | `chat-message.ts` | `chat.message` | First-message variant and session setup |
 | `chat-params.ts` | `chat.params` | Anthropic effort level |

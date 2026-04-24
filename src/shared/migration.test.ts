@@ -186,15 +186,15 @@ describe("migrateHookNames", () => {
 
   test("removes sisyphus-orchestrator from disabled hooks", () => {
     // given: Config with legacy sisyphus-orchestrator hook
-    const hooks = ["sisyphus-orchestrator", "think-mode"]
+    const hooks = ["sisyphus-orchestrator", "non-interactive-env"]
 
     // when: Migrate hook names
     const { migrated, changed, removed } = migrateHookNames(hooks)
 
     // then: sisyphus-orchestrator should be removed
     expect(changed).toBe(true)
-    expect(migrated).toEqual([])
-    expect(removed).toEqual(["sisyphus-orchestrator", "think-mode"])
+    expect(migrated).toEqual(["non-interactive-env"])
+    expect(removed).toEqual(["sisyphus-orchestrator"])
   })
 
   test("removes obsolete hooks and returns them in removed array", () => {
@@ -213,15 +213,15 @@ describe("migrateHookNames", () => {
 
   test("removes gpt-permission-continuation from disabled hooks", () => {
     // given: Config with removed GPT permission continuation hook
-    const hooks = ["gpt-permission-continuation", "think-mode"]
+    const hooks = ["gpt-permission-continuation", "non-interactive-env"]
 
     // when: Migrate hook names
     const { migrated, changed, removed } = migrateHookNames(hooks)
 
     // then: Removed hook should be filtered out
     expect(changed).toBe(true)
-    expect(migrated).toEqual([])
-    expect(removed).toEqual(["gpt-permission-continuation", "think-mode"])
+    expect(migrated).toEqual(["non-interactive-env"])
+    expect(removed).toEqual(["gpt-permission-continuation"])
   })
 
   test("handles removed hooks alongside passthrough hooks", () => {
@@ -320,19 +320,19 @@ describe("migrateConfigFile", () => {
 
   test("removes deleted hook names from disabled_hooks", () => {
     const rawConfig: Record<string, unknown> = {
-      disabled_hooks: ["delegate-task-english-directive", "think-mode"],
+      disabled_hooks: ["delegate-task-english-directive", "non-interactive-env"],
     }
 
     const needsWrite = migrateConfigFile(testConfigPath, rawConfig)
 
     expect(needsWrite).toBe(true)
-    expect(rawConfig.disabled_hooks).toEqual([])
+    expect(rawConfig.disabled_hooks).toEqual(["non-interactive-env"])
   })
 
   test("removes gpt-permission-continuation from disabled_hooks", () => {
     // given: Config with removed GPT permission continuation hook
     const rawConfig: Record<string, unknown> = {
-      disabled_hooks: ["gpt-permission-continuation", "think-mode"],
+      disabled_hooks: ["gpt-permission-continuation", "non-interactive-env"],
     }
 
     // when: Migrate config file
@@ -340,7 +340,7 @@ describe("migrateConfigFile", () => {
 
     // then: Removed hook should be filtered out
     expect(needsWrite).toBe(true)
-    expect(rawConfig.disabled_hooks).toEqual([])
+    expect(rawConfig.disabled_hooks).toEqual(["non-interactive-env"])
   })
 
   test("does not write if no migration needed", () => {
