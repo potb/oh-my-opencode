@@ -11,18 +11,18 @@ class MockBackgroundManager {
   constructor(..._args: unknown[]) {}
 }
 
-function createConfigHandler(): ReturnType<typeof import("./plugin-handlers").createConfigHandler> {
+function createRuntimeConfigHook(): ReturnType<typeof import("./plugin/runtime-config-hook").createRuntimeConfigHook> {
   return async () => {}
 }
 
 function registerManagerForCleanup(): void {}
 
 function createDeps(): NonNullable<Parameters<typeof createManagers>[0]["deps"]> {
-  return {
-    BackgroundManagerClass: MockBackgroundManager as typeof import("./features/background-agent").BackgroundManager,
-    registerManagerForCleanupFn: registerManagerForCleanup,
-    createConfigHandlerFn: createConfigHandler,
-  }
+    return {
+      BackgroundManagerClass: MockBackgroundManager as typeof import("./features/background-agent").BackgroundManager,
+      registerManagerForCleanupFn: registerManagerForCleanup,
+      createRuntimeConfigHookFn: createRuntimeConfigHook,
+    }
 }
 
 function createContext(directory: string): PluginInput {

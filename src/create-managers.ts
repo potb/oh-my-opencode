@@ -4,23 +4,23 @@ import type { PluginContext } from "./plugin/types"
 
 import { BackgroundManager } from "./features/background-agent"
 import { registerManagerForCleanup } from "./features/background-agent/process-cleanup"
-import { createConfigHandler } from "./plugin-handlers"
+import { createRuntimeConfigHook } from "./plugin/runtime-config-hook"
 
 type CreateManagersDeps = {
   BackgroundManagerClass: typeof BackgroundManager
   registerManagerForCleanupFn: typeof registerManagerForCleanup
-  createConfigHandlerFn: typeof createConfigHandler
+  createRuntimeConfigHookFn: typeof createRuntimeConfigHook
 }
 
 const defaultCreateManagersDeps: CreateManagersDeps = {
   BackgroundManagerClass: BackgroundManager,
   registerManagerForCleanupFn: registerManagerForCleanup,
-  createConfigHandlerFn: createConfigHandler,
+  createRuntimeConfigHookFn: createRuntimeConfigHook,
 }
 
 export type Managers = {
   backgroundManager: BackgroundManager
-  configHandler: ReturnType<typeof createConfigHandler>
+  configHandler: ReturnType<typeof createRuntimeConfigHook>
 }
 
 export function createManagers(args: {
@@ -37,7 +37,7 @@ export function createManagers(args: {
     pluginConfig.background_task,
   )
 
-  const configHandler = deps.createConfigHandlerFn({
+  const configHandler = deps.createRuntimeConfigHookFn({
     ctx: { directory: ctx.directory, client: ctx.client },
     pluginConfig,
     modelCacheState,

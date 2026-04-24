@@ -7,11 +7,3 @@ export function setVisionCapableModelsCache(
 ): void {
   visionCapableModelsCache = cache
 }
-
-export function readVisionCapableModelsCache(): VisionCapableModel[] {
-  return Array.from(visionCapableModelsCache.values())
-}
-
-export function clearVisionCapableModelsCache(): void {
-  visionCapableModelsCache = new Map<string, VisionCapableModel>()
-}
