@@ -1,6 +1,6 @@
 import type { CompactionAgentConfigCheckpoint } from "../../shared/compaction-agent-config-checkpoint"
 
-export type RecoveryPromptConfig = CompactionAgentConfigCheckpoint & {
+type RecoveryPromptConfig = CompactionAgentConfigCheckpoint & {
   agent: string
 }
 

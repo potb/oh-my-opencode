@@ -7,7 +7,7 @@ type ExecuteCompactFn = typeof import("./executor").executeCompact
 type GetLastAssistantFn = typeof import("./executor").getLastAssistant
 type ParseAnthropicTokenLimitErrorFn = typeof import("./parser").parseAnthropicTokenLimitError
 
-export type MockLastAssistant = {
+type MockLastAssistant = {
   info: {
     summary?: boolean
     providerID: string
@@ -55,7 +55,7 @@ export function createRecoveryHook() {
   )
 }
 
-export function createMockContext(): PluginInput {
+function createMockContext(): PluginInput {
   return {
     client: {
       session: {

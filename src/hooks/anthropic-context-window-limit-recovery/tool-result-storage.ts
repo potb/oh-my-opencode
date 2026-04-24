@@ -42,7 +42,7 @@ export function findToolResultsBySize(sessionID: string): ToolResultInfo[] {
 	return results.sort((a, b) => b.outputSize - a.outputSize)
 }
 
-export function findLargestToolResult(sessionID: string): ToolResultInfo | null {
+function findLargestToolResult(sessionID: string): ToolResultInfo | null {
 	const results = findToolResultsBySize(sessionID)
 	return results.length > 0 ? results[0] : null
 }
@@ -88,12 +88,12 @@ export function truncateToolResult(partPath: string): {
 	}
 }
 
-export function getTotalToolOutputSize(sessionID: string): number {
+function getTotalToolOutputSize(sessionID: string): number {
 	const results = findToolResultsBySize(sessionID)
 	return results.reduce((sum, result) => sum + result.outputSize, 0)
 }
 
-export function countTruncatedResults(sessionID: string): number {
+function countTruncatedResults(sessionID: string): number {
 	const messageIds = getMessageIds(sessionID)
 	let count = 0
 

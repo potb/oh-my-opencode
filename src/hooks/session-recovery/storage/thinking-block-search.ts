@@ -20,7 +20,7 @@ export function findMessagesWithThinkingBlocks(sessionID: string): string[] {
   return result
 }
 
-export function findMessagesWithThinkingOnly(sessionID: string): string[] {
+function findMessagesWithThinkingOnly(sessionID: string): string[] {
   const messages = readMessages(sessionID)
   const result: string[] = []
 

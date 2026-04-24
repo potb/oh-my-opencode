@@ -19,7 +19,7 @@ export interface ErroredToolCall {
   errorAge: number
 }
 
-export interface PruningResult {
+interface PruningResult {
   itemsPruned: number
   totalTokensSaved: number
   strategies: {
@@ -37,7 +37,7 @@ export interface PruningState {
   erroredTools: Map<string, ErroredToolCall>
 }
 
-export const CHARS_PER_TOKEN = 4
+const CHARS_PER_TOKEN = 4
 
 export function estimateTokens(text: string): number {
   return Math.ceil(text.length / CHARS_PER_TOKEN)

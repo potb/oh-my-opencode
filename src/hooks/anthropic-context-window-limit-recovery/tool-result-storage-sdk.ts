@@ -26,7 +26,7 @@ interface SDKMessage {
   parts?: SDKToolPart[]
 }
 
-export async function findToolResultsBySizeFromSDK(
+async function findToolResultsBySizeFromSDK(
   client: OpencodeClient,
   sessionID: string
 ): Promise<ToolResultInfo[]> {
@@ -92,7 +92,7 @@ export async function truncateToolResultAsync(
   }
 }
 
-export async function countTruncatedResultsFromSDK(
+async function countTruncatedResultsFromSDK(
   client: OpencodeClient,
   sessionID: string
 ): Promise<number> {
@@ -114,7 +114,7 @@ export async function countTruncatedResultsFromSDK(
   }
 }
 
-export async function getTotalToolOutputSizeFromSDK(
+async function getTotalToolOutputSizeFromSDK(
   client: OpencodeClient,
   sessionID: string
 ): Promise<number> {

@@ -44,7 +44,7 @@ function resolveSessionID(props?: Record<string, unknown>): string | undefined {
     (props?.info as { id?: string } | undefined)?.id) as string | undefined
 }
 
-export interface CompactionTodoPreserver {
+interface CompactionTodoPreserver {
   capture: (sessionID: string) => Promise<void>
   event: (input: { event: { type: string; properties?: unknown } }) => Promise<void>
 }

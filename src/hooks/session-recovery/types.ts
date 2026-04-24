@@ -1,6 +1,6 @@
-export type ThinkingPartType = "thinking" | "redacted_thinking" | "reasoning"
-export type MetaPartType = "step-start" | "step-finish"
-export type ContentPartType = "text" | "tool" | "tool_use" | "tool_result"
+type ThinkingPartType = "thinking" | "redacted_thinking" | "reasoning"
+type MetaPartType = "step-start" | "step-finish"
+type ContentPartType = "text" | "tool" | "tool_use" | "tool_result"
 
 export interface StoredMessageMeta {
   id: string
