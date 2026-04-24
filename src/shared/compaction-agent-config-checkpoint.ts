@@ -1,4 +1,4 @@
-export type CompactionAgentConfigCheckpoint = {
+type CompactionAgentConfigCheckpoint = {
   agent?: string
   model?: { providerID: string; modelID: string }
   tools?: Record<string, boolean>

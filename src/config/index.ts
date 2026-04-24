@@ -8,5 +8,4 @@ export type {
   AgentOverrides,
   AgentName,
   HookName,
-  ExperimentalConfig,
 } from "./schema"

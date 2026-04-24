@@ -171,9 +171,7 @@ afterEach(() => {
 				autoUpdateChecker: { event: async () => {} },
 				contextWindowMonitor: { event: async () => {} },
 				thinkMode: { event: async () => {} },
-				anthropicContextWindowLimitRecovery: { event: async () => {} },
 		        interactiveBashSession: { event: async () => {} },
-				compactionTodoPreserver: { event: async () => {} },
 			} as any,
 		})
 
@@ -251,10 +249,8 @@ afterEach(() => {
 					},
 					contextWindowMonitor: { event: async () => {} },
 					thinkMode: { event: async () => {} },
-					anthropicContextWindowLimitRecovery: { event: async () => {} },
 		        interactiveBashSession: { event: async () => {} },
 					ralphLoop: { event: async () => {} },
-					compactionTodoPreserver: { event: async () => {} },
 			} as any,
 		})
 
@@ -297,10 +293,8 @@ afterEach(() => {
 					},
 					contextWindowMonitor: { event: async () => {} },
 					thinkMode: { event: async () => {} },
-					anthropicContextWindowLimitRecovery: { event: async () => {} },
 		        interactiveBashSession: { event: async () => {} },
 					ralphLoop: { event: async () => {} },
-					compactionTodoPreserver: { event: async () => {} },
 			} as any,
 		})
 
@@ -458,113 +452,7 @@ describe("createEventHandler - event forwarding", () => {
 	})
 })
 
-describe("createEventHandler - session recovery compaction", () => {
-	it("triggers compaction before sending continue after session error recovery", async () => {
-		//#given
-		const sessionID = "ses_recovery_compaction"
-		setMainSession(sessionID)
-		const callOrder: string[] = []
-
-		const eventHandler = createEventHandler({
-			ctx: asEventHandlerContext({
-				directory: "/tmp",
-				client: {
-					session: {
-						abort: async () => ({}),
-						summarize: async () => {
-							callOrder.push("summarize")
-							return {}
-						},
-						prompt: async () => {
-							callOrder.push("prompt")
-							return {}
-						},
-					},
-				},
-			}),
-			pluginConfig: asPluginConfig({}),
-			firstMessageVariantGate: {
-				markSessionCreated: () => {},
-				clear: () => {},
-			},
-			managers: createEventHandlerManagers(),
-				hooks: createEventHandlerHooks({
-					sessionRecovery: {
-						isRecoverableError: () => true,
-						handleSessionRecovery: async () => true,
-					},
-				}),
-		})
-
-		//#when
-		await eventHandler(asEventHandlerInput({
-			event: {
-				type: "session.error",
-				properties: {
-					sessionID,
-					messageID: "msg_123",
-					error: { name: "Error", message: "tool_result block(s) that are not immediately" },
-				},
-			},
-		}))
-
-		//#then - summarize (compaction) must be called before prompt (continue)
-		expect(callOrder).toEqual(["summarize", "prompt"])
-	})
-
-	it("sends continue even if compaction fails", async () => {
-		//#given
-		const sessionID = "ses_recovery_compaction_fail"
-		setMainSession(sessionID)
-		const callOrder: string[] = []
-
-		const eventHandler = createEventHandler({
-			ctx: asEventHandlerContext({
-				directory: "/tmp",
-				client: {
-					session: {
-						abort: async () => ({}),
-						summarize: async () => {
-							callOrder.push("summarize")
-							throw new Error("compaction failed")
-						},
-						prompt: async () => {
-							callOrder.push("prompt")
-							return {}
-						},
-					},
-				},
-			}),
-			pluginConfig: asPluginConfig({}),
-			firstMessageVariantGate: {
-				markSessionCreated: () => {},
-				clear: () => {},
-			},
-			managers: createEventHandlerManagers(),
-				hooks: createEventHandlerHooks({
-					sessionRecovery: {
-						isRecoverableError: () => true,
-						handleSessionRecovery: async () => true,
-					},
-				}),
-		})
-
-		//#when
-		await eventHandler(asEventHandlerInput({
-			event: {
-				type: "session.error",
-				properties: {
-					sessionID,
-					messageID: "msg_456",
-					error: { name: "Error", message: "tool_result block(s) that are not immediately" },
-				},
-			},
-		}))
-
-		//#then - continue is still sent even when compaction fails
-		expect(callOrder).toEqual(["summarize", "prompt"])
-	})
-
+	describe("createEventHandler - hook isolation", () => {
 	it("continues dispatching later event hooks when an earlier hook throws", async () => {
 		//#given
 		const laterHookCalls: EventInput[] = []
@@ -591,7 +479,7 @@ describe("createEventHandler - session recovery compaction", () => {
 							throw new Error("upstream hook failed")
 						},
 					},
-					compactionTodoPreserver: {
+					writeExistingFileGuard: {
 						event: async (input: EventInput) => {
 							laterHookCalls.push(input)
 						},

@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test"
 import { readFileSync } from "node:fs"
 
 describe("experimental.session.compacting", () => {
-  test("does not hardcode a model and uses output.context", () => {
+  test("does not hardcode a model and keeps the handler as a no-op", () => {
     //#given
     const indexUrl = new URL("./index.ts", import.meta.url)
     const content = readFileSync(indexUrl, "utf-8")
@@ -14,7 +14,8 @@ describe("experimental.session.compacting", () => {
     //#then
     expect(hookIndex).toBeGreaterThanOrEqual(0)
     expect(content.includes('modelID: "claude-opus-4-6"')).toBe(false)
-    expect(hookSlice.includes("output.context.push")).toBe(true)
+    expect(hookSlice.includes("output.context.push")).toBe(false)
+    expect(hookSlice.includes("void _input")).toBe(true)
     expect(hookSlice.includes("providerID:")).toBe(false)
     expect(hookSlice.includes("modelID:")).toBe(false)
   })

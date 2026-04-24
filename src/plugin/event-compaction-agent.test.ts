@@ -26,9 +26,7 @@ function createMinimalEventHandler() {
       autoUpdateChecker: { event: async () => {} },
       contextWindowMonitor: { event: async () => {} },
       thinkMode: { event: async () => {} },
-      anthropicContextWindowLimitRecovery: { event: async () => {} },
       interactiveBashSession: { event: async () => {} },
-      compactionTodoPreserver: { event: async () => {} },
       writeExistingFileGuard: { event: async () => {} },
     } as never,
   })

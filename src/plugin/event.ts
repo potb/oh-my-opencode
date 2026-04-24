@@ -112,15 +112,7 @@ export function createEventHandler(args: {
     await runEventHookSafely("autoUpdateChecker", hooks.autoUpdateChecker?.event, input);
     await runEventHookSafely("legacyPluginToast", hooks.legacyPluginToast?.event, input);
     await runEventHookSafely("contextWindowMonitor", hooks.contextWindowMonitor?.event, input);
-    await runEventHookSafely("preemptiveCompaction", hooks.preemptiveCompaction?.event, input);
     await runEventHookSafely("thinkMode", hooks.thinkMode?.event, input);
-    await runEventHookSafely(
-      "anthropicContextWindowLimitRecovery",
-      hooks.anthropicContextWindowLimitRecovery?.event,
-      input,
-    );
-    await runEventHookSafely("compactionContextInjector", hooks.compactionContextInjector?.event, input);
-    await runEventHookSafely("compactionTodoPreserver", hooks.compactionTodoPreserver?.event, input);
     await runEventHookSafely("writeExistingFileGuard", hooks.writeExistingFileGuard?.event, input);
   };
 
@@ -225,48 +217,6 @@ export function createEventHandler(args: {
         }
       }
 
-    }
-
-    if (event.type === "session.error") {
-      try {
-        const sessionID = props?.sessionID as string | undefined;
-        const error = props?.error;
-
-        // First, try session recovery for internal errors (thinking blocks, tool results, etc.)
-        if (hooks.sessionRecovery?.isRecoverableError(error)) {
-          const messageInfo = {
-            id: props?.messageID as string | undefined,
-            role: "assistant" as const,
-            sessionID,
-            error,
-          };
-          const recovered = await hooks.sessionRecovery.handleSessionRecovery(messageInfo);
-
-          if (recovered && sessionID && sessionID === getMainSessionID()) {
-            // Trigger compaction before sending "continue" to avoid double-sending continuation
-            await pluginContext.client.session
-              .summarize({
-                path: { id: sessionID },
-                body: { auto: true },
-                query: { directory: pluginContext.directory },
-              })
-              .catch((err: unknown) => {
-                log("[event] compaction before recovery continue failed:", { sessionID, error: err });
-              });
-
-            await pluginContext.client.session
-              .prompt({
-                path: { id: sessionID },
-                body: { parts: [{ type: "text", text: "continue" }] },
-                query: { directory: pluginContext.directory },
-              })
-              .catch(() => {});
-          }
-        }
-      } catch (err) {
-        const sessionID = props?.sessionID as string | undefined;
-        log("[event] session.error handler failed:", { sessionID, error: err });
-      }
     }
   };
 }

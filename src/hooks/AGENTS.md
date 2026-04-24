@@ -12,11 +12,8 @@ Session, tool-guard, transform, and continuation hooks compose the runtime surfa
 ## STRUCTURE
 ```
 hooks/
-├── anthropic-context-window-limit-recovery/ # Auto-summarize
 ├── anthropic-effort/            # Reasoning effort level adjustment
 ├── auto-update-checker/        # Plugin update check
-├── compaction-context-injector/ # Injects context on compaction
-├── compaction-todo-preserver/  # Preserves todos through compaction
 ├── delegate-task-retry/        # Retries failed delegations
 ├── edit-error-recovery/        # Recovers from failures
 ├── hashline-edit-diff-enhancer/ # Enhanced diff output for hashline edits
@@ -26,7 +23,6 @@ hooks/
 ├── non-interactive-env/        # Non-TTY environment handling
 ├── question-label-truncator/   # Auto-truncates question labels
 ├── read-image-resizer/         # Resize images for context efficiency
-├── session-recovery/           # Auto-recovers from crashes
 ├── sisyphus-junior-notepad/    # Sisyphus Junior notepad
 ├── task-reminder/              # Task system usage reminders
 ├── task-resume-info/           # Resume info for cancelled tasks
@@ -43,10 +39,7 @@ hooks/
 | Hook | Event | Purpose |
 |------|-------|---------|
 | contextWindowMonitor | session.idle | Track context window usage |
-| preemptiveCompaction | session.idle | Trigger compaction before limit |
-| sessionRecovery | session.error | Auto-retry on recoverable errors |
 | thinkMode | chat.params | Model variant switching (extended thinking) |
-| anthropicContextWindowLimitRecovery | session.error | Multi-strategy context recovery (truncation, compaction) |
 | autoUpdateChecker | session.created | Check npm for plugin updates |
 | nonInteractiveEnv | chat.message | Adjust behavior for `run` command |
 | editErrorRecovery | tool.execute.after | Retry failed file edits |
@@ -79,24 +72,11 @@ hooks/
 | thinkingBlockValidator | messages.transform | Validate thinking block structure |
 | toolPairValidator | messages.transform | Validate tool call/result pairs |
 
-### Tier 4: Continuation Hooks — `create-continuation-hooks.ts`
-
-| Hook | Event | Purpose |
-|------|-------|---------|
-| compactionContextInjector | session.compacted | Re-inject context after compaction |
-| compactionTodoPreserver | session.compacted | Preserve todos through compaction |
-
-## KEY HOOKS (COMPLEX)
-
-### anthropic-context-window-limit-recovery (31 files, ~2232 LOC)
-Multi-strategy recovery when hitting context limits. Strategies: truncation, compaction, summarization.
-
 ## STANDALONE HOOKS (in src/hooks/ root)
 
 | File | Purpose |
 |------|---------|
 | context-window-monitor.ts | Track context window percentage |
-| preemptive-compaction.ts | Trigger compaction before hard limit |
 | tool-output-truncator.ts | Truncate tool output by token count |
 | empty-task-response-detector.ts | Detect empty/failed task responses |
 | session-todo-status.ts | Todo completion status tracking |

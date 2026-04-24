@@ -19,7 +19,7 @@ Core glue layer. Source files assemble the 10 OpenCode hook handlers and compose
 | `tool-execute-before.ts` | `tool.execute.before` | Pre-tool guards (file guard, label truncator, rules injector) |
 | `tool-execute-after.ts` | `tool.execute.after` | Post-tool hooks (output truncation, comment checker, metadata) |
 | `messages-transform.ts` | `experimental.chat.messages.transform` | Thinking block and tool-pair validation |
-| `session-compacting.ts` | `experimental.session.compacting` | Context + todo preservation during compaction |
+| `session-compacting.ts` | `experimental.session.compacting` | Compatibility no-op hook |
 | `skill-context.ts` | — | Skill/browser/category context for tool creation |
 
 ## HOOK COMPOSITION (hooks/ subdir)
@@ -29,7 +29,6 @@ Core glue layer. Source files assemble the 10 OpenCode hook handlers and compose
 | `create-session-hooks.ts` | Session | Runtime session hooks |
 | `create-tool-guard-hooks.ts` | Tool Guard | 14 |
 | `create-transform-hooks.ts` | Transform | 2 |
-| `create-continuation-hooks.ts` | Continuation | Background + compaction hooks |
 | `create-core-hooks.ts` | Aggregator | Session + Guard + Transform |
 
 ## SUPPORT FILES

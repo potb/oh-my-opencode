@@ -155,26 +155,11 @@ describe("migrateAgentNames", () => {
 })
 
 describe("migrateHookNames", () => {
-  test("migrates anthropic-auto-compact to anthropic-context-window-limit-recovery", () => {
-    // given: Config with legacy hook name
-    const hooks = ["anthropic-auto-compact", "think-mode"]
-
-    // when: Migrate hook names
-    const { migrated, changed, removed } = migrateHookNames(hooks)
-
-    // then: Legacy hook name should be migrated
-    expect(changed).toBe(true)
-    expect(migrated).toContain("anthropic-context-window-limit-recovery")
-    expect(migrated).toContain("think-mode")
-    expect(migrated).not.toContain("anthropic-auto-compact")
-    expect(removed).toEqual([])
-  })
-
   test("preserves current hook names unchanged", () => {
     // given: Config with current hook names
     const hooks = [
-      "anthropic-context-window-limit-recovery",
-      "session-recovery",
+      "context-window-monitor",
+      "think-mode",
     ]
 
     // when: Migrate hook names
@@ -199,18 +184,6 @@ describe("migrateHookNames", () => {
     expect(removed).toEqual([])
   })
 
-  test("migrates multiple legacy hook names", () => {
-    // given: Multiple legacy hook names (if more are added in future)
-    const hooks = ["anthropic-auto-compact"]
-
-    // when: Migrate hook names
-    const { migrated, changed } = migrateHookNames(hooks)
-
-    // then: All legacy names should be migrated
-    expect(changed).toBe(true)
-    expect(migrated).toEqual(["anthropic-context-window-limit-recovery"])
-  })
-
   test("removes sisyphus-orchestrator from disabled hooks", () => {
     // given: Config with legacy sisyphus-orchestrator hook
     const hooks = ["sisyphus-orchestrator", "think-mode"]
@@ -226,14 +199,14 @@ describe("migrateHookNames", () => {
 
   test("removes obsolete hooks and returns them in removed array", () => {
     // given: Config with removed hooks from v3.0.0
-    const hooks = ["preemptive-compaction", "empty-message-sanitizer", "think-mode"]
+    const hooks = ["context-window-monitor", "empty-message-sanitizer", "think-mode"]
 
     // when: Migrate hook names
     const { migrated, changed, removed } = migrateHookNames(hooks)
 
     // then: Removed hooks should be filtered out
     expect(changed).toBe(true)
-    expect(migrated).toEqual(["preemptive-compaction", "think-mode"])
+    expect(migrated).toEqual(["context-window-monitor", "think-mode"])
     expect(removed).toContain("empty-message-sanitizer")
     expect(removed).toHaveLength(1)
   })
@@ -251,17 +224,16 @@ describe("migrateHookNames", () => {
     expect(removed).toEqual(["gpt-permission-continuation"])
   })
 
-  test("handles mixed migration and removal", () => {
-    // given: Config with both legacy rename and removed hooks
-      const hooks = ["anthropic-auto-compact", "preemptive-compaction", "sisyphus-orchestrator"]
+  test("handles removed hooks alongside passthrough hooks", () => {
+    // given: Config with removed and current hooks
+      const hooks = ["context-window-monitor", "sisyphus-orchestrator"]
 
     // when: Migrate hook names
     const { migrated, changed, removed } = migrateHookNames(hooks)
 
-    // then: Legacy should be renamed, removed should be filtered
+    // then: Removed hooks should be filtered while current hooks pass through
     expect(changed).toBe(true)
-      expect(migrated).toContain("anthropic-context-window-limit-recovery")
-      expect(migrated).toContain("preemptive-compaction")
+      expect(migrated).toContain("context-window-monitor")
       expect(migrated).not.toContain("atlas")
       expect(removed).toEqual(["sisyphus-orchestrator"])
   })
@@ -346,21 +318,6 @@ describe("migrateConfigFile", () => {
     expect(agents["sisyphus"]).toBeDefined()
   })
 
-  test("migrates legacy hook names in disabled_hooks", () => {
-    // given: Config with legacy hook names
-    const rawConfig: Record<string, unknown> = {
-      disabled_hooks: ["anthropic-auto-compact", "think-mode"],
-    }
-
-    // when: Migrate config file
-    const needsWrite = migrateConfigFile(testConfigPath, rawConfig)
-
-    // then: Hook names should be migrated
-    expect(needsWrite).toBe(true)
-    expect(rawConfig.disabled_hooks).toContain("anthropic-context-window-limit-recovery")
-    expect(rawConfig.disabled_hooks).not.toContain("anthropic-auto-compact")
-  })
-
   test("removes deleted hook names from disabled_hooks", () => {
     const rawConfig: Record<string, unknown> = {
       disabled_hooks: ["delegate-task-english-directive", "think-mode"],
@@ -392,7 +349,7 @@ describe("migrateConfigFile", () => {
       agents: {
         sisyphus: { model: "test" },
       },
-      disabled_hooks: ["anthropic-context-window-limit-recovery"],
+      disabled_hooks: ["context-window-monitor"],
     }
 
     // when: Migrate config file
@@ -408,8 +365,8 @@ describe("migrateConfigFile", () => {
         agents: {
           omo: { model: "test" },
         },
-       disabled_hooks: ["anthropic-auto-compact"],
-     }
+        disabled_hooks: ["sisyphus-orchestrator"],
+      }
 
      // when: Migrate config file
      const needsWrite = migrateConfigFile(testConfigPath, rawConfig)
@@ -418,7 +375,7 @@ describe("migrateConfigFile", () => {
       expect(needsWrite).toBe(true)
       const agents = rawConfig.agents as Record<string, unknown>
       expect(agents["sisyphus"]).toBeDefined()
-      expect(rawConfig.disabled_hooks).toContain("anthropic-context-window-limit-recovery")
+      expect(rawConfig.disabled_hooks).toEqual([])
     })
 
    test("does not migrate gpt-5.4-codex model versions in agents", () => {
@@ -483,10 +440,10 @@ describe("migration maps", () => {
     expect(AGENT_NAME_MAP["plan-consultant"]).toBe("metis")
   })
 
-  test("HOOK_NAME_MAP contains anthropic-auto-compact migration", () => {
+  test("HOOK_NAME_MAP contains removed hook mappings", () => {
     // given/#when: Check HOOK_NAME_MAP
-    // then: Should contain be legacy hook name mapping
-    expect(HOOK_NAME_MAP["anthropic-auto-compact"]).toBe("anthropic-context-window-limit-recovery")
+    // then: Should contain removed hook name mapping
+    expect(HOOK_NAME_MAP["sisyphus-orchestrator"]).toBeNull()
   })
 })
 

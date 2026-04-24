@@ -123,18 +123,18 @@ describe("mergeConfigs", () => {
 
     it("should merge disabled arrays without duplicates", () => {
       const base = createConfig({
-        disabled_hooks: ["preemptive-compaction", "think-mode"],
+        disabled_hooks: ["context-window-monitor", "think-mode"],
       });
 
       const override = createConfig({
-        disabled_hooks: ["think-mode", "session-recovery"],
+        disabled_hooks: ["think-mode", "auto-update-checker"],
       });
 
       const result = mergeConfigs(base, override);
 
-      expect(result.disabled_hooks).toContain("preemptive-compaction");
+      expect(result.disabled_hooks).toContain("context-window-monitor");
       expect(result.disabled_hooks).toContain("think-mode");
-      expect(result.disabled_hooks).toContain("session-recovery");
+      expect(result.disabled_hooks).toContain("auto-update-checker");
       expect(result.disabled_hooks?.length).toBe(3);
     });
 
@@ -186,7 +186,7 @@ describe("parseConfigPartially", () => {
           oracle: { model: "openai/gpt-5.4" },
           momus: { model: "openai/gpt-5.4" },
         },
-      disabled_hooks: ["preemptive-compaction"],
+      disabled_hooks: ["context-window-monitor"],
       };
 
       const result = parseConfigPartially(rawConfig);
@@ -194,7 +194,7 @@ describe("parseConfigPartially", () => {
       expect(result).not.toBeNull();
       expect(result!.agents?.oracle).toMatchObject({ model: "openai/gpt-5.4" });
       expect(result!.agents?.momus).toMatchObject({ model: "openai/gpt-5.4" });
-      expect(result!.disabled_hooks).toEqual(["preemptive-compaction"]);
+      expect(result!.disabled_hooks).toEqual(["context-window-monitor"]);
     });
   });
 
@@ -214,13 +214,13 @@ describe("parseConfigPartially", () => {
             },
           },
         },
-      disabled_hooks: ["preemptive-compaction"],
+      disabled_hooks: ["context-window-monitor"],
       };
 
       const result = parseConfigPartially(rawConfig);
 
       expect(result).not.toBeNull();
-      expect(result!.disabled_hooks).toEqual(["preemptive-compaction"]);
+      expect(result!.disabled_hooks).toEqual(["context-window-monitor"]);
       expect(result!.agents).toBeUndefined();
     });
 

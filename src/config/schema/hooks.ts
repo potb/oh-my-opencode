@@ -2,21 +2,16 @@ import { z } from "zod"
 
 export const HookNameSchema = z.enum([
   "context-window-monitor",
-  "session-recovery",
   "tool-output-truncator",
   "question-label-truncator",
   "empty-task-response-detector",
   "think-mode",
-  "anthropic-context-window-limit-recovery",
-  "preemptive-compaction",
   "auto-update-checker",
   "non-interactive-env",
   "interactive-bash-session",
 
   "thinking-block-validator",
   "tool-pair-validator",
-  "compaction-context-injector",
-  "compaction-todo-preserver",
   "edit-error-recovery",
   "json-error-recovery",
   "delegate-task-retry",

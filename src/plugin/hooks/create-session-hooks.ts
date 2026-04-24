@@ -4,9 +4,7 @@ import type { PluginContext } from "../types"
 
 import {
   createContextWindowMonitorHook,
-  createSessionRecoveryHook,
   createThinkModeHook,
-  createAnthropicContextWindowLimitRecoveryHook,
   createAutoUpdateCheckerHook,
   createNonInteractiveEnvHook,
   createEditErrorRecoveryHook,
@@ -14,7 +12,6 @@ import {
   createTaskResumeInfoHook,
   createSisyphusJuniorNotepadHook,
   createQuestionLabelTruncatorHook,
-  createPreemptiveCompactionHook,
   createLegacyPluginToastHook,
 } from "../../hooks"
 import { createAnthropicEffortHook } from "../../hooks/anthropic-effort"
@@ -22,10 +19,7 @@ import { safeCreateHook } from "../../shared/safe-create-hook"
 
 type SessionHooks = {
   contextWindowMonitor: ReturnType<typeof createContextWindowMonitorHook> | null
-  preemptiveCompaction: ReturnType<typeof createPreemptiveCompactionHook> | null
-  sessionRecovery: ReturnType<typeof createSessionRecoveryHook> | null
   thinkMode: ReturnType<typeof createThinkModeHook> | null
-  anthropicContextWindowLimitRecovery: ReturnType<typeof createAnthropicContextWindowLimitRecoveryHook> | null
   autoUpdateChecker: ReturnType<typeof createAutoUpdateCheckerHook> | null
   nonInteractiveEnv: ReturnType<typeof createNonInteractiveEnvHook> | null
   editErrorRecovery: ReturnType<typeof createEditErrorRecoveryHook> | null
@@ -53,25 +47,8 @@ export function createSessionHooks(args: {
         createContextWindowMonitorHook(ctx, modelCacheState))
     : null
 
-  const preemptiveCompaction =
-    isHookEnabled("preemptive-compaction") &&
-    pluginConfig.experimental?.preemptive_compaction
-      ? safeHook("preemptive-compaction", () =>
-          createPreemptiveCompactionHook(ctx, pluginConfig, modelCacheState))
-      : null
-
-  const sessionRecovery = isHookEnabled("session-recovery")
-    ? safeHook("session-recovery", () =>
-        createSessionRecoveryHook(ctx, { experimental: pluginConfig.experimental }))
-    : null
-
   const thinkMode = isHookEnabled("think-mode")
     ? safeHook("think-mode", () => createThinkModeHook())
-    : null
-
-  const anthropicContextWindowLimitRecovery = isHookEnabled("anthropic-context-window-limit-recovery")
-    ? safeHook("anthropic-context-window-limit-recovery", () =>
-        createAnthropicContextWindowLimitRecoveryHook(ctx, { experimental: pluginConfig.experimental, pluginConfig }))
     : null
 
   const autoUpdateChecker = isHookEnabled("auto-update-checker")
@@ -117,10 +94,7 @@ export function createSessionHooks(args: {
 
   return {
     contextWindowMonitor,
-    preemptiveCompaction,
-    sessionRecovery,
     thinkMode,
-    anthropicContextWindowLimitRecovery,
     autoUpdateChecker,
     nonInteractiveEnv,
     editErrorRecovery,

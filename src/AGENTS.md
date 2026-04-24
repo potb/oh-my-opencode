@@ -36,5 +36,5 @@ createHooks()
   │   ├─ createSessionHooks()     # Session-facing runtime hooks
   │   ├─ createToolGuardHooks()   # Tool guard hooks: writeExistingFileGuard, jsonErrorRecovery, hashlineReadEnhancer, bashFileReadGuard, readImageResizer, todoDescriptionOverride, webfetchRedirectGuard...
   │   └─ createTransformHooks()   # 2: thinkingBlockValidator, toolPairValidator
-  └─→ createContinuationHooks()   # Continuation hooks
+  └─→ experimental.session.compacting compatibility no-op
 ```

@@ -1,58 +1,19 @@
-import { describe, expect, it, mock } from "bun:test"
+import { describe, expect, it } from "bun:test"
 
 describe("experimental.session.compacting handler", () => {
-  function createCompactingHandler(hooks: {
-    compactionContextInjector?: {
-      capture: (sessionID: string) => Promise<void>
-      inject: (sessionID: string) => string
-    }
-    compactionTodoPreserver?: { capture: (sessionID: string) => Promise<void> }
-  }) {
-    return async (
-      input: { sessionID: string },
-      output: { context: string[] },
-    ): Promise<void> => {
-      await hooks.compactionContextInjector?.capture(input.sessionID)
-      await hooks.compactionTodoPreserver?.capture(input.sessionID)
-      if (hooks.compactionContextInjector) {
-        output.context.push(hooks.compactionContextInjector.inject(input.sessionID))
-      }
+  function createCompactingHandler() {
+    return async (_input: { sessionID: string }, output: { context: string[] }): Promise<void> => {
+      void _input
+      void output
     }
   }
 
-  it("calls compaction hooks in order and preserves injected context", async () => {
-    const callOrder: string[] = []
+  it("leaves compaction output unchanged", async () => {
+    const handler = createCompactingHandler()
 
-    const handler = createCompactingHandler({
-      compactionContextInjector: {
-        capture: mock(async () => {
-          callOrder.push("checkpointCapture")
-        }),
-        inject: mock((sessionID: string) => {
-          callOrder.push("contextInjector")
-          return `context-for-${sessionID}`
-        }),
-      },
-      compactionTodoPreserver: {
-        capture: mock(async () => {
-          callOrder.push("capture")
-        }),
-      },
-    })
-
-    const output = { context: [] as string[] }
+    const output = { context: ["existing"] as string[] }
     await handler({ sessionID: "ses_test" }, output)
 
-    expect(callOrder).toEqual(["checkpointCapture", "capture", "contextInjector"])
-    expect(output.context).toEqual(["context-for-ses_test"])
-  })
-
-  it("handles missing optional compaction hooks gracefully", async () => {
-    const handler = createCompactingHandler({})
-
-    const output = { context: [] as string[] }
-    await handler({ sessionID: "ses_test" }, output)
-
-    expect(output.context).toEqual([])
+    expect(output.context).toEqual(["existing"])
   })
 })

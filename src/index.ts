@@ -81,7 +81,6 @@ const OhMyOpenCodePlugin: Plugin = async (ctx) => {
     ctx,
     pluginConfig,
     modelCacheState,
-    backgroundManager: managers.backgroundManager,
     isHookEnabled,
     safeHookEnabled,
   })
@@ -111,11 +110,8 @@ const OhMyOpenCodePlugin: Plugin = async (ctx) => {
       _input: { sessionID: string },
       output: { context: string[] },
     ): Promise<void> => {
-      await hooks.compactionContextInjector?.capture(_input.sessionID)
-      await hooks.compactionTodoPreserver?.capture(_input.sessionID)
-      if (hooks.compactionContextInjector) {
-        output.context.push(hooks.compactionContextInjector.inject(_input.sessionID))
-      }
+      void _input
+      void output
     },
   }
 }

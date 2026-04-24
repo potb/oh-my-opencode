@@ -15,8 +15,6 @@ const mockCreateTools = mock(async () => ({
 }))
 const mockCreateHooks = mock(() => ({
   disposeHooks: () => {},
-  compactionContextInjector: undefined,
-  compactionTodoPreserver: undefined,
 }))
 const mockCreatePluginDispose = mock(() => async () => {})
 const mockCreatePluginInterface = mock(() => ({}))

@@ -23,11 +23,8 @@ describe("createPluginDispose", () => {
     expect(shutdownSpy).toHaveBeenCalledTimes(1)
   })
 
-  test("calls hook disposers", async () => {
-    const anthropicContextWindowLimitRecovery = { dispose: (): void => {} }
+  test("disposeCreatedHooks remains a safe no-op", async () => {
     const lspManager = { stopAll: async (): Promise<void> => {} }
-
-    const recoveryDisposeSpy = spyOn(anthropicContextWindowLimitRecovery, "dispose")
 
     const dispose = createPluginDispose({
       backgroundManager: {
@@ -35,15 +32,11 @@ describe("createPluginDispose", () => {
       },
       lspManager,
       disposeHooks: (): void => {
-        disposeCreatedHooks({
-          anthropicContextWindowLimitRecovery,
-        })
+        disposeCreatedHooks()
       },
     })
 
-    await dispose()
-
-    expect(recoveryDisposeSpy).toHaveBeenCalledTimes(1)
+    await expect(dispose()).resolves.toBeUndefined()
   })
 
   test("is idempotent", async () => {

@@ -1,28 +1,17 @@
 import type { HookName, OhMyOpenCodeConfig } from "./config"
-import type { BackgroundManager } from "./features/background-agent"
 import type { PluginContext } from "./plugin/types"
 import type { ModelCacheState } from "./plugin-state"
 
 import { createCoreHooks } from "./plugin/hooks/create-core-hooks"
-import { createContinuationHooks } from "./plugin/hooks/create-continuation-hooks"
 
 export type CreatedHooks = ReturnType<typeof createHooks>
 
-type DisposableHook = { dispose?: () => void } | null | undefined
-
-type DisposableCreatedHooks = {
-  anthropicContextWindowLimitRecovery?: DisposableHook
-}
-
-export function disposeCreatedHooks(hooks: DisposableCreatedHooks): void {
-  hooks.anthropicContextWindowLimitRecovery?.dispose?.()
-}
+export function disposeCreatedHooks(): void {}
 
 export function createHooks(args: {
   ctx: PluginContext
   pluginConfig: OhMyOpenCodeConfig
   modelCacheState: ModelCacheState
-  backgroundManager: BackgroundManager
   isHookEnabled: (hookName: HookName) => boolean
   safeHookEnabled: boolean
 }) {
@@ -30,7 +19,6 @@ export function createHooks(args: {
     ctx,
     pluginConfig,
     modelCacheState,
-    backgroundManager,
     isHookEnabled,
     safeHookEnabled,
   } = args
@@ -43,22 +31,12 @@ export function createHooks(args: {
     safeHookEnabled,
   })
 
-  const continuation = createContinuationHooks({
-    ctx,
-    isHookEnabled,
-    safeHookEnabled,
-    backgroundManager,
-  })
-
-  const hooks = {
-    ...core,
-    ...continuation,
-  }
+  const hooks = core
 
   return {
     ...hooks,
     disposeHooks: (): void => {
-      disposeCreatedHooks(hooks)
+      disposeCreatedHooks()
     },
   }
 }
