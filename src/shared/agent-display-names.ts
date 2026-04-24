@@ -25,7 +25,7 @@ const AGENT_LIST_SORT_PREFIXES: Record<string, string> = {
 
 const INVISIBLE_AGENT_CHARACTERS_REGEX = /[\u200B\u200C\u200D\uFEFF]/g
 
-export function stripInvisibleAgentCharacters(agentName: string): string {
+function stripInvisibleAgentCharacters(agentName: string): string {
   return agentName.replace(INVISIBLE_AGENT_CHARACTERS_REGEX, "")
 }
 

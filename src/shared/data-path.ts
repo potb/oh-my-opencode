@@ -42,7 +42,7 @@ export function getOpenCodeStorageDir(): string {
  * Matches OpenCode's behavior via xdg-basedir:
  * - All platforms: XDG_CACHE_HOME or ~/.cache
  */
-export function getCacheDir(): string {
+function getCacheDir(): string {
   const preferredDir = process.env.XDG_CACHE_HOME ?? path.join(os.homedir(), ".cache")
   return resolveWritableDirectory(preferredDir, "opencode-cache")
 }

@@ -1,4 +1,4 @@
-export type SessionPromptParams = {
+type SessionPromptParams = {
   temperature?: number
   topP?: number
   maxOutputTokens?: number

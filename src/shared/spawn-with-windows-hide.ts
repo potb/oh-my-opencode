@@ -2,7 +2,7 @@ import { spawn as bunSpawn } from "bun"
 import { spawn as nodeSpawn, type ChildProcess } from "node:child_process"
 import { Readable } from "node:stream"
 
-export interface SpawnOptions {
+interface SpawnOptions {
   cwd?: string
   env?: Record<string, string | undefined>
   stdin?: "pipe" | "inherit" | "ignore"
@@ -10,7 +10,7 @@ export interface SpawnOptions {
   stderr?: "pipe" | "inherit" | "ignore"
 }
 
-export interface SpawnedProcess {
+interface SpawnedProcess {
   readonly exitCode: number | null
   readonly exited: Promise<number>
   readonly stdout: ReadableStream<Uint8Array> | undefined

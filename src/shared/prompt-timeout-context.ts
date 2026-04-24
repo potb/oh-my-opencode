@@ -1,4 +1,4 @@
-export interface PromptTimeoutArgs {
+interface PromptTimeoutArgs {
   signal?: AbortSignal
 }
 

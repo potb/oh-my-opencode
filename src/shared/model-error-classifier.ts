@@ -112,7 +112,7 @@ function hasProviderAutoRetrySignal(message: string): boolean {
   return AUTO_RETRY_GATE_PATTERNS.some((pattern) => message.includes(pattern))
 }
 
-export interface ErrorInfo {
+interface ErrorInfo {
   name?: string
   message?: string
 }
@@ -121,7 +121,7 @@ export interface ErrorInfo {
  * Determines if an error is a retryable model error.
  * Returns true if the error is a known retryable type OR matches retryable message patterns.
  */
-export function isRetryableModelError(error: ErrorInfo): boolean {
+function isRetryableModelError(error: ErrorInfo): boolean {
   // If we have an error name, check against known lists
   if (error.name) {
     const errorNameLower = error.name.toLowerCase()
@@ -164,7 +164,7 @@ export function shouldRetryError(error: ErrorInfo): boolean {
  * Gets the next fallback model from the chain based on attempt count.
  * Returns undefined if all fallbacks have been exhausted.
  */
-export function getNextFallback(
+function getNextFallback(
   fallbackChain: FallbackEntry[],
   attemptCount: number,
 ): FallbackEntry | undefined {
@@ -174,7 +174,7 @@ export function getNextFallback(
 /**
  * Checks if there are more fallbacks available after the current attempt.
  */
-export function hasMoreFallbacks(
+function hasMoreFallbacks(
   fallbackChain: FallbackEntry[],
   attemptCount: number,
 ): boolean {

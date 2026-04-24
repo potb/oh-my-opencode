@@ -5,7 +5,7 @@ import type { FallbackEntry } from "./model-requirements"
 import { transformModelForProvider } from "./provider-model-id-transform"
 import { normalizeModel } from "./model-normalization"
 
-export type ModelResolutionRequest = {
+type ModelResolutionRequest = {
   intent?: {
     uiSelectedModel?: string
     userModel?: string
@@ -22,13 +22,13 @@ export type ModelResolutionRequest = {
   }
 }
 
-export type ModelResolutionProvenance =
+type ModelResolutionProvenance =
   | "override"
   | "category-default"
   | "provider-fallback"
   | "system-default"
 
-export type ModelResolutionResult = {
+type ModelResolutionResult = {
   model: string
   provenance: ModelResolutionProvenance
   variant?: string

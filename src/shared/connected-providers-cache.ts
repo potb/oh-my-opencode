@@ -33,7 +33,7 @@ export interface ModelMetadata {
 	[key: string]: unknown
 }
 
-export interface ProviderModelsCache {
+interface ProviderModelsCache {
 	models: Record<string, string[] | ModelMetadata[]>
 	connected: string[]
 	updatedAt: string
@@ -44,7 +44,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 export function createConnectedProvidersCacheStore(
-	getCacheDir: () => string = dataPath.getOmoOpenCodeCacheDir
+  getCacheDir: () => string = dataPath.getOmoOpenCodeCacheDir
 ) {
 	const connectedProvidersCacheStore = createJsonFileCacheStore<ConnectedProvidersCache>({
 		getCacheDir,

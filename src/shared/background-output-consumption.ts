@@ -8,7 +8,7 @@ function getMessageKey(sessionID: string, messageID: string): MessageConsumption
   return `${sessionID}:${messageID}`
 }
 
-export function recordBackgroundOutputConsumption(
+function recordBackgroundOutputConsumption(
   parentSessionID: string | undefined,
   parentMessageID: string | undefined,
   taskSessionID: string | undefined
@@ -64,6 +64,6 @@ export function clearBackgroundOutputConsumptionsForTaskSession(taskSessionID: s
   }
 }
 
-export function clearBackgroundOutputConsumptionState(): void {
+function clearBackgroundOutputConsumptionState(): void {
   cursorSnapshotsByMessage.clear()
 }

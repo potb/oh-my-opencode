@@ -7,7 +7,7 @@ import {
 } from "./model-capability-aliases"
 import { AGENT_MODEL_REQUIREMENTS, CATEGORY_MODEL_REQUIREMENTS } from "./model-requirements"
 
-export type ModelCapabilityGuardrailIssue =
+type ModelCapabilityGuardrailIssue =
   | {
       kind: "alias-target-missing-from-snapshot"
       ruleID: string

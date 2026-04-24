@@ -27,7 +27,7 @@ import { writeFileAtomically } from "../write-file-atomically"
  *     }
  */
 
-export interface MigrationsSidecar {
+interface MigrationsSidecar {
   appliedMigrations: string[]
 }
 
