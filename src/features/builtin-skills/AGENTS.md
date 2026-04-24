@@ -18,7 +18,7 @@ builtin-skills/
 ├── agent-browser/        # SKILL.md
 └── skills/               # Skill implementations as .ts files
     ├── git-master-sections/  # Git master prompt sections
-    ├── playwright.ts         # agent-browser skill
+    ├── agent-browser.ts      # agent-browser skill
     ├── frontend-ui-ux.ts     # Frontend UI/UX skill
     ├── git-master.ts         # Git workflow skill
     └── review-work.ts        # Review orchestration skill
@@ -29,7 +29,7 @@ builtin-skills/
 | Skill | LOC | MCP | Purpose |
 |-------|-----|-----|---------|
 | **git-master** | 1111 | -- | Atomic commits, rebase, history search |
-| **agent-browser** | (in playwright.ts) | -- | Browser via agent-browser tool |
+| **agent-browser** | (in agent-browser.ts) | -- | Browser via agent-browser tool |
 | **frontend-ui-ux** | 79 | -- | Design-first UI development |
 | **review-work** | ~500 | -- | 5-agent post-implementation review |
 

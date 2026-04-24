@@ -16,8 +16,8 @@ Core glue layer. Source files assemble the 10 OpenCode hook handlers and compose
 | `chat-params.ts` | `chat.params` | Anthropic effort level, think mode |
 | `chat-headers.ts` | `chat.headers` | Copilot x-initiator header injection |
 | `event.ts` | `event` | Session lifecycle (created, deleted, idle, error) |
-| `tool-execute-before.ts` | `tool.execute.before` | Pre-tool guards (file guard, label truncator, rules injector) |
-| `tool-execute-after.ts` | `tool.execute.after` | Post-tool hooks (output truncation, comment checker, metadata) |
+| `tool-execute-before.ts` | `tool.execute.before` | Pre-tool guards (file guard, label truncator) |
+| `tool-execute-after.ts` | `tool.execute.after` | Post-tool hooks (output truncation) |
 | `messages-transform.ts` | `experimental.chat.messages.transform` | Thinking block and tool-pair validation |
 | `session-compacting.ts` | `experimental.session.compacting` | Compatibility no-op hook |
 | `skill-context.ts` | — | Skill/browser/category context for tool creation |

@@ -26,12 +26,12 @@ Core orchestration engine. `BackgroundManager` manages task lifecycle:
 - Circuit breaker: automatic failure detection and recovery
 - spawner/: 8 focused files composing via `SpawnerContext` interface
 
-### builtin-skills (8 skill objects)
+### builtin-skills (4 skill objects)
 
 | Skill | Size | MCP | Tools |
 |-------|------|-----|-------|
 | git-master | 1111 LOC | — | Bash |
-| agent-browser | (in playwright.ts) | — | Bash(agent-browser:*) |
+| agent-browser | (in agent-browser.ts) | — | Bash(agent-browser:*) |
 | frontend-ui-ux | 79 LOC | — | — |
 | review-work | ~LOC | --- | --- |
 

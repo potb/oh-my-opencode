@@ -49,8 +49,8 @@ OhMyOpenCodePlugin(ctx)
 | `chat.params` | Anthropic effort level, think mode, runtime fallback override |
 | `chat.headers` | Copilot x-initiator header injection |
 | `event` | Session lifecycle (created, deleted, idle, error), openclaw dispatch, runtime fallback |
-| `tool.execute.before` | Pre-tool hooks (file guard, label truncator, rules injector, prometheus md-only) |
-| `tool.execute.after` | Post-tool hooks (output truncation, comment checker, hashline read enhancer) |
+| `tool.execute.before` | Pre-tool hooks (file guard, label truncator, prometheus md-only) |
+| `tool.execute.after` | Post-tool hooks (output truncation, hashline read enhancer) |
 | `experimental.chat.messages.transform` | Thinking block validation and tool pair validation |
 | `experimental.session.compacting` | Context + todo preservation during compaction |
 
