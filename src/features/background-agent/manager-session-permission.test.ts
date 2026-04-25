@@ -4,6 +4,7 @@ import { tmpdir } from "node:os"
 import type { PluginInput } from "@opencode-ai/plugin"
 
 import { BackgroundManager } from "./manager"
+import { createBackgroundTaskConfig } from "./test-config"
 
 describe("BackgroundManager session permission", () => {
   test("passes query directory when loading the parent session", async () => {
@@ -21,7 +22,7 @@ describe("BackgroundManager session permission", () => {
       },
     }
     const directory = tmpdir()
-    const manager = new BackgroundManager({ client, directory } as unknown as PluginInput)
+    const manager = new BackgroundManager({ client, directory } as unknown as PluginInput, createBackgroundTaskConfig())
 
     // when
     await manager.launch({
@@ -62,8 +63,8 @@ describe("BackgroundManager session permission", () => {
         abort: async () => ({}),
       },
     }
-    const manager = new BackgroundManager({ client, directory: tmpdir() } as unknown as PluginInput)
-
+    const manager = new BackgroundManager({ client, directory: tmpdir() } as unknown as PluginInput, createBackgroundTaskConfig())
+  
     // when
     await manager.launch({
       description: "Test task",

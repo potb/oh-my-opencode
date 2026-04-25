@@ -4,6 +4,7 @@ import { describe, test, expect, mock } from "bun:test"
 import { tmpdir } from "node:os"
 import type { PluginInput } from "@opencode-ai/plugin"
 import { BackgroundManager } from "./manager"
+import { createBackgroundTaskConfig } from "./test-config"
 import type { BackgroundTask } from "./types"
 
 function createManagerWithStatus(statusImpl: () => Promise<{ data: Record<string, { type: string }> }>): BackgroundManager {
@@ -18,7 +19,7 @@ function createManagerWithStatus(statusImpl: () => Promise<{ data: Record<string
     },
   }
 
-  return new BackgroundManager({ client, directory: tmpdir() } as unknown as PluginInput)
+  return new BackgroundManager({ client, directory: tmpdir() } as unknown as PluginInput, createBackgroundTaskConfig())
 }
 
 describe("BackgroundManager polling overlap", () => {
@@ -99,7 +100,7 @@ function createManagerWithClient(clientOverrides: Record<string, unknown> = {}):
   }
   return new BackgroundManager(
     { client, directory: tmpdir() } as unknown as PluginInput,
-    undefined,
+    createBackgroundTaskConfig(),
   )
 }
 

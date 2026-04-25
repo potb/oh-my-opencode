@@ -3,6 +3,7 @@ import type { PluginInput } from "@opencode-ai/plugin"
 import { afterEach, describe, expect, test } from "bun:test"
 import { ConcurrencyManager } from "./concurrency"
 import { BackgroundManager } from "./manager"
+import { createBackgroundTaskConfig } from "./test-config"
 import type { BackgroundTask, LaunchInput } from "./types"
 
 const managersToShutdown: BackgroundManager[] = []
@@ -29,7 +30,7 @@ function createBackgroundManager(config?: { defaultConcurrency?: number }): Back
     project: {} as PluginInput["project"],
     serverUrl: new URL("http://localhost"),
     worktree: directory,
-  }, config)
+  }, createBackgroundTaskConfig(config))
   managersToShutdown.push(manager)
   return manager
 }

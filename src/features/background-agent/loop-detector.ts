@@ -1,9 +1,4 @@
-import type { BackgroundTaskConfig } from "../../config/schema"
-import {
-  DEFAULT_CIRCUIT_BREAKER_ENABLED,
-  DEFAULT_CIRCUIT_BREAKER_CONSECUTIVE_THRESHOLD,
-  DEFAULT_MAX_TOOL_CALLS,
-} from "./constants"
+import type { BackgroundTaskConfig } from "../../config"
 import type { ToolCallWindow } from "./types"
 
 export interface CircuitBreakerSettings {
@@ -19,14 +14,12 @@ interface ToolLoopDetectionResult {
 }
 
 export function resolveCircuitBreakerSettings(
-  config?: BackgroundTaskConfig
+  config: BackgroundTaskConfig
 ): CircuitBreakerSettings {
   return {
-    enabled: config?.circuitBreaker?.enabled ?? DEFAULT_CIRCUIT_BREAKER_ENABLED,
-    maxToolCalls:
-      config?.circuitBreaker?.maxToolCalls ?? config?.maxToolCalls ?? DEFAULT_MAX_TOOL_CALLS,
-    consecutiveThreshold:
-      config?.circuitBreaker?.consecutiveThreshold ?? DEFAULT_CIRCUIT_BREAKER_CONSECUTIVE_THRESHOLD,
+    enabled: config.circuitBreaker.enabled,
+    maxToolCalls: config.circuitBreaker.maxToolCalls,
+    consecutiveThreshold: config.circuitBreaker.consecutiveThreshold,
   }
 }
 

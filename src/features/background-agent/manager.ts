@@ -19,11 +19,11 @@ import {
 import { applySessionPromptParams } from "../../shared/session-prompt-params-helpers"
 import { setSessionTools } from "../../shared/session-tools-store"
 import { ConcurrencyManager } from "./concurrency"
-import type { BackgroundTaskConfig } from "../../config/schema"
+import type { BackgroundTaskConfig } from "../../config"
 import {
   POLLING_INTERVAL_MS,
   TASK_CLEANUP_DELAY_MS,
-  TASK_TTL_MS,
+
 } from "./constants"
 
 import { formatDuration } from "./duration-formatter"
@@ -131,7 +131,7 @@ export class BackgroundManager {
   private pollingInFlight = false
   private concurrencyManager: ConcurrencyManager
   private shutdownTriggered = false
-  private config?: BackgroundTaskConfig
+  private config: BackgroundTaskConfig
 
   private queuesByKey: Map<string, QueueItem[]> = new Map()
   private processingKeys: Set<string> = new Set()
@@ -148,7 +148,7 @@ export class BackgroundManager {
 
   constructor(
     ctx: PluginInput,
-    config?: BackgroundTaskConfig,
+    config: BackgroundTaskConfig,
   ) {
     this.tasks = new Map()
     this.notifications = new Map()
@@ -522,7 +522,7 @@ export class BackgroundManager {
         existingTask.status = "interrupt"
         const errorMessage = error instanceof Error ? error.message : String(error)
         if (errorMessage.includes("agent.name") || errorMessage.includes("undefined") || isAgentNotFoundError(error)) {
-          existingTask.error = `Agent "${input.agent}" not found. Make sure the agent is registered in your oh-my-opencode.jsonc or provided by a plugin.`
+          existingTask.error = `Agent "${input.agent}" not found. Make sure the agent is registered in the builtin agent definitions.`
         } else {
           existingTask.error = errorMessage
         }
@@ -1313,7 +1313,7 @@ export class BackgroundManager {
           sibling => sibling.id !== taskId && (sibling.status === "running" || sibling.status === "pending"),
         )
         const completedAtTimestamp = task.completedAt?.getTime()
-        const reachedTaskTtl = completedAtTimestamp !== undefined && (Date.now() - completedAtTimestamp) >= TASK_TTL_MS
+        const reachedTaskTtl = completedAtTimestamp !== undefined && (Date.now() - completedAtTimestamp) >= this.config.taskTtlMs
         if (runningOrPendingSiblings.length > 0 && rescheduleCount < MAX_TASK_REMOVAL_RESCHEDULES && !reachedTaskTtl) {
           this.scheduleTaskRemoval(taskId, rescheduleCount + 1)
           return

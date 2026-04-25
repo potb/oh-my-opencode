@@ -12,13 +12,13 @@ Cross-cutting utilities used throughout the plugin. Barrel-exported from `index.
 |----------|-------|-------------|
 | **Model Resolution** | ~18 | `resolveModelPipeline()`, `checkModelAvailability()` |
 | **Tmux Integration** | 11 | `createTmuxSession()`, `spawnPane()`, `closePane()`, server health |
-| **Configuration & Paths** | 10 | `resolveOpenCodeConfigDir()`, `getDataPath()`, `parseJSONC()` |
+| **Configuration & Paths** | 5 | `resolveOpenCodeConfigDir()`, `getDataPath()` |
 | **Session Management** | 8 | `SessionCursor`, `trackInjectedPath()`, `SessionToolsStore` |
 | **Git Worktree** | 7 | `parseGitStatusPorcelain()`, `collectGitDiffStats()`, `formatFileChanges()` |
 | **Command Execution** | 7 | `executeCommand()`, `executeHookCommand()`, embedded command registry |
 | **String & Tool Utils** | 6 | `toSnakeCase()`, `normalizeToolName()`, `parseFrontmatter()` |
 | **Agent Configuration** | 5 | `getAgentVariant()`, `AGENT_DISPLAY_NAMES`, `AGENT_TOOL_RESTRICTIONS` |
-| **OpenCode Integration** | 5 | `injectServerAuth()`, `detectExternalPlugins()`, client accessors |
+| **OpenCode Integration** | 4 | `injectServerAuth()`, client accessors |
 | **Type Helpers** | 4 | `deepMerge()`, `DynamicTruncator`, `matchPattern()`, `isRecord()` |
 | **Misc** | 8 | `log()`, `readFile()`, `extractZip()`, `downloadBinary()`, `findAvailablePort()` |
 

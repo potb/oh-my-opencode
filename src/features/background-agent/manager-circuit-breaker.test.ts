@@ -3,11 +3,16 @@
 import { describe, expect, test } from "bun:test"
 import type { PluginInput } from "@opencode-ai/plugin"
 import { tmpdir } from "node:os"
-import type { BackgroundTaskConfig } from "../../config/schema"
+import type { BackgroundTaskConfig } from "../../config"
 import { BackgroundManager } from "./manager"
+import { createBackgroundTaskConfig } from "./test-config"
 import type { BackgroundTask } from "./types"
 
-function createManager(config?: BackgroundTaskConfig): BackgroundManager {
+type BackgroundTaskConfigOverrides = Partial<Omit<BackgroundTaskConfig, "circuitBreaker">> & {
+  circuitBreaker?: Partial<BackgroundTaskConfig["circuitBreaker"]>
+}
+
+function createManager(config?: BackgroundTaskConfigOverrides): BackgroundManager {
   const client = {
     session: {
       prompt: async () => ({}),
@@ -16,7 +21,10 @@ function createManager(config?: BackgroundTaskConfig): BackgroundManager {
     },
   }
 
-  const manager = new BackgroundManager({ client, directory: tmpdir() } as unknown as PluginInput, config)
+  const manager = new BackgroundManager(
+    { client, directory: tmpdir() } as unknown as PluginInput,
+    createBackgroundTaskConfig(config),
+  )
   const testManager = manager as unknown as {
     enqueueNotificationForParent: (sessionID: string, fn: () => Promise<void>) => Promise<void>
     notifyParentSession: (task: BackgroundTask) => Promise<void>
@@ -132,6 +140,7 @@ describe("BackgroundManager circuit breaker", () => {
       const manager = createManager({
         maxToolCalls: 3,
         circuitBreaker: {
+          maxToolCalls: 3,
           consecutiveThreshold: 95,
         },
       })
@@ -353,6 +362,7 @@ describe("BackgroundManager circuit breaker", () => {
         maxToolCalls: 3,
         circuitBreaker: {
           enabled: false,
+          maxToolCalls: 3,
           consecutiveThreshold: 95,
         },
       })

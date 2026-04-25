@@ -1,18 +1,15 @@
 # script/ — Build and CI Automation
 
-**Generated:** 2026-04-25 | **Commit:** 51061ac8
+**Generated:** 2026-04-25
 
 ## OVERVIEW
 
-Small, high-signal automation directory. Owns schema generation and the CI test-splitting runner. Directory name is intentionally singular: `script/`, not `scripts/`.
+Small, high-signal automation directory. Owns the CI test-splitting runner. Directory name is intentionally singular: `script/`, not `scripts/`.
 
 ## FILES
 
 | File | Purpose |
 |------|---------|
-| `build-schema.ts` | Write JSON schema to `assets/` and `dist/` |
-| `build-schema-document.ts` | Build trimmed schema document from Zod root schema |
-| `build-schema.test.ts` | Verify generated schema shape |
 | `run-ci-tests.ts` | Split Bun tests into isolated vs shared runs |
 | `tsconfig.json` | Script-local TS config |
 
@@ -26,7 +23,6 @@ Small, high-signal automation directory. Owns schema generation and the CI test-
 ## COMMANDS
 
 ```bash
-bun run build:schema         # Execute script/build-schema.ts
 bun run script/run-ci-tests.ts
 bun run script/run-ci-tests.ts --print-plan
 ```

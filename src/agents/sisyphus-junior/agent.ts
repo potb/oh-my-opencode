@@ -13,7 +13,7 @@
 import type { AgentConfig } from "@opencode-ai/sdk"
 import type { AgentMode } from "../types"
 import { isGlmModel, isGptModel, isGeminiModel } from "../types"
-import type { AgentOverrideConfig } from "../../config/schema"
+import type { AgentOverrideConfig } from "../../config"
 import {
   createAgentToolRestrictions,
   type PermissionValue,

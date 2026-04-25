@@ -1,5 +1,5 @@
 import type { OhMyOpenCodeConfig } from "../config"
-import type { AgentOverrides } from "../config/schema/agent-overrides"
+import type { AgentOverrides } from "../config"
 import { log } from "../shared"
 import { getAgentConfigKey } from "../shared/agent-display-names"
 import { scheduleDeferredModelOverride } from "./ultrawork-db-model-override"
@@ -152,6 +152,7 @@ export function applyUltraworkModelOverrideOnMessage(
   sessionID?: string,
   client?: unknown,
 ): void | Promise<void> {
+  void sessionID
   const override = resolveUltraworkOverride(pluginConfig, inputAgentName, output)
   if (!override) return
 

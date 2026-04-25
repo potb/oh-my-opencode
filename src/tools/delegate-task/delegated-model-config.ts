@@ -1,4 +1,4 @@
-import type { CategoryConfig } from "../../config/schema"
+import type { CategoryConfig } from "../../config"
 import type { DelegatedModelConfig } from "./types"
 
 export function applyCategoryParams(

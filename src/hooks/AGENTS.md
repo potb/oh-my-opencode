@@ -54,5 +54,5 @@ hooks/
 
 1. Create `src/hooks/{name}/index.ts` with `createXXXHook(deps)` factory
 2. Register in appropriate tier file (`src/plugin/hooks/create-{tier}-hooks.ts`)
-3. Add hook name to `src/config/schema/hooks.ts` HookNameSchema
+3. Add hook name to the hook-name config type in `src/config/`
 4. Hook receives `(event, ctx)` — return value depends on event type

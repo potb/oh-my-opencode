@@ -7,10 +7,12 @@ import { getSessionPromptParams, clearSessionPromptParams } from "../../shared/s
 import { tmpdir } from "node:os"
 import type { PluginInput } from "@opencode-ai/plugin"
 import type { BackgroundTask, ResumeInput } from "./types"
+import type { BackgroundTaskConfig as RuntimeBackgroundTaskConfig } from "../../config"
 import { MIN_IDLE_TIME_MS } from "./constants"
-import { BackgroundManager } from "./manager"
-import { ConcurrencyManager } from "./concurrency"
+import { BackgroundManager as RuntimeBackgroundManager } from "./manager"
+import { ConcurrencyManager as RuntimeConcurrencyManager } from "./concurrency"
 import { _resetForTesting as resetProcessCleanupState } from "./process-cleanup"
+import { createBackgroundTaskConfig } from "./test-config"
 
 mock.module("../../shared/connected-providers-cache", () => ({
   readConnectedProvidersCache: () => null,
@@ -24,6 +26,20 @@ mock.restore()
 
 
 const TASK_TTL_MS = 30 * 60 * 1000
+
+type BackgroundTaskConfig = Partial<RuntimeBackgroundTaskConfig>
+
+class BackgroundManager extends RuntimeBackgroundManager {
+  constructor(ctx: PluginInput, config?: Partial<BackgroundTaskConfig>) {
+    super(ctx, createBackgroundTaskConfig(config))
+  }
+}
+
+class ConcurrencyManager extends RuntimeConcurrencyManager {
+  constructor(config: Partial<BackgroundTaskConfig> = {}) {
+    super(createBackgroundTaskConfig(config))
+  }
+}
 
 class MockBackgroundManager {
   private tasks: Map<string, BackgroundTask> = new Map()
@@ -453,7 +469,6 @@ describe("BackgroundManager.getAllDescendantTasks", () => {
 describe("BackgroundManager.notifyParentSession - release ordering", () => {
   test("should unblock queued task even when prompt hangs", async () => {
     // given - concurrency limit 1, task1 running, task2 waiting
-    const { ConcurrencyManager } = await import("./concurrency")
     const concurrencyManager = new ConcurrencyManager({ defaultConcurrency: 1 })
 
     await concurrencyManager.acquire("explore")
@@ -488,7 +503,6 @@ describe("BackgroundManager.notifyParentSession - release ordering", () => {
 
   test("should keep queue blocked if release is after prompt (demonstrates the bug)", async () => {
     // given - same setup
-    const { ConcurrencyManager } = await import("./concurrency")
     const concurrencyManager = new ConcurrencyManager({ defaultConcurrency: 1 })
 
     await concurrencyManager.acquire("explore")

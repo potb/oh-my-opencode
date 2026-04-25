@@ -63,18 +63,6 @@ function applyProviderMetadata(config: Record<string, unknown>, modelCacheState:
   }
 }
 
-function getConfigQuestionPermission(): string | null {
-  const configContent = process.env.OPENCODE_CONFIG_CONTENT
-  if (!configContent) return null
-
-  try {
-    const parsed = JSON.parse(configContent) as { permission?: { question?: string | null } }
-    return parsed.permission?.question ?? null
-  } catch {
-    return null
-  }
-}
-
 function agentByKey(agentResult: Record<string, unknown>, key: string): AgentWithPermission | undefined {
   return (agentResult[getAgentListDisplayName(key)]
     ?? agentResult[getAgentDisplayName(key)]
@@ -108,15 +96,12 @@ function applyToolPermissions(args: {
   }
 
   const isCliRunMode = process.env.OPENCODE_CLI_RUN_MODE === "true"
-  const configQuestionPermission = getConfigQuestionPermission()
-  const isQuestionDisabledByPlugin = args.pluginConfig.disabled_tools?.includes("question") ?? false
+  const isQuestionDisabledByPlugin = args.pluginConfig.disabled_tools.includes("question")
   const questionPermission = isQuestionDisabledByPlugin
     ? "deny"
-    : configQuestionPermission === "deny"
+    : isCliRunMode
       ? "deny"
-      : isCliRunMode
-        ? "deny"
-        : "allow"
+      : "allow"
 
   const librarian = agentByKey(args.agentResult, "librarian")
   if (librarian) {
@@ -173,7 +158,7 @@ export function createRuntimeConfigHook(args: {
 
     log("[runtime-config-hook] config hook applied", {
       agentCount: Object.keys(agentResult).length,
-      commandCount: Object.keys((config.command as Record<string, unknown>) ?? {}).length,
+      commandCount: Object.keys(config.command as Record<string, unknown>).length,
     })
   }
 }

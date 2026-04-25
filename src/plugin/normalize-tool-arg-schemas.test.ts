@@ -19,7 +19,8 @@ function getNestedRecord(record: Record<string, unknown>, key: string): Record<s
   return isRecord(value) ? value : undefined
 }
 
-async function loadSeparateHostZodModule(): Promise<typeof import("zod")> {
+// biome-ignore lint: dynamic import from plugin's bundled zod, not our dependency
+async function loadSeparateHostZodModule(): Promise<{ z: { toJSONSchema: (schema: unknown) => Record<string, unknown>; object: (...args: unknown[]) => unknown } }> {
   const pluginPackageDirectory = dirname(Bun.resolveSync("@opencode-ai/plugin/package.json", import.meta.dir))
   const sourceZodDirectory = join(pluginPackageDirectory, "node_modules", "zod")
   const tempDirectory = mkdtempSync(join(tmpdir(), "omo-host-zod-"))
@@ -32,7 +33,7 @@ async function loadSeparateHostZodModule(): Promise<typeof import("zod")> {
 }
 
 function serializeWithHostZod(
-  hostZod: typeof import("zod"),
+  hostZod: { z: { toJSONSchema: (schema: unknown) => Record<string, unknown>; object: (...args: unknown[]) => unknown } },
   args: Record<string, object>,
 ): Record<string, unknown> {
   return hostZod.z.toJSONSchema(Reflect.apply(hostZod.z.object, hostZod.z, [args]))

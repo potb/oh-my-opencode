@@ -9,5 +9,4 @@ export type OpenCodeConfigDirOptions = {
 export type OpenCodeConfigPaths = {
   configDir: string
   packageJson: string
-  omoConfig: string
 }

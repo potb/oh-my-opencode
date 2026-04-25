@@ -12,12 +12,10 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
-    },
-    "./schema.json": "./dist/oh-my-opencode.schema.json"
+    }
   },
   "scripts": {
-    "build": "rm -rf dist && bun build src/index.ts --outdir dist --target bun --format esm --external @ast-grep/napi && tsc --emitDeclarationOnly && bun run build:schema",
-    "build:schema": "bun run script/build-schema.ts",
+    "build": "rm -rf dist && bun build src/index.ts --outdir dist --target bun --format esm --external @ast-grep/napi && tsc --emitDeclarationOnly",
     "clean": "rm -rf dist",
     "knip": "knip",
     "typecheck": "tsc --noEmit",
@@ -37,10 +35,8 @@
   "dependencies": {
     "@ast-grep/cli": "^0.41.1",
     "@opencode-ai/plugin": "^1.4.0",
-    "jsonc-parser": "^3.3.1",
     "posthog-node": "^5.29.2",
-    "vscode-jsonrpc": "^8.2.0",
-    "zod": "^4.3.0"
+    "vscode-jsonrpc": "^8.2.0"
   },
   "devDependencies": {
     "@opencode-ai/sdk": "^1.4.0",

@@ -22,7 +22,7 @@ index.ts
 | File | Purpose |
 |------|---------|
 | `index.ts` | Exports `OhMyOpenCodePlugin` |
-| `plugin-config.ts` | JSONC load, strict validation, merge |
+| `plugin-config.ts` | Single TS constants file, sole source of truth for config |
 | `create-managers.ts` | `BackgroundManager` + runtime config hook |
 | `create-tools.ts` | Calls `createToolRegistry()` |
 | `create-hooks.ts` | Builds composed hook record |
@@ -35,7 +35,7 @@ index.ts
 | Directory | Role |
 |-----------|------|
 | `agents/` | Agent prompts, model routing, agent factories |
-| `config/` | Zod schemas and config exports |
+| `config/` | Plain TypeScript config type definitions |
 | `features/` | Background-agent engine, builtin skills, loaders |
 | `generated/` | Generated artifacts committed into source when needed |
 | `hooks/` | Hook implementations and hook-only helpers |

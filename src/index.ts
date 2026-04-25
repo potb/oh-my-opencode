@@ -8,11 +8,10 @@ import { createTools } from "./create-tools"
 import { createPluginInterface } from "./plugin-interface"
 import { createPluginDispose, type PluginDispose } from "./plugin-dispose"
 
-import { loadPluginConfig } from "./plugin-config"
+import { PLUGIN_CONFIG } from "./plugin-config"
 import { createModelCacheState } from "./plugin-state"
 import { createFirstMessageVariantGate } from "./shared/first-message-variant"
 import { initConfigContext, injectServerAuthIntoClient, log } from "./shared"
-import { detectExternalSkillPlugin, getSkillPluginConflictWarning } from "./shared/external-plugin-detector"
 import { lspManager } from "./tools/lsp/client"
 import { createPluginPostHog, getPostHogDistinctId } from "./shared/posthog"
 
@@ -23,15 +22,11 @@ const OhMyOpenCodePlugin: Plugin = async (ctx) => {
   log("[OhMyOpenCodePlugin] ENTRY - plugin loading", {
     directory: ctx.directory,
   })
-  const skillPluginCheck = detectExternalSkillPlugin(ctx.directory)
-  if (skillPluginCheck.detected && skillPluginCheck.pluginName) {
-    console.warn(getSkillPluginConflictWarning(skillPluginCheck.pluginName))
-  }
 
   injectServerAuthIntoClient(ctx.client)
   await activePluginDispose?.()
 
-  const pluginConfig = loadPluginConfig(ctx.directory, ctx)
+  const pluginConfig = PLUGIN_CONFIG
 
   const posthog = createPluginPostHog()
   const distinctId = getPostHogDistinctId()
@@ -52,7 +47,7 @@ const OhMyOpenCodePlugin: Plugin = async (ctx) => {
   } catch {
     // telemetry failure is non-fatal, silently ignore
   }
-  const disabledHooks = new Set(pluginConfig.disabled_hooks ?? [])
+  const disabledHooks = new Set(pluginConfig.disabled_hooks)
 
   const isHookEnabled = (hookName: HookName): boolean => !disabledHooks.has(hookName)
   const firstMessageVariantGate = createFirstMessageVariantGate()
@@ -118,5 +113,3 @@ export type {
   AgentOverrides,
   HookName,
 } from "./config"
-
-export type { ConfigLoadError } from "./shared/config-errors"

@@ -3,6 +3,7 @@ import { afterEach, describe, expect, test } from "bun:test"
 import type { PluginInput } from "@opencode-ai/plugin"
 import { TASK_CLEANUP_DELAY_MS } from "./constants"
 import { BackgroundManager } from "./manager"
+import { createBackgroundTaskConfig } from "./test-config"
 import type { BackgroundTask } from "./types"
 
 type PromptAsyncCall = {
@@ -73,7 +74,7 @@ function createManager(): {
     $: {} as PluginInput["$"],
   }
 
-  const manager = new BackgroundManager(ctx)
+  const manager = new BackgroundManager(ctx, createBackgroundTaskConfig())
   Reflect.set(manager, "client", client)
 
   return { manager, promptAsyncCalls }

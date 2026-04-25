@@ -1,7 +1,7 @@
 import type { AgentConfig } from "@opencode-ai/sdk"
 import type { BuiltinAgentName, AgentOverrides, AgentFactory, AgentPromptMetadata } from "./types"
-import type { CategoriesConfig, GitMasterConfig } from "../config/schema"
-import type { BrowserAutomationProvider } from "../config/schema"
+import type { CategoriesConfig, GitMasterConfig } from "../config"
+import type { BrowserAutomationProvider } from "../config"
 import { createSisyphusAgent } from "./sisyphus"
 import { createOracleAgent, ORACLE_PROMPT_METADATA } from "./oracle"
 import { createLibrarianAgent, LIBRARIAN_PROMPT_METADATA } from "./librarian"
@@ -15,8 +15,7 @@ import {
   readConnectedProvidersCache,
   readProviderModelsCache,
 } from "../shared"
-import { CATEGORY_DESCRIPTIONS } from "../tools/delegate-task/constants"
-import { mergeCategories } from "../shared/merge-categories"
+
 import { buildAvailableSkills } from "./builtin-agents/available-skills"
 import { collectPendingBuiltinAgents } from "./builtin-agents/general-agents"
 import { maybeCreateSisyphusConfig } from "./builtin-agents/sisyphus-agent"
@@ -76,11 +75,13 @@ export async function createBuiltinAgents(
 
   const result: Record<string, AgentConfig> = {}
 
-  const mergedCategories = mergeCategories(categories)
+  const mergedCategories = Object.fromEntries(
+    Object.entries(categories ?? {}).filter(([, config]) => !config.disable),
+  )
 
-  const availableCategories: AvailableCategory[] = Object.entries(mergedCategories).map(([name]) => ({
+  const availableCategories: AvailableCategory[] = Object.entries(mergedCategories).map(([name, config]) => ({
     name,
-    description: categories?.[name]?.description ?? CATEGORY_DESCRIPTIONS[name] ?? "General tasks",
+    description: config.description,
   }))
 
   const availableSkills = buildAvailableSkills([], browserProvider, disabledSkills)

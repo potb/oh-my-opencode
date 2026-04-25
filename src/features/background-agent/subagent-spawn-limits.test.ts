@@ -7,6 +7,7 @@ import {
   createSubagentDescendantLimitError,
   getMaxRootSessionSpawnBudget,
 } from "./subagent-spawn-limits"
+import { createBackgroundTaskConfig } from "./test-config"
 
 function createMockClient(sessionGet: OpencodeClient["session"]["get"]): OpencodeClient {
   return {
@@ -192,32 +193,31 @@ describe("resolveSubagentSpawnContext", () => {
 
 describe("getMaxSubagentDepth", () => {
   test("returns default max depth when no config", () => {
-    expect(getMaxSubagentDepth()).toBe(3)
-    expect(getMaxSubagentDepth(undefined)).toBe(3)
+    expect(getMaxSubagentDepth(createBackgroundTaskConfig())).toBe(3)
   })
 
   test("returns config.maxDepth when provided", () => {
-    expect(getMaxSubagentDepth({ maxDepth: 5 })).toBe(5)
-    expect(getMaxSubagentDepth({ maxDepth: 1 })).toBe(1)
-    expect(getMaxSubagentDepth({ maxDepth: 0 })).toBe(0)
+    expect(getMaxSubagentDepth(createBackgroundTaskConfig({ maxDepth: 5 }))).toBe(5)
+    expect(getMaxSubagentDepth(createBackgroundTaskConfig({ maxDepth: 1 }))).toBe(1)
+    expect(getMaxSubagentDepth(createBackgroundTaskConfig({ maxDepth: 0 }))).toBe(0)
   })
 
   test("default is 3", () => {
-    expect(getMaxSubagentDepth()).toBe(3)
+    expect(getMaxSubagentDepth(createBackgroundTaskConfig())).toBe(3)
   })
 })
 
 describe("getMaxRootSessionSpawnBudget", () => {
   test("returns default root session spawn budget when no config", () => {
-    expect(getMaxRootSessionSpawnBudget()).toBe(50)
+    expect(getMaxRootSessionSpawnBudget(createBackgroundTaskConfig())).toBe(50)
   })
 
   test("returns config.maxDescendants when provided", () => {
-    expect(getMaxRootSessionSpawnBudget({ maxDescendants: 10 })).toBe(10)
+    expect(getMaxRootSessionSpawnBudget(createBackgroundTaskConfig({ maxDescendants: 10 }))).toBe(10)
   })
 
   test("default is 50", () => {
-    expect(getMaxRootSessionSpawnBudget()).toBe(50)
+    expect(getMaxRootSessionSpawnBudget(createBackgroundTaskConfig())).toBe(50)
   })
 })
 

@@ -1,6 +1,6 @@
 import type { AgentConfig } from "@opencode-ai/sdk"
 import type { AgentOverrides } from "../types"
-import type { CategoriesConfig, CategoryConfig } from "../../config/schema"
+import type { CategoriesConfig, CategoryConfig } from "../../config"
 import type { AvailableAgent, AvailableCategory, AvailableSkill } from "../dynamic-agent-prompt-builder"
 import { applyEnvironmentContext } from "./environment-context"
 import { applyOverrides } from "./agent-overrides"

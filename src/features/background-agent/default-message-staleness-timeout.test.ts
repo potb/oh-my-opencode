@@ -1,8 +1,8 @@
 declare const require: (name: string) => any
 const { describe, expect, test, mock } = require("bun:test")
 
-import { DEFAULT_MESSAGE_STALENESS_TIMEOUT_MS } from "./constants"
 import { checkAndInterruptStaleTasks } from "./task-poller"
+import { createBackgroundTaskConfig } from "./test-config"
 import type { BackgroundTask } from "./types"
 
 function createRunningTask(startedAt: Date): BackgroundTask {
@@ -20,19 +20,19 @@ function createRunningTask(startedAt: Date): BackgroundTask {
   }
 }
 
-describe("DEFAULT_MESSAGE_STALENESS_TIMEOUT_MS", () => {
-  test("uses a 60 minute default", () => {
+describe("background_task.messageStalenessTimeoutMs", () => {
+  test("uses a 60 minute configured default", () => {
     // #given
     const expectedTimeout = 60 * 60 * 1000
 
     // #when
-    const timeout = DEFAULT_MESSAGE_STALENESS_TIMEOUT_MS
+    const timeout = createBackgroundTaskConfig().messageStalenessTimeoutMs
 
     // #then
     expect(timeout).toBe(expectedTimeout)
   })
 
-  test("does not interrupt a never-updated task after 15 minutes when config is omitted", async () => {
+  test("does not interrupt a never-updated task after 15 minutes with the configured timeout", async () => {
     // #given
     const task = createRunningTask(new Date(Date.now() - 15 * 60 * 1000))
     const client = {
@@ -49,7 +49,7 @@ describe("DEFAULT_MESSAGE_STALENESS_TIMEOUT_MS", () => {
     await checkAndInterruptStaleTasks({
       tasks: [task],
       client: client as never,
-      config: undefined,
+      config: createBackgroundTaskConfig(),
       concurrencyManager: concurrencyManager as never,
       notifyParentSession,
     })

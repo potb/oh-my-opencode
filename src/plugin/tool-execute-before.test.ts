@@ -179,6 +179,15 @@ describe("createToolRegistry", () => {
         },
       },
       pluginConfig: {
+        git_master: { commit_footer: false, include_co_authored_by: false, git_env_prefix: "" },
+        background_task: {
+          defaultConcurrency: 5, maxDepth: 3, maxDescendants: 50,
+          staleTimeoutMs: 2_700_000, messageStalenessTimeoutMs: 3_600_000,
+          taskTtlMs: 1_800_000, sessionGoneTimeoutMs: 60_000,
+          syncPollTimeoutMs: 600_000, maxToolCalls: 4000,
+          circuitBreaker: { enabled: true, consecutiveThreshold: 20 },
+        },
+        experimental: { truncate_all_tool_outputs: false, disable_omo_env: false },
         ...overrides,
       },
       managers: {

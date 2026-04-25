@@ -1,50 +1,37 @@
-# src/config/ — Zod Schema System
+# src/config/ — Type Definition System
 
-**Generated:** 2026-04-25 | **Commit:** 20a49686
+**Generated:** 2026-04-25
 
 ## OVERVIEW
 
-Owns configuration schemas and exported types for plugin config loading. Current tree is leaner than older docs: no stale OpenClaw/tmux root-schema entries in this checkout.
+Owns configuration type definitions via plain TypeScript types and interfaces. No runtime file loading or validation happens here; all config values come from the explicit constant in `src/plugin-config.ts`.
 
 ## STRUCTURE
 
 ```text
 config/
 ├── index.ts
-└── schema/
-    ├── oh-my-opencode-config.ts   # Root schema
-    ├── agent-overrides.ts         # Per-agent overrides
-    ├── categories.ts              # Category config
-    ├── experimental.ts            # Feature flags and dynamic pruning
-    ├── background-task.ts         # Concurrency / timeout config
-    ├── git-master.ts              # Git skill config
-    ├── browser-automation.ts      # Browser automation provider
-    ├── websearch.ts               # Web search provider
-    ├── sisyphus.ts                # Sisyphus-specific config
-    └── internal/permission.ts     # Permission schema pieces
+└── types.ts
 ```
 
-## ROOT SCHEMA FIELDS
+## ROOT CONFIG FIELDS
 
-`$schema`, `disabled_agents`, `disabled_hooks`, `disabled_tools`, `agents`, `categories`, `experimental`, `background_task`, `git_master`, `browser_automation_engine`, `websearch`, `sisyphus`
+`disabled_agents`, `disabled_hooks`, `disabled_tools`, `agents`, `categories`, `experimental`, `background_task`, `git_master`, `browser_automation_engine`
 
 ## WHERE TO LOOK
 
 | Task | Location | Notes |
 |------|----------|-------|
-| Root config shape | `schema/oh-my-opencode-config.ts` | Single source of truth |
-| Agent overrides | `schema/agent-overrides.ts` | Model/prompt/permission overrides |
-| Category config | `schema/categories.ts` | Category defaults and custom categories |
-| Background task limits | `schema/background-task.ts` | Concurrency, stale timeout, circuit breaker |
-| Experimental flags | `schema/experimental.ts` | Dynamic pruning, prompt environment flags |
+| Root config shape | `types.ts` | Type definitions only |
+| Change config values | `src/plugin-config.ts` | Single source of truth for runtime config |
 
 ## CONVENTIONS
 
-- Add new config at `schema/{name}.ts`, then compose it into `oh-my-opencode-config.ts`.
-- Keep config docs aligned with actual schema fields; remove stale entries immediately.
-- Use `z.infer<typeof Schema>` for exported TS types instead of hand-written duplicates.
+- Add new config types in `types.ts`.
+- Keep shapes aligned with the runtime config constant in `src/plugin-config.ts`.
+- Edit `src/plugin-config.ts` to change runtime behavior; this directory defines types only.
 
 ## ANTI-PATTERNS
 
-- Do not document removed config keys as active.
-- Do not add runtime behavior here; schema modules validate and describe config only.
+- Do not add runtime file loading, JSONC parsing, or fallback defaults here.
+- Do not add runtime validation here; type modules define shapes only.

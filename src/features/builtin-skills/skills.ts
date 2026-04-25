@@ -1,5 +1,5 @@
 import type { BuiltinSkill } from "./types"
-import type { BrowserAutomationProvider } from "../../config/schema"
+import type { BrowserAutomationProvider } from "../../config"
 
 import {
   agentBrowserSkill,

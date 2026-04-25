@@ -3,6 +3,7 @@ import { tmpdir } from "node:os"
 import type { PluginInput } from "@opencode-ai/plugin"
 import { BackgroundManager } from "./manager"
 import { TaskHistory } from "./task-history"
+import { createBackgroundTaskConfig } from "./test-config"
 import type { BackgroundTask } from "./types"
 
 let managerUnderTest: BackgroundManager | undefined
@@ -29,7 +30,7 @@ function createManager(): BackgroundManager {
     $: {} as PluginInput["$"],
   }
 
-  const manager = new BackgroundManager(ctx)
+  const manager = new BackgroundManager(ctx, createBackgroundTaskConfig())
   Reflect.set(manager, "client", client)
 
   return manager

@@ -92,7 +92,7 @@ export async function sendSyncPrompt(
   } catch (promptError) {
     const errorMessage = promptError instanceof Error ? promptError.message : String(promptError)
     if (errorMessage.includes("agent.name") || errorMessage.includes("undefined")) {
-      return formatDetailedError(new Error(`Agent "${input.agentToUse}" not found. Make sure the agent is registered in your oh-my-opencode.jsonc or provided by a plugin.`), {
+      return formatDetailedError(new Error(`Agent "${input.agentToUse}" not found. Make sure the agent is registered in the builtin agent definitions.`), {
         operation: "Send prompt to agent",
         args: input.args,
         sessionID: input.sessionID,

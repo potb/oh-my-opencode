@@ -12,19 +12,19 @@ export async function applyRuntimeAgentConfig(args: {
   ctx: { directory: string; client?: unknown }
 }): Promise<Record<string, unknown>> {
   const currentModel = args.config.model as string | undefined
-  const disableOmoEnv = args.pluginConfig.experimental?.disable_omo_env ?? false
+  const experimental = args.pluginConfig.experimental
 
   const builtinAgents = await createBuiltinAgents(
-    [...(args.pluginConfig.disabled_agents ?? [])],
-    {},
+    [...args.pluginConfig.disabled_agents],
+    args.pluginConfig.agents,
     args.ctx.directory,
-    undefined,
+    args.pluginConfig.categories,
     args.pluginConfig.git_master,
-    undefined,
+    args.pluginConfig.browser_automation_engine.provider,
     currentModel,
     new Set<string>(),
     false,
-    disableOmoEnv,
+    experimental.disable_omo_env,
   )
 
   args.config.default_agent = getAgentRuntimeName("sisyphus")

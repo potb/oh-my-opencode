@@ -28,7 +28,7 @@ oh-my-opencode/
 
 ```text
 OhMyOpenCodePlugin(ctx)
-  ├─→ loadPluginConfig()
+  ├─→ PLUGIN_CONFIG          # single TS constant from plugin-config.ts
   ├─→ createManagers()
   ├─→ createTools()
   ├─→ createHooks()
@@ -40,13 +40,13 @@ OhMyOpenCodePlugin(ctx)
 | Task | Location | Notes |
 |------|----------|-------|
 | Plugin bootstrap | `src/index.ts`, `src/plugin-interface.ts` | End-to-end startup and 10 hook surfaces |
-| Config loading/merge | `src/plugin-config.ts`, `src/config/schema/` | JSONC load, strict Zod validation, merge |
+| Config constants | `src/plugin-config.ts`, `src/config/types.ts` | Single TS config constant, plain TypeScript type definitions |
 | Background task engine | `src/features/background-agent/` | Concurrency, polling, stale-task cleanup, notifications |
 | Agent definitions | `src/agents/` | Sisyphus family + Oracle/Librarian/Explore/Metis/Momus |
 | Hook behavior | `src/hooks/`, `src/plugin/hooks/` | Hook implementations vs composition glue |
 | Tool registration | `src/create-tools.ts`, `src/plugin/tool-registry.ts`, `src/tools/` | Registry boundary and tool families |
 | Shared runtime helpers | `src/shared/` | Logging, caches, model resolution, session helpers |
-| CI/schema scripts | `script/` | `build-schema.ts`, `run-ci-tests.ts` |
+| CI scripts | `script/` | `run-ci-tests.ts` |
 | Extra integration harnesses | `tests/` | Non-co-located harness helpers when needed |
 | Project skill/runtime config | `.opencode/` | Project config plus installed skill assets |
 | Agent workspace rules/plans | `.sisyphus/` | Runtime contract for plans/rules/notepads |
@@ -80,9 +80,8 @@ OhMyOpenCodePlugin(ctx)
 
 ```bash
 bun test                              # Full Bun test suite
-bun run build                         # ESM build + declarations + schema
+bun run build                         # ESM build + declarations
 bun run typecheck                     # tsc --noEmit
-bun run build:schema                  # Regenerate JSON schema
 bun run script/run-ci-tests.ts        # CI-style split test execution
 bun run script/run-ci-tests.ts --print-plan
 ```

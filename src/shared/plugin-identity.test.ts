@@ -1,5 +1,5 @@
 import { describe, it, expect } from "bun:test"
-import { PLUGIN_NAME, CONFIG_BASENAME, LOG_FILENAME, CACHE_DIR_NAME } from "./plugin-identity"
+import { PLUGIN_NAME, LOG_FILENAME, CACHE_DIR_NAME } from "./plugin-identity"
 
 describe("plugin-identity constants", () => {
   describe("PLUGIN_NAME", () => {
@@ -10,17 +10,6 @@ describe("plugin-identity constants", () => {
 
       // then
       expect(PLUGIN_NAME).toBe("oh-my-opencode")
-    })
-  })
-
-  describe("CONFIG_BASENAME", () => {
-    it("equals oh-my-opencode", () => {
-      // given
-
-      // when
-
-      // then
-      expect(CONFIG_BASENAME).toBe("oh-my-opencode")
     })
   })
 

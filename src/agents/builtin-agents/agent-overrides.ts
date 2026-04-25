@@ -1,6 +1,6 @@
 import type { AgentConfig } from "@opencode-ai/sdk"
 import type { AgentOverrideConfig } from "../types"
-import type { CategoryConfig } from "../../config/schema"
+import type { CategoryConfig } from "../../config"
 import { deepMerge } from "../../shared"
 import { resolvePromptAppend } from "./resolve-file-uri"
 

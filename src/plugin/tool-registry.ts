@@ -98,7 +98,7 @@ export function createToolRegistry(args: {
     manager: managers.backgroundManager,
     client: ctx.client,
     directory: ctx.directory,
-    syncPollTimeoutMs: pluginConfig.background_task?.syncPollTimeoutMs,
+    syncPollTimeoutMs: pluginConfig.background_task.syncPollTimeoutMs,
   })
 
   const allTools: Record<string, ToolDefinition> = {

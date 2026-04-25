@@ -3,7 +3,7 @@
 import { describe, expect, it } from "bun:test"
 import type { PluginInput } from "@opencode-ai/plugin"
 
-import { OhMyOpenCodeConfigSchema } from "./config/schema/oh-my-opencode-config"
+import type { OhMyOpenCodeConfig } from "./config"
 import { createManagers } from "./create-managers"
 import { createModelCacheState } from "./plugin-state"
 
@@ -66,7 +66,28 @@ describe("createManagers", () => {
   it("returns only the live background manager and config handler", () => {
     const managers = createManagers({
       ctx: createContext("/tmp"),
-      pluginConfig: OhMyOpenCodeConfigSchema.parse({}),
+      pluginConfig: {
+        disabled_agents: [],
+        disabled_hooks: [],
+        disabled_tools: [],
+        agents: {},
+        categories: {},
+        experimental: {},
+        background_task: {
+          defaultConcurrency: 1,
+          maxDepth: 1,
+          maxDescendants: 1,
+          staleTimeoutMs: 1,
+          messageStalenessTimeoutMs: 1,
+          taskTtlMs: 1,
+          sessionGoneTimeoutMs: 1,
+          syncPollTimeoutMs: 1,
+          maxToolCalls: 1,
+          circuitBreaker: { enabled: false, consecutiveThreshold: 1 },
+        },
+        git_master: { commit_footer: true, include_co_authored_by: true, git_env_prefix: "GIT_MASTER=1" },
+        browser_automation_engine: { provider: "agent-browser" },
+      } satisfies OhMyOpenCodeConfig,
       modelCacheState: createModelCacheState(),
       deps: createDeps(),
     })

@@ -1,6 +1,6 @@
 import type { PluginInput } from "@opencode-ai/plugin"
 import type { BackgroundManager } from "../../features/background-agent"
-import type { GitMasterConfig, BrowserAutomationProvider, AgentOverrides } from "../../config/schema"
+import type { GitMasterConfig, BrowserAutomationProvider, AgentOverrides } from "../../config"
 import type {
   AvailableCategory,
   AvailableSkill,

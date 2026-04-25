@@ -1,9 +1,7 @@
 import type { AgentConfig } from "@opencode-ai/sdk"
 import type { AgentFactory } from "./types"
-import type { CategoriesConfig, CategoryConfig, GitMasterConfig } from "../config/schema"
-import type { BrowserAutomationProvider } from "../config/schema"
-import { mergeCategories } from "../shared/merge-categories"
-
+import type { CategoriesConfig, CategoryConfig, GitMasterConfig } from "../config"
+import type { BrowserAutomationProvider } from "../config"
 type AgentSource = AgentFactory | AgentConfig
 
 export function isFactory(source: AgentSource): source is AgentFactory {
@@ -19,7 +17,7 @@ export function buildAgent(
   _disabledSkills?: Set<string>
 ): AgentConfig {
   const base = isFactory(source) ? source(model) : { ...source }
-  const categoryConfigs: Record<string, CategoryConfig> = mergeCategories(categories)
+  const categoryConfigs: Record<string, CategoryConfig> = categories ?? {}
 
   const agentWithCategory = base as AgentConfig & { category?: string; skills?: string[]; variant?: string }
   if (agentWithCategory.category) {

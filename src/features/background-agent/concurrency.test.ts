@@ -1,6 +1,15 @@
 import { describe, test, expect, beforeEach } from "bun:test"
-import { ConcurrencyManager } from "./concurrency"
-import type { BackgroundTaskConfig } from "../../config/schema"
+import { ConcurrencyManager as RuntimeConcurrencyManager } from "./concurrency"
+import type { BackgroundTaskConfig as RuntimeBackgroundTaskConfig } from "../../config"
+import { createBackgroundTaskConfig } from "./test-config"
+
+type BackgroundTaskConfig = Partial<RuntimeBackgroundTaskConfig>
+
+class ConcurrencyManager extends RuntimeConcurrencyManager {
+  constructor(config: Partial<BackgroundTaskConfig> = {}) {
+    super(createBackgroundTaskConfig(config))
+  }
+}
 
 describe("ConcurrencyManager.getConcurrencyLimit", () => {
   test("should return model-specific limit when modelConcurrency is set", () => {

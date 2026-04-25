@@ -1,8 +1,17 @@
 declare const require: (name: string) => any
 const { describe, it, expect, mock, spyOn, beforeEach, afterEach } = require("bun:test")
 
-import { checkAndInterruptStaleTasks, pruneStaleTasksAndNotifications } from "./task-poller"
+import type { BackgroundTaskConfig } from "../../config"
+import { checkAndInterruptStaleTasks as checkAndInterruptStaleTasksInternal, pruneStaleTasksAndNotifications } from "./task-poller"
+import { createBackgroundTaskConfig } from "./test-config"
 import type { BackgroundTask } from "./types"
+
+async function checkAndInterruptStaleTasks(args: Omit<Parameters<typeof checkAndInterruptStaleTasksInternal>[0], "config"> & { config?: Partial<BackgroundTaskConfig> }) {
+  return checkAndInterruptStaleTasksInternal({
+    ...args,
+    config: createBackgroundTaskConfig(args.config),
+  })
+}
 
 describe("checkAndInterruptStaleTasks", () => {
   const mockClient = {
@@ -75,7 +84,7 @@ describe("checkAndInterruptStaleTasks", () => {
     await checkAndInterruptStaleTasks({
       tasks: [task],
       client: mockClient as never,
-      config: { staleTimeoutMs: 180_000 },
+      config: createBackgroundTaskConfig({ staleTimeoutMs: 180_000 }),
       concurrencyManager: mockConcurrencyManager as never,
       notifyParentSession: mockNotify,
     })
@@ -118,7 +127,7 @@ describe("checkAndInterruptStaleTasks", () => {
     await checkAndInterruptStaleTasks({
       tasks: [task],
       client: mockClient as never,
-      config: { messageStalenessTimeoutMs: 600_000 },
+      config: createBackgroundTaskConfig({ messageStalenessTimeoutMs: 600_000 }),
       concurrencyManager: mockConcurrencyManager as never,
       notifyParentSession: mockNotify,
     })
@@ -240,7 +249,7 @@ describe("checkAndInterruptStaleTasks", () => {
     await checkAndInterruptStaleTasks({
       tasks: [task],
       client: mockClient as never,
-      config: { staleTimeoutMs: 180_000, messageStalenessTimeoutMs: 600_000 },
+      config: createBackgroundTaskConfig({ staleTimeoutMs: 180_000, messageStalenessTimeoutMs: 600_000 }),
       concurrencyManager: mockConcurrencyManager as never,
       notifyParentSession: mockNotify,
       sessionStatuses: { "ses-1": { type: "busy" } },
@@ -355,7 +364,7 @@ describe("checkAndInterruptStaleTasks", () => {
     await checkAndInterruptStaleTasks({
       tasks: [task],
       client: mockClient as never,
-      config: { staleTimeoutMs: 180_000, sessionGoneTimeoutMs: 60_000 },
+      config: createBackgroundTaskConfig({ staleTimeoutMs: 180_000, sessionGoneTimeoutMs: 60_000 }),
       concurrencyManager: mockConcurrencyManager as never,
       notifyParentSession: mockNotify,
       sessionStatuses: {},
@@ -507,7 +516,7 @@ describe("checkAndInterruptStaleTasks", () => {
     await checkAndInterruptStaleTasks({
       tasks: [task],
       client: mockClient as never,
-      config: { messageStalenessTimeoutMs: 600_000, sessionGoneTimeoutMs: 60_000 },
+      config: createBackgroundTaskConfig({ messageStalenessTimeoutMs: 600_000, sessionGoneTimeoutMs: 60_000 }),
       concurrencyManager: mockConcurrencyManager as never,
       notifyParentSession: mockNotify,
       sessionStatuses: {},
@@ -562,7 +571,7 @@ describe("checkAndInterruptStaleTasks", () => {
     await checkAndInterruptStaleTasks({
       tasks: [task],
       client: mockClient as never,
-      config: undefined,
+      config: createBackgroundTaskConfig(),
       concurrencyManager: mockConcurrencyManager as never,
       notifyParentSession: mockNotify,
       sessionStatuses: {},
@@ -777,10 +786,11 @@ describe("pruneStaleTasksAndNotifications", () => {
 
     //#when
     pruneStaleTasksAndNotifications({
-      tasks,
-      notifications,
-      onTaskPruned: (taskId) => pruned.push(taskId),
-    })
+          tasks,
+          notifications,
+          taskTtlMs: 1_800_000,
+          onTaskPruned: (taskId) => pruned.push(taskId),
+        })
 
     //#then
     expect(pruned).toContain("old-task")
@@ -810,10 +820,11 @@ describe("pruneStaleTasksAndNotifications", () => {
 
     //#when
     pruneStaleTasksAndNotifications({
-      tasks,
-      notifications,
-      onTaskPruned: (taskId) => pruned.push(taskId),
-    })
+          tasks,
+          notifications,
+          taskTtlMs: 1_800_000,
+          onTaskPruned: (taskId) => pruned.push(taskId),
+        })
 
     //#then
     expect(pruned).toEqual([])
@@ -843,10 +854,11 @@ describe("pruneStaleTasksAndNotifications", () => {
 
     //#when
     pruneStaleTasksAndNotifications({
-      tasks,
-      notifications,
-      onTaskPruned: (taskId) => pruned.push(taskId),
-    })
+          tasks,
+          notifications,
+          taskTtlMs: 1_800_000,
+          onTaskPruned: (taskId) => pruned.push(taskId),
+        })
 
     //#then
     expect(pruned).toContain("stale-task")
@@ -930,10 +942,11 @@ describe("pruneStaleTasksAndNotifications", () => {
 
     //#when
     pruneStaleTasksAndNotifications({
-      tasks,
-      notifications: new Map<string, BackgroundTask[]>(),
-      onTaskPruned: (taskId) => pruned.push(taskId),
-    })
+          tasks,
+          notifications: new Map<string, BackgroundTask[]>(),
+          taskTtlMs: 1_800_000,
+          onTaskPruned: (taskId) => pruned.push(taskId),
+        })
 
     //#then
     expect(pruned).toEqual([])
@@ -949,10 +962,11 @@ describe("pruneStaleTasksAndNotifications", () => {
 
     //#when
     pruneStaleTasksAndNotifications({
-      tasks,
-      notifications,
-      onTaskPruned: (taskId) => pruned.push(taskId),
-    })
+          tasks,
+          notifications,
+          taskTtlMs: 1_800_000,
+          onTaskPruned: (taskId) => pruned.push(taskId),
+        })
 
     //#then
     expect(pruned).toEqual([])

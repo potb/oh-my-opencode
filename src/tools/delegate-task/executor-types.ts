@@ -1,5 +1,5 @@
 import type { BackgroundManager } from "../../features/background-agent"
-import type { CategoriesConfig, GitMasterConfig, BrowserAutomationProvider, AgentOverrides } from "../../config/schema"
+import type { CategoriesConfig, GitMasterConfig, BrowserAutomationProvider, AgentOverrides } from "../../config"
 import type { OpencodeClient } from "./types"
 
 type SisyphusAgentConfig = {

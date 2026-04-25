@@ -1,4 +1,3 @@
-import { detectPluginConfigFile } from "./jsonc-parser"
 import { getOpenCodeConfigPaths } from "./opencode-config-dir"
 import type {
   OpenCodeBinaryType,
@@ -25,19 +24,4 @@ function getConfigContext(): ConfigContext {
   }
 
   return configContext
-}
-
-function resetConfigContext(): void {
-  configContext = null
-}
-
-function getConfigDir(): string {
-  return getConfigContext().paths.configDir
-}
-
-function getOmoConfigPath(): string {
-  const configDir = getConfigContext().paths.configDir
-  const detected = detectPluginConfigFile(configDir)
-  if (detected.format !== "none") return detected.path
-  return getConfigContext().paths.omoConfig
 }

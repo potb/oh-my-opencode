@@ -2,7 +2,6 @@ import { afterEach, beforeEach, describe, expect, it, mock } from "bun:test"
 
 const mockInitConfigContext = mock(() => {})
 const mockInjectServerAuthIntoClient = mock(() => {})
-const mockLoadPluginConfig = mock(() => ({}))
 const mockCreateManagers = mock(() => ({
   backgroundManager: { shutdown: async () => {} },
   configHook: async () => {},
@@ -31,16 +30,22 @@ function installModuleMocks(): void {
   mock.module("./shared/opencode-config-context", () => ({
     initConfigContext: mockInitConfigContext,
   }))
-  mock.module("./shared/external-plugin-detector", () => ({
-    detectExternalSkillPlugin: mock(() => ({ detected: false, pluginName: null })),
-    getSkillPluginConflictWarning: mock(() => ""),
-  }))
   mock.module("./shared", () => ({
     injectServerAuthIntoClient: mockInjectServerAuthIntoClient,
     log: mock(() => {}),
   }))
   mock.module("./plugin-config", () => ({
-    loadPluginConfig: mockLoadPluginConfig,
+    PLUGIN_CONFIG: {
+      disabled_agents: [],
+      disabled_hooks: [],
+      disabled_tools: [],
+      agents: {},
+      categories: {},
+      experimental: {},
+      background_task: {},
+      git_master: {},
+      browser_automation_engine: { provider: "agent-browser" },
+    },
   }))
   mock.module("./create-managers", () => ({
     createManagers: mockCreateManagers,

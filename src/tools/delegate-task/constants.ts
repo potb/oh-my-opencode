@@ -4,12 +4,6 @@ import type {
  } from "../../agents/dynamic-agent-prompt-builder"
 import { getAgentConfigKey } from "../../shared/agent-display-names"
 import { truncateDescription } from "../../shared/truncate-description"
-export {
-  CATEGORY_DESCRIPTIONS,
-  
-  DEFAULT_CATEGORIES,
-} from "./builtin-categories"
-
 /**
  * System prompt prepended to plan agent invocations.
  * Instructs the plan agent to first gather context via explore/librarian agents,

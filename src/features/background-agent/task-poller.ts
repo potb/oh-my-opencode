@@ -1,18 +1,14 @@
 import { log } from "../../shared"
-import { CONFIG_BASENAME } from "../../shared/plugin-identity"
 
-import type { BackgroundTaskConfig } from "../../config/schema"
+
+import type { BackgroundTaskConfig } from "../../config"
 import type { BackgroundTask } from "./types"
 import type { ConcurrencyManager } from "./concurrency"
 import type { OpencodeClient } from "./opencode-client"
 
 import {
-  DEFAULT_MESSAGE_STALENESS_TIMEOUT_MS,
-  DEFAULT_SESSION_GONE_TIMEOUT_MS,
-  DEFAULT_STALE_TIMEOUT_MS,
   MIN_RUNTIME_BEFORE_STALE_MS,
-  TERMINAL_TASK_TTL_MS,
-  TASK_TTL_MS,
+
 } from "./constants"
 import { abortWithTimeout } from "./abort-with-timeout"
 import { MIN_SESSION_GONE_POLLS, verifySessionExists } from "./session-existence"
@@ -29,10 +25,10 @@ export function pruneStaleTasksAndNotifications(args: {
   tasks: Map<string, BackgroundTask>
   notifications: Map<string, BackgroundTask[]>
   onTaskPruned: (taskId: string, task: BackgroundTask, errorMessage: string) => void
-  taskTtlMs?: number
+  taskTtlMs: number
 }): void {
   const { tasks, notifications, onTaskPruned } = args
-  const effectiveTtl = args.taskTtlMs ?? TASK_TTL_MS
+  const effectiveTtl = args.taskTtlMs
   const now = Date.now()
   const tasksWithPendingNotifications = new Set<string>()
 
@@ -50,7 +46,7 @@ export function pruneStaleTasksAndNotifications(args: {
       if (!completedAt) continue
 
       const age = now - completedAt
-      if (age <= TERMINAL_TASK_TTL_MS) continue
+      if (age <= effectiveTtl) continue
 
       tasks.delete(taskId)
       continue
@@ -102,7 +98,7 @@ export async function checkAndInterruptStaleTasks(args: {
   tasks: Iterable<BackgroundTask>
   client: OpencodeClient
   directory?: string
-  config: BackgroundTaskConfig | undefined
+  config: BackgroundTaskConfig
   concurrencyManager: ConcurrencyManager
   notifyParentSession: (task: BackgroundTask) => Promise<void>
   sessionStatuses?: SessionStatusMap
@@ -118,12 +114,12 @@ export async function checkAndInterruptStaleTasks(args: {
     sessionStatuses,
     onTaskInterrupted = () => {},
   } = args
-  const staleTimeoutMs = config?.staleTimeoutMs ?? DEFAULT_STALE_TIMEOUT_MS
-  const sessionGoneTimeoutMs = config?.sessionGoneTimeoutMs ?? DEFAULT_SESSION_GONE_TIMEOUT_MS
+  const staleTimeoutMs = config.staleTimeoutMs
+  const sessionGoneTimeoutMs = config.sessionGoneTimeoutMs
   const now = Date.now()
   const abortPromises: Array<Promise<unknown>> = []
 
-  const messageStalenessMs = config?.messageStalenessTimeoutMs ?? DEFAULT_MESSAGE_STALENESS_TIMEOUT_MS
+  const messageStalenessMs = config.messageStalenessTimeoutMs
 
   for (const task of tasks) {
     if (task.status !== "running") continue
@@ -159,7 +155,7 @@ export async function checkAndInterruptStaleTasks(args: {
       const staleMinutes = Math.round(runtime / 60000)
       const reason = sessionGone ? "session gone from status registry" : "no activity"
       task.status = "cancelled"
-      task.error = `Stale timeout (${reason} for ${staleMinutes}min since start). This is a FINAL cancellation - do NOT create a replacement task. If the timeout is too short, increase 'background_task.${sessionGone ? "sessionGoneTimeoutMs" : "staleTimeoutMs"}' in .opencode/${CONFIG_BASENAME}.jsonc.`
+      task.error = `Stale timeout (${reason} for ${staleMinutes}min since start). This is a FINAL cancellation - do NOT create a replacement task. If the timeout is too short, increase 'background_task.${sessionGone ? "sessionGoneTimeoutMs" : "staleTimeoutMs"}' in src/plugin-config.ts.`
       task.completedAt = new Date()
 
       if (task.concurrencyKey) {
@@ -197,7 +193,7 @@ export async function checkAndInterruptStaleTasks(args: {
     const staleMinutes = Math.round(timeSinceLastUpdate / 60000)
     const reason = sessionGone ? "session gone from status registry" : "no activity"
     task.status = "cancelled"
-    task.error = `Stale timeout (${reason} for ${staleMinutes}min). This is a FINAL cancellation - do NOT create a replacement task. If the timeout is too short, increase 'background_task.${sessionGone ? "sessionGoneTimeoutMs" : "staleTimeoutMs"}' in .opencode/${CONFIG_BASENAME}.jsonc.`
+    task.error = `Stale timeout (${reason} for ${staleMinutes}min). This is a FINAL cancellation - do NOT create a replacement task. If the timeout is too short, increase 'background_task.${sessionGone ? "sessionGoneTimeoutMs" : "staleTimeoutMs"}' in src/plugin-config.ts.`
     task.completedAt = new Date()
 
     if (task.concurrencyKey) {

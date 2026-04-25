@@ -5,7 +5,7 @@ import { existsSync, statSync } from "fs"
 import { LSPClient, lspManager } from "./client"
 import { findServerForExtension } from "./config"
 import type { ServerLookupResult } from "./types"
-import { CONFIG_BASENAME } from "../../shared/plugin-identity"
+
 
 export function isDirectoryPath(filePath: string): boolean {
   if (!existsSync(filePath)) {
@@ -64,15 +64,8 @@ export function formatServerLookupError(result: Exclude<ServerLookupResult, { st
     ``,
     `Available servers: ${result.availableServers.slice(0, 10).join(", ")}${result.availableServers.length > 10 ? "..." : ""}`,
     ``,
-    `To add a custom server, configure 'lsp' in ${CONFIG_BASENAME}.jsonc:`,
-    `  {`,
-    `    "lsp": {`,
-    `      "my-server": {`,
-    `        "command": ["my-lsp", "--stdio"],`,
-    `        "extensions": ["${result.extension}"]`,
-    `      }`,
-    `    }`,
-    `  }`,
+    `To add a custom server, add an entry in the BUILTIN_SERVERS constant`,
+    `in src/tools/lsp/server-definitions.ts.`,
   ].join("\n")
 }
 

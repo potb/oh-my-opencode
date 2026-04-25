@@ -1,5 +1,5 @@
 import type { PluginInput } from "@opencode-ai/plugin"
-import type { ExperimentalConfig } from "../config/schema"
+import type { ExperimentalConfig } from "../config"
 import { createDynamicTruncator } from "../shared/dynamic-truncator"
 
 const DEFAULT_MAX_TOKENS = 50_000 // ~200k chars
@@ -31,12 +31,12 @@ interface ToolOutputTruncatorOptions {
     anthropicContext1MEnabled: boolean
     modelContextLimitsCache?: Map<string, number>
   }
-  experimental?: ExperimentalConfig
+  experimental: ExperimentalConfig
 }
 
 export function createToolOutputTruncatorHook(ctx: PluginInput, options?: ToolOutputTruncatorOptions) {
   const truncator = createDynamicTruncator(ctx, options?.modelCacheState)
-  const truncateAll = options?.experimental?.truncate_all_tool_outputs ?? false
+  const truncateAll = options?.experimental?.truncate_all_tool_outputs === true
 
   const toolExecuteAfter = async (
     input: { tool: string; sessionID: string; callID: string },

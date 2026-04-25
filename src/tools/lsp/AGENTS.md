@@ -45,7 +45,7 @@ LSPProcess (lsp-process.ts) — spawns server binary
 | `lsp-manager-process-cleanup.ts` | Reap orphan LSP processes on exit |
 | `lsp-manager-temp-directory-cleanup.ts` | Clean temp dirs used by some servers |
 | `server-definitions.ts` | 40+ builtin servers synced from OpenCode's `server.ts` |
-| `server-config-loader.ts` | Load custom server config from plugin config `lsp` section |
+| `server-config-loader.ts` | Merge builtin server definitions for resolution |
 | `server-resolution.ts` | Resolve which server handles a file extension |
 | `server-installation.ts` | Detect missing binaries, surface install hints |
 | `language-mappings.ts` | Extension → language ID mapping |
@@ -57,7 +57,7 @@ LSPProcess (lsp-process.ts) — spawns server binary
 
 ```
 file.ts → extension (.ts) → language-mappings → server ID (typescript)
-  → server-resolution: check user/project plugin config `lsp` section → fall back to server-definitions.ts
+  → server-resolution: check server-definitions.ts for builtin server matches
   → server-installation: verify binary exists (warn with install hint if not)
   → LSPProcess.spawn(command[])
 ```

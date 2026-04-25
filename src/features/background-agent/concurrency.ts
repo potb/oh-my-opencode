@@ -1,4 +1,4 @@
-import type { BackgroundTaskConfig } from "../../config/schema"
+import type { BackgroundTaskConfig } from "../../config"
 
 /**
  * Queue entry with settled-flag pattern to prevent double-resolution.
@@ -13,29 +13,25 @@ interface QueueEntry {
 }
 
 export class ConcurrencyManager {
-  private config?: BackgroundTaskConfig
+  private config: BackgroundTaskConfig
   private counts: Map<string, number> = new Map()
   private queues: Map<string, QueueEntry[]> = new Map()
 
-  constructor(config?: BackgroundTaskConfig) {
+  constructor(config: BackgroundTaskConfig) {
     this.config = config
   }
 
   getConcurrencyLimit(model: string): number {
-    const modelLimit = this.config?.modelConcurrency?.[model]
+    const modelLimit = this.config.modelConcurrency?.[model]
     if (modelLimit !== undefined) {
       return modelLimit === 0 ? Infinity : modelLimit
     }
     const provider = model.split('/')[0]
-    const providerLimit = this.config?.providerConcurrency?.[provider]
+    const providerLimit = this.config.providerConcurrency?.[provider]
     if (providerLimit !== undefined) {
       return providerLimit === 0 ? Infinity : providerLimit
     }
-    const defaultLimit = this.config?.defaultConcurrency
-    if (defaultLimit !== undefined) {
-      return defaultLimit === 0 ? Infinity : defaultLimit
-    }
-    return 5
+    return this.config.defaultConcurrency === 0 ? Infinity : this.config.defaultConcurrency
   }
 
   async acquire(model: string): Promise<void> {

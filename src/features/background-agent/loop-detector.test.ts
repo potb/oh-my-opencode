@@ -6,12 +6,13 @@ import {
   recordToolCall,
   resolveCircuitBreakerSettings,
 } from "./loop-detector"
+import { createBackgroundTaskConfig } from "./test-config"
 
 function buildWindow(
   toolNames: string[],
-  override?: Parameters<typeof resolveCircuitBreakerSettings>[0]
+  override?: Parameters<typeof createBackgroundTaskConfig>[0]
 ) {
-  const settings = resolveCircuitBreakerSettings(override)
+  const settings = resolveCircuitBreakerSettings(createBackgroundTaskConfig(override))
 
   return toolNames.reduce(
     (window, toolName) => recordToolCall(window, toolName, settings),
@@ -21,9 +22,9 @@ function buildWindow(
 
 function buildWindowWithInputs(
   calls: Array<{ tool: string; input?: Record<string, unknown> | null }>,
-  override?: Parameters<typeof resolveCircuitBreakerSettings>[0]
+  override?: Parameters<typeof createBackgroundTaskConfig>[0]
 ) {
-  const settings = resolveCircuitBreakerSettings(override)
+  const settings = resolveCircuitBreakerSettings(createBackgroundTaskConfig(override))
   return calls.reduce(
     (window, { tool, input }) => recordToolCall(window, tool, settings, input),
     undefined as ReturnType<typeof recordToolCall> | undefined
@@ -34,13 +35,14 @@ describe("loop-detector", () => {
   describe("resolveCircuitBreakerSettings", () => {
     describe("#given nested circuit breaker config", () => {
       test("#when resolved #then nested values override defaults", () => {
-        const result = resolveCircuitBreakerSettings({
+        const result = resolveCircuitBreakerSettings(createBackgroundTaskConfig({
           maxToolCalls: 200,
           circuitBreaker: {
+            enabled: true,
             maxToolCalls: 120,
             consecutiveThreshold: 7,
           },
-        })
+        }))
 
         expect(result).toEqual({
           enabled: true,
@@ -52,12 +54,13 @@ describe("loop-detector", () => {
 
     describe("#given no enabled config", () => {
       test("#when resolved #then enabled defaults to true", () => {
-        const result = resolveCircuitBreakerSettings({
+        const result = resolveCircuitBreakerSettings(createBackgroundTaskConfig({
           circuitBreaker: {
+            enabled: true,
             maxToolCalls: 100,
             consecutiveThreshold: 5,
           },
-        })
+        }))
 
         expect(result.enabled).toBe(true)
       })
@@ -65,13 +68,13 @@ describe("loop-detector", () => {
 
     describe("#given enabled is false in config", () => {
       test("#when resolved #then enabled is false", () => {
-        const result = resolveCircuitBreakerSettings({
+        const result = resolveCircuitBreakerSettings(createBackgroundTaskConfig({
           circuitBreaker: {
             enabled: false,
             maxToolCalls: 100,
             consecutiveThreshold: 5,
           },
-        })
+        }))
 
         expect(result.enabled).toBe(false)
       })
@@ -79,13 +82,13 @@ describe("loop-detector", () => {
 
     describe("#given enabled is true in config", () => {
       test("#when resolved #then enabled is true", () => {
-        const result = resolveCircuitBreakerSettings({
+        const result = resolveCircuitBreakerSettings(createBackgroundTaskConfig({
           circuitBreaker: {
             enabled: true,
             maxToolCalls: 100,
             consecutiveThreshold: 5,
           },
-        })
+        }))
 
         expect(result.enabled).toBe(true)
       })
@@ -229,7 +232,7 @@ describe("loop-detector", () => {
     describe("#given nullish tool inputs", () => {
       test("#when recorded #then null and undefined produce the same unknown-input window", () => {
         // given
-        const settings = resolveCircuitBreakerSettings()
+        const settings = resolveCircuitBreakerSettings(createBackgroundTaskConfig())
 
         // when
         const undefinedWindow = recordToolCall(undefined, "read", settings, undefined)
