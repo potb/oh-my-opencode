@@ -1,11 +1,8 @@
 import { describe, it, expect } from "bun:test"
 import {
-  AGENT_DISPLAY_NAMES,
   getAgentConfigKey,
   getAgentDisplayName,
   getAgentListDisplayName,
-  normalizeAgentForPrompt,
-  normalizeAgentForPromptKey,
 } from "./agent-display-names"
 
 describe("getAgentDisplayName", () => {
@@ -46,44 +43,5 @@ describe("getAgentListDisplayName", () => {
   it("keeps non-core and removed agents unprefixed", () => {
     expect(getAgentListDisplayName("oracle")).toBe("oracle")
     expect(getAgentListDisplayName("atlas")).toBe("atlas")
-  })
-})
-
-describe("normalizeAgentForPrompt", () => {
-  it("strips sisyphus UI ordering prefixes back to canonical display names", () => {
-    expect(normalizeAgentForPrompt(getAgentListDisplayName("sisyphus"))).toBe("Sisyphus - Ultraworker")
-  })
-
-  it("preserves unknown agent names as-is", () => {
-    expect(normalizeAgentForPrompt("Removed Agent (Primary)")).toBe("Removed Agent (Primary)")
-    expect(normalizeAgentForPrompt("Removed Agent - Primary")).toBe("Removed Agent - Primary")
-  })
-})
-
-describe("normalizeAgentForPromptKey", () => {
-  it("converts built-in display names to config keys", () => {
-    expect(normalizeAgentForPromptKey("Sisyphus (Ultraworker)")).toBe("sisyphus")
-  })
-
-  it("strips UI ordering prefixes before returning config keys", () => {
-    expect(normalizeAgentForPromptKey(getAgentListDisplayName("sisyphus"))).toBe("sisyphus")
-  })
-
-  it("preserves custom agents", () => {
-    expect(normalizeAgentForPromptKey("MyCustomAgent")).toBe("MyCustomAgent")
-  })
-})
-
-describe("AGENT_DISPLAY_NAMES", () => {
-  it("contains all expected supported agent mappings", () => {
-    expect(AGENT_DISPLAY_NAMES).toEqual({
-      sisyphus: "Sisyphus - Ultraworker",
-      "sisyphus-junior": "Sisyphus-Junior",
-      metis: "Metis - Plan Consultant",
-      momus: "Momus - Plan Critic",
-      oracle: "oracle",
-      librarian: "librarian",
-      explore: "explore",
-    })
   })
 })

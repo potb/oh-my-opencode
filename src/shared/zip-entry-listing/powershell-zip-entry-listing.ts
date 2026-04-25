@@ -23,7 +23,7 @@ function isPowerShellZipEntryRecord(value: unknown): value is PowerShellZipEntry
 	)
 }
 
-export function parsePowerShellZipEntryLine(line: string): ArchiveEntry | null {
+function parsePowerShellZipEntryLine(line: string): ArchiveEntry | null {
 	const parsedValue: unknown = JSON.parse(line)
 	if (!isPowerShellZipEntryRecord(parsedValue)) {
 		return null

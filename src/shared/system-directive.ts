@@ -14,7 +14,7 @@ const SYSTEM_DIRECTIVE_LEADING_KEYWORD_PATTERN = /^\s*(?:ultrawork|ulw)\s+/i
  * @param type - The directive type (e.g., "TODO CONTINUATION", "RALPH LOOP")
  * @returns Formatted directive string like "[SYSTEM DIRECTIVE: OH-MY-OPENCODE - TODO CONTINUATION]"
  */
-export function createSystemDirective(type: string): string {
+function createSystemDirective(type: string): string {
   return `${SYSTEM_DIRECTIVE_PREFIX} - ${type}]`
 }
 
@@ -24,7 +24,7 @@ export function createSystemDirective(type: string): string {
  * @param text - The message text to check
  * @returns true if the message is a system directive
  */
-export function isSystemDirective(text: string): boolean {
+function isSystemDirective(text: string): boolean {
   const trimmed = text.trimStart()
   if (trimmed.startsWith(SYSTEM_DIRECTIVE_PREFIX)) {
     return true
@@ -39,7 +39,7 @@ export function isSystemDirective(text: string): boolean {
  * @param text - The message text to check
  * @returns true if the message contains system-reminder tags
  */
-export function hasSystemReminder(text: string): boolean {
+function hasSystemReminder(text: string): boolean {
   return /<system-reminder>[\s\S]*?<\/system-reminder>/i.test(text)
 }
 
@@ -49,11 +49,11 @@ export function hasSystemReminder(text: string): boolean {
  * @param text - The message text to clean
  * @returns text with system-reminder content removed
  */
-export function removeSystemReminders(text: string): string {
+function removeSystemReminders(text: string): string {
   return text.replace(/<system-reminder>[\s\S]*?<\/system-reminder>/gi, "").trim()
 }
 
-export const SystemDirectiveTypes = {
+const SystemDirectiveTypes = {
   TODO_CONTINUATION: "TODO CONTINUATION",
   RALPH_LOOP: "RALPH LOOP",
   BOULDER_CONTINUATION: "BOULDER CONTINUATION",
@@ -64,4 +64,4 @@ export const SystemDirectiveTypes = {
   PROMETHEUS_READ_ONLY: "PROMETHEUS READ-ONLY",
 } as const
 
-export type SystemDirectiveType = (typeof SystemDirectiveTypes)[keyof typeof SystemDirectiveTypes]
+type SystemDirectiveType = (typeof SystemDirectiveTypes)[keyof typeof SystemDirectiveTypes]

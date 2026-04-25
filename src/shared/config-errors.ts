@@ -5,11 +5,11 @@ export type ConfigLoadError = {
 
 let configLoadErrors: ConfigLoadError[] = []
 
-export function getConfigLoadErrors(): ConfigLoadError[] {
+function getConfigLoadErrors(): ConfigLoadError[] {
   return configLoadErrors
 }
 
-export function clearConfigLoadErrors(): void {
+function clearConfigLoadErrors(): void {
   configLoadErrors = []
 }
 

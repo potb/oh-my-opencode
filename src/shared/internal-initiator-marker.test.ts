@@ -2,7 +2,6 @@ import { describe, expect, test } from "bun:test"
 import {
   OMO_INTERNAL_INITIATOR_MARKER,
   createInternalAgentTextPart,
-  stripInternalInitiatorMarkers,
 } from "./internal-initiator-marker"
 
 describe("internal-initiator-marker", () => {
@@ -71,49 +70,4 @@ describe("internal-initiator-marker", () => {
     })
   })
 
-  describe("stripInternalInitiatorMarkers", () => {
-    test("#given text with no markers #when stripping #then returns text trimmed at the end", () => {
-      // given
-      const text = "No markers here"
-
-      // when
-      const result = stripInternalInitiatorMarkers(text)
-
-      // then
-      expect(result).toBe("No markers here")
-    })
-
-    test("#given text with one trailing marker #when stripping #then removes the marker", () => {
-      // given
-      const text = `Content\n${OMO_INTERNAL_INITIATOR_MARKER}`
-
-      // when
-      const result = stripInternalInitiatorMarkers(text)
-
-      // then
-      expect(result).toBe("Content")
-    })
-
-    test("#given text with multiple stacked markers #when stripping #then removes all of them", () => {
-      // given
-      const text = `Content\n${OMO_INTERNAL_INITIATOR_MARKER}\n${OMO_INTERNAL_INITIATOR_MARKER}\n${OMO_INTERNAL_INITIATOR_MARKER}`
-
-      // when
-      const result = stripInternalInitiatorMarkers(text)
-
-      // then
-      expect(result).toBe("Content")
-    })
-
-    test("#given text with markers on consecutive lines without separators #when stripping #then removes all markers", () => {
-      // given
-      const text = `${OMO_INTERNAL_INITIATOR_MARKER}${OMO_INTERNAL_INITIATOR_MARKER}${OMO_INTERNAL_INITIATOR_MARKER}`
-
-      // when
-      const result = stripInternalInitiatorMarkers(text)
-
-      // then
-      expect(result).toBe("")
-    })
-  })
 })

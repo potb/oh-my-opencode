@@ -12,7 +12,7 @@ export function isSubagentSession(sessionID: string): boolean {
   return subagentSessions.has(sessionID)
 }
 
-export function getSubagentSessions(): Set<string> {
+function getSubagentSessions(): Set<string> {
   return subagentSessions
 }
 

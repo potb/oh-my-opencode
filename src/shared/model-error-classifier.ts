@@ -156,7 +156,7 @@ function isRetryableModelError(error: ErrorInfo): boolean {
  * Determines if an error should trigger a fallback retry.
  * Returns true for deadstop errors that completely halt the action loop.
  */
-export function shouldRetryError(error: ErrorInfo): boolean {
+function shouldRetryError(error: ErrorInfo): boolean {
   return isRetryableModelError(error)
 }
 

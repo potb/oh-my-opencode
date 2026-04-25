@@ -31,7 +31,7 @@ function matchesKnownPlugin(entry: string, knownPlugins: readonly string[]): str
   return null
 }
 
-export interface ExternalSkillPluginResult {
+interface ExternalSkillPluginResult {
   detected: boolean
   pluginName: string | null
   allPlugins: string[]

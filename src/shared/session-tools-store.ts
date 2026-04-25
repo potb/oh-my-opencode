@@ -13,6 +13,6 @@ export function deleteSessionTools(sessionID: string): void {
   store.delete(sessionID);
 }
 
-export function clearSessionTools(): void {
+function clearSessionTools(): void {
   store.clear();
 }

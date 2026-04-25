@@ -5,7 +5,10 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, statSync, wri
 import { tmpdir } from "os"
 import { join } from "path"
 import { migrateConfigFile } from "./config-migration"
-import { getSidecarPath } from "./migrations-sidecar"
+
+function getSidecarPath(configPath: string): string {
+  return `${configPath}.migrations.json`
+}
 
 const createdDirectories: string[] = []
 const MIGRATION_KEY = "model-version:anthropic/claude-opus-4-5->anthropic/claude-opus-4-6"

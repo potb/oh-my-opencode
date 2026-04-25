@@ -9,7 +9,7 @@ export type FallbackEntry = {
   thinking?: { type: "enabled" | "disabled"; budgetTokens?: number };
 };
 
-export type ModelRequirement = {
+type ModelRequirement = {
   fallbackChain: FallbackEntry[];
   variant?: string; // Default variant (used when entry doesn't specify one)
   requiresModel?: string; // If set, only activates when this model is available (fuzzy match)
@@ -133,7 +133,7 @@ export const AGENT_MODEL_REQUIREMENTS: Record<string, ModelRequirement> = {
   },
 };
 
-export const CATEGORY_MODEL_REQUIREMENTS: Record<string, ModelRequirement> = {
+const CATEGORY_MODEL_REQUIREMENTS: Record<string, ModelRequirement> = {
   "visual-engineering": {
     fallbackChain: [
       {

@@ -13,6 +13,9 @@
     ],
     "src/shared/zip-entry-listing/tar-zip-entry-listing.ts": [
       "exports"
+    ],
+    "src/tools/delegate-task/timing.ts": [
+      "exports"
     ]
   },
   "project": [

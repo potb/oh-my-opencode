@@ -4,7 +4,7 @@ import { parse, ParseError, printParseErrorCode } from "jsonc-parser"
 
 import { CONFIG_BASENAME, LEGACY_CONFIG_BASENAME } from "./plugin-identity"
 
-export interface JsoncParseResult<T> {
+interface JsoncParseResult<T> {
   data: T | null
   errors: Array<{ message: string; offset: number; length: number }>
 }
@@ -50,7 +50,7 @@ export function parseJsoncSafe<T = unknown>(content: string): JsoncParseResult<T
   }
 }
 
-export function readJsoncFile<T = unknown>(filePath: string): T | null {
+function readJsoncFile<T = unknown>(filePath: string): T | null {
   try {
     const content = readFileSync(filePath, "utf-8")
     return parseJsonc<T>(content)

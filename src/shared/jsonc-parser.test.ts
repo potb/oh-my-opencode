@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test"
-import { detectConfigFile, detectPluginConfigFile, parseJsonc, parseJsoncSafe, readJsoncFile } from "./jsonc-parser"
+import { detectConfigFile, detectPluginConfigFile, parseJsonc, parseJsoncSafe } from "./jsonc-parser"
 import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
 
@@ -205,77 +205,6 @@ describe("parseJsoncSafe", () => {
     expect(result.errors).toHaveLength(0)
     expect(result.data).not.toBeNull()
     expect(result.data?.key).toBe("value")
-  })
-})
-
-describe("readJsoncFile", () => {
-  const testDir = join(__dirname, ".test-jsonc")
-  const testFile = join(testDir, "config.jsonc")
-
-  test("reads and parses valid JSONC file", () => {
-    // given
-    if (!existsSync(testDir)) mkdirSync(testDir, { recursive: true })
-    const content = `{
-      // Comment
-      "test": "value"
-    }`
-    writeFileSync(testFile, content)
-
-    // when
-    const result = readJsoncFile<{ test: string }>(testFile)
-
-    // then
-    expect(result).not.toBeNull()
-    expect(result?.test).toBe("value")
-
-    rmSync(testDir, { recursive: true, force: true })
-  })
-
-  test("returns null for non-existent file", () => {
-    // given
-    const nonExistent = join(testDir, "does-not-exist.jsonc")
-
-    // when
-    const result = readJsoncFile(nonExistent)
-
-    // then
-    expect(result).toBeNull()
-  })
-
-  test("returns null for malformed JSON", () => {
-    // given
-    if (!existsSync(testDir)) mkdirSync(testDir, { recursive: true })
-    writeFileSync(testFile, "{ invalid }")
-
-    // when
-    const result = readJsoncFile(testFile)
-
-    // then
-    expect(result).toBeNull()
-
-    rmSync(testDir, { recursive: true, force: true })
-  })
-
-  test("reads JSONC file written with UTF-8 BOM (Windows scenario)", () => {
-    // given
-    if (!existsSync(testDir)) mkdirSync(testDir, { recursive: true })
-    const bomBytes = Buffer.from([0xef, 0xbb, 0xbf])
-    const jsonBytes = Buffer.from(`{
-      // Created on Windows with BOM
-      "$schema": "https://opencode.ai/config.json",
-      "plugin": ["oh-my-openagent@3.15.3"]
-    }`)
-    writeFileSync(testFile, Buffer.concat([bomBytes, jsonBytes]))
-
-    // when
-    const result = readJsoncFile<{ $schema: string; plugin: string[] }>(testFile)
-
-    // then
-    expect(result).not.toBeNull()
-    expect(result?.$schema).toBe("https://opencode.ai/config.json")
-    expect(result?.plugin).toEqual(["oh-my-openagent@3.15.3"])
-
-    rmSync(testDir, { recursive: true, force: true })
   })
 })
 

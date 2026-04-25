@@ -23,7 +23,7 @@ function cloneCheckpoint(
   }
 }
 
-export function setCompactionAgentConfigCheckpoint(
+function setCompactionAgentConfigCheckpoint(
   sessionID: string,
   checkpoint: CompactionAgentConfigCheckpoint,
 ): void {
@@ -37,6 +37,6 @@ export function getCompactionAgentConfigCheckpoint(
   return checkpoint ? cloneCheckpoint(checkpoint) : undefined
 }
 
-export function clearCompactionAgentConfigCheckpoint(sessionID: string): void {
+function clearCompactionAgentConfigCheckpoint(sessionID: string): void {
   checkpoints.delete(sessionID)
 }

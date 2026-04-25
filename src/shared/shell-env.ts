@@ -1,4 +1,4 @@
-export type ShellType = "unix" | "powershell" | "cmd" | "csh"
+type ShellType = "unix" | "powershell" | "cmd" | "csh"
 
 /**
  * Detect the current shell type based on environment variables.
@@ -35,7 +35,7 @@ export function detectShellType(): ShellType {
  * @param shellType - The target shell type
  * @returns Escaped value appropriate for the shell
  */
-export function shellEscape(value: string, shellType: ShellType): string {
+function shellEscape(value: string, shellType: ShellType): string {
   if (value === "") {
     return shellType === "cmd" ? '""' : "''"
   }
@@ -152,7 +152,7 @@ export function buildEnvPrefix(
  * const cmd = `/bin/sh -c "opencode attach ${escaped} --session ${sessionId}"`
  * ```
  */
-export function shellEscapeForDoubleQuotedCommand(value: string): string {
+function shellEscapeForDoubleQuotedCommand(value: string): string {
   // Order matters: escape backslash FIRST, then other characters
   return value
     .replace(/\\/g, "\\\\") // escape backslash first

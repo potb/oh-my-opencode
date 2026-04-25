@@ -5,7 +5,7 @@ import { log } from "./logger"
  *
  * @returns Basic Auth header string, or undefined if OPENCODE_SERVER_PASSWORD is not set
  */
-export function getServerBasicAuthHeader(): string | undefined {
+function getServerBasicAuthHeader(): string | undefined {
   const password = process.env.OPENCODE_SERVER_PASSWORD
   if (!password) {
     return undefined

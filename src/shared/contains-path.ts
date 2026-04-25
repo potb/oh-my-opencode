@@ -37,7 +37,7 @@ function toCanonicalPath(pathToNormalize: string): string {
   return normalize(join(canonicalAncestor, relativePathFromAncestor || basename(resolvedPath)))
 }
 
-export function containsPath(rootPath: string, candidatePath: string): boolean {
+function containsPath(rootPath: string, candidatePath: string): boolean {
   const canonicalRootPath = toCanonicalPath(rootPath)
   const canonicalCandidatePath = toCanonicalPath(candidatePath)
   const relativePath = relative(canonicalRootPath, canonicalCandidatePath)

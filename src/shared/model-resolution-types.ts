@@ -11,7 +11,7 @@ export interface DelegatedModelConfig {
   thinking?: { type: "enabled" | "disabled"; budgetTokens?: number }
 }
 
-export type ModelResolutionRequest = {
+type ModelResolutionRequest = {
   intent?: {
     uiSelectedModel?: string
     userModel?: string
@@ -26,13 +26,13 @@ export type ModelResolutionRequest = {
   }
 }
 
-export type ModelResolutionProvenance =
+type ModelResolutionProvenance =
   | "override"
   | "category-default"
   | "provider-fallback"
   | "system-default"
 
-export type ModelResolutionResult = {
+type ModelResolutionResult = {
   model: string
   provenance: ModelResolutionProvenance
   variant?: string

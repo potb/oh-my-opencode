@@ -32,6 +32,6 @@ export function clearSessionPromptParams(sessionID: string): void {
   sessionPromptParams.delete(sessionID)
 }
 
-export function clearAllSessionPromptParams(): void {
+function clearAllSessionPromptParams(): void {
   sessionPromptParams.clear()
 }

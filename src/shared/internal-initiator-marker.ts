@@ -2,7 +2,7 @@ export const OMO_INTERNAL_INITIATOR_MARKER = "<!-- OMO_INTERNAL_INITIATOR -->"
 
 const INTERNAL_INITIATOR_MARKER_PATTERN = /\n*<!--\s*OMO_INTERNAL_INITIATOR\s*-->\s*/g
 
-export function stripInternalInitiatorMarkers(text: string): string {
+function stripInternalInitiatorMarkers(text: string): string {
   return text.replace(INTERNAL_INITIATOR_MARKER_PATTERN, "").trimEnd()
 }
 

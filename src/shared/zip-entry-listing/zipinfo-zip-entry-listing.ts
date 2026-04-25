@@ -3,7 +3,7 @@ import { spawn, spawnSync } from "bun"
 import type { ArchiveEntry } from "../archive-entry-validator"
 import { readZipSymlinkTarget } from "./read-zip-symlink-target"
 
-export function parseZipInfoListedEntry(line: string): ArchiveEntry | null {
+function parseZipInfoListedEntry(line: string): ArchiveEntry | null {
 	const match = line.match(
 		/^([-dl?])\S*\s+\S+\s+\S+\s+\d+\s+\S+\s+\d+\s+\S+\s+\S+\s+\S+\s+(.*)$/
 	)

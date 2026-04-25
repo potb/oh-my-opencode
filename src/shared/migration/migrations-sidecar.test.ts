@@ -2,7 +2,11 @@ import { afterEach, beforeEach, describe, expect, test } from "bun:test"
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
-import { getSidecarPath, readAppliedMigrations, writeAppliedMigrations } from "./migrations-sidecar"
+import { readAppliedMigrations, writeAppliedMigrations } from "./migrations-sidecar"
+
+function getSidecarPath(configPath: string): string {
+  return `${configPath}.migrations.json`
+}
 
 describe("migrations sidecar", () => {
   let workdir: string

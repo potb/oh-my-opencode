@@ -1,7 +1,12 @@
 /// <reference path="../../bun-test.d.ts" />
 
 import { afterAll, afterEach, beforeEach, describe, expect, it, mock, spyOn } from "bun:test"
-import type { LegacyPluginCheckResult } from "./legacy-plugin-warning"
+type LegacyPluginCheckResult = {
+  hasLegacyEntry: boolean
+  hasCanonicalEntry: boolean
+  legacyEntries: string[]
+  configPath: string | null
+}
 
 function createLegacyPluginCheckResult(
   overrides: Partial<LegacyPluginCheckResult> = {},

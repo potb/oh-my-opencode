@@ -43,6 +43,6 @@ export function log(message: string, data?: unknown): void {
   }
 }
 
-export function getLogFilePath(): string {
+function getLogFilePath(): string {
   return logFile
 }

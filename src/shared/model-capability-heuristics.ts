@@ -1,6 +1,6 @@
 import { normalizeModelID } from "./model-normalization"
 
-export type HeuristicModelFamilyDefinition = {
+type HeuristicModelFamilyDefinition = {
   family: string
   includes?: string[]
   pattern?: RegExp
@@ -9,7 +9,7 @@ export type HeuristicModelFamilyDefinition = {
   supportsThinking?: boolean
 }
 
-export const HEURISTIC_MODEL_FAMILY_REGISTRY: ReadonlyArray<HeuristicModelFamilyDefinition> = [
+const HEURISTIC_MODEL_FAMILY_REGISTRY: ReadonlyArray<HeuristicModelFamilyDefinition> = [
   {
     family: "claude-opus",
     pattern: /claude(?:-\d+(?:-\d+)*)?-opus/,

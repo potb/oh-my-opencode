@@ -68,7 +68,7 @@ function defaultGetCallerUrl(): string {
 
     if (
       candidatePath.includes("/test-setup.ts") ||
-      candidatePath.includes("/src/testing/module-mock-lifecycle.ts")
+      candidatePath.includes("/tests/module-mock-lifecycle.ts")
     ) {
       continue
     }

@@ -4,14 +4,14 @@ import { execSync } from "child_process"
  * Minimum OpenCode version required for this plugin.
  * This plugin only supports OpenCode 1.1.1+ which uses the permission system.
  */
-export const MINIMUM_OPENCODE_VERSION = "1.1.1"
+const MINIMUM_OPENCODE_VERSION = "1.1.1"
 
 /**
  * OpenCode version that introduced native AGENTS.md injection.
  * PR #10678 merged on Jan 26, 2026 - OpenCode now dynamically resolves
  * AGENTS.md files from subdirectories as the agent explores them.
  */
-export const OPENCODE_NATIVE_AGENTS_INJECTION_VERSION = "1.1.37"
+const OPENCODE_NATIVE_AGENTS_INJECTION_VERSION = "1.1.37"
 
 /**
  * OpenCode version that introduced SQLite backend for storage.
@@ -22,12 +22,12 @@ export const OPENCODE_SQLITE_VERSION = "1.1.53"
 const NOT_CACHED = Symbol("NOT_CACHED")
 let cachedVersion: string | null | typeof NOT_CACHED = NOT_CACHED
 
-export function parseVersion(version: string): number[] {
+function parseVersion(version: string): number[] {
   const cleaned = version.replace(/^v/, "").split("-")[0]
   return cleaned.split(".").map((n) => parseInt(n, 10) || 0)
 }
 
-export function compareVersions(a: string, b: string): -1 | 0 | 1 {
+function compareVersions(a: string, b: string): -1 | 0 | 1 {
   const partsA = parseVersion(a)
   const partsB = parseVersion(b)
   const maxLen = Math.max(partsA.length, partsB.length)
@@ -42,7 +42,7 @@ export function compareVersions(a: string, b: string): -1 | 0 | 1 {
 }
 
 
-export function getOpenCodeVersion(): string | null {
+function getOpenCodeVersion(): string | null {
   if (cachedVersion !== NOT_CACHED) {
     return cachedVersion
   }
@@ -69,10 +69,10 @@ export function isOpenCodeVersionAtLeast(version: string): boolean {
   return compareVersions(current, version) >= 0
 }
 
-export function resetVersionCache(): void {
+function resetVersionCache(): void {
   cachedVersion = NOT_CACHED
 }
 
-export function setVersionCache(version: string | null): void {
+function setVersionCache(version: string | null): void {
   cachedVersion = version
 }

@@ -20,14 +20,14 @@ type CompatibilityCapabilities = {
   supportsThinking?: boolean
 }
 
-export type ModelSettingsCompatibilityInput = {
+type ModelSettingsCompatibilityInput = {
   providerID: string
   modelID: string
   desired: DesiredModelSettings
   capabilities?: CompatibilityCapabilities
 }
 
-export type ModelSettingsCompatibilityChange = {
+type ModelSettingsCompatibilityChange = {
   field: CompatibilityField
   from: string
   to?: string
@@ -38,7 +38,7 @@ export type ModelSettingsCompatibilityChange = {
     | "max-output-limit"
 }
 
-export type ModelSettingsCompatibilityResult = {
+type ModelSettingsCompatibilityResult = {
   variant?: string
   reasoningEffort?: string
   temperature?: number

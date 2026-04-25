@@ -5,7 +5,7 @@ import type {
   OpenCodeConfigPaths,
 } from "./opencode-config-dir-types"
 
-export interface ConfigContext {
+interface ConfigContext {
   binary: OpenCodeBinaryType
   version: string | null
   paths: OpenCodeConfigPaths
@@ -18,7 +18,7 @@ export function initConfigContext(binary: OpenCodeBinaryType, version: string | 
   configContext = { binary, version, paths }
 }
 
-export function getConfigContext(): ConfigContext {
+function getConfigContext(): ConfigContext {
   if (!configContext) {
     const paths = getOpenCodeConfigPaths({ binary: "opencode", version: null })
     configContext = { binary: "opencode", version: null, paths }
@@ -27,23 +27,23 @@ export function getConfigContext(): ConfigContext {
   return configContext
 }
 
-export function resetConfigContext(): void {
+function resetConfigContext(): void {
   configContext = null
 }
 
-export function getConfigDir(): string {
+function getConfigDir(): string {
   return getConfigContext().paths.configDir
 }
 
-export function getConfigJson(): string {
+function getConfigJson(): string {
   return getConfigContext().paths.configJson
 }
 
-export function getConfigJsonc(): string {
+function getConfigJsonc(): string {
   return getConfigContext().paths.configJsonc
 }
 
-export function getOmoConfigPath(): string {
+function getOmoConfigPath(): string {
   const configDir = getConfigContext().paths.configDir
   const detected = detectPluginConfigFile(configDir)
   if (detected.format !== "none") return detected.path

@@ -9,7 +9,7 @@ type ResolvedFallbackModel = {
 	model: string
 }
 
-export function resolveFirstAvailableFallback(
+function resolveFirstAvailableFallback(
 	fallbackChain: FallbackEntry[],
 	availableModels: Set<string>,
 ): ResolvedFallbackModel | null {
@@ -69,7 +69,7 @@ export function isAnyFallbackModelAvailable(
 	return false
 }
 
-export function isAnyProviderConnected(
+function isAnyProviderConnected(
 	providers: string[],
 	availableModels: Set<string>,
 ): boolean {

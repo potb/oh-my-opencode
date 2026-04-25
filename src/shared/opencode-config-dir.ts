@@ -10,16 +10,10 @@ import type {
   OpenCodeConfigPaths,
 } from "./opencode-config-dir-types"
 
-export type {
-  OpenCodeBinaryType,
-  OpenCodeConfigDirOptions,
-  OpenCodeConfigPaths,
-} from "./opencode-config-dir-types"
+const TAURI_APP_IDENTIFIER = "ai.opencode.desktop"
+const TAURI_APP_IDENTIFIER_DEV = "ai.opencode.desktop.dev"
 
-export const TAURI_APP_IDENTIFIER = "ai.opencode.desktop"
-export const TAURI_APP_IDENTIFIER_DEV = "ai.opencode.desktop.dev"
-
-export function isDevBuild(version: string | null | undefined): boolean {
+function isDevBuild(version: string | null | undefined): boolean {
   if (!version) return false
   return version.includes("-dev") || version.includes(".dev")
 }
@@ -103,7 +97,7 @@ export function getOpenCodeConfigPaths(options: OpenCodeConfigDirOptions): OpenC
   }
 }
 
-export function detectExistingConfigDir(binary: OpenCodeBinaryType, version?: string | null): string | null {
+function detectExistingConfigDir(binary: OpenCodeBinaryType, version?: string | null): string | null {
   const locations: string[] = []
 
   const envConfigDir = process.env.OPENCODE_CONFIG_DIR?.trim()

@@ -117,7 +117,7 @@ export function isModelAvailable(
 	return fuzzyMatchModel(targetModel, availableModels) !== null
 }
 
-export async function getConnectedProviders(client: any): Promise<string[]> {
+async function getConnectedProviders(client: any): Promise<string[]> {
 	if (!client?.provider?.list) {
 		log("[getConnectedProviders] client.provider.list not available")
 		return []
@@ -283,7 +283,7 @@ export async function fetchAvailableModels(
 	return modelSet
 }
 
-export function __resetModelCache(): void {}
+function __resetModelCache(): void {}
 
 export function isModelCacheAvailable(): boolean {
 	if (connectedProvidersCache.hasProviderModelsCache()) {

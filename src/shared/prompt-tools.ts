@@ -1,6 +1,6 @@
 import { getSessionTools } from "./session-tools-store"
 
-export type PromptToolPermission = boolean | "allow" | "deny" | "ask"
+type PromptToolPermission = boolean | "allow" | "deny" | "ask"
 
 export function normalizePromptTools(
   tools: Record<string, PromptToolPermission> | undefined

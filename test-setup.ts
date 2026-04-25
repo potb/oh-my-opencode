@@ -4,7 +4,7 @@ import { _resetMemCacheForTesting as resetConnectedProvidersCache } from "./src/
 import { getOmoOpenCodeCacheDir } from "./src/shared/data-path"
 import { resetMainSessionIDForTesting } from "./src/shared/main-session-id"
 import { resetSubagentSessionsForTesting } from "./src/shared/subagent-session-registry"
-import { installModuleMockLifecycle } from "./src/testing/module-mock-lifecycle"
+import { installModuleMockLifecycle } from "./tests/module-mock-lifecycle"
 
 const { restoreModuleMocks } = installModuleMockLifecycle(mock)
 let environmentSnapshot: NodeJS.ProcessEnv = { ...process.env }

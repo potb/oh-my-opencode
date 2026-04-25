@@ -9,7 +9,7 @@ type MessageInfo = {
   time?: MessageTime
 }
 
-export type CursorMessage = {
+type CursorMessage = {
   info?: MessageInfo
 }
 
@@ -48,7 +48,7 @@ function buildMessageKey(message: CursorMessage, index: number): string {
   return `i:${index}`
 }
 
-export function consumeNewMessages<T extends CursorMessage>(
+function consumeNewMessages<T extends CursorMessage>(
   sessionID: string | undefined,
   messages: T[]
 ): T[] {

@@ -98,11 +98,3 @@ export function resolveModelIDAlias(modelID: string): ModelIDAliasResolution {
     source: "canonical",
   }
 }
-
-export function getExactModelIDAliasRules(): ReadonlyArray<ExactAliasRule> {
-  return EXACT_ALIAS_RULES
-}
-
-export function getPatternModelIDAliasRules(): ReadonlyArray<PatternAliasRule> {
-  return PATTERN_ALIAS_RULES
-}

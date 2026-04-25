@@ -27,15 +27,6 @@ export const AGENT_NAME_MAP: Record<string, string> = {
   explore: "explore",
 }
 
-export const BUILTIN_AGENT_NAMES = new Set([
-  "sisyphus", // was "Sisyphus"
-  "oracle",
-  "librarian",
-  "explore",
-  "metis", // was "Metis - Plan Consultant"
-  "momus", // was "Momus - Plan Critic"
-])
-
 export function migrateAgentNames(
   agents: Record<string, unknown>
 ): { migrated: Record<string, unknown>; changed: boolean } {

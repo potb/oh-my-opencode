@@ -31,7 +31,7 @@ interface MigrationsSidecar {
   appliedMigrations: string[]
 }
 
-export function getSidecarPath(configPath: string): string {
+function getSidecarPath(configPath: string): string {
   return `${configPath}.migrations.json`
 }
 

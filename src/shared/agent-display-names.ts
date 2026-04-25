@@ -9,7 +9,7 @@
  * header validation failures that prevent agents from appearing in the UI
  * type selector dropdown. Use ` - ` (space-dash-space) instead of `(...)`.
  */
-export const AGENT_DISPLAY_NAMES: Record<string, string> = {
+const AGENT_DISPLAY_NAMES: Record<string, string> = {
   sisyphus: "Sisyphus - Ultraworker",
   "sisyphus-junior": "Sisyphus-Junior",
   metis: "Metis - Plan Consultant",
@@ -104,33 +104,3 @@ export function getAgentConfigKey(agentName: string): string {
  * - Known config keys (any case) -> canonical display names
  * - Unknown/custom names -> preserved as-is (trimmed)
  */
-export function normalizeAgentForPrompt(agentName: string | undefined): string | undefined {
-  if (typeof agentName !== "string") {
-    return undefined
-  }
-
-  const trimmed = stripAgentListSortPrefix(agentName).trim()
-  if (!trimmed) {
-    return undefined
-  }
-
-  const configKey = resolveKnownAgentConfigKey(trimmed)
-  if (configKey !== undefined) {
-    return AGENT_DISPLAY_NAMES[configKey] ?? trimmed
-  }
-
-  return trimmed
-}
-
-export function normalizeAgentForPromptKey(agentName: string | undefined): string | undefined {
-  if (typeof agentName !== "string") {
-    return undefined
-  }
-
-  const trimmed = stripAgentListSortPrefix(agentName).trim()
-  if (!trimmed) {
-    return undefined
-  }
-
-  return resolveKnownAgentConfigKey(trimmed) ?? trimmed
-}

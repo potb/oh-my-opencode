@@ -28,7 +28,7 @@ function parseVariantFromModel(rawModel: string): { modelID: string; variant?: s
   return { modelID: trimmedModel }
 }
 
-export function parseFallbackModelEntry(
+function parseFallbackModelEntry(
   model: string,
   contextProviderID: string | undefined,
   defaultProviderID = "opencode",
@@ -52,7 +52,7 @@ export function parseFallbackModelEntry(
   }
 }
 
-export function parseFallbackModelObjectEntry(
+function parseFallbackModelObjectEntry(
   obj: FallbackModelObject,
   contextProviderID: string | undefined,
   defaultProviderID = "opencode",

@@ -5,7 +5,7 @@
 
 export type PermissionValue = "ask" | "allow" | "deny"
 
-export interface PermissionFormat {
+interface PermissionFormat {
   permission: Record<string, PermissionValue>
 }
 
@@ -26,7 +26,7 @@ export function createAgentToolRestrictions(
  * Creates tool restrictions that ONLY allow specified tools.
  * All other tools are denied by default using `*: deny` pattern.
  */
-export function createAgentToolAllowlist(
+function createAgentToolAllowlist(
   allowTools: string[]
 ): PermissionFormat {
   return {
@@ -43,7 +43,7 @@ export function createAgentToolAllowlist(
  * Converts legacy tools format to permission format.
  * For migrating user configs from older versions.
  */
-export function migrateToolsToPermission(
+function migrateToolsToPermission(
   tools: Record<string, boolean>
 ): Record<string, PermissionValue> {
   return Object.fromEntries(

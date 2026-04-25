@@ -1,7 +1,6 @@
 import { afterEach, describe, expect, test } from "bun:test"
 
 import {
-  clearAllSessionPromptParams,
   clearSessionPromptParams,
   getSessionPromptParams,
   setSessionPromptParams,
@@ -9,7 +8,9 @@ import {
 
 describe("session-prompt-params-state", () => {
   afterEach(() => {
-    clearAllSessionPromptParams()
+    clearSessionPromptParams("ses_prompt_params")
+    clearSessionPromptParams("ses_prompt_params_copy")
+    clearSessionPromptParams("ses_prompt_params_clear")
   })
 
   test("stores and returns prompt params by session", () => {

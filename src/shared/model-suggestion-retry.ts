@@ -8,7 +8,7 @@ import {
 
 type Client = ReturnType<typeof createOpencodeClient>
 
-export interface ModelSuggestionInfo {
+interface ModelSuggestionInfo {
   providerID: string
   modelID: string
   suggestion: string
@@ -29,7 +29,7 @@ function extractMessage(error: unknown): string {
   return String(error)
 }
 
-export function parseModelSuggestion(error: unknown): ModelSuggestionInfo | null {
+function parseModelSuggestion(error: unknown): ModelSuggestionInfo | null {
   if (!error) return null
 
   if (typeof error === "object") {

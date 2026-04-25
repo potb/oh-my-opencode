@@ -1,8 +1,9 @@
 /// <reference types="bun-types" />
 
 import { describe, expect, it, afterEach } from "bun:test"
+import type { ContextLimitModelCacheState } from "./context-limit-resolver"
 
-import { getContextWindowUsage } from "./dynamic-truncator"
+import { createDynamicTruncator } from "./dynamic-truncator"
 
 const ANTHROPIC_CONTEXT_ENV_KEY = "ANTHROPIC_1M_CONTEXT"
 const VERTEX_CONTEXT_ENV_KEY = "VERTEX_ANTHROPIC_1M_CONTEXT"
@@ -63,11 +64,10 @@ describe("getContextWindowUsage", () => {
     delete process.env[ANTHROPIC_CONTEXT_ENV_KEY]
     delete process.env[VERTEX_CONTEXT_ENV_KEY]
     const ctx = createContextUsageMockContext(300000)
+    const modelCacheState: ContextLimitModelCacheState = { anthropicContext1MEnabled: true }
 
     //#when
-    const usage = await getContextWindowUsage(ctx as never, "ses_1m_flag", {
-      anthropicContext1MEnabled: true,
-    })
+    const usage = await createDynamicTruncator(ctx as never, modelCacheState).getUsage("ses_1m_flag")
 
     //#then
     expect(usage?.usagePercentage).toBe(0.3)
@@ -79,11 +79,10 @@ describe("getContextWindowUsage", () => {
     delete process.env[ANTHROPIC_CONTEXT_ENV_KEY]
     delete process.env[VERTEX_CONTEXT_ENV_KEY]
     const ctx = createContextUsageMockContext(150000)
+    const modelCacheState: ContextLimitModelCacheState = { anthropicContext1MEnabled: false }
 
     //#when
-    const usage = await getContextWindowUsage(ctx as never, "ses_default", {
-      anthropicContext1MEnabled: false,
-    })
+    const usage = await createDynamicTruncator(ctx as never, modelCacheState).getUsage("ses_default")
 
     //#then
     expect(usage?.usagePercentage).toBe(0.75)
@@ -94,11 +93,10 @@ describe("getContextWindowUsage", () => {
     //#given
     process.env[ANTHROPIC_CONTEXT_ENV_KEY] = "true"
     const ctx = createContextUsageMockContext(300000)
+    const modelCacheState: ContextLimitModelCacheState = { anthropicContext1MEnabled: false }
 
     //#when
-    const usage = await getContextWindowUsage(ctx as never, "ses_env_fallback", {
-      anthropicContext1MEnabled: false,
-    })
+    const usage = await createDynamicTruncator(ctx as never, modelCacheState).getUsage("ses_env_fallback")
 
     //#then
     expect(usage?.usagePercentage).toBe(0.3)
@@ -113,12 +111,13 @@ describe("getContextWindowUsage", () => {
       providerID: "opencode",
       modelID: "kimi-k2.5-free",
     })
-
-    // when
-    const usage = await getContextWindowUsage(ctx as never, "ses_model_limit", {
+    const modelCacheState: ContextLimitModelCacheState = {
       anthropicContext1MEnabled: false,
       modelContextLimitsCache,
-    })
+    }
+
+    // when
+    const usage = await createDynamicTruncator(ctx as never, modelCacheState).getUsage("ses_model_limit")
 
     // then
     expect(usage?.usagePercentage).toBeCloseTo(180000 / 262144)
@@ -131,11 +130,10 @@ describe("getContextWindowUsage", () => {
       providerID: "openai",
       modelID: "gpt-5",
     })
+    const modelCacheState: ContextLimitModelCacheState = { anthropicContext1MEnabled: false }
 
     // when
-    const usage = await getContextWindowUsage(ctx as never, "ses_no_cached_limit", {
-      anthropicContext1MEnabled: false,
-    })
+    const usage = await createDynamicTruncator(ctx as never, modelCacheState).getUsage("ses_no_cached_limit")
 
     // then
     expect(usage).toBeNull()
@@ -155,12 +153,13 @@ describe("getContextWindowUsage", () => {
           providerID: "anthropic",
           modelID: "claude-sonnet-4-5",
         })
-
-        // when
-        const usage = await getContextWindowUsage(ctx as never, "ses_cached_anthropic_1m", {
+        const modelCacheState: ContextLimitModelCacheState = {
           anthropicContext1MEnabled: true,
           modelContextLimitsCache,
-        })
+        }
+
+        // when
+        const usage = await createDynamicTruncator(ctx as never, modelCacheState).getUsage("ses_cached_anthropic_1m")
 
         // then
         expect(usage?.usagePercentage).toBe(0.3)

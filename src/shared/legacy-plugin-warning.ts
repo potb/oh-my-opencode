@@ -9,7 +9,7 @@ interface OpenCodeConfig {
   plugin?: string[]
 }
 
-export interface LegacyPluginCheckResult {
+interface LegacyPluginCheckResult {
   hasLegacyEntry: boolean
   hasCanonicalEntry: boolean
   legacyEntries: string[]

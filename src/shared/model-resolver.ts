@@ -4,25 +4,25 @@ import { normalizeModel } from "./model-normalization"
 import { resolveModelPipeline } from "./model-resolution-pipeline"
 import { KNOWN_VARIANTS } from "./known-variants"
 
-export type ModelResolutionInput = {
+type ModelResolutionInput = {
 	userModel?: string
 	inheritedModel?: string
 	systemDefault?: string
 }
 
-export type ModelSource =
+type ModelSource =
 	| "override"
 	| "category-default"
 	| "provider-fallback"
 	| "system-default"
 
-export type ModelResolutionResult = {
+type ModelResolutionResult = {
 	model: string
 	source: ModelSource
 	variant?: string
 }
 
-export type ExtendedModelResolutionInput = {
+type ExtendedModelResolutionInput = {
 	uiSelectedModel?: string
 	userModel?: string
 	userFallbackModels?: string[]
@@ -33,7 +33,7 @@ export type ExtendedModelResolutionInput = {
 }
 
 
-export function resolveModel(input: ModelResolutionInput): string | undefined {
+function resolveModel(input: ModelResolutionInput): string | undefined {
 	return (
 		normalizeModel(input.userModel) ??
 		normalizeModel(input.inheritedModel) ??
@@ -41,8 +41,8 @@ export function resolveModel(input: ModelResolutionInput): string | undefined {
 	)
 }
 
-export function resolveModelWithFallback(
-	input: ExtendedModelResolutionInput,
+function resolveModelWithFallback(
+  input: ExtendedModelResolutionInput,
 ): ModelResolutionResult | undefined {
 	const { uiSelectedModel, userModel, userFallbackModels, categoryDefaultModel, fallbackChain, availableModels, systemDefaultModel } = input
 	const resolved = resolveModelPipeline({

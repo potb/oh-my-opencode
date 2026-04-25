@@ -1,9 +1,12 @@
 import { describe, test, expect, beforeEach } from "bun:test"
-import { setSessionTools, getSessionTools, clearSessionTools } from "./session-tools-store"
+import { setSessionTools, getSessionTools, deleteSessionTools } from "./session-tools-store"
 
 describe("session-tools-store", () => {
   beforeEach(() => {
-    clearSessionTools()
+    deleteSessionTools("ses_unknown")
+    deleteSessionTools("ses_abc123")
+    deleteSessionTools("ses_1")
+    deleteSessionTools("ses_2")
   })
 
   test("returns undefined for unknown session", () => {
@@ -43,17 +46,15 @@ describe("session-tools-store", () => {
     expect(result).toEqual({ question: true, task: false })
   })
 
-  test("clearSessionTools removes all entries", () => {
+  test("deleteSessionTools removes a stored entry", () => {
     //#given
     setSessionTools("ses_1", { question: false })
-    setSessionTools("ses_2", { task: true })
 
     //#when
-    clearSessionTools()
+    deleteSessionTools("ses_1")
 
     //#then
     expect(getSessionTools("ses_1")).toBeUndefined()
-    expect(getSessionTools("ses_2")).toBeUndefined()
   })
 
   test("returns a copy, not a reference", () => {
