@@ -11,7 +11,7 @@ import { retrySyncPromptWithFallbacks } from "./sync-task-fallback"
 type ModelFallbackInfo = {
   model: string
   type: "user-defined" | "inherited" | "category-default" | "system-default"
-  source?: import("../../shared/model-resolver").ModelSource
+  source?: "override" | "category-default" | "provider-fallback" | "system-default"
 }
 
 export async function executeSyncTask(

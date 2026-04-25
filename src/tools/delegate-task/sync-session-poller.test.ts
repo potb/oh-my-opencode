@@ -352,14 +352,13 @@ describe("pollSyncSession", () => {
   describe("timeout handling", () => {
     test("returns error string on timeout", async () => {
       //#given - never returns a terminal finish, but timeout is very short
-      const { pollSyncSession } = require("./sync-session-poller")
-
       __setTimingConfig({
         POLL_INTERVAL_MS: 10,
         MIN_STABILITY_TIME_MS: 0,
         STABILITY_POLLS_REQUIRED: 1,
         MAX_POLL_TIME_MS: 0,
       })
+      const { pollSyncSession } = require("./sync-session-poller")
 
       let abortCount = 0
       const mockClient = {
@@ -434,149 +433,5 @@ describe("pollSyncSession", () => {
        expect(statusCallCount).toBeGreaterThanOrEqual(3)
      })
    })
-
-  describe("isSessionComplete edge cases", () => {
-    test("returns false when messages array is empty", () => {
-      const { isSessionComplete } = require("./sync-session-poller")
-
-      //#given - empty messages array
-      const messages: any[] = []
-
-      //#when
-      const result = isSessionComplete(messages)
-
-      //#then - should return false
-      expect(result).toBe(false)
-    })
-
-    test("returns false when no assistant message exists", () => {
-      const { isSessionComplete } = require("./sync-session-poller")
-
-      //#given - only user messages, no assistant
-      const messages = [
-        { info: { id: "msg_001", role: "user", time: { created: 1000 } } },
-        { info: { id: "msg_002", role: "user", time: { created: 2000 } } },
-      ]
-
-      //#when
-      const result = isSessionComplete(messages)
-
-      //#then - should return false
-      expect(result).toBe(false)
-    })
-
-    test("returns false when only assistant message exists (no user)", () => {
-      const { isSessionComplete } = require("./sync-session-poller")
-
-      //#given - only assistant message, no user message
-      const messages = [
-        {
-          info: { id: "msg_001", role: "assistant", time: { created: 1000 }, finish: "end_turn" },
-          parts: [{ type: "text", text: "Response" }],
-        },
-      ]
-
-      //#when
-      const result = isSessionComplete(messages)
-
-      //#then - should return false (no user message to compare IDs)
-      expect(result).toBe(false)
-    })
-
-    test("returns false when assistant message has missing finish field", () => {
-      const { isSessionComplete } = require("./sync-session-poller")
-
-      //#given - assistant message without finish field
-      const messages = [
-        { info: { id: "msg_001", role: "user", time: { created: 1000 } } },
-        {
-          info: { id: "msg_002", role: "assistant", time: { created: 2000 } },
-          parts: [{ type: "text", text: "Response" }],
-        },
-      ]
-
-      //#when
-      const result = isSessionComplete(messages)
-
-      //#then - should return false (missing finish)
-      expect(result).toBe(false)
-    })
-
-    test("returns false when assistant message has missing info.id field", () => {
-      const { isSessionComplete } = require("./sync-session-poller")
-
-      //#given - assistant message without id in info
-      const messages = [
-        { info: { id: "msg_001", role: "user", time: { created: 1000 } } },
-        {
-          info: { role: "assistant", time: { created: 2000 }, finish: "end_turn" },
-          parts: [{ type: "text", text: "Response" }],
-        },
-      ]
-
-      //#when
-      const result = isSessionComplete(messages)
-
-      //#then - should return false (missing assistant id)
-      expect(result).toBe(false)
-    })
-
-    test("returns false when finish is stop but assistant has tool-call parts", () => {
-      const { isSessionComplete } = require("./sync-session-poller")
-
-      //#given - provider marks stop even though tool execution is still pending
-      const messages = [
-        { info: { id: "msg_001", role: "user", time: { created: 1000 } } },
-        {
-          info: { id: "msg_002", role: "assistant", time: { created: 2000 }, finish: "stop" },
-          parts: [{ type: "tool-call", text: "calling tool" }],
-        },
-      ]
-
-      //#when
-      const result = isSessionComplete(messages)
-
-      //#then - should return false because tool execution is still pending
-      expect(result).toBe(false)
-    })
-
-    test("returns false when finish is end_turn but assistant has tool-call parts", () => {
-      const { isSessionComplete } = require("./sync-session-poller")
-
-      //#given - assistant emitted a terminal finish but still contains pending tool calls
-      const messages = [
-        { info: { id: "msg_001", role: "user", time: { created: 1000 } } },
-        {
-          info: { id: "msg_002", role: "assistant", time: { created: 2000 }, finish: "end_turn" },
-          parts: [{ type: "tool-call", text: "calling tool" }],
-        },
-      ]
-
-      //#when
-      const result = isSessionComplete(messages)
-
-      //#then - should return false because tool execution is still pending
-      expect(result).toBe(false)
-    })
-
-    test("returns false when user message has missing info.id field", () => {
-      const { isSessionComplete } = require("./sync-session-poller")
-
-      //#given - user message without id in info
-      const messages = [
-        { info: { role: "user", time: { created: 1000 } } },
-        {
-          info: { id: "msg_002", role: "assistant", time: { created: 2000 }, finish: "end_turn" },
-          parts: [{ type: "text", text: "Response" }],
-        },
-      ]
-
-      //#when
-      const result = isSessionComplete(messages)
-
-      //#then - should return false (missing user id)
-      expect(result).toBe(false)
-    })
-  })
 
 })

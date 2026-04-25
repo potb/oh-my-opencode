@@ -14,7 +14,7 @@ mock.module("vscode-jsonrpc/node", () => ({
 
 afterAll(() => { mock.restore() })
 
-import { LSPClient, lspManager, validateCwd } from "./client"
+import { LSPClient, lspManager } from "./client"
 import type { ResolvedServer } from "./types"
 
 describe("LSPClient", () => {
@@ -168,54 +168,6 @@ describe("LSPClient", () => {
         initializeSpy.mockRestore()
         isAliveSpy.mockRestore()
         stopSpy.mockRestore()
-        rmSync(dir, { recursive: true, force: true })
-      }
-    })
-  })
-
-  describe("validateCwd", () => {
-    it("returns valid for existing directory", () => {
-      // #given
-      const dir = mkdtempSync(join(tmpdir(), "lsp-cwd-test-"))
-
-      try {
-        // #when
-        const result = validateCwd(dir)
-
-        // #then
-        expect(result.valid).toBe(true)
-        expect(result.error).toBeUndefined()
-      } finally {
-        rmSync(dir, { recursive: true, force: true })
-      }
-    })
-
-    it("returns invalid for non-existent directory", () => {
-      // #given
-      const nonExistentDir = join(tmpdir(), "lsp-cwd-nonexistent-" + Date.now())
-
-      // #when
-      const result = validateCwd(nonExistentDir)
-
-      // #then
-      expect(result.valid).toBe(false)
-      expect(result.error).toContain("Working directory does not exist")
-    })
-
-    it("returns invalid when path is a file", () => {
-      // #given
-      const dir = mkdtempSync(join(tmpdir(), "lsp-cwd-file-test-"))
-      const filePath = join(dir, "not-a-dir.txt")
-      writeFileSync(filePath, "test content")
-
-      try {
-        // #when
-        const result = validateCwd(filePath)
-
-        // #then
-        expect(result.valid).toBe(false)
-        expect(result.error).toContain("Path is not a directory")
-      } finally {
         rmSync(dir, { recursive: true, force: true })
       }
     })

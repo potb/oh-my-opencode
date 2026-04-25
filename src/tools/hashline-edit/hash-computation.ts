@@ -19,12 +19,12 @@ export function computeLegacyLineHash(lineNumber: number, content: string): stri
   return computeNormalizedLineHash(lineNumber, content.replace(/\r/g, "").replace(/\s+/g, ""))
 }
 
-export function formatHashLine(lineNumber: number, content: string): string {
+function formatHashLine(lineNumber: number, content: string): string {
   const hash = computeLineHash(lineNumber, content)
   return `${lineNumber}#${hash}|${content}`
 }
 
-export function formatHashLines(content: string): string {
+function formatHashLines(content: string): string {
   if (!content) return ""
   const lines = content.split("\n")
   return lines.map((line, index) => formatHashLine(index + 1, line)).join("\n")
@@ -58,7 +58,7 @@ async function* bytesFromReadableStream(stream: ReadableStream<Uint8Array>): Asy
   }
 }
 
-export async function* streamHashLinesFromUtf8(
+async function* streamHashLinesFromUtf8(
   source: ReadableStream<Uint8Array> | AsyncIterable<Uint8Array>,
   options: HashlineStreamOptions = {}
 ): AsyncGenerator<string> {
@@ -121,7 +121,7 @@ export async function* streamHashLinesFromUtf8(
   if (finalChunk) yield finalChunk
 }
 
-export async function* streamHashLinesFromLines(
+async function* streamHashLinesFromLines(
   lines: Iterable<string> | AsyncIterable<string>,
   options: HashlineStreamOptions = {}
 ): AsyncGenerator<string> {

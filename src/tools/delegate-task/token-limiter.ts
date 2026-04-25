@@ -2,7 +2,7 @@ import type { BuildSystemContentInput } from "./types"
 
 const CHARACTERS_PER_TOKEN = 4
 
-export function estimateTokenCount(text: string): number {
+function estimateTokenCount(text: string): number {
   if (!text) {
     return 0
   }
@@ -10,7 +10,7 @@ export function estimateTokenCount(text: string): number {
   return Math.ceil(text.length / CHARACTERS_PER_TOKEN)
 }
 
-export function truncateToTokenBudget(content: string, maxTokens: number): string {
+function truncateToTokenBudget(content: string, maxTokens: number): string {
   if (!content || maxTokens <= 0) {
     return ""
   }

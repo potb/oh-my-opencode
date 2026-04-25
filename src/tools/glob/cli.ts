@@ -90,8 +90,6 @@ async function getFileMtime(filePath: string): Promise<number> {
   }
 }
 
-export { buildRgArgs, buildFindArgs, buildPowerShellCommand }
-
 export async function runRgFiles(
   options: GlobOptions,
   resolvedCli?: ResolvedCli

@@ -25,7 +25,7 @@ interface ServerWithSource extends ResolvedServer {
   source: ConfigSource
 }
 
-export function loadJsonFile<T>(path: string): T | null {
+function loadJsonFile<T>(path: string): T | null {
   if (!existsSync(path)) return null
   try {
     return parseJsonc(readFileSync(path, "utf-8")) as T
@@ -34,7 +34,7 @@ export function loadJsonFile<T>(path: string): T | null {
   }
 }
 
-export function getConfigPaths(): { project: string; user: string; opencode: string } {
+function getConfigPaths(): { project: string; user: string; opencode: string } {
   const cwd = process.cwd()
   const configDir = getOpenCodeConfigDir({ binary: "opencode" })
   return {
@@ -44,7 +44,7 @@ export function getConfigPaths(): { project: string; user: string; opencode: str
   }
 }
 
-export function loadAllConfigs(): Map<ConfigSource, ConfigJson> {
+function loadAllConfigs(): Map<ConfigSource, ConfigJson> {
   const paths = getConfigPaths()
   const configs = new Map<ConfigSource, ConfigJson>()
 

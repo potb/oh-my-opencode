@@ -98,6 +98,6 @@ export function applyHashlineEditsWithReport(content: string, edits: HashlineEdi
   }
 }
 
-export function applyHashlineEdits(content: string, edits: HashlineEdit[]): string {
+function applyHashlineEdits(content: string, edits: HashlineEdit[]): string {
   return applyHashlineEditsWithReport(content, edits).content
 }

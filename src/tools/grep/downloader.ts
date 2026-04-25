@@ -10,7 +10,7 @@ import {
   extractTarGz as extractTarGzArchive,
 } from "../../shared/binary-downloader"
 
-export function findFileRecursive(dir: string, filename: string): string | null {
+function findFileRecursive(dir: string, filename: string): string | null {
   try {
     const entries = readdirSync(dir, { withFileTypes: true, recursive: true })
     for (const entry of entries) {

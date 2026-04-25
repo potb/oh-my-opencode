@@ -5,7 +5,7 @@ import { log } from "../../shared/logger"
 function shouldUseNodeSpawn(): boolean {
   return process.platform === "win32"
 }
-export function validateCwd(cwd: string): { valid: boolean; error?: string } {
+function validateCwd(cwd: string): { valid: boolean; error?: string } {
   try {
     if (!existsSync(cwd)) {
       return { valid: false, error: `Working directory does not exist: ${cwd}` }

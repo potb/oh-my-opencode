@@ -98,7 +98,7 @@ export function createDelegateTask(options: DelegateTaskToolOptions): ToolDefini
         | {
             model: string
             type: "user-defined" | "inherited" | "category-default" | "system-default"
-            source?: import("../../shared/model-resolver").ModelSource
+            source?: "override" | "category-default" | "provider-fallback" | "system-default"
           }
         | undefined
       let fallbackChain: import("../../shared/model-requirements").FallbackEntry[] | undefined

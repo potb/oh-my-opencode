@@ -1,5 +1,9 @@
 import { describe, expect, it } from "bun:test"
-import { applyHashlineEdits, applyHashlineEditsWithReport } from "./edit-operations"
+import { applyHashlineEditsWithReport } from "./edit-operations"
+
+function applyHashlineEdits(content: string, edits: Parameters<typeof applyHashlineEditsWithReport>[1]): string {
+  return applyHashlineEditsWithReport(content, edits).content
+}
 import { applyAppend, applyInsertAfter, applyPrepend, applyReplaceLines, applySetLine } from "./edit-operation-primitives"
 import { computeLineHash } from "./hash-computation"
 import type { HashlineEdit } from "./types"

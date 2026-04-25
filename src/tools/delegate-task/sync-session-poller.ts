@@ -32,7 +32,7 @@ async function fetchSessionMessages(
   return Array.isArray(rawData) ? (rawData as SessionMessage[]) : []
 }
 
-export function isSessionComplete(messages: SessionMessage[]): boolean {
+function isSessionComplete(messages: SessionMessage[]): boolean {
   let lastUser: SessionMessage | undefined
   let lastAssistant: SessionMessage | undefined
 

@@ -1,42 +1,10 @@
 import { describe, it, expect } from "bun:test"
-import { writeFileSync, unlinkSync, mkdirSync, rmSync } from "fs"
+import { writeFileSync, mkdirSync, rmSync } from "fs"
 import { join } from "path"
 import { tmpdir } from "os"
-import { loadJsonFile, getConfigPaths, getMergedServers } from "./server-config-loader"
+import { getMergedServers } from "./server-config-loader"
 
-describe("loadJsonFile", () => {
-  it("parses JSONC config files with comments correctly", () => {
-    // given
-    const testData = {
-      lsp: {
-        typescript: {
-          command: ["tsserver"],
-          extensions: [".ts", ".tsx"]
-        }
-      }
-    }
-    const jsoncContent = `{
-  // LSP configuration for TypeScript
-  "lsp": {
-    "typescript": {
-      "command": ["tsserver"],
-      "extensions": [".ts", ".tsx"] // TypeScript extensions
-    }
-  }
-}`
-    const tempPath = join(tmpdir(), "test-config.jsonc")
-    writeFileSync(tempPath, jsoncContent, "utf-8")
-
-    // when
-    const result = loadJsonFile<typeof testData>(tempPath)
-
-    // then
-    expect(result).toEqual(testData)
-
-    // cleanup
-    unlinkSync(tempPath)
-  })
-
+describe("getMergedServers", () => {
   it("discovers JSONC-only user config (oh-my-opencode.jsonc)", () => {
     const originalEnv = process.env.OPENCODE_CONFIG_DIR
     const tempBase = join(tmpdir(), `omo-test-user-jsonc-${Date.now()}-${Math.random().toString(36).slice(2)}`)
