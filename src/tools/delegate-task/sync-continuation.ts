@@ -2,9 +2,7 @@ import type { DelegateTaskArgs, ToolContextWithMetadata } from "./types"
 import type { ExecutorContext, SessionMessage } from "./executor-types"
 import { isPlanFamily } from "./constants"
 import { getAgentToolRestrictions } from "../../shared/agent-tool-restrictions"
-import { getMessageDir } from "../../shared"
-import { promptWithModelSuggestionRetry } from "../../shared/model-suggestion-retry"
-import { findNearestMessageWithFields } from "../../shared/session-message-context"
+import { promptAsyncWithTimeout } from "../../shared/prompt-async-timeout"
 import { formatDuration } from "./time-formatter"
 import { syncContinuationDeps, type SyncContinuationDeps } from "./sync-continuation-deps"
 import { setSessionTools } from "../../shared/session-tools-store"
@@ -31,32 +29,26 @@ export async function executeSyncContinuation(
   try {
     try {
       const messagesResp = await client.session.messages({ path: { id: args.session_id! } })
-      const messages = normalizeSDKResponse(messagesResp, [] as SessionMessage[])
+      const messages = normalizeSDKResponse<SessionMessage[]>(messagesResp)
       anchorMessageCount = messages.length
       for (let i = messages.length - 1; i >= 0; i--) {
         const info = messages[i].info
-        if (info?.agent || info?.model || (info?.modelID && info?.providerID)) {
+        if (info?.agent || info?.model) {
           resumeAgent = info.agent
-          resumeModel = info.model ?? (info.providerID && info.modelID ? { providerID: info.providerID, modelID: info.modelID } : undefined)
+          resumeModel = info.model
           resumeVariant = info.variant
           break
         }
       }
-    } catch {
-      const resumeMessageDir = getMessageDir(args.session_id!)
-      const resumeMessage = resumeMessageDir ? findNearestMessageWithFields(resumeMessageDir) : null
-      resumeAgent = resumeMessage?.agent
-      resumeModel = resumeMessage?.model?.providerID && resumeMessage?.model?.modelID
-        ? { providerID: resumeMessage.model.providerID, modelID: resumeMessage.model.modelID }
-        : undefined
-      resumeVariant = resumeMessage?.model?.variant
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error)
+      return `Failed to load continuation context: ${errorMessage}\n\nSession ID: ${args.session_id}`
     }
 
     syncContMeta = {
       title: `Continue: ${args.description}`,
       metadata: {
         prompt: args.prompt,
-        load_skills: args.load_skills,
         description: args.description,
         run_in_background: args.run_in_background,
         sessionId: args.session_id,
@@ -77,7 +69,7 @@ export async function executeSyncContinuation(
     }
     setSessionTools(args.session_id!, tools)
 
-    await promptWithModelSuggestionRetry(client, {
+    await promptAsyncWithTimeout(client, {
       path: { id: args.session_id! },
       body: {
         ...(resumeAgent !== undefined ? { agent: resumeAgent } : {}),

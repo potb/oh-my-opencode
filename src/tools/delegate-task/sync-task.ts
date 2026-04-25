@@ -6,12 +6,11 @@ import { SessionCategoryRegistry } from "../../shared/session-category-registry"
 import { formatDuration } from "./time-formatter"
 import { formatDetailedError } from "./error-formatting"
 import { syncTaskDeps, type SyncTaskDeps } from "./sync-task-deps"
-import { retrySyncPromptWithFallbacks } from "./sync-task-fallback"
 
 type ModelFallbackInfo = {
   model: string
-  type: "user-defined" | "inherited" | "category-default" | "system-default"
-  source?: "override" | "category-default" | "provider-fallback" | "system-default"
+  type: "user-defined" | "inherited" | "category-default"
+  source?: "override" | "category-default"
 }
 
 export async function executeSyncTask(
@@ -23,7 +22,6 @@ export async function executeSyncTask(
   categoryModel: DelegatedModelConfig | undefined,
   systemContent: string | undefined,
   modelInfo?: ModelFallbackInfo,
-  fallbackChain?: import("../../shared/model-requirements").FallbackEntry[],
   deps: SyncTaskDeps = syncTaskDeps
 ): Promise<string> {
   const { manager, client, directory, onSyncSessionCreated, syncPollTimeoutMs } = executorCtx
@@ -34,33 +32,8 @@ export async function executeSyncTask(
     | undefined
 
   try {
-    if (typeof manager?.reserveSubagentSpawn === "function") {
-      spawnReservation = await manager.reserveSubagentSpawn(parentContext.sessionID)
-    }
-
-    // Depth/descendant guard. We must NOT silently fall back to childDepth: 1
-    // when the manager is unavailable or lacks the spawn methods, because that
-    // would let subagents recurse without bound. The only safe fallback is
-    // when the manager genuinely cannot enforce limits (legacy SDK), in which
-    // case we still record childDepth: 1 but log a warning so regressions are
-    // visible.
-    let spawnContext: { rootSessionID: string; parentDepth: number; childDepth: number }
-    if (spawnReservation?.spawnContext) {
-      spawnContext = spawnReservation.spawnContext
-    } else if (typeof manager?.assertCanSpawn === "function") {
-      spawnContext = await manager.assertCanSpawn(parentContext.sessionID)
-    } else {
-      log(
-        "[task] WARNING: BackgroundManager has no spawn enforcement methods (reserveSubagentSpawn / assertCanSpawn). " +
-        "Depth and descendant limits cannot be enforced for this task. This indicates an old SDK or a misconfiguration.",
-        { parentSessionID: parentContext.sessionID }
-      )
-      spawnContext = {
-        rootSessionID: parentContext.sessionID,
-        parentDepth: 0,
-        childDepth: 1,
-      }
-    }
+    spawnReservation = await manager.reserveSubagentSpawn(parentContext.sessionID)
+    const spawnContext = spawnReservation.spawnContext
 
     const createSessionResult = await deps.createSyncSession(client, {
       parentSessionID: parentContext.sessionID,
@@ -89,8 +62,6 @@ export async function executeSyncTask(
         sessionID,
         parentID: parentContext.sessionID,
         title: args.description,
-      }).catch((err) => {
-      log("[task] onSyncSessionCreated callback failed", { error: String(err) })
       })
       await new Promise(r => setTimeout(r, 200))
     }
@@ -104,7 +75,6 @@ export async function executeSyncTask(
         prompt: args.prompt,
         agent: agentToUse,
         category: args.category,
-        load_skills: args.load_skills,
         description: args.description,
         run_in_background: args.run_in_background,
         sessionId: sessionID,
@@ -127,30 +97,7 @@ export async function executeSyncTask(
       sisyphusAgentConfig: executorCtx.sisyphusAgentConfig,
     })
     if (promptError) {
-      const promptResult = await retrySyncPromptWithFallbacks({
-        sessionID,
-        initialError: promptError,
-        categoryModel: effectiveCategoryModel,
-        fallbackChain,
-        sendPrompt: async (fallbackModel) => {
-          return deps.sendSyncPrompt(client, {
-            sessionID,
-            agentToUse,
-            args,
-            systemContent,
-            categoryModel: fallbackModel,
-            taskId,
-            sisyphusAgentConfig: executorCtx.sisyphusAgentConfig,
-          })
-        },
-      })
-
-      promptError = promptResult.promptError
-      effectiveCategoryModel = promptResult.categoryModel
-
-      if (promptError) {
-        return promptError
-      }
+      return promptError
     }
 
     const pollError = await deps.pollSyncSession(ctx, client, {

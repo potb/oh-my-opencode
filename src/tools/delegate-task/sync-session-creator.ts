@@ -5,10 +5,21 @@ export async function createSyncSession(
   client: OpencodeClient,
   input: { parentSessionID: string; agentToUse: string; description: string; defaultDirectory: string }
 ): Promise<{ ok: true; sessionID: string; parentDirectory: string } | { ok: false; error: string }> {
-  const parentSession = client.session.get
-    ? await client.session.get({ path: { id: input.parentSessionID } }).catch(() => null)
-    : null
-  const parentDirectory = parentSession?.data?.directory ?? input.defaultDirectory
+  if (!client.session.get) {
+    return { ok: false, error: "Failed to resolve parent session directory: session.get unavailable" }
+  }
+
+  let parentSession: Awaited<ReturnType<typeof client.session.get>>
+  try {
+    parentSession = await client.session.get({ path: { id: input.parentSessionID } })
+  } catch (error) {
+    return { ok: false, error: `Failed to resolve parent session directory: ${String(error)}` }
+  }
+
+  const parentDirectory = parentSession.data?.directory
+  if (!parentDirectory) {
+    return { ok: false, error: `Failed to resolve parent session directory for ${input.parentSessionID}` }
+  }
 
   const createResult = await client.session.create({
     body: {

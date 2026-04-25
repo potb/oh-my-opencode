@@ -15,9 +15,7 @@ export async function fetchSyncResult(
     return { ok: false, error: `Error fetching result: ${(messagesResult as { error: unknown }).error}\n\nSession ID: ${sessionID}` }
   }
 
-  const messages = normalizeSDKResponse(messagesResult, [] as SessionMessage[], {
-    preferResponseOnMissingData: true,
-  })
+  const messages = normalizeSDKResponse<SessionMessage[]>(messagesResult)
 
   const messagesAfterAnchor = anchorMessageCount !== undefined ? messages.slice(anchorMessageCount) : messages
 

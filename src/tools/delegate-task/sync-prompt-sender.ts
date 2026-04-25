@@ -1,25 +1,27 @@
 import type { DelegateTaskArgs, OpencodeClient, DelegatedModelConfig } from "./types"
-import type { SisyphusAgentConfig } from "../../config/schema"
 import { isPlanFamily } from "./constants"
 import { buildTaskPrompt } from "./prompt-builder"
-import {
-  promptSyncWithModelSuggestionRetry,
-  promptWithModelSuggestionRetry,
-} from "../../shared/model-suggestion-retry"
+import { promptAsyncWithTimeout } from "../../shared/prompt-async-timeout"
 import { formatDetailedError } from "./error-formatting"
 import { getAgentToolRestrictions } from "../../shared/agent-tool-restrictions"
 import { applySessionPromptParams } from "../../shared/session-prompt-params-helpers"
 import { setSessionTools } from "../../shared/session-tools-store"
 import { createInternalAgentTextPart } from "../../shared/internal-initiator-marker"
 
+type SisyphusAgentConfig = {
+  disabled?: boolean
+  default_builder_enabled?: boolean
+  planner_enabled?: boolean
+  replace_plan?: boolean
+  tdd?: boolean
+}
+
 type SendSyncPromptDeps = {
-  promptWithModelSuggestionRetry: typeof promptWithModelSuggestionRetry
-  promptSyncWithModelSuggestionRetry: typeof promptSyncWithModelSuggestionRetry
+  promptAsyncWithTimeout: typeof promptAsyncWithTimeout
 }
 
 const sendSyncPromptDeps: SendSyncPromptDeps = {
-  promptWithModelSuggestionRetry,
-  promptSyncWithModelSuggestionRetry,
+  promptAsyncWithTimeout,
 }
 
 function buildPromptGenerationParams(model: DelegatedModelConfig | undefined): Record<string, unknown> {
@@ -38,16 +40,6 @@ function buildPromptGenerationParams(model: DelegatedModelConfig | undefined): R
     ...(model.maxTokens !== undefined ? { maxOutputTokens: model.maxTokens } : {}),
     ...(Object.keys(promptOptions).length > 0 ? { options: promptOptions } : {}),
   }
-}
-
-function isOracleAgent(agentToUse: string): boolean {
-  return agentToUse.toLowerCase() === "oracle"
-}
-
-function isUnexpectedEofError(error: unknown): boolean {
-  const message = error instanceof Error ? error.message : String(error)
-  const lowered = message.toLowerCase()
-  return lowered.includes("unexpected eof") || lowered.includes("json parse error")
 }
 
 export async function sendSyncPrompt(
@@ -96,20 +88,11 @@ export async function sendSyncPrompt(
   }
 
   try {
-    await deps.promptWithModelSuggestionRetry(client, promptArgs)
+    await deps.promptAsyncWithTimeout(client, promptArgs)
   } catch (promptError) {
-    if (isOracleAgent(input.agentToUse) && isUnexpectedEofError(promptError)) {
-      try {
-        await deps.promptSyncWithModelSuggestionRetry(client, promptArgs)
-        return null
-      } catch (oracleRetryError) {
-        promptError = oracleRetryError
-      }
-    }
-
     const errorMessage = promptError instanceof Error ? promptError.message : String(promptError)
     if (errorMessage.includes("agent.name") || errorMessage.includes("undefined")) {
-      return formatDetailedError(new Error(`Agent "${input.agentToUse}" not found. Make sure the agent is registered in your opencode.json or provided by a plugin.`), {
+      return formatDetailedError(new Error(`Agent "${input.agentToUse}" not found. Make sure the agent is registered in your oh-my-opencode.jsonc or provided by a plugin.`), {
         operation: "Send prompt to agent",
         args: input.args,
         sessionID: input.sessionID,

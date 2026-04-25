@@ -15,10 +15,6 @@ export function computeLineHash(lineNumber: number, content: string): string {
   return computeNormalizedLineHash(lineNumber, content.replace(/\r/g, "").trimEnd())
 }
 
-export function computeLegacyLineHash(lineNumber: number, content: string): string {
-  return computeNormalizedLineHash(lineNumber, content.replace(/\r/g, "").replace(/\s+/g, ""))
-}
-
 function formatHashLine(lineNumber: number, content: string): string {
   const hash = computeLineHash(lineNumber, content)
   return `${lineNumber}#${hash}|${content}`

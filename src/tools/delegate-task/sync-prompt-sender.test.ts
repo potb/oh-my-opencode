@@ -229,7 +229,7 @@ bunDescribe("sendSyncPrompt", () => {
     const { sendSyncPrompt } = require("./sync-prompt-sender")
 
     let promptArgs: any
-    const promptWithModelSuggestionRetry = bunMock(async (_client: any, input: any) => {
+    const promptAsyncWithTimeout = bunMock(async (_client: any, input: any) => {
       promptArgs = input
     })
 
@@ -262,13 +262,12 @@ bunDescribe("sendSyncPrompt", () => {
       { session: { promptAsync: bunMock(async () => ({ data: {} })) } },
       input,
       {
-        promptWithModelSuggestionRetry,
-        promptSyncWithModelSuggestionRetry: bunMock(async () => {}),
+        promptAsyncWithTimeout,
       },
     )
 
     //#then
-    bunExpect(promptWithModelSuggestionRetry).toHaveBeenCalledTimes(1)
+    bunExpect(promptAsyncWithTimeout).toHaveBeenCalledTimes(1)
     bunExpect(promptArgs.body.model).toEqual({
       providerID: "openai",
       modelID: "gpt-5.4",
@@ -295,7 +294,7 @@ bunDescribe("sendSyncPrompt", () => {
     const { sendSyncPrompt } = require("./sync-prompt-sender")
 
     let promptArgs: any
-    const promptWithModelSuggestionRetry = bunMock(async (_client: any, input: any) => {
+    const promptAsyncWithTimeout = bunMock(async (_client: any, input: any) => {
       promptArgs = input
     })
 
@@ -324,24 +323,21 @@ bunDescribe("sendSyncPrompt", () => {
       { session: { promptAsync: bunMock(async () => ({ data: {} })) } },
       input,
       {
-        promptWithModelSuggestionRetry,
-        promptSyncWithModelSuggestionRetry: bunMock(async () => {}),
+        promptAsyncWithTimeout,
       },
     )
 
     //#then
-    bunExpect(promptWithModelSuggestionRetry).toHaveBeenCalledTimes(1)
+    bunExpect(promptAsyncWithTimeout).toHaveBeenCalledTimes(1)
     bunExpect(promptArgs.body.temperature).toBe(0.25)
   })
-  bunTest("retries with promptSync for oracle when promptAsync fails with unexpected EOF", async () => {
+  bunTest("returns the promptAsync error for oracle when promptAsync fails", async () => {
     //#given
     const { sendSyncPrompt } = require("./sync-prompt-sender")
 
-    const promptWithModelSuggestionRetry = bunMock(async () => {
+    const promptAsyncWithTimeout = bunMock(async () => {
       throw new Error("JSON Parse error: Unexpected EOF")
     })
-    const promptSyncWithModelSuggestionRetry = bunMock(async () => {})
-
     const input = {
       sessionID: "test-session",
       agentToUse: "oracle",
@@ -362,26 +358,22 @@ bunDescribe("sendSyncPrompt", () => {
       { session: { promptAsync: bunMock(async () => ({ data: {} })) } },
       input,
       {
-        promptWithModelSuggestionRetry,
-        promptSyncWithModelSuggestionRetry,
+        promptAsyncWithTimeout,
       },
     )
 
     //#then
-    bunExpect(result).toBeNull()
-    bunExpect(promptWithModelSuggestionRetry).toHaveBeenCalledTimes(1)
-    bunExpect(promptSyncWithModelSuggestionRetry).toHaveBeenCalledTimes(1)
+    bunExpect(result).toContain("Unexpected EOF")
+    bunExpect(promptAsyncWithTimeout).toHaveBeenCalledTimes(1)
   })
 
   bunTest("does not retry with promptSync for non-oracle on unexpected EOF", async () => {
     //#given
     const { sendSyncPrompt } = require("./sync-prompt-sender")
 
-    const promptWithModelSuggestionRetry = bunMock(async () => {
+    const promptAsyncWithTimeout = bunMock(async () => {
       throw new Error("JSON Parse error: Unexpected EOF")
     })
-    const promptSyncWithModelSuggestionRetry = bunMock(async () => {})
-
     const input = {
       sessionID: "test-session",
       agentToUse: "metis",
@@ -402,14 +394,12 @@ bunDescribe("sendSyncPrompt", () => {
       { session: { promptAsync: bunMock(async () => ({ data: {} })) } },
       input,
       {
-        promptWithModelSuggestionRetry,
-        promptSyncWithModelSuggestionRetry,
+        promptAsyncWithTimeout,
       },
     )
 
     //#then
     bunExpect(result).toContain("Unexpected EOF")
-    bunExpect(promptWithModelSuggestionRetry).toHaveBeenCalledTimes(1)
-    bunExpect(promptSyncWithModelSuggestionRetry).toHaveBeenCalledTimes(0)
+    bunExpect(promptAsyncWithTimeout).toHaveBeenCalledTimes(1)
   })
 })

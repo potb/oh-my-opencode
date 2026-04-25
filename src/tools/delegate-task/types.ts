@@ -1,6 +1,6 @@
 import type { PluginInput } from "@opencode-ai/plugin"
 import type { BackgroundManager } from "../../features/background-agent"
-import type { CategoriesConfig, GitMasterConfig, BrowserAutomationProvider, AgentOverrides, SisyphusAgentConfig } from "../../config/schema"
+import type { CategoriesConfig, GitMasterConfig, BrowserAutomationProvider, AgentOverrides } from "../../config/schema"
 import type {
   AvailableCategory,
   AvailableSkill,
@@ -8,16 +8,22 @@ import type {
 
 export type OpencodeClient = PluginInput["client"]
 
+type SisyphusAgentConfig = {
+  disabled?: boolean
+  default_builder_enabled?: boolean
+  planner_enabled?: boolean
+  replace_plan?: boolean
+  tdd?: boolean
+}
+
 export interface DelegateTaskArgs {
   description: string
   prompt: string
-  /** @deprecated Fixed-product mode no longer supports category-based routing. */
   category?: string
   subagent_type?: string
   run_in_background: boolean
   session_id?: string
   command?: string
-  /** @deprecated Fixed-product mode no longer supports loading skills through task. */
   load_skills?: string[]
   execute?: {
     task_id: string
@@ -36,10 +42,6 @@ export interface ToolContextWithMetadata {
    * but present at runtime via spread in fromPlugin()). Used for metadata store keying.
    */
   callID?: string
-  /** @deprecated OpenCode internal naming may vary across versions */
-  callId?: string
-  /** @deprecated OpenCode internal naming may vary across versions */
-  call_id?: string
 }
 
 export interface SyncSessionCreatedEvent {

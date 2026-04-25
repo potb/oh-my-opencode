@@ -28,8 +28,7 @@ async function fetchSessionMessages(
   sessionID: string
 ): Promise<SessionMessage[]> {
   const messagesResult = await client.session.messages({ path: { id: sessionID } })
-  const rawData = (messagesResult as { data?: unknown })?.data ?? messagesResult
-  return Array.isArray(rawData) ? (rawData as SessionMessage[]) : []
+  return normalizeSDKResponse<SessionMessage[]>(messagesResult)
 }
 
 function isSessionComplete(messages: SessionMessage[]): boolean {
@@ -104,10 +103,9 @@ export async function pollSyncSession(
     try {
       statusResult = await client.session.status()
     } catch (error) {
-      log("[task] Poll status fetch failed, retrying", { sessionID: input.sessionID, error: String(error) })
-      continue
+      return `Failed to poll session status: ${String(error)}\n\nSession ID: ${input.sessionID}`
     }
-    const allStatuses = normalizeSDKResponse(statusResult, {} as Record<string, { type: string }>)
+      const allStatuses = normalizeSDKResponse<Record<string, { type: string }>>(statusResult)
     const sessionStatus = allStatuses[input.sessionID]
 
     if (pollCount % 10 === 0) {
@@ -127,8 +125,7 @@ export async function pollSyncSession(
     try {
       messages = await fetchSessionMessages(client, input.sessionID)
     } catch (error) {
-      log("[task] Poll messages fetch failed, retrying", { sessionID: input.sessionID, error: String(error) })
-      continue
+      return `Failed to fetch session messages: ${String(error)}\n\nSession ID: ${input.sessionID}`
     }
 
     if (input.anchorMessageCount !== undefined && messages.length <= input.anchorMessageCount) {
@@ -156,23 +153,6 @@ export async function pollSyncSession(
       }
     }
 
-    const hasAssistantText = messages.some((m) => {
-      if (m.info?.role !== "assistant") return false
-      const parts = m.parts ?? []
-      return parts.some((p) => {
-        if (p.type !== "text" && p.type !== "reasoning") return false
-        const text = (p.text ?? "").trim()
-        return text.length > 0
-      })
-    })
-
-    if (!lastAssistant?.info?.finish && hasAssistantText) {
-      log("[task] Poll complete - assistant text detected (fallback)", {
-        sessionID: input.sessionID,
-        pollCount,
-      })
-      break
-    }
   }
 
   if (Date.now() - pollStart >= maxPollTimeMs) {

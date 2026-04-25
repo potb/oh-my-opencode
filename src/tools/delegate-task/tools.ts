@@ -80,14 +80,6 @@ export function createDelegateTask(options: DelegateTaskToolOptions): ToolDefini
         return `Invalid arguments: Must provide subagent_type for new tasks.`
       }
 
-      let systemDefaultModel: string | undefined
-      try {
-        const openCodeConfig = await options.client.config.get()
-        systemDefaultModel = (openCodeConfig as { data?: { model?: string } })?.data?.model
-      } catch {
-        systemDefaultModel = undefined
-      }
-
       const inheritedModel = parentContext.model
         ? `${parentContext.model.providerID}/${parentContext.model.modelID}`
         : undefined
@@ -97,11 +89,10 @@ export function createDelegateTask(options: DelegateTaskToolOptions): ToolDefini
       let modelInfo:
         | {
             model: string
-            type: "user-defined" | "inherited" | "category-default" | "system-default"
-            source?: "override" | "category-default" | "provider-fallback" | "system-default"
+            type: "user-defined" | "inherited" | "category-default"
+            source?: "override" | "category-default"
           }
         | undefined
-      let fallbackChain: import("../../shared/model-requirements").FallbackEntry[] | undefined
       let maxPromptTokens: number | undefined
 
       const resolution = await resolveSubagentExecution(args, options, parentContext.agent, "explore, librarian, oracle, metis, momus")
@@ -110,7 +101,6 @@ export function createDelegateTask(options: DelegateTaskToolOptions): ToolDefini
       }
       agentToUse = resolution.agentToUse
       categoryModel = resolution.categoryModel
-      fallbackChain = resolution.fallbackChain
 
       const systemContent = buildSystemContent({
         agentName: agentToUse,
@@ -121,10 +111,10 @@ export function createDelegateTask(options: DelegateTaskToolOptions): ToolDefini
       })
 
       if (runInBackground) {
-        return executeBackgroundTask(args, ctx, options, parentContext, agentToUse, categoryModel, systemContent, fallbackChain)
+        return executeBackgroundTask(args, ctx, options, parentContext, agentToUse, categoryModel, systemContent)
       }
 
-      return executeSyncTask(args, ctx, options, parentContext, agentToUse, categoryModel, systemContent, modelInfo, fallbackChain)
+      return executeSyncTask(args, ctx, options, parentContext, agentToUse, categoryModel, systemContent, modelInfo)
     },
   })
 }

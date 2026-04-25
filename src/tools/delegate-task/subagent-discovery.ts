@@ -5,7 +5,7 @@ type AgentMode = "subagent" | "primary" | "all" | undefined
 export type AgentInfo = {
   name: string
   mode?: "subagent" | "primary" | "all"
-  model?: string | { providerID: string; modelID: string }
+  model?: { providerID: string; modelID: string }
 }
 
 export function sanitizeSubagentType(subagentType: string): string {

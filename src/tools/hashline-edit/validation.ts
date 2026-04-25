@@ -1,4 +1,4 @@
-import { computeLegacyLineHash, computeLineHash } from "./hash-computation"
+import { computeLineHash } from "./hash-computation"
 import { HASHLINE_REF_PATTERN } from "./constants"
 
 interface LineRef {
@@ -16,7 +16,7 @@ const MISMATCH_CONTEXT = 2
 const LINE_REF_EXTRACT_PATTERN = /([0-9]+#[ZPMQVRWSNKTXJBYH]{2})/
 
 function isCompatibleLineHash(line: number, content: string, hash: string): boolean {
-  return computeLineHash(line, content) === hash || computeLegacyLineHash(line, content) === hash
+  return computeLineHash(line, content) === hash
 }
 
 export function normalizeLineRef(ref: string): string {

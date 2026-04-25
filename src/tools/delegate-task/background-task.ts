@@ -1,6 +1,5 @@
 import type { DelegateTaskArgs, ToolContextWithMetadata, DelegatedModelConfig } from "./types"
 import type { ExecutorContext, ParentContext } from "./executor-types"
-import type { FallbackEntry } from "../../shared/model-requirements"
 import { getTimingConfig } from "./timing"
 import { buildTaskPrompt } from "./prompt-builder"
 import { formatDetailedError } from "./error-formatting"
@@ -13,7 +12,6 @@ function continueSessionSetup(args: {
   taskID: string
   manager: ExecutorContext["manager"]
   timing: ReturnType<typeof getTimingConfig>
-  fallbackChain?: FallbackEntry[]
   category?: string
 }): void {
   if (!args.category) {
@@ -53,7 +51,6 @@ export async function executeBackgroundTask(
   agentToUse: string,
   categoryModel: DelegatedModelConfig | undefined,
   systemContent: string | undefined,
-  fallbackChain?: FallbackEntry[],
 ): Promise<string> {
   const { manager } = executorCtx
 
@@ -71,8 +68,6 @@ export async function executeBackgroundTask(
       parentAgent: parentContext.agent,
       parentTools: getSessionTools(parentContext.sessionID),
       model: categoryModel,
-      fallbackChain,
-      skills: args.load_skills && args.load_skills.length > 0 ? args.load_skills : undefined,
       skillContent: systemContent,
       category: args.category,
       sessionPermission: QUESTION_DENIED_SESSION_PERMISSION,
@@ -99,7 +94,6 @@ export async function executeBackgroundTask(
           taskID: task.id,
           manager,
           timing,
-          fallbackChain,
           category: args.category,
         })
         break
@@ -115,7 +109,6 @@ export async function executeBackgroundTask(
       prompt: args.prompt,
       agent: task.agent,
       category: args.category,
-        load_skills: args.load_skills ?? [],
       description: args.description,
       run_in_background: args.run_in_background,
       command: args.command,
