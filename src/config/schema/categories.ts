@@ -1,7 +1,7 @@
 import { z } from "zod"
 import { FallbackModelsSchema } from "./fallback-models"
 
-export const CategoryConfigSchema = z.object({
+const CategoryConfigSchema = z.object({
   /** Human-readable description of the category's purpose. Shown in task prompt. */
   description: z.string().optional(),
   model: z.string().optional(),
@@ -27,7 +27,7 @@ export const CategoryConfigSchema = z.object({
   disable: z.boolean().optional(),
 })
 
-export const BuiltinCategoryNameSchema = z.enum([
+const BuiltinCategoryNameSchema = z.enum([
   "visual-engineering",
   "ultrabrain",
   "deep",

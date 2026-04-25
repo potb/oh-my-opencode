@@ -3,7 +3,7 @@
 import { describe, it, expect } from "bun:test"
 import { buildAgentIdentitySection } from "./dynamic-agent-core-sections"
 import { createSisyphusAgent } from "./sisyphus"
-import { mergeAgentConfig } from "./builtin-agents/agent-overrides"
+import { applyOverrides } from "./builtin-agents/agent-overrides"
 
 describe("buildAgentIdentitySection", () => {
   describe("#given an agent name and role description", () => {
@@ -91,7 +91,7 @@ describe("Agent identity preservation through overrides", () => {
     describe("#when merging the override", () => {
       it("#then identity section is preserved in the merged prompt", () => {
         const baseConfig = createSisyphusAgent("anthropic/claude-opus-4-6")
-        const merged = mergeAgentConfig(baseConfig, { prompt_append: "Extra instructions here" })
+        const merged = applyOverrides(baseConfig, { prompt_append: "Extra instructions here" }, {})
 
         expect(merged.prompt).toContain("<agent-identity>")
         expect(merged.prompt).toContain("Sisyphus")
@@ -105,7 +105,7 @@ describe("Agent identity preservation through overrides", () => {
     describe("#when merging the override", () => {
       it("#then identity section is preserved unchanged", () => {
         const baseConfig = createSisyphusAgent("anthropic/claude-opus-4-6")
-        const merged = mergeAgentConfig(baseConfig, { model: "openai/gpt-5.4" })
+        const merged = applyOverrides(baseConfig, { model: "openai/gpt-5.4" }, {})
 
         expect(merged.prompt).toContain("<agent-identity>")
         expect(merged.prompt).toContain("Sisyphus")

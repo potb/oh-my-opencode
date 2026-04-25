@@ -1,9 +1,6 @@
 import { describe, expect, test } from "bun:test"
 import {
   createSisyphusJuniorAgentWithOverrides,
-  SISYPHUS_JUNIOR_DEFAULTS,
-  getSisyphusJuniorPromptSource,
-  buildSisyphusJuniorPrompt,
 } from "./index"
 
 describe("createSisyphusJuniorAgentWithOverrides", () => {
@@ -85,7 +82,7 @@ describe("createSisyphusJuniorAgentWithOverrides", () => {
       const result = createSisyphusJuniorAgentWithOverrides(override)
 
       // then
-      expect(result.model).toBe(SISYPHUS_JUNIOR_DEFAULTS.model)
+      expect(result.model).toBe("anthropic/claude-sonnet-4-6")
     })
 
     test("uses default temperature when no override", () => {
@@ -96,7 +93,7 @@ describe("createSisyphusJuniorAgentWithOverrides", () => {
       const result = createSisyphusJuniorAgentWithOverrides(override)
 
       // then
-      expect(result.temperature).toBe(SISYPHUS_JUNIOR_DEFAULTS.temperature)
+      expect(result.temperature).toBe(0.1)
     })
   })
 
@@ -113,8 +110,8 @@ describe("createSisyphusJuniorAgentWithOverrides", () => {
       const result = createSisyphusJuniorAgentWithOverrides(override)
 
       // then - defaults should be used, not the overrides
-      expect(result.model).toBe(SISYPHUS_JUNIOR_DEFAULTS.model)
-      expect(result.temperature).toBe(SISYPHUS_JUNIOR_DEFAULTS.temperature)
+      expect(result.model).toBe("anthropic/claude-sonnet-4-6")
+      expect(result.temperature).toBe(0.1)
     })
   })
 
@@ -410,191 +407,5 @@ describe("createSisyphusJuniorAgentWithOverrides", () => {
       expect(baseEndIndex).not.toBe(-1)
       expect(appendIndex).toBeGreaterThan(baseEndIndex)
     })
-  })
-})
-
-describe("getSisyphusJuniorPromptSource", () => {
-  test("returns 'gpt-5-4' for GPT 5.4 models", () => {
-    // given
-    const model = "openai/gpt-5.4"
-
-    // when
-    const source = getSisyphusJuniorPromptSource(model)
-
-    // then
-    expect(source).toBe("gpt-5-4")
-  })
-
-  test("returns 'gpt-5-4' for GitHub Copilot GPT 5.4", () => {
-    // given
-    const model = "github-copilot/gpt-5.4"
-
-    // when
-    const source = getSisyphusJuniorPromptSource(model)
-
-    // then
-    expect(source).toBe("gpt-5-4")
-  })
-
-  test("returns 'gpt-5-3-codex' for GPT 5.3 Codex models", () => {
-    // given
-    const model = "openai/gpt-5.3-codex"
-
-    // when
-    const source = getSisyphusJuniorPromptSource(model)
-
-    // then
-    expect(source).toBe("gpt-5-3-codex")
-  })
-
-  test("returns 'gpt-5-3-codex' for GitHub Copilot GPT 5.3 Codex", () => {
-    // given
-    const model = "github-copilot/gpt-5.3-codex"
-
-    // when
-    const source = getSisyphusJuniorPromptSource(model)
-
-    // then
-    expect(source).toBe("gpt-5-3-codex")
-  })
-
-  test("returns 'gpt' for generic GPT models", () => {
-    // given
-    const model = "openai/gpt-4o"
-
-    // when
-    const source = getSisyphusJuniorPromptSource(model)
-
-    // then
-    expect(source).toBe("gpt")
-  })
-
-  test("returns 'gpt' for GitHub Copilot generic GPT models", () => {
-    // given
-    const model = "github-copilot/gpt-4o"
-
-    // when
-    const source = getSisyphusJuniorPromptSource(model)
-
-    // then
-    expect(source).toBe("gpt")
-  })
-
-  test("returns 'default' for Claude models", () => {
-    // given
-    const model = "anthropic/claude-sonnet-4-6"
-
-    // when
-    const source = getSisyphusJuniorPromptSource(model)
-
-    // then
-    expect(source).toBe("default")
-  })
-
-  test("returns 'default' for undefined model", () => {
-    // given
-    const model = undefined
-
-    // when
-    const source = getSisyphusJuniorPromptSource(model)
-
-    // then
-    expect(source).toBe("default")
-  })
-})
-
-describe("buildSisyphusJuniorPrompt", () => {
-  test("GPT 5.4 model uses GPT-5.4 optimized prompt", () => {
-    // given
-    const model = "openai/gpt-5.4"
-
-    // when
-    const prompt = buildSisyphusJuniorPrompt(model, false)
-
-    // then
-    expect(prompt).toContain("expert coding agent")
-    expect(prompt).toContain("Scope Discipline")
-    expect(prompt).toContain("<tool_usage_rules>")
-    expect(prompt).toContain("Do not use `apply_patch`")
-  })
-
-  test("GPT 5.3 Codex model uses GPT-5.3-codex prompt", () => {
-    // given
-    const model = "openai/gpt-5.3-codex"
-
-    // when
-    const prompt = buildSisyphusJuniorPrompt(model, false)
-
-    // then
-    expect(prompt).toContain("Senior Engineer")
-    expect(prompt).toContain("Scope Discipline")
-    expect(prompt).toContain("<tool_usage_rules>")
-    expect(prompt).toContain("Do not use `apply_patch`")
-  })
-
-  test("generic GPT model uses generic GPT prompt", () => {
-    // given
-    const model = "openai/gpt-5.4"
-
-    // when
-    const prompt = buildSisyphusJuniorPrompt(model, false)
-
-    // then
-    expect(prompt).toContain("## Identity")
-    expect(prompt).toContain("Scope Discipline")
-    expect(prompt).toContain("<tool_usage_rules>")
-    expect(prompt).toContain("Progress Updates")
-    expect(prompt).toContain("Do not use `apply_patch`")
-  })
-
-  test("Claude model prompt contains Claude-specific sections", () => {
-    // given
-    const model = "anthropic/claude-sonnet-4-6"
-
-    // when
-    const prompt = buildSisyphusJuniorPrompt(model, false)
-
-    // then
-    expect(prompt).toContain("<Role>")
-    expect(prompt).toContain("<Todo_Discipline>")
-    expect(prompt).toContain("todowrite")
-  })
-
-    test("useTaskSystem=true includes Todo Discipline for GPT 5.4", () => {
-    // given
-    const model = "openai/gpt-5.4"
-
-    // when
-    const prompt = buildSisyphusJuniorPrompt(model, true)
-
-    // then
-    expect(prompt).toContain("Todo Discipline")
-    expect(prompt).toContain("todowrite")
-    expect(prompt).not.toContain("task_create")
-  })
-
-    test("useTaskSystem=true includes Todo Discipline for GPT 5.3 Codex", () => {
-    // given
-    const model = "openai/gpt-5.3-codex"
-
-    // when
-    const prompt = buildSisyphusJuniorPrompt(model, true)
-
-    // then
-    expect(prompt).toContain("Todo Discipline")
-    expect(prompt).toContain("todowrite")
-    expect(prompt).not.toContain("task_create")
-  })
-
-  test("useTaskSystem=false includes Todo_Discipline for Claude", () => {
-    // given
-    const model = "anthropic/claude-sonnet-4-6"
-
-    // when
-    const prompt = buildSisyphusJuniorPrompt(model, false)
-
-    // then
-    expect(prompt).toContain("<Todo_Discipline>")
-    expect(prompt).toContain("todowrite")
   })
 })

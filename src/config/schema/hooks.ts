@@ -1,6 +1,6 @@
 import { z } from "zod"
 
-export const HookNameSchema = z.enum([
+const HookNameSchema = z.enum([
   "tool-output-truncator",
   "question-label-truncator",
   "non-interactive-env",

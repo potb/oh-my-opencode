@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test"
 import { createSisyphusAgent } from "./sisyphus"
-import { buildSisyphusJuniorPrompt } from "./sisyphus-junior/agent"
+import { createSisyphusJuniorAgentWithOverrides } from "./sisyphus-junior"
 import {
   buildAntiDuplicationSection,
   buildExploreSection,
@@ -57,7 +57,7 @@ describe("delegation trust prompt rules", () => {
 
   test("Sisyphus-Junior GPT prompt forbids duplicate delegated exploration", () => {
     // given
-    const prompt = buildSisyphusJuniorPrompt("openai/gpt-5.2", false)
+    const prompt = createSisyphusJuniorAgentWithOverrides({ model: "openai/gpt-5.2" }).prompt
 
     // when / then
     expect(prompt).toContain("continue only with non-overlapping work while those searches run")
@@ -81,7 +81,7 @@ describe("delegation trust prompt rules", () => {
 
   test("Sisyphus-Junior GPT-5.4 prompt forbids duplicate delegated exploration", () => {
     // given
-    const prompt = buildSisyphusJuniorPrompt("openai/gpt-5.4", false)
+    const prompt = createSisyphusJuniorAgentWithOverrides({ model: "openai/gpt-5.4" }).prompt
 
     // when / then
     expect(prompt).toContain("continue only with non-overlapping work while those searches run")
@@ -90,7 +90,7 @@ describe("delegation trust prompt rules", () => {
 
   test("Sisyphus-Junior GPT-5.3 Codex prompt forbids duplicate delegated exploration", () => {
     // given
-    const prompt = buildSisyphusJuniorPrompt("openai/gpt-5.3-codex", false)
+    const prompt = createSisyphusJuniorAgentWithOverrides({ model: "openai/gpt-5.3-codex" }).prompt
 
     // when / then
     expect(prompt).toContain("continue only with non-overlapping work while those searches run")
@@ -99,7 +99,7 @@ describe("delegation trust prompt rules", () => {
 
   test("Sisyphus-Junior Gemini prompt forbids duplicate delegated exploration", () => {
     // given
-    const prompt = buildSisyphusJuniorPrompt("google/gemini-3.1-pro", false)
+    const prompt = createSisyphusJuniorAgentWithOverrides({ model: "google/gemini-3.1-pro" }).prompt
 
     // when / then
     expect(prompt).toContain("continue only with non-overlapping work while those searches run")

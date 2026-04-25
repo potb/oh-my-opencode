@@ -32,14 +32,14 @@ const MODE: AgentMode = "subagent"
 const BLOCKED_TOOLS = ["task"]
 const GPT_BLOCKED_TOOLS = ["task", "apply_patch"]
 
-export const SISYPHUS_JUNIOR_DEFAULTS = {
+const SISYPHUS_JUNIOR_DEFAULTS = {
   model: "anthropic/claude-sonnet-4-6",
   temperature: 0.1,
 } as const
 
 type SisyphusJuniorPromptSource = "default" | "gpt" | "gpt-5-4" | "gpt-5-3-codex" | "gemini"
 
-export function getSisyphusJuniorPromptSource(model?: string): SisyphusJuniorPromptSource {
+function getSisyphusJuniorPromptSource(model?: string): SisyphusJuniorPromptSource {
   if (model && isGptModel(model)) {
     const lower = model.toLowerCase()
     if (lower.includes("gpt-5.4") || lower.includes("gpt-5-4")) return "gpt-5-4"
@@ -55,7 +55,7 @@ export function getSisyphusJuniorPromptSource(model?: string): SisyphusJuniorPro
 /**
  * Builds the appropriate Sisyphus-Junior prompt based on model.
  */
-export function buildSisyphusJuniorPrompt(
+function buildSisyphusJuniorPrompt(
   model: string | undefined,
   useTaskSystem: boolean,
   promptAppend?: string

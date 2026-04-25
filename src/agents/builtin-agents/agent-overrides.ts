@@ -35,7 +35,7 @@ function applyCategoryOverride(
   return result as AgentConfig
 }
 
-export function mergeAgentConfig(
+function mergeAgentConfig(
   base: AgentConfig,
   override: AgentOverrideConfig,
   directory?: string

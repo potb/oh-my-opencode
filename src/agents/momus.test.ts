@@ -1,14 +1,14 @@
 import { describe, test, expect } from "bun:test"
-import { MOMUS_SYSTEM_PROMPT } from "./momus"
+import { createMomusAgent } from "./momus"
 
 function escapeRegExp(value: string) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
 }
 
-describe("MOMUS_SYSTEM_PROMPT policy requirements", () => {
+describe("Momus prompt policy requirements", () => {
   test("should treat SYSTEM DIRECTIVE as ignorable/stripped", () => {
     // given
-    const prompt = MOMUS_SYSTEM_PROMPT
+    const prompt = createMomusAgent("anthropic/claude-sonnet-4-6").prompt ?? ""
     
     // when / #then
     // Should mention that system directives are ignored
@@ -19,7 +19,7 @@ describe("MOMUS_SYSTEM_PROMPT policy requirements", () => {
 
   test("should extract paths containing .sisyphus/plans/ and ending in .md", () => {
     // given
-    const prompt = MOMUS_SYSTEM_PROMPT
+    const prompt = createMomusAgent("anthropic/claude-sonnet-4-6").prompt ?? ""
 
     // when / #then
     expect(prompt).toContain(".sisyphus/plans/")
@@ -30,7 +30,7 @@ describe("MOMUS_SYSTEM_PROMPT policy requirements", () => {
 
   test("should NOT teach that 'Please review' is INVALID (conversational wrapper allowed)", () => {
     // given
-    const prompt = MOMUS_SYSTEM_PROMPT
+    const prompt = createMomusAgent("anthropic/claude-sonnet-4-6").prompt ?? ""
 
     // when / #then
     // In RED phase, this will FAIL because current prompt explicitly lists this as INVALID
@@ -47,7 +47,7 @@ describe("MOMUS_SYSTEM_PROMPT policy requirements", () => {
 
   test("should handle ambiguity (2+ paths) and 'no path found' rejection", () => {
     // given
-    const prompt = MOMUS_SYSTEM_PROMPT
+    const prompt = createMomusAgent("anthropic/claude-sonnet-4-6").prompt ?? ""
 
     // when / #then
     // Should mention what happens when multiple paths are found

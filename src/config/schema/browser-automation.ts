@@ -1,6 +1,6 @@
 import { z } from "zod"
 
-export const BrowserAutomationProviderSchema = z.enum([
+const BrowserAutomationProviderSchema = z.enum([
   "agent-browser",
 ])
 

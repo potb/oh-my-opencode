@@ -277,8 +277,6 @@ Approve by default. Max 3 issues. Be specific - "Task X needs Y" not "needs more
 Response language: match the language of the plan content.
 </final_rules>`;
 
-export { MOMUS_DEFAULT_PROMPT as MOMUS_SYSTEM_PROMPT };
-
 export function createMomusAgent(model: string): AgentConfig {
   const restrictions = createAgentToolRestrictions([
     "write",

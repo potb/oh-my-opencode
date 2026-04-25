@@ -3,7 +3,6 @@
 import { describe, it, expect } from "bun:test"
 import {
   buildCategorySkillsDelegationGuide,
-  buildUltraworkSection,
   buildParallelDelegationSection,
   buildNonClaudePlannerSection,
   type AvailableSkill,
@@ -57,40 +56,6 @@ describe("buildCategorySkillsDelegationGuide", () => {
     expect(result).not.toContain("**Built-in**")
     expect(result).not.toContain("YOUR SKILLS")
     expect(result).not.toContain("visual-engineering")
-  })
-})
-
-describe("buildUltraworkSection", () => {
-  const agents: AvailableAgent[] = []
-
-  it("should separate builtin and custom skills", () => {
-    //#given: mix of builtin and custom skills
-    const skills: AvailableSkill[] = [
-      { name: "agent-browser", description: "Browser automation", location: "plugin" },
-      { name: "react-19", description: "React 19 patterns", location: "user" },
-    ]
-
-    //#when: building ultrawork section
-    const result = buildUltraworkSection(agents, [], skills)
-
-    //#then: should have separate sections
-    expect(result).toContain("Built-in Skills")
-    expect(result).toContain("User-Installed Skills")
-    expect(result).toContain("HIGH PRIORITY")
-  })
-
-  it("should not separate when only builtin skills", () => {
-    //#given: only builtin skills
-    const skills: AvailableSkill[] = [
-      { name: "agent-browser", description: "Browser automation", location: "plugin" },
-    ]
-
-    //#when: building ultrawork section
-    const result = buildUltraworkSection(agents, [], skills)
-
-    //#then: should have single section
-    expect(result).toContain("Built-in Skills")
-    expect(result).not.toContain("User-Installed Skills")
   })
 })
 

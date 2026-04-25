@@ -19,7 +19,7 @@ const MODE: AgentMode = "subagent"
  * - Prepare directives for the planner agent
  */
 
-export const METIS_SYSTEM_PROMPT = `# Metis - Pre-Planning Consultant
+const METIS_SYSTEM_PROMPT = `# Metis - Pre-Planning Consultant
 
 ## CONSTRAINTS
 

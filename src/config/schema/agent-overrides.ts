@@ -2,7 +2,7 @@ import { z } from "zod"
 import { FallbackModelsSchema } from "./fallback-models"
 import { AgentPermissionSchema } from "./internal/permission"
 
-export const AgentOverrideConfigSchema = z.object({
+const AgentOverrideConfigSchema = z.object({
   /** @deprecated Use `category` instead. Model is inherited from category defaults. */
   model: z.string().optional(),
   fallback_models: FallbackModelsSchema.optional(),

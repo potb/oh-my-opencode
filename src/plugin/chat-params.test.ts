@@ -3,7 +3,7 @@ import { mkdtempSync, rmSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 
-import { createChatParamsHandler, type ChatParamsOutput } from "./chat-params"
+import { createChatParamsHandler } from "./chat-params"
 import * as dataPathModule from "../shared/data-path"
 import { writeProviderModelsCache } from "../shared"
 import {
@@ -13,6 +13,14 @@ import {
 } from "../shared/session-prompt-params-state"
 
 describe("createChatParamsHandler", () => {
+  type ChatParamsOutput = {
+    temperature?: number
+    topP?: number
+    topK?: number
+    maxOutputTokens?: number
+    options: Record<string, unknown>
+  }
+
   let tempCacheRoot = ""
   let getCacheDirSpy: ReturnType<typeof spyOn>
 

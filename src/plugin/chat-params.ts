@@ -13,7 +13,7 @@ type ChatParamsHookInput = ChatParamsInput & {
   rawMessage?: Record<string, unknown>
 }
 
-export type ChatParamsOutput = {
+type ChatParamsOutput = {
   temperature?: number
   topP?: number
   topK?: number
