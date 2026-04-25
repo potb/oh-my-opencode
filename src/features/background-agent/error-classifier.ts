@@ -2,11 +2,6 @@ export function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null
 }
 
-export function isAbortedSessionError(error: unknown): boolean {
-  const message = getErrorText(error)
-  return message.toLowerCase().includes("aborted")
-}
-
 function getErrorText(error: unknown): string {
   if (!error) return ""
   if (typeof error === "string") return error

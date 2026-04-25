@@ -1,7 +1,6 @@
 import { describe, test, expect } from "bun:test"
 import {
   isRecord,
-  isAbortedSessionError,
   extractErrorName,
   extractErrorMessage,
   getSessionErrorMessage,
@@ -55,54 +54,6 @@ describe("isRecord", () => {
 
     test("returns true for TypeError instance", () => {
       expect(isRecord(new TypeError("test"))).toBe(true)
-    })
-  })
-})
-
-describe("isAbortedSessionError", () => {
-  describe("#given error with aborted message", () => {
-    test("returns true for string containing aborted", () => {
-      expect(isAbortedSessionError("Session aborted")).toBe(true)
-    })
-
-    test("returns true for string with ABORTED uppercase", () => {
-      expect(isAbortedSessionError("Session ABORTED")).toBe(true)
-    })
-
-    test("returns true for Error with aborted in message", () => {
-      expect(isAbortedSessionError(new Error("Session aborted"))).toBe(true)
-    })
-
-    test("returns true for object with message containing aborted", () => {
-      expect(isAbortedSessionError({ message: "The session was aborted" })).toBe(true)
-    })
-  })
-
-  describe("#given error without aborted message", () => {
-    test("returns false for string without aborted", () => {
-      expect(isAbortedSessionError("Session completed")).toBe(false)
-    })
-
-    test("returns false for Error without aborted", () => {
-      expect(isAbortedSessionError(new Error("Something went wrong"))).toBe(false)
-    })
-
-    test("returns false for empty string", () => {
-      expect(isAbortedSessionError("")).toBe(false)
-    })
-  })
-
-  describe("#given invalid inputs", () => {
-    test("returns false for null", () => {
-      expect(isAbortedSessionError(null)).toBe(false)
-    })
-
-    test("returns false for undefined", () => {
-      expect(isAbortedSessionError(undefined)).toBe(false)
-    })
-
-    test("returns false for object without message", () => {
-      expect(isAbortedSessionError({ code: "ABORTED" })).toBe(false)
     })
   })
 })

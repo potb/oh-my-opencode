@@ -133,21 +133,3 @@ async function findFirstMessageWithAgentFromSDK(client: OpencodeClient, sessionI
   }
   return null
 }
-
-export async function resolveMessageContext(
-  sessionID: string,
-  client: OpencodeClient,
-  messageDir: string | null,
-): Promise<{ prevMessage: StoredMessage | null; firstMessageAgent: string | null }> {
-  if (isSqliteBackend()) {
-    const [prevMessage, firstMessageAgent] = await Promise.all([
-      findNearestMessageWithFieldsFromSDK(client, sessionID),
-      findFirstMessageWithAgentFromSDK(client, sessionID),
-    ])
-    return { prevMessage, firstMessageAgent }
-  }
-  return {
-    prevMessage: messageDir ? findNearestMessageWithFields(messageDir) : null,
-    firstMessageAgent: messageDir ? findFirstMessageWithAgentFromStorage(messageDir) : null,
-  }
-}

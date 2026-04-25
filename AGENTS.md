@@ -101,7 +101,6 @@ bun run script/run-ci-tests.ts --print-plan
 - `src/hooks/AGENTS.md`
 - `src/plugin/AGENTS.md`
 - `src/shared/AGENTS.md`
-- `src/shared/model-capabilities/AGENTS.md`
 - `src/tools/AGENTS.md`
 - `src/tools/delegate-task/AGENTS.md`
 - `src/tools/hashline-edit/AGENTS.md`

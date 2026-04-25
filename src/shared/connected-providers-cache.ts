@@ -10,7 +10,7 @@ interface ConnectedProvidersCache {
 	updatedAt: string
 }
 
-export interface ModelMetadata {
+interface ModelMetadata {
 	id: string
 	provider?: string
 	context?: number

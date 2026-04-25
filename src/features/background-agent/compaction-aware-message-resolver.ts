@@ -1,8 +1,5 @@
-import { readdirSync, readFileSync } from "node:fs"
-import { join } from "node:path"
 import type { StoredMessage } from "../../shared/session-message-context"
 import {
-  hasCompactionPartInStorage,
   isCompactionAgent,
   isCompactionMessage,
 } from "../../shared/compaction-marker"
@@ -57,7 +54,6 @@ function convertSessionMessageToStoredMessage(message: SessionMessage): StoredMe
 
 function mergeStoredMessages(
   messages: Array<StoredMessage | null>,
-  sessionID?: string,
 ): StoredMessage | null {
 	for (const message of messages) {
 		if (!message || isCompactionAgent(message.agent)) {
@@ -81,27 +77,4 @@ export function resolvePromptContextFromSessionMessages(
     .reverse()
 
   return mergeStoredMessages(convertedMessages)
-}
-
-export function findNearestMessageExcludingCompaction(
-  messageDir: string,
-  _sessionID?: string,
-): StoredMessage | null {
-  const files = readdirSync(messageDir)
-    .filter((name: string) => name.endsWith(".json"))
-    .sort()
-    .reverse()
-
-  const messages: Array<StoredMessage | null> = []
-
-  for (const file of files) {
-    const content = readFileSync(join(messageDir, file), "utf-8")
-    const parsed = JSON.parse(content) as StoredMessage & { id?: string }
-    if (hasCompactionPartInStorage(parsed.id) || isCompactionAgent(parsed.agent)) {
-      continue
-    }
-    messages.push(parsed)
-      }
-
-  return mergeStoredMessages(messages)
 }
