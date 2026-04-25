@@ -96,16 +96,14 @@ export class LSPClient extends LSPClientConnection {
     await this.openFile(absPath)
     await new Promise((r) => setTimeout(r, 500))
 
-    try {
-      const result = await this.sendRequest<{ items?: Diagnostic[] }>("textDocument/diagnostic", {
-        textDocument: { uri },
-      })
-      if (result && typeof result === "object" && "items" in result) {
-        return result as { items: Diagnostic[] }
-      }
-    } catch {}
+    const result = await this.sendRequest<{ items?: Diagnostic[] }>("textDocument/diagnostic", {
+      textDocument: { uri },
+    })
+    if (result && typeof result === "object" && "items" in result) {
+      return result as { items: Diagnostic[] }
+    }
 
-    return { items: this.diagnosticsStore.get(uri) ?? [] }
+    return { items: [] }
   }
 
   async prepareRename(filePath: string, line: number, character: number): Promise<unknown> {

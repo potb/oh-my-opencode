@@ -188,6 +188,8 @@ function createBackgroundManager(): BackgroundManager {
       prompt: async () => ({}),
       promptAsync: async () => ({}),
       abort: async () => ({}),
+      messages: async () => ({ data: [] }),
+      todo: async () => ({ data: [] }),
     },
   }
   return new BackgroundManager({ client, directory: tmpdir() } as unknown as PluginInput)
@@ -987,7 +989,7 @@ describe("BackgroundManager.notifyParentSession - dynamic message lookup", () =>
 })
 
 describe("BackgroundManager.notifyParentSession - aborted parent", () => {
-  test("should fall back and still notify when parent session messages are aborted", async () => {
+  test("should throw when parent session messages are aborted", async () => {
     //#given
     let promptCalled = false
     const promptMock = async () => {
@@ -1022,16 +1024,17 @@ describe("BackgroundManager.notifyParentSession - aborted parent", () => {
     getPendingByParent(manager).set("session-parent", new Set([task.id, "task-remaining"]))
 
     //#when
-    await (manager as unknown as { notifyParentSession: (task: BackgroundTask) => Promise<void> })
+    const notifyPromise = (manager as unknown as { notifyParentSession: (task: BackgroundTask) => Promise<void> })
       .notifyParentSession(task)
 
     //#then
-    expect(promptCalled).toBe(true)
+    await expect(notifyPromise).rejects.toThrow("User aborted")
+    expect(promptCalled).toBe(false)
 
     manager.shutdown()
   })
 
-  test("should swallow aborted error from prompt", async () => {
+  test("should propagate aborted error from prompt", async () => {
     //#given
     let promptCalled = false
     const promptMock = async () => {
@@ -1063,17 +1066,18 @@ describe("BackgroundManager.notifyParentSession - aborted parent", () => {
     }
     getPendingByParent(manager).set("session-parent", new Set([task.id]))
 
-    //#when
-    await (manager as unknown as { notifyParentSession: (task: BackgroundTask) => Promise<void> })
-      .notifyParentSession(task)
+    //#when / #then
+    await expect(
+      (manager as unknown as { notifyParentSession: (task: BackgroundTask) => Promise<void> })
+        .notifyParentSession(task)
+    ).rejects.toThrow("User aborted")
 
-    //#then
     expect(promptCalled).toBe(true)
 
     manager.shutdown()
   })
 
-  test("should queue notification when promptAsync aborts while parent is idle", async () => {
+  test("should propagate promptAsync abort instead of queueing notification", async () => {
     //#given
     const promptMock = async () => {
       const error = new Error("Request aborted while waiting for input")
@@ -1103,15 +1107,14 @@ describe("BackgroundManager.notifyParentSession - aborted parent", () => {
     }
     getPendingByParent(manager).set("session-parent", new Set([task.id]))
 
-    //#when
-    await (manager as unknown as { notifyParentSession: (task: BackgroundTask) => Promise<void> })
-      .notifyParentSession(task)
+    //#when / #then
+    await expect(
+      (manager as unknown as { notifyParentSession: (task: BackgroundTask) => Promise<void> })
+        .notifyParentSession(task)
+    ).rejects.toThrow("Request aborted while waiting for input")
 
-    //#then
     const queuedNotifications = getPendingNotifications(manager).get("session-parent") ?? []
-    expect(queuedNotifications).toHaveLength(1)
-    expect(queuedNotifications[0]).toContain("<system-reminder>")
-    expect(queuedNotifications[0]).toContain("[ALL BACKGROUND TASKS COMPLETE]")
+    expect(queuedNotifications).toHaveLength(0)
 
     manager.shutdown()
   })
@@ -1366,7 +1369,7 @@ describe("BackgroundManager.tryCompleteTask", () => {
     expect(abortedSessionIDs).toEqual(["session-1"])
   })
 
-  test("should clean pendingByParent even when promptAsync notification fails", async () => {
+  test("should clean pendingByParent before surfacing promptAsync notification failure", async () => {
     // given
     const client = {
       session: {
@@ -1396,7 +1399,7 @@ describe("BackgroundManager.tryCompleteTask", () => {
     getPendingByParent(manager).set(task.parentSessionID, new Set([task.id]))
 
     // when
-    await tryCompleteTaskForTest(manager, task)
+    await expect(tryCompleteTaskForTest(manager, task)).rejects.toThrow("notify failed")
 
     // then
     expect(task.status).toBe("completed")
@@ -1816,7 +1819,7 @@ describe("BackgroundManager.resume model persistence", () => {
     })
   })
 
-  test("should NOT pass model when task has no model (backward compatibility)", async () => {
+  test("should NOT pass model when task has no model", async () => {
     // given - task without model (default behavior)
     const taskWithoutModel: BackgroundTask = {
       id: "task-no-model",
@@ -3900,7 +3903,7 @@ describe("BackgroundManager.handleEvent - session.deleted cascade", () => {
     pendingByParent.set("session-child", new Set([grandchildTask.id]))
 
     // when
-    manager.handleEvent({
+    await manager.handleEvent({
       type: "session.deleted",
       properties: { info: { id: parentSessionID } },
     })
@@ -3950,11 +3953,12 @@ describe("BackgroundManager.handleEvent - session.deleted cascade", () => {
     taskMap.set(grandchildTask.id, grandchildTask)
 
     //#when
-    manager.handleEvent({
+    await manager.handleEvent({
       type: "session.deleted",
       properties: { info: { id: parentSessionID } },
     })
 
+    await flushBackgroundNotifications()
     await flushBackgroundNotifications()
 
     //#then
@@ -4002,7 +4006,6 @@ describe("BackgroundManager.handleEvent - session.error", () => {
     sessionID: string
     description: string
     concurrencyKey?: string
-    fallbackChain?: typeof defaultRetryFallbackChain
   }) => {
     const task = createMockTask({
       id: input.id,
@@ -4014,8 +4017,6 @@ describe("BackgroundManager.handleEvent - session.error", () => {
       status: "running",
       concurrencyKey: input.concurrencyKey,
       model: { providerID: "anthropic", modelID: "claude-opus-4.6-thinking" },
-      fallbackChain: input.fallbackChain ?? defaultRetryFallbackChain,
-      attemptCount: 0,
     })
     getTaskMap(manager).set(task.id, task)
     return task
@@ -4043,7 +4044,7 @@ describe("BackgroundManager.handleEvent - session.error", () => {
     getPendingByParent(manager).set(task.parentSessionID, new Set([task.id]))
 
     //#when
-    manager.handleEvent({
+    await manager.handleEvent({
       type: "session.error",
       properties: {
         sessionID,
@@ -4081,7 +4082,7 @@ describe("BackgroundManager.handleEvent - session.error", () => {
     getTaskMap(manager).set(task.id, task)
 
     //#when
-    manager.handleEvent({
+    await manager.handleEvent({
       type: "session.error",
       properties: {
         sessionID,
@@ -4375,6 +4376,8 @@ describe("BackgroundManager.completionTimers - Memory Leak Fix", () => {
       "parent-session",
       new Set([taskA.id, taskB.id])
     )
+
+    ;(manager as unknown as { client: { session: { promptAsync: () => Promise<unknown> } } }).client.session.promptAsync = async () => ({})
 
     // when
     await (manager as unknown as { notifyParentSession: (task: BackgroundTask) => Promise<void> })
@@ -4948,7 +4951,7 @@ describe("BackgroundManager regression fixes - resume and aborted notification",
     manager.shutdown()
   })
 
-  test("should start cleanup timer even when promptAsync aborts", async () => {
+  test("should propagate promptAsync abort without scheduling cleanup timer", async () => {
     //#given
     const client = {
       session: {
@@ -4978,11 +4981,12 @@ describe("BackgroundManager regression fixes - resume and aborted notification",
     getTaskMap(manager).set(task.id, task)
     getPendingByParent(manager).set(task.parentSessionID, new Set([task.id]))
 
-    //#when
-    await (manager as unknown as { notifyParentSession: (task: BackgroundTask) => Promise<void> }).notifyParentSession(task)
+    //#when / #then
+    await expect(
+      (manager as unknown as { notifyParentSession: (task: BackgroundTask) => Promise<void> }).notifyParentSession(task)
+    ).rejects.toThrow("User aborted")
 
-    //#then
-    expect(getCompletionTimers(manager).has(task.id)).toBe(true)
+    expect(getCompletionTimers(manager).has(task.id)).toBe(false)
 
     manager.shutdown()
   })

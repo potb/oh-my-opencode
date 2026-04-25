@@ -58,8 +58,8 @@ export class LSPClientTransport {
           } else {
             this.push(Buffer.from(value))
           }
-        } catch {
-          this.push(null)
+        } catch (error) {
+          this.destroy(error instanceof Error ? error : new Error(String(error)))
         }
       },
     })
@@ -111,19 +111,17 @@ export class LSPClientTransport {
     const reader = this.proc.stderr.getReader()
     const read = async () => {
       const decoder = new TextDecoder()
-      try {
-        while (true) {
-          const { done, value } = await reader.read()
-          if (done) break
-          const text = decoder.decode(value)
-          this.stderrBuffer.push(text)
-          if (this.stderrBuffer.length > 100) {
-            this.stderrBuffer.shift()
-          }
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+        const text = decoder.decode(value)
+        this.stderrBuffer.push(text)
+        if (this.stderrBuffer.length > 100) {
+          this.stderrBuffer.shift()
         }
-      } catch {}
+      }
     }
-    read()
+    void read()
   }
 
   protected sendRequest<T>(method: string): Promise<T>
@@ -170,10 +168,8 @@ export class LSPClientTransport {
 
   async stop(): Promise<void> {
     if (this.connection) {
-      try {
-        this.sendNotification("shutdown", {})
-        this.sendNotification("exit")
-      } catch {}
+      this.sendNotification("shutdown", {})
+      this.sendNotification("exit")
       this.connection.dispose()
       this.connection = null
     }
@@ -181,28 +177,26 @@ export class LSPClientTransport {
     if (proc) {
       this.proc = null
       let exitedBeforeTimeout = false
-      try {
+      if (proc.exitCode === null) {
         proc.kill()
-        // Wait for exit with timeout to prevent indefinite hang
-        let timeoutId: ReturnType<typeof setTimeout> | undefined
-        const timeoutPromise = new Promise<void>((resolve) => {
-          timeoutId = setTimeout(resolve, 5000)
-        })
-        await Promise.race([
-          proc.exited.then(() => {
-            exitedBeforeTimeout = true
-          }).finally(() => timeoutId && clearTimeout(timeoutId)),
-          timeoutPromise,
-        ])
-        if (!exitedBeforeTimeout) {
-          log("[LSPClient] Process did not exit within timeout, escalating to SIGKILL")
-          try {
-            proc.kill("SIGKILL")
-            // Wait briefly for SIGKILL to take effect
-            await Promise.race([proc.exited, new Promise<void>((resolve) => setTimeout(resolve, 1000))])
-          } catch {}
-        }
-      } catch {}
+      }
+
+      let timeoutId: ReturnType<typeof setTimeout> | undefined
+      const timeoutPromise = new Promise<void>((resolve) => {
+        timeoutId = setTimeout(resolve, 5000)
+      })
+      await Promise.race([
+        proc.exited.then(() => {
+          exitedBeforeTimeout = true
+        }).finally(() => timeoutId && clearTimeout(timeoutId)),
+        timeoutPromise,
+      ])
+
+      if (!exitedBeforeTimeout && proc.exitCode === null) {
+        log("[LSPClient] Process did not exit within timeout, escalating to SIGKILL")
+        proc.kill("SIGKILL")
+        await Promise.race([proc.exited, new Promise<void>((resolve) => setTimeout(resolve, 1000))])
+      }
     }
     this.processExited = true
     this.diagnosticsStore.clear()

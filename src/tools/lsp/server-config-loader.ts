@@ -1,5 +1,6 @@
 import { existsSync, readFileSync } from "fs"
 import { join } from "path"
+import { z } from "zod"
 
 import { BUILTIN_SERVERS } from "./constants"
 import type { ResolvedServer } from "./types"
@@ -19,7 +20,20 @@ interface ConfigJson {
   lsp?: Record<string, LspEntry>
 }
 
-type ConfigSource = "project" | "user" | "opencode"
+const LspEntrySchema = z.object({
+  disabled: z.boolean().optional(),
+  command: z.array(z.string()).optional(),
+  extensions: z.array(z.string()).optional(),
+  priority: z.number().optional(),
+  env: z.record(z.string(), z.string()).optional(),
+  initialization: z.record(z.string(), z.unknown()).optional(),
+}).strict()
+
+const ConfigJsonSchema = z.object({
+  lsp: z.record(z.string(), LspEntrySchema).optional(),
+}).passthrough()
+
+type ConfigSource = "project" | "user"
 
 interface ServerWithSource extends ResolvedServer {
   source: ConfigSource
@@ -27,20 +41,16 @@ interface ServerWithSource extends ResolvedServer {
 
 function loadJsonFile<T>(path: string): T | null {
   if (!existsSync(path)) return null
-  try {
-    return parseJsonc(readFileSync(path, "utf-8")) as T
-  } catch {
-    return null
-  }
+  const parsed = parseJsonc(readFileSync(path, "utf-8"))
+  return ConfigJsonSchema.parse(parsed) as T
 }
 
-function getConfigPaths(): { project: string; user: string; opencode: string } {
+function getConfigPaths(): { project: string; user: string } {
   const cwd = process.cwd()
   const configDir = getOpenCodeConfigDir({ binary: "opencode" })
   return {
     project: detectPluginConfigFile(join(cwd, ".opencode")).path,
     user: detectPluginConfigFile(configDir).path,
-    opencode: detectConfigFile(join(configDir, "opencode")).path,
   }
 }
 
@@ -54,9 +64,6 @@ function loadAllConfigs(): Map<ConfigSource, ConfigJson> {
   const user = loadJsonFile<ConfigJson>(paths.user)
   if (user) configs.set("user", user)
 
-  const opencode = loadJsonFile<ConfigJson>(paths.opencode)
-  if (opencode) configs.set("opencode", opencode)
-
   return configs
 }
 
@@ -66,7 +73,7 @@ export function getMergedServers(): ServerWithSource[] {
   const disabled = new Set<string>()
   const seen = new Set<string>()
 
-  const sources: ConfigSource[] = ["project", "user", "opencode"]
+  const sources: ConfigSource[] = ["project", "user"]
 
   for (const source of sources) {
     const config = configs.get(source)
@@ -79,7 +86,9 @@ export function getMergedServers(): ServerWithSource[] {
       }
 
       if (seen.has(id)) continue
-      if (!entry.command || !entry.extensions) continue
+      if (!entry.command || !entry.extensions) {
+        throw new Error(`Invalid LSP config for '${id}' in ${source}: both 'command' and 'extensions' are required`)
+      }
 
       servers.push({
         id,
@@ -102,13 +111,13 @@ export function getMergedServers(): ServerWithSource[] {
       command: config.command,
       extensions: config.extensions,
       priority: -100,
-      source: "opencode",
+      source: "user",
     })
   }
 
   return servers.sort((a, b) => {
     if (a.source !== b.source) {
-      const order: Record<ConfigSource, number> = { project: 0, user: 1, opencode: 2 }
+      const order: Record<ConfigSource, number> = { project: 0, user: 1 }
       return order[a.source] - order[b.source]
     }
     return b.priority - a.priority

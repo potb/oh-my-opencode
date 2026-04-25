@@ -139,7 +139,7 @@ describe("LSPClient", () => {
         await never
       })
 
-      // Second attempt should be allowed after stale reset.
+      // Second attempt should be allowed after explicit retry.
       startSpy.mockImplementationOnce(async () => {})
       startSpy.mockImplementation(async () => {})
       initializeSpy.mockImplementation(async () => {})
@@ -152,6 +152,11 @@ describe("LSPClient", () => {
         lspManager.warmupClient(dir, server)
 
         dateNowSpy.mockReturnValueOnce(60_000)
+
+        await expect(Promise.race([
+          lspManager.getClient(dir, server),
+          new Promise<never>((_, reject) => setTimeout(() => reject(new Error("test-timeout")), 50)),
+        ])).rejects.toThrow("LSP server initialization timed out for typescript")
 
         const client = await Promise.race([
           lspManager.getClient(dir, server),

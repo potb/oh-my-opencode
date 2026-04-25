@@ -1,8 +1,6 @@
 import type { CreatedHooks } from "../create-hooks"
 import type { Managers } from "../create-managers"
 
-import { log } from "../shared/logger"
-
 type EventInput = Parameters<
   NonNullable<NonNullable<CreatedHooks["writeExistingFileGuard"]>["event"]>
 >[0]
@@ -21,23 +19,13 @@ function getEventSessionID(input: EventInput): string | undefined {
   return properties.sessionID
 }
 
-async function runEventHookSafely(
+async function runEventHook(
   hookName: string,
   handler: ((input: EventInput) => unknown | Promise<unknown>) | null | undefined,
   input: EventInput,
 ): Promise<void> {
   if (!handler) return
-
-  try {
-    await Promise.resolve(handler(input))
-  } catch (error) {
-    log("[event] hook execution failed", {
-      hook: hookName,
-      eventType: input.event.type,
-      sessionID: getEventSessionID(input),
-      error,
-    })
-  }
+  await Promise.resolve(handler(input))
 }
 
 function getEventHookEntries(hooks: CreatedHooks): Array<[
@@ -65,17 +53,9 @@ export async function dispatchEventHooks(args: {
 }): Promise<void> {
   const { input, hooks, managers } = args
 
-  try {
-    managers.backgroundManager.handleEvent(input.event)
-  } catch (error) {
-    log("[event] background manager event handling failed", {
-      eventType: input.event.type,
-      sessionID: getEventSessionID(input),
-      error,
-    })
-  }
+  await managers.backgroundManager.handleEvent(input.event)
 
   for (const [hookName, eventHandler] of getEventHookEntries(hooks)) {
-    await runEventHookSafely(hookName, eventHandler, input)
+    await runEventHook(hookName, eventHandler, input)
   }
 }

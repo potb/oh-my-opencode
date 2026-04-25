@@ -36,6 +36,9 @@ function createEventHandlerManagers(
 ): EventHandlerArgs["managers"] {
 	return {
 		...({} as EventHandlerArgs["managers"]),
+		backgroundManager: {
+			handleEvent: () => {},
+		} as unknown as EventHandlerArgs["managers"]["backgroundManager"],
 		tmuxSessionManager: {
 			onSessionCreated: async () => {},
 			onSessionDeleted: async () => {},
@@ -164,6 +167,9 @@ afterEach(() => {
 				clear: () => {},
 			},
 			managers: {
+				backgroundManager: {
+					handleEvent: () => {},
+				},
 				tmuxSessionManager: {
 					onSessionCreated: async () => {},
 					onSessionDeleted: async () => {},
@@ -235,6 +241,9 @@ afterEach(() => {
 				clear: () => {},
 			},
 			managers: {
+				backgroundManager: {
+					handleEvent: () => {},
+				},
 				tmuxSessionManager: {
 					onSessionCreated: async () => {},
 					onSessionDeleted: async () => {},
@@ -274,6 +283,9 @@ afterEach(() => {
 				clear: () => {},
 			},
 			managers: {
+				backgroundManager: {
+					handleEvent: () => {},
+				},
 				tmuxSessionManager: {
 					onSessionCreated: async () => {},
 					onSessionDeleted: async () => {},
@@ -379,6 +391,9 @@ describe("createEventHandler - event forwarding", () => {
 				clear: () => {},
 			},
 			managers: {
+				backgroundManager: {
+					handleEvent: () => {},
+				},
 				tmuxSessionManager: {
 					onSessionCreated: async () => {},
 					onSessionDeleted: async () => {},
@@ -418,6 +433,9 @@ describe("createEventHandler - event forwarding", () => {
 				clear: () => {},
 			},
 			managers: {
+				backgroundManager: {
+					handleEvent: () => {},
+				},
 				tmuxSessionManager: {
 					onSessionCreated: async () => {},
 					onSessionDeleted: async () => {},
@@ -446,7 +464,7 @@ describe("createEventHandler - event forwarding", () => {
 })
 
 	describe("createEventHandler - hook isolation", () => {
-	it("continues dispatching later event hooks when an earlier hook throws", async () => {
+	it("propagates event hook failure instead of swallowing it", async () => {
 		//#given
 		const laterHookCalls: EventInput[] = []
 
@@ -480,25 +498,17 @@ describe("createEventHandler - event forwarding", () => {
 				}),
 		})
 
-		//#when
-		let thrownError: unknown
-		try {
-			await eventHandler(asEventHandlerInput({
-				event: {
-					type: "session.error",
-					properties: {
-						sessionID: "ses_hook_isolation",
-						error: { name: "Error", message: "retry me" },
-					},
+		//#when / #then
+		await expect(eventHandler(asEventHandlerInput({
+			event: {
+				type: "session.error",
+				properties: {
+					sessionID: "ses_hook_isolation",
+					error: { name: "Error", message: "retry me" },
 				},
-			}))
-		} catch (error) {
-			thrownError = error
-		}
+			},
+		}))).rejects.toThrow("upstream hook failed")
 
-		//#then
-		expect(thrownError).toBeUndefined()
-		expect(laterHookCalls).toHaveLength(1)
-		expect(laterHookCalls[0]?.event.type).toBe("session.error")
+		expect(laterHookCalls).toHaveLength(0)
 	})
 })

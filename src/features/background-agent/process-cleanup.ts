@@ -41,17 +41,9 @@ export function registerManagerForCleanup(manager: CleanupTarget): void {
     if (cleanupPromise) return cleanupPromise
     const promises: Promise<void>[] = []
     for (const m of cleanupManagers) {
-      try {
-        promises.push(
-          Promise.resolve(m.shutdown()).catch((error) => {
-            log("[background-agent] Error during async shutdown cleanup:", error)
-          })
-        )
-      } catch (error) {
-        log("[background-agent] Error during shutdown cleanup:", error)
-      }
+      promises.push(Promise.resolve(m.shutdown()))
     }
-    cleanupPromise = Promise.allSettled(promises).then(() => {})
+    cleanupPromise = Promise.all(promises).then(() => {})
     cleanupPromise.then(() => {
       log("[background-agent] All shutdown cleanup completed")
     })

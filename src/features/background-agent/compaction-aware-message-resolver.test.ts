@@ -145,18 +145,18 @@ describe("findNearestMessageExcludingCompaction", () => {
       expect(result).toBeNull()
     })
 
-    test("returns null for non-existent directory", () => {
+    test("throws for non-existent directory", () => {
       // given
       const nonExistentDir = join(tmpdir(), "non-existent-dir-12345")
 
       // when
-      const result = findNearestMessageExcludingCompaction(nonExistentDir)
+      const act = () => findNearestMessageExcludingCompaction(nonExistentDir)
 
       // then
-      expect(result).toBeNull()
+      expect(act).toThrow()
     })
 
-    test("skips invalid JSON files and finds valid message", () => {
+    test("throws for invalid JSON files", () => {
       // given
       const invalidJson = "{ invalid json"
       const validMessage = {
@@ -167,11 +167,10 @@ describe("findNearestMessageExcludingCompaction", () => {
       writeFileSync(join(tempDir, "001.json"), JSON.stringify(validMessage))
 
       // when
-      const result = findNearestMessageExcludingCompaction(tempDir)
+      const act = () => findNearestMessageExcludingCompaction(tempDir)
 
       // then
-      expect(result).not.toBeNull()
-      expect(result?.agent).toBe("oracle")
+      expect(act).toThrow(SyntaxError)
     })
 
     test("finds newest valid message (sorted by filename reverse)", () => {
@@ -195,7 +194,7 @@ describe("findNearestMessageExcludingCompaction", () => {
       expect(result?.agent).toBe("newer")
     })
 
-    test("merges partial metadata from multiple recent messages", () => {
+    test("returns the first recent message that already has context", () => {
       // given
       writeFileSync(
         join(tempDir, "003.json"),
@@ -209,9 +208,7 @@ describe("findNearestMessageExcludingCompaction", () => {
 
       // then
       expect(result).toEqual({
-        agent: "atlas",
         model: { providerID: "anthropic", modelID: "claude-opus-4-1" },
-        tools: { bash: true },
       })
     })
 
@@ -219,7 +216,7 @@ describe("findNearestMessageExcludingCompaction", () => {
 })
 
 describe("resolvePromptContextFromSessionMessages", () => {
-  test("merges partial prompt context from recent SDK messages", () => {
+  test("returns the first recent SDK message that already has context", () => {
     // given
     const messages = [
       { info: { agent: "atlas" } },
@@ -232,13 +229,11 @@ describe("resolvePromptContextFromSessionMessages", () => {
 
     // then
     expect(result).toEqual({
-      agent: "atlas",
-      model: { providerID: "anthropic", modelID: "claude-opus-4-1" },
       tools: { bash: true },
     })
   })
 
-  test("skips SDK messages that only exist to mark compaction", () => {
+  test("skips compaction markers and returns the first remaining message with context", () => {
     // given
     const messages = [
       {
@@ -256,8 +251,6 @@ describe("resolvePromptContextFromSessionMessages", () => {
 
     // then
     expect(result).toEqual({
-      agent: "sisyphus",
-      model: { providerID: "anthropic", modelID: "claude-opus-4-1" },
       tools: { bash: true },
     })
   })

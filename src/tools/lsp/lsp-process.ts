@@ -117,13 +117,12 @@ function wrapNodeProcess(proc: ChildProcess): UnifiedProcess {
     },
     exited: exitedPromise,
     kill(signal?: string) {
-      try {
-        if (signal === "SIGKILL") {
-          proc.kill("SIGKILL")
-        } else {
-          proc.kill()
-        }
-      } catch {}
+      if (signal === "SIGKILL") {
+        proc.kill("SIGKILL")
+        return
+      }
+
+      proc.kill()
     },
   }
 }

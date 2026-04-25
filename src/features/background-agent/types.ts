@@ -1,4 +1,3 @@
-import type { FallbackEntry } from "../../shared/model-requirements"
 import type { DelegatedModelConfig } from "../../shared/model-resolution-types"
 import type { SessionPermissionRule } from "../../shared/question-denied-session-permission"
 
@@ -45,10 +44,6 @@ export interface BackgroundTask {
   progress?: TaskProgress
   parentModel?: { providerID: string; modelID: string }
   model?: DelegatedModelConfig
-  /** Fallback chain for runtime retry on model errors */
-  fallbackChain?: FallbackEntry[]
-  /** Number of fallback retry attempts made */
-  attemptCount?: number
   /** Active concurrency slot key */
   concurrencyKey?: string
   /** Persistent key for re-acquiring concurrency on resume */
@@ -80,8 +75,6 @@ export interface LaunchInput {
   parentAgent?: string
   parentTools?: Record<string, boolean>
   model?: DelegatedModelConfig
-  /** Fallback chain for runtime retry on model errors */
-  fallbackChain?: FallbackEntry[]
   isUnstableAgent?: boolean
   skills?: string[]
   skillContent?: string

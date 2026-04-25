@@ -47,14 +47,14 @@ function createTask(overrides: Partial<BackgroundTask> & { id: string; parentSes
   }
 }
 
-function createManager(enableParentSessionNotifications: boolean): {
+function createManager(): {
   manager: BackgroundManager
   promptAsyncCalls: PromptAsyncCall[]
 } {
   const promptAsyncCalls: PromptAsyncCall[] = []
   const client = {
     session: {
-      messages: async () => [],
+      messages: async () => ({ data: [] }),
       prompt: async () => ({}),
       promptAsync: async (call: PromptAsyncCall) => {
         promptAsyncCalls.push(call)
@@ -73,11 +73,7 @@ function createManager(enableParentSessionNotifications: boolean): {
     $: {} as PluginInput["$"],
   }
 
-  const manager = new BackgroundManager(
-    ctx,
-    undefined,
-    { enableParentSessionNotifications }
-  )
+  const manager = new BackgroundManager(ctx)
   Reflect.set(manager, "client", client)
 
   return { manager, promptAsyncCalls }
@@ -159,7 +155,7 @@ describe("BackgroundManager.notifyParentSession cleanup scheduling", () => {
   describe("#given 3 tasks for same parent and task A completed first", () => {
     test("#when siblings are still running or pending #then task A remains until siblings also complete", async () => {
       // given
-      const { manager } = createManager(false)
+      const { manager } = createManager()
       managerUnderTest = manager
       fakeTimers = installFakeTimers()
       const taskA = createTask({ id: "task-a", parentSessionID: "parent-1", description: "task A", status: "completed", completedAt: new Date() })
@@ -201,7 +197,7 @@ describe("BackgroundManager.notifyParentSession cleanup scheduling", () => {
   describe("#given 2 tasks for same parent and both completed", () => {
     test("#when the second completion notification is sent #then ALL BACKGROUND TASKS COMPLETE notification still works correctly", async () => {
       // given
-      const { manager, promptAsyncCalls } = createManager(true)
+      const { manager, promptAsyncCalls } = createManager()
       managerUnderTest = manager
       fakeTimers = installFakeTimers()
       const taskA = createTask({ id: "task-a", parentSessionID: "parent-1", description: "task A", status: "completed", completedAt: new Date("2026-03-11T00:01:00.000Z") })
@@ -239,7 +235,7 @@ describe("BackgroundManager.notifyParentSession cleanup scheduling", () => {
   describe("#given a completed task with cleanup timer scheduled", () => {
     test("#when cleanup timer fires #then task is deleted from this.tasks Map", async () => {
       // given
-      const { manager } = createManager(false)
+      const { manager } = createManager()
       managerUnderTest = manager
       fakeTimers = installFakeTimers()
       const task = createTask({ id: "task-a", parentSessionID: "parent-1", description: "task A", status: "completed", completedAt: new Date("2026-03-11T00:01:00.000Z") })

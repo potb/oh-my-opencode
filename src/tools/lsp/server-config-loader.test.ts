@@ -34,35 +34,6 @@ describe("getMergedServers", () => {
     }
   })
 
-  it("discovers JSONC-only opencode config (opencode.jsonc)", () => {
-    const originalEnv = process.env.OPENCODE_CONFIG_DIR
-    const tempBase = join(tmpdir(), `omo-test-oc-jsonc-${Date.now()}-${Math.random().toString(36).slice(2)}`)
-    try {
-      mkdirSync(tempBase, { recursive: true })
-      process.env.OPENCODE_CONFIG_DIR = tempBase
-
-      const opencodeJsonc = `{
-  // opencode jsonc config
-  "lsp": {
-    "opencode-jsonc": {
-      "command": ["opencode-jsonc-cmd"],
-      "extensions": [".ocjs"]
-    }
-  }
-}`
-      const opencodePath = join(tempBase, "opencode.jsonc")
-      writeFileSync(opencodePath, opencodeJsonc, "utf-8")
-
-      const servers = getMergedServers()
-      const found = servers.find(s => s.id === "opencode-jsonc" && s.source === "opencode")
-      expect(found !== undefined).toBe(true)
-    } finally {
-      if (originalEnv === undefined) delete process.env.OPENCODE_CONFIG_DIR
-      else process.env.OPENCODE_CONFIG_DIR = originalEnv
-      rmSync(tempBase, { recursive: true, force: true })
-    }
-  })
-
   it("discovers JSONC-only project config (.opencode/oh-my-opencode.jsonc)", () => {
     const originalCwd = process.cwd()
     const tempProject = join(tmpdir(), `omo-test-project-jsonc-${Date.now()}-${Math.random().toString(36).slice(2)}`)
@@ -90,7 +61,7 @@ describe("getMergedServers", () => {
     }
   })
 
-  it("prefers .jsonc over .json when both exist for same config id", () => {
+  it("ignores .json and only loads .jsonc for plugin config", () => {
     const originalEnv = process.env.OPENCODE_CONFIG_DIR
     const tempBase = join(tmpdir(), `omo-test-precedence-${Date.now()}-${Math.random().toString(36).slice(2)}`)
     try {

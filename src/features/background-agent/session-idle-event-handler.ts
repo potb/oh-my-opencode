@@ -15,7 +15,7 @@ export function handleSessionIdleBackgroundEvent(args: {
   checkSessionTodos: (sessionID: string) => Promise<boolean>
   tryCompleteTask: (task: BackgroundTask, source: string) => Promise<boolean>
   emitIdleEvent: (sessionID: string) => void
-}): void {
+}): Promise<void> {
   const {
     properties,
     findBySession,
@@ -27,13 +27,13 @@ export function handleSessionIdleBackgroundEvent(args: {
   } = args
 
   const sessionID = getString(properties, "sessionID")
-  if (!sessionID) return
+  if (!sessionID) return Promise.resolve()
 
   const task = findBySession(sessionID)
-  if (!task || task.status !== "running") return
+  if (!task || task.status !== "running") return Promise.resolve()
 
   const startedAt = task.startedAt
-  if (!startedAt) return
+  if (!startedAt) return Promise.resolve()
 
   const elapsedMs = Date.now() - startedAt.getTime()
   if (elapsedMs < MIN_IDLE_TIME_MS) {
@@ -52,42 +52,40 @@ export function handleSessionIdleBackgroundEvent(args: {
     } else {
       log("[background-agent] session.idle already deferred:", { elapsedMs, taskId: task.id })
     }
-    return
+    return Promise.resolve()
   }
 
-  validateSessionHasOutput(sessionID)
-    .then(async (hasValidOutput) => {
-      if (task.status !== "running") {
-        log("[background-agent] Task status changed during validation, skipping:", {
-          taskId: task.id,
-          status: task.status,
-        })
-        return
-      }
+  return (async (): Promise<void> => {
+    const hasValidOutput = await validateSessionHasOutput(sessionID)
 
-      if (!hasValidOutput) {
-        log("[background-agent] Session.idle but no valid output yet, waiting:", task.id)
-        return
-      }
+    if (task.status !== "running") {
+      log("[background-agent] Task status changed during validation, skipping:", {
+        taskId: task.id,
+        status: task.status,
+      })
+      return
+    }
 
-      const hasIncompleteTodos = await checkSessionTodos(sessionID)
+    if (!hasValidOutput) {
+      log("[background-agent] Session.idle but no valid output yet, waiting:", task.id)
+      return
+    }
 
-      if (task.status !== "running") {
-        log("[background-agent] Task status changed during todo check, skipping:", {
-          taskId: task.id,
-          status: task.status,
-        })
-        return
-      }
+    const hasIncompleteTodos = await checkSessionTodos(sessionID)
 
-      if (hasIncompleteTodos) {
-        log("[background-agent] Task has incomplete todos, waiting for todo-continuation:", task.id)
-        return
-      }
+    if (task.status !== "running") {
+      log("[background-agent] Task status changed during todo check, skipping:", {
+        taskId: task.id,
+        status: task.status,
+      })
+      return
+    }
 
-      await tryCompleteTask(task, "session.idle event")
-    })
-    .catch((err) => {
-      log("[background-agent] Error in session.idle handler:", err)
-    })
+    if (hasIncompleteTodos) {
+      log("[background-agent] Task has incomplete todos, waiting for todo-continuation:", task.id)
+      return
+    }
+
+    await tryCompleteTask(task, "session.idle event")
+  })()
 }

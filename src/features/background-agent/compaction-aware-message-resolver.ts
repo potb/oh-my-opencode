@@ -1,7 +1,6 @@
 import { readdirSync, readFileSync } from "node:fs"
 import { join } from "node:path"
 import type { StoredMessage } from "../../shared/session-message-context"
-import { getCompactionAgentConfigCheckpoint } from "../../shared/compaction-agent-config-checkpoint"
 import {
   hasCompactionPartInStorage,
   isCompactionAgent,
@@ -17,18 +16,9 @@ type SessionMessage = {
       modelID?: string
       variant?: string
     }
-    providerID?: string
-    modelID?: string
     tools?: StoredMessage["tools"]
   }
   parts?: Array<{ type?: string }>
-}
-
-function hasFullAgentAndModel(message: StoredMessage): boolean {
-  return !!message.agent &&
-    !isCompactionAgent(message.agent) &&
-    !!message.model?.providerID &&
-    !!message.model?.modelID
 }
 
 function hasPartialAgentOrModel(message: StoredMessage): boolean {
@@ -47,8 +37,8 @@ function convertSessionMessageToStoredMessage(message: SessionMessage): StoredMe
     return null
   }
 
-  const providerID = info.model?.providerID ?? info.providerID
-  const modelID = info.model?.modelID ?? info.modelID
+  const providerID = info.model?.providerID
+  const modelID = info.model?.modelID
 
   return {
     ...(info.agent ? { agent: info.agent } : {}),
@@ -69,94 +59,49 @@ function mergeStoredMessages(
   messages: Array<StoredMessage | null>,
   sessionID?: string,
 ): StoredMessage | null {
-  const merged: StoredMessage = {}
+	for (const message of messages) {
+		if (!message || isCompactionAgent(message.agent)) {
+			continue
+		}
 
-  for (const message of messages) {
-    if (!message || isCompactionAgent(message.agent)) {
-      continue
-    }
+		if (hasPartialAgentOrModel(message)) {
+			return message
+		}
+	}
 
-    if (!merged.agent && message.agent) {
-      merged.agent = message.agent
-    }
-
-    if (!merged.model?.providerID && message.model?.providerID && message.model.modelID) {
-      merged.model = {
-        providerID: message.model.providerID,
-        modelID: message.model.modelID,
-        ...(message.model.variant ? { variant: message.model.variant } : {}),
-      }
-    }
-
-    if (!merged.tools && message.tools) {
-      merged.tools = message.tools
-    }
-
-    if (hasFullAgentAndModel(merged) && merged.tools) {
-      break
-    }
-  }
-
-  const checkpoint = sessionID
-    ? getCompactionAgentConfigCheckpoint(sessionID)
-    : undefined
-
-  if (!merged.agent && checkpoint?.agent) {
-    merged.agent = checkpoint.agent
-  }
-
-  if (!merged.model && checkpoint?.model) {
-    merged.model = {
-      providerID: checkpoint.model.providerID,
-      modelID: checkpoint.model.modelID,
-    }
-  }
-
-  if (!merged.tools && checkpoint?.tools) {
-    merged.tools = checkpoint.tools
-  }
-
-  return hasPartialAgentOrModel(merged) ? merged : null
+	return null
 }
 
 export function resolvePromptContextFromSessionMessages(
   messages: SessionMessage[],
-  sessionID?: string,
+  _sessionID?: string,
 ): StoredMessage | null {
   const convertedMessages = messages
     .map(convertSessionMessageToStoredMessage)
     .reverse()
 
-  return mergeStoredMessages(convertedMessages, sessionID)
+  return mergeStoredMessages(convertedMessages)
 }
 
 export function findNearestMessageExcludingCompaction(
   messageDir: string,
-  sessionID?: string,
+  _sessionID?: string,
 ): StoredMessage | null {
-  try {
-    const files = readdirSync(messageDir)
-      .filter((name: string) => name.endsWith(".json"))
-      .sort()
-      .reverse()
+  const files = readdirSync(messageDir)
+    .filter((name: string) => name.endsWith(".json"))
+    .sort()
+    .reverse()
 
-    const messages: Array<StoredMessage | null> = []
+  const messages: Array<StoredMessage | null> = []
 
-    for (const file of files) {
-      try {
-        const content = readFileSync(join(messageDir, file), "utf-8")
-        const parsed = JSON.parse(content) as StoredMessage & { id?: string }
-        if (hasCompactionPartInStorage(parsed.id) || isCompactionAgent(parsed.agent)) {
-          continue
-        }
-        messages.push(parsed)
-      } catch {
-        continue
-      }
+  for (const file of files) {
+    const content = readFileSync(join(messageDir, file), "utf-8")
+    const parsed = JSON.parse(content) as StoredMessage & { id?: string }
+    if (hasCompactionPartInStorage(parsed.id) || isCompactionAgent(parsed.agent)) {
+      continue
     }
+    messages.push(parsed)
+      }
 
-    return mergeStoredMessages(messages, sessionID)
-  } catch {
-    return null
-  }
+  return mergeStoredMessages(messages)
 }

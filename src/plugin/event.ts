@@ -149,8 +149,9 @@ export function createEventHandler(args: {
       const role = info?.role as string | undefined;
       if (sessionID && role === "user") {
         const isCompactionMessage = agent ? isCompactionAgent(agent) : false;
-        const providerID = info?.providerID as string | undefined;
-        const modelID = info?.modelID as string | undefined;
+        const model = info?.model as { providerID?: string; modelID?: string } | undefined;
+        const providerID = model?.providerID;
+        const modelID = model?.modelID;
         if (providerID && modelID && !isCompactionMessage) {
           lastKnownModelBySession.set(sessionID, { providerID, modelID });
           setSessionModel(sessionID, { providerID, modelID });

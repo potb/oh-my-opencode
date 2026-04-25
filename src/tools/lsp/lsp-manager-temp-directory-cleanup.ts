@@ -21,9 +21,7 @@ export async function cleanupTempDirectoryLspClients(
     const managed = clients.get(key)
     if (managed) {
       clients.delete(key)
-      try {
-        await managed.client.stop()
-      } catch {}
+      await managed.client.stop()
     }
   }
 }

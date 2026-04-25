@@ -78,24 +78,20 @@ class LSPServerManager {
         now - managed.initializingSince >= this.INIT_TIMEOUT
       ) {
         // Stale init can permanently block subsequent calls (e.g., LSP process hang)
-        try {
-          await managed.client.stop();
-        } catch {}
+        await managed.client.stop();
         this.clients.delete(key);
-        managed = undefined;
+        throw new Error(`LSP server initialization timed out for ${server.id}`);
       }
     }
     if (managed) {
       if (managed.initPromise) {
         try {
           await managed.initPromise;
-        } catch {
+        } catch (error) {
           // Failed init should not keep the key blocked forever.
-          try {
-            await managed.client.stop();
-          } catch {}
+          await managed.client.stop();
           this.clients.delete(key);
-          managed = undefined;
+          throw error;
         }
       }
 
@@ -105,10 +101,9 @@ class LSPServerManager {
           managed.lastUsedAt = Date.now();
           return managed.client;
         }
-        try {
-          await managed.client.stop();
-        } catch {}
+        await managed.client.stop();
         this.clients.delete(key);
+        throw new Error(`LSP server ${server.id} is not alive`);
       }
     }
 
@@ -131,9 +126,7 @@ class LSPServerManager {
       await initPromise;
     } catch (error) {
       this.clients.delete(key);
-      try {
-        await client.stop();
-      } catch {}
+      await client.stop();
       throw error;
     }
     const m = this.clients.get(key);
@@ -165,7 +158,7 @@ class LSPServerManager {
       initializingSince: initStartedAt,
     });
 
-    initPromise
+    void initPromise
       .then(() => {
         const m = this.clients.get(key);
         if (m) {
@@ -174,10 +167,11 @@ class LSPServerManager {
           m.initializingSince = undefined;
         }
       })
-      .catch(() => {
+      .catch(async (error) => {
         // Warmup failures must not permanently block future initialization.
         this.clients.delete(key);
-        void client.stop().catch(() => {});
+        await client.stop();
+        throw error;
       });
   }
 

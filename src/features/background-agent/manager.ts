@@ -1,6 +1,6 @@
 
 import type { PluginInput } from "@opencode-ai/plugin"
-import { isAgentNotFoundError, FALLBACK_AGENT, buildFallbackBody } from "./spawner"
+import { isAgentNotFoundError } from "./spawner"
 import type {
   BackgroundTask,
   LaunchInput,
@@ -12,7 +12,7 @@ import {
   getAgentToolRestrictions,
   normalizePromptTools,
   normalizeSDKResponse,
-  promptWithModelSuggestionRetry,
+  promptAsyncWithTimeout,
   resolveInheritedPromptTools,
   createInternalAgentTextPart,
 } from "../../shared"
@@ -33,7 +33,6 @@ import {
   type BackgroundTaskNotificationTask,
 } from "./background-task-notification-template"
 import {
-  isAbortedSessionError,
   extractErrorName,
   extractErrorMessage,
   getSessionErrorMessage,
@@ -41,12 +40,9 @@ import {
 } from "./error-classifier"
 import { registerManagerForCleanup, unregisterManagerForCleanup } from "./process-cleanup"
 import {
-  findNearestMessageExcludingCompaction,
   resolvePromptContextFromSessionMessages,
 } from "./compaction-aware-message-resolver"
 import { handleSessionIdleBackgroundEvent } from "./session-idle-event-handler"
-import { MESSAGE_STORAGE } from "../../shared/opencode-storage-paths"
-import { join } from "node:path"
 import { pruneStaleTasksAndNotifications } from "./task-poller"
 import { checkAndInterruptStaleTasks } from "./task-poller"
 import { abortWithTimeout } from "./abort-with-timeout"
@@ -305,8 +301,6 @@ export class BackgroundManager {
         parentAgent: input.parentAgent,
         parentTools: input.parentTools,
         model: input.model,
-        fallbackChain: input.fallbackChain,
-        attemptCount: 0,
         category: input.category,
       }
 
@@ -389,9 +383,7 @@ export class BackgroundManager {
           }
 
           this.markForNotification(item.task)
-          this.enqueueNotificationForParent(item.task.parentSessionID, () => this.notifyParentSession(item.task)).catch(err => {
-            log("[background-agent] Failed to notify on startTask error:", err)
-          })
+          await this.enqueueNotificationForParent(item.task.parentSessionID, () => this.notifyParentSession(item.task))
         }
       }
     } finally {
@@ -410,14 +402,20 @@ export class BackgroundManager {
 
     const concurrencyKey = this.getConcurrencyKeyFromInput(input)
 
-    const parentSession = await this.client.session.get({
-      path: { id: input.parentSessionID },
-      query: { directory: this.directory },
-    }).catch((err) => {
-      log(`[background-agent] Failed to get parent session: ${err}`)
-      return null
-    })
-    const parentDirectory = parentSession?.data?.directory ?? this.directory
+    let parentSession: Awaited<ReturnType<typeof this.client.session.get>>
+    try {
+      parentSession = await this.client.session.get({
+        path: { id: input.parentSessionID },
+        query: { directory: this.directory },
+      })
+    } catch (err) {
+      throw new Error(`Failed to get parent session: ${String(err)}`)
+    }
+
+    const parentDirectory = parentSession.data?.directory
+    if (!parentDirectory) {
+      throw new Error(`Parent session ${input.parentSessionID} has no directory`)
+    }
     log(`[background-agent] Parent dir: ${parentSession?.data?.directory}, using: ${parentDirectory}`)
 
     const createResult = await this.client.session.create({
@@ -515,38 +513,17 @@ export class BackgroundManager {
       parts: [createInternalAgentTextPart(input.prompt)],
     }
 
-    promptWithModelSuggestionRetry(this.client, {
+    promptAsyncWithTimeout(this.client, {
       path: { id: sessionID },
       body: promptBody,
     }).catch(async (error) => {
-      // Retry with fallback agent if the original agent was unregistered (e.g., after a model switch)
-      if (isAgentNotFoundError(error) && input.agent !== FALLBACK_AGENT) {
-        log("[background-agent] Agent not found, retrying with fallback agent", {
-          original: input.agent,
-          fallback: FALLBACK_AGENT,
-          taskId: task.id,
-        })
-        try {
-          const fallbackBody = buildFallbackBody(promptBody, FALLBACK_AGENT)
-          setSessionTools(sessionID, fallbackBody.tools as Record<string, boolean>)
-          await promptWithModelSuggestionRetry(this.client, {
-            path: { id: sessionID },
-            body: fallbackBody,
-          })
-          task.agent = FALLBACK_AGENT
-          return
-        } catch (retryError) {
-          log("[background-agent] Fallback agent also failed:", retryError)
-        }
-      }
-
       log("[background-agent] promptAsync error:", error)
       const existingTask = this.findBySession(sessionID)
       if (existingTask) {
         existingTask.status = "interrupt"
         const errorMessage = error instanceof Error ? error.message : String(error)
         if (errorMessage.includes("agent.name") || errorMessage.includes("undefined") || isAgentNotFoundError(error)) {
-          existingTask.error = `Agent "${input.agent}" not found. Make sure the agent is registered in your opencode.json or provided by a plugin.`
+          existingTask.error = `Agent "${input.agent}" not found. Make sure the agent is registered in your oh-my-opencode.jsonc or provided by a plugin.`
         } else {
           existingTask.error = errorMessage
         }
@@ -564,9 +541,7 @@ export class BackgroundManager {
         await this.abortSessionWithLogging(sessionID, "launch error cleanup")
 
         this.markForNotification(existingTask)
-        this.enqueueNotificationForParent(existingTask.parentSessionID, () => this.notifyParentSession(existingTask)).catch(err => {
-          log("[background-agent] Failed to notify on error:", err)
-        })
+        await this.enqueueNotificationForParent(existingTask.parentSessionID, () => this.notifyParentSession(existingTask))
       }
     })
   }
@@ -833,9 +808,7 @@ export class BackgroundManager {
       }
 
       this.markForNotification(existingTask)
-      this.enqueueNotificationForParent(existingTask.parentSessionID, () => this.notifyParentSession(existingTask)).catch(err => {
-        log("[background-agent] Failed to notify on resume error:", err)
-      })
+      await this.enqueueNotificationForParent(existingTask.parentSessionID, () => this.notifyParentSession(existingTask))
     })
 
     return existingTask
@@ -847,29 +820,21 @@ export class BackgroundManager {
       return observedIncompleteTodos
     }
 
-    try {
-      const response = await this.client.session.todo({
-        path: { id: sessionID },
-      })
-      const todos = normalizeSDKResponse(response, [] as Todo[], { preferResponseOnMissingData: true })
-      if (!todos || todos.length === 0) {
-        this.observedIncompleteTodosBySession.set(sessionID, false)
-        return false
-      }
-
-      const incomplete = todos.filter(
-        (t) => t.status !== "completed" && t.status !== "cancelled"
-      )
-      const hasIncompleteTodos = incomplete.length > 0
-      this.observedIncompleteTodosBySession.set(sessionID, hasIncompleteTodos)
-      return hasIncompleteTodos
-    } catch (error) {
-      log("[background-agent] Failed to check session todos:", {
-        sessionID,
-        error,
-      })
+    const response = await this.client.session.todo({
+      path: { id: sessionID },
+    })
+    const todos = normalizeSDKResponse<Todo[]>(response)
+    if (!todos || todos.length === 0) {
+      this.observedIncompleteTodosBySession.set(sessionID, false)
       return false
     }
+
+    const incomplete = todos.filter(
+      (t) => t.status !== "completed" && t.status !== "cancelled"
+    )
+    const hasIncompleteTodos = incomplete.length > 0
+    this.observedIncompleteTodosBySession.set(sessionID, hasIncompleteTodos)
+    return hasIncompleteTodos
   }
 
   private markSessionOutputObserved(sessionID: string): void {
@@ -896,7 +861,7 @@ export class BackgroundManager {
     return field === "text" || field === "reasoning"
   }
 
-  handleEvent(event: Event): void {
+  async handleEvent(event: Event): Promise<void> {
     const props = event.properties
 
     if (event.type === "message.updated") {
@@ -1036,7 +1001,7 @@ export class BackgroundManager {
 
     if (event.type === "session.idle") {
       if (!props || typeof props !== "object") return
-      handleSessionIdleBackgroundEvent({
+      await handleSessionIdleBackgroundEvent({
         properties: props as Record<string, unknown>,
         findBySession: (id) => this.findBySession(id),
         idleDeferralTimers: this.idleDeferralTimers,
@@ -1059,16 +1024,11 @@ export class BackgroundManager {
       const errorMessage = props ? getSessionErrorMessage(props) : undefined
 
       const errorInfo = { name: errorName, message: errorMessage }
-      void this.handleSessionErrorEvent({
+      await this.handleSessionErrorEvent({
         errorInfo,
         errorMessage,
         errorName,
         task,
-      }).catch((error) => {
-        log("[background-agent] Error handling session.error event:", {
-          error,
-          taskId: task.id,
-        })
       })
       return
     }
@@ -1109,19 +1069,13 @@ export class BackgroundManager {
         parentSessionsToClear.add(task.parentSessionID)
 
         if (task.status === "running" || task.status === "pending") {
-          void this.cancelTask(task.id, {
+          await this.cancelTask(task.id, {
             source: "session.deleted",
             reason: "Session deleted",
-          }).then(() => {
-            if (deletedSessionIDs.has(task.parentSessionID)) {
-              this.pendingNotifications.delete(task.parentSessionID)
-            }
-          }).catch(err => {
-            if (deletedSessionIDs.has(task.parentSessionID)) {
-              this.pendingNotifications.delete(task.parentSessionID)
-            }
-            log("[background-agent] Failed to cancel task on session.deleted:", { taskId: task.id, error: err })
           })
+          if (deletedSessionIDs.has(task.parentSessionID)) {
+            this.pendingNotifications.delete(task.parentSessionID)
+          }
         }
       }
 
@@ -1207,9 +1161,7 @@ export class BackgroundManager {
     }
 
     this.markForNotification(task)
-    this.enqueueNotificationForParent(task.parentSessionID, () => this.notifyParentSession(task)).catch(err => {
-      log("[background-agent] Error in notifyParentSession for errored task:", { taskId: task.id, error: err })
-    })
+    await this.enqueueNotificationForParent(task.parentSessionID, () => this.notifyParentSession(task))
   }
 
   markForNotification(task: BackgroundTask): void {
@@ -1266,7 +1218,7 @@ export class BackgroundManager {
         path: { id: sessionID },
       })
 
-      const messages = normalizeSDKResponse(response, [] as Array<{ info?: { role?: string } }>, { preferResponseOnMissingData: true })
+      const messages = normalizeSDKResponse<Array<{ info?: { role?: string } }>>(response)
       
       // Check for at least one assistant or tool message
       const hasAssistantOrToolMessage = messages.some(
@@ -1311,8 +1263,7 @@ export class BackgroundManager {
       return true
     } catch (error) {
       log("[background-agent] Error validating session output:", error)
-      // On error, allow completion to proceed (don't block indefinitely)
-      return true
+      throw error
     }
   }
 
@@ -1566,13 +1517,8 @@ export class BackgroundManager {
       SessionCategoryRegistry.remove(task.sessionID)
     }
 
-    try {
-      await this.enqueueNotificationForParent(task.parentSessionID, () => this.notifyParentSession(task))
-      log(`[background-agent] Task completed via ${source}:`, task.id)
-    } catch (err) {
-      log("[background-agent] Error in notifyParentSession:", { taskId: task.id, error: err })
-      // Concurrency already released, notification failed but task is complete
-    }
+    await this.enqueueNotificationForParent(task.parentSessionID, () => this.notifyParentSession(task))
+    log(`[background-agent] Task completed via ${source}:`, task.id)
 
     return true
   }
@@ -1634,97 +1580,63 @@ export class BackgroundManager {
       completedTasks,
     })
 
-      let agent: string | undefined = task.parentAgent
-      let model: { providerID: string; modelID: string } | undefined
-      let tools: Record<string, boolean> | undefined = task.parentTools
-      let promptContext: ReturnType<typeof resolvePromptContextFromSessionMessages> = null
-
-      try {
-        const messagesResp = await this.client.session.messages({ path: { id: task.parentSessionID } })
-        const messages = normalizeSDKResponse(messagesResp, [] as Array<{
-          info?: {
-            agent?: string
-            model?: { providerID: string; modelID: string }
-            modelID?: string
-            providerID?: string
-            tools?: Record<string, boolean | "allow" | "deny" | "ask">
-          }
-        }>)
-        promptContext = resolvePromptContextFromSessionMessages(
-          messages,
-          task.parentSessionID,
-        )
-        const normalizedTools = isRecord(promptContext?.tools)
-          ? normalizePromptTools(promptContext.tools)
-          : undefined
-
-        if (promptContext?.agent || promptContext?.model || normalizedTools) {
-          agent = promptContext?.agent ?? task.parentAgent
-          model = promptContext?.model?.providerID && promptContext.model.modelID
-            ? { providerID: promptContext.model.providerID, modelID: promptContext.model.modelID }
-            : undefined
-          tools = normalizedTools ?? tools
-        }
-      } catch (error) {
-        if (isAbortedSessionError(error)) {
-          log("[background-agent] Parent session aborted while loading messages; using messageDir fallback:", {
-            taskId: task.id,
-            parentSessionID: task.parentSessionID,
-          })
-        }
-        const messageDir = join(MESSAGE_STORAGE, task.parentSessionID)
-        const currentMessage = messageDir
-          ? findNearestMessageExcludingCompaction(messageDir, task.parentSessionID)
-          : null
-        agent = currentMessage?.agent ?? task.parentAgent
-        model = currentMessage?.model?.providerID && currentMessage?.model?.modelID
-          ? { providerID: currentMessage.model.providerID, modelID: currentMessage.model.modelID }
-          : undefined
-        tools = normalizePromptTools(currentMessage?.tools) ?? tools
+    let agent: string | undefined
+    let model: { providerID: string; modelID: string } | undefined
+    const messagesResp = await this.client.session.messages({ path: { id: task.parentSessionID } })
+    const messages = normalizeSDKResponse<Array<{
+      info?: {
+        agent?: string
+        model?: { providerID: string; modelID: string }
+        modelID?: string
+        providerID?: string
+        tools?: Record<string, boolean | "allow" | "deny" | "ask">
       }
+    }>>(messagesResp)
+    const promptContext = resolvePromptContextFromSessionMessages(
+      messages,
+      task.parentSessionID,
+    )
+    const normalizedTools = isRecord(promptContext?.tools)
+      ? normalizePromptTools(promptContext.tools)
+      : undefined
 
-      const resolvedTools = resolveInheritedPromptTools(task.parentSessionID, tools)
+    if (promptContext?.agent || promptContext?.model || normalizedTools) {
+      agent = promptContext?.agent
+      model = promptContext?.model?.providerID && promptContext.model.modelID
+        ? { providerID: promptContext.model.providerID, modelID: promptContext.model.modelID }
+        : undefined
+    }
 
-      log("[background-agent] notifyParentSession context:", {
-        taskId: task.id,
-        resolvedAgent: agent,
-        resolvedModel: model,
-      })
+    const resolvedTools = resolveInheritedPromptTools(task.parentSessionID)
 
-      const isTaskFailure = task.status === "error" || task.status === "cancelled" || task.status === "interrupt"
-      const shouldReply = allComplete || isTaskFailure
+    log("[background-agent] notifyParentSession context:", {
+      taskId: task.id,
+      resolvedAgent: agent,
+      resolvedModel: model,
+    })
 
-      const variant = promptContext?.model?.variant
+    const isTaskFailure = task.status === "error" || task.status === "cancelled" || task.status === "interrupt"
+    const shouldReply = allComplete || isTaskFailure
 
-      try {
-        await this.client.session.promptAsync({
-          path: { id: task.parentSessionID },
-          body: {
-            noReply: !shouldReply,
-            ...(agent !== undefined ? { agent } : {}),
-            ...(model !== undefined ? { model } : {}),
-            ...(variant !== undefined ? { variant } : {}),
-            ...(resolvedTools ? { tools: resolvedTools } : {}),
-            parts: [createInternalAgentTextPart(notification)],
-          },
-        })
-        log("[background-agent] Sent notification to parent session:", {
-          taskId: task.id,
-          allComplete,
-          isTaskFailure,
-          noReply: !shouldReply,
-        })
-      } catch (error) {
-        if (isAbortedSessionError(error)) {
-          log("[background-agent] Parent session aborted while sending notification; continuing cleanup:", {
-            taskId: task.id,
-            parentSessionID: task.parentSessionID,
-          })
-          this.queuePendingNotification(task.parentSessionID, notification)
-        } else {
-          log("[background-agent] Failed to send notification:", error)
-        }
-      }
+    const variant = promptContext?.model?.variant
+
+    await this.client.session.promptAsync({
+      path: { id: task.parentSessionID },
+      body: {
+        noReply: !shouldReply,
+        ...(agent !== undefined ? { agent } : {}),
+        ...(model !== undefined ? { model } : {}),
+        ...(variant !== undefined ? { variant } : {}),
+        ...(resolvedTools ? { tools: resolvedTools } : {}),
+        parts: [createInternalAgentTextPart(notification)],
+      },
+    })
+    log("[background-agent] Sent notification to parent session:", {
+      taskId: task.id,
+      allComplete,
+      isTaskFailure,
+      noReply: !shouldReply,
+    })
 
     if (task.status !== "running" && task.status !== "pending") {
       this.scheduleTaskRemoval(task.id)
@@ -1841,9 +1753,7 @@ export class BackgroundManager {
     }
 
     this.markForNotification(task)
-    this.enqueueNotificationForParent(task.parentSessionID, () => this.notifyParentSession(task)).catch(err => {
-      log("[background-agent] Error in notifyParentSession for crashed task:", { taskId: task.id, error: err })
-    })
+    await this.enqueueNotificationForParent(task.parentSessionID, () => this.notifyParentSession(task))
   }
 
   private async pollRunningTasks(): Promise<void> {
@@ -1853,7 +1763,7 @@ export class BackgroundManager {
     this.pruneStaleTasksAndNotifications()
 
     const statusResult = await this.client.session.status()
-    const allStatuses = normalizeSDKResponse(statusResult, {} as Record<string, { type: string }>)
+    const allStatuses = normalizeSDKResponse<Record<string, { type: string }>>(statusResult)
 
     await this.checkAndInterruptStaleTasks(allStatuses)
 
@@ -2030,12 +1940,6 @@ export class BackgroundManager {
     }
 
     const current = previous
-      .catch((error) => {
-        log("[background-agent] Continuing notification queue after previous failure:", {
-          parentSessionID,
-          error,
-        })
-      })
       .then(operation)
 
     this.notificationQueueByParent.set(parentSessionID, current)
