@@ -76,7 +76,7 @@ function extractModelName(model: string): string {
 
 export function isGptModel(model: string): boolean {
   const modelName = extractModelName(model).toLowerCase();
-  return modelName.includes("gpt");
+  return modelName.includes("gpt-");
 }
 
 export function isGpt5_4Model(model: string): boolean {
@@ -118,7 +118,6 @@ export type OverridableAgentName = BuiltinAgentName;
 export type AgentOverrideConfig = Partial<AgentConfig> & {
   prompt_append?: string;
   variant?: string;
-  fallback_models?: string | (string | import("../config/schema/fallback-models").FallbackModelObject)[];
 };
 
 export type AgentOverrides = Partial<

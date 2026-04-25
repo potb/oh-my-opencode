@@ -1,7 +1,7 @@
 import type { AgentConfig } from "@opencode-ai/sdk"
 import type { AgentOverrideConfig } from "../types"
 import type { CategoryConfig } from "../../config/schema"
-import { deepMerge, migrateAgentConfig } from "../../shared"
+import { deepMerge } from "../../shared"
 import { resolvePromptAppend } from "./resolve-file-uri"
 
 /**
@@ -40,8 +40,7 @@ function mergeAgentConfig(
   override: AgentOverrideConfig,
   directory?: string
 ): AgentConfig {
-  const migratedOverride = migrateAgentConfig(override as Record<string, unknown>) as AgentOverrideConfig
-  const { prompt_append, ...rest } = migratedOverride
+  const { prompt_append, ...rest } = override
   const merged = deepMerge(base, rest as Partial<AgentConfig>)
 
   if (merged.prompt && typeof merged.prompt === 'string' && merged.prompt.startsWith('file://')) {

@@ -13,7 +13,6 @@ export interface BuiltinSkill {
   description: string
   template: string
   license?: string
-  compatibility?: string
   metadata?: Record<string, unknown>
   allowedTools?: string[]
   agent?: string

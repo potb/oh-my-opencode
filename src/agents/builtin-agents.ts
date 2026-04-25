@@ -49,11 +49,8 @@ export async function createBuiltinAgents(
   disabledAgents: string[] = [],
   agentOverrides: AgentOverrides = {},
   directory?: string,
-  systemDefaultModel?: string,
   categories?: CategoriesConfig,
   gitMasterConfig?: GitMasterConfig,
-  _deprecatedDiscoveredSkills: unknown[] = [],
-  _customAgentSummaries?: unknown,
   browserProvider?: BrowserAutomationProvider,
   uiSelectedModel?: string,
   disabledSkills?: Set<string>,
@@ -70,7 +67,7 @@ export async function createBuiltinAgents(
   )
   // IMPORTANT: Do NOT call OpenCode client APIs during plugin initialization.
   // This function is called from config handler, and calling client API causes deadlock.
-  // See: https://github.com/code-yeongyu/oh-my-openagent/issues/1301
+  // See: https://github.com/code-yeongyu/oh-my-opencode/issues/1301
   const availableModels = await fetchAvailableModels(undefined, {
     connectedProviders: mergedConnectedProviders.length > 0 ? mergedConnectedProviders : undefined,
   })
@@ -95,7 +92,6 @@ export async function createBuiltinAgents(
     disabledAgents,
     agentOverrides,
     directory,
-    systemDefaultModel,
     mergedCategories,
     gitMasterConfig,
     browserProvider,
@@ -111,7 +107,6 @@ export async function createBuiltinAgents(
     agentOverrides,
     uiSelectedModel,
     availableModels,
-    systemDefaultModel,
     isFirstRunNoCache,
     availableAgents,
     availableSkills,

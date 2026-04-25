@@ -17,7 +17,7 @@ import type { AgentOverrideConfig } from "../../config/schema"
 import {
   createAgentToolRestrictions,
   type PermissionValue,
-} from "../../shared/permission-compat"
+} from "../../shared/agent-permissions"
 import { getGptApplyPatchPermission } from "../gpt-apply-patch-guard"
 
 import { buildDefaultSisyphusJuniorPrompt } from "./default"

@@ -2,10 +2,9 @@ import type { AgentConfig } from "@opencode-ai/sdk"
 import type { AgentOverrides } from "../types"
 import type { CategoriesConfig, CategoryConfig } from "../../config/schema"
 import type { AvailableAgent, AvailableCategory, AvailableSkill } from "../dynamic-agent-prompt-builder"
-import { AGENT_MODEL_REQUIREMENTS, isAnyFallbackModelAvailable } from "../../shared"
 import { applyEnvironmentContext } from "./environment-context"
 import { applyOverrides } from "./agent-overrides"
-import { applyModelResolution, getFirstFallbackModel } from "./model-resolution"
+import { applyModelResolution } from "./model-resolution"
 import { createSisyphusAgent } from "../sisyphus"
 import { getGptApplyPatchPermission } from "../gpt-apply-patch-guard"
 
@@ -14,7 +13,6 @@ export function maybeCreateSisyphusConfig(input: {
   agentOverrides: AgentOverrides
   uiSelectedModel?: string
   availableModels: Set<string>
-  systemDefaultModel?: string
   isFirstRunNoCache: boolean
   availableAgents: AvailableAgent[]
   availableSkills: AvailableSkill[]
@@ -30,7 +28,6 @@ export function maybeCreateSisyphusConfig(input: {
     agentOverrides,
     uiSelectedModel,
     availableModels,
-    systemDefaultModel,
     isFirstRunNoCache,
     availableAgents,
     availableSkills,
@@ -42,27 +39,13 @@ export function maybeCreateSisyphusConfig(input: {
   } = input
 
   const sisyphusOverride = agentOverrides["sisyphus"]
-  const sisyphusRequirement = AGENT_MODEL_REQUIREMENTS["sisyphus"]
-  const hasSisyphusExplicitConfig = sisyphusOverride !== undefined
-  const meetsSisyphusAnyModelRequirement =
-    !sisyphusRequirement?.requiresAnyModel ||
-    hasSisyphusExplicitConfig ||
-    isFirstRunNoCache ||
-    isAnyFallbackModelAvailable(sisyphusRequirement.fallbackChain, availableModels)
-
-  if (disabledAgents.includes("sisyphus") || !meetsSisyphusAnyModelRequirement) return undefined
+  if (disabledAgents.includes("sisyphus")) return undefined
 
   let sisyphusResolution = applyModelResolution({
     uiSelectedModel: sisyphusOverride?.model !== undefined ? undefined : uiSelectedModel,
     userModel: sisyphusOverride?.model,
-    requirement: sisyphusRequirement,
     availableModels,
-    systemDefaultModel,
   })
-
-  if (isFirstRunNoCache && !sisyphusOverride?.model && !uiSelectedModel) {
-    sisyphusResolution = getFirstFallbackModel(sisyphusRequirement)
-  }
 
   if (!sisyphusResolution) return undefined
   const { model: sisyphusModel, variant: sisyphusResolvedVariant } = sisyphusResolution

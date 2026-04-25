@@ -58,9 +58,9 @@ describe("isGptModel", () => {
     expect(isGptModel("venice/gpt-4o")).toBe(true);
   });
 
-  test("gpt4 prefix without hyphen (legacy naming)", () => {
-    expect(isGptModel("litellm/gpt4o")).toBe(true);
-    expect(isGptModel("ollama/gpt4")).toBe(true);
+  test("legacy gpt4 prefix without hyphen is not treated as GPT", () => {
+    expect(isGptModel("litellm/gpt4o")).toBe(false);
+    expect(isGptModel("ollama/gpt4")).toBe(false);
   });
 
   test("claude models are not gpt", () => {

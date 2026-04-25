@@ -20,7 +20,7 @@ export async function resolveSessionAgent(
 ): Promise<string | undefined> {
   try {
     const messagesResp = await client.session.messages({ path: { id: sessionId } })
-    const messages = normalizeSDKResponse(messagesResp, [] as SessionMessage[])
+  const messages = normalizeSDKResponse<SessionMessage[]>(messagesResp)
 
     for (const msg of messages) {
       if (msg.info?.agent) {
