@@ -1,47 +1,52 @@
-# src/config/ — Zod v4 Schema System
+# src/config/ — Zod Schema System
 
-**Generated:** 2026-04-11
+**Generated:** 2026-04-25 | **Commit:** 20a49686
 
 ## OVERVIEW
 
-Schema files composing `OhMyOpenCodeConfigSchema`. Zod v4 validation with `safeParse()`. All fields optional — omitted fields use plugin defaults.
+Owns configuration schemas and exported types for plugin config loading. Current tree is leaner than older docs: no stale OpenClaw/tmux root-schema entries in this checkout.
 
-## SCHEMA TREE
+## STRUCTURE
 
-```
-config/schema/
-├── oh-my-opencode-config.ts    # ROOT: OhMyOpenCodeConfigSchema (composes all below)
-├── agent-names.ts              # BuiltinAgentNameSchema, OverridableAgentNameSchema
-├── agent-overrides.ts          # AgentOverrideConfigSchema (21 fields per agent)
-├── categories.ts               # Built-in + custom categories
-├── hooks.ts                    # HookNameSchema
-├── experimental.ts             # Feature flags (plugin_load_timeout_ms min 1000)
-├── sisyphus.ts                 # SisyphusConfigSchema (task system)
-├── tmux.ts                     # Legacy tmux schema module (no longer part of root config)
-├── websearch.ts                # provider: "exa" | "tavily"
-├── claude-code.ts              # CC compatibility settings
-├── git-master.ts               # commit_footer: boolean | string
-├── browser-automation.ts       # provider: agent-browser
-├── background-task.ts          # Concurrency limits per model/provider
-├── fallback-models.ts          # FallbackModelsConfigSchema
-├── dynamic-context-pruning.ts  # Context pruning settings
-├── openclaw.ts                # OpenClaw integration settings
-├── git-env-prefix.ts          # Git environment prefix config
-└── internal/permission.ts      # AgentPermissionSchema
-
+```text
+config/
+├── index.ts
+└── schema/
+    ├── oh-my-opencode-config.ts   # Root schema
+    ├── agent-overrides.ts         # Per-agent overrides
+    ├── categories.ts              # Category config
+    ├── claude-code.ts             # Claude Code compatibility flags
+    ├── experimental.ts            # Feature flags and dynamic pruning
+    ├── background-task.ts         # Concurrency / timeout config
+    ├── git-master.ts              # Git skill config
+    ├── browser-automation.ts      # Browser automation provider
+    ├── websearch.ts               # Web search provider
+    ├── model-capabilities.ts      # Model capability config
+    ├── sisyphus.ts                # Sisyphus-specific config
+    └── internal/permission.ts     # Permission schema pieces
 ```
 
 ## ROOT SCHEMA FIELDS
 
-`$schema`, `new_task_system_enabled`, `disabled_mcps`, `disabled_agents`, `disabled_hooks`, `disabled_commands`, `disabled_tools`, `hashline_edit`, `agents`, `categories`, `claude_code`, `experimental`, `background_task`, `git_master`, `browser_automation_engine`, `websearch`, `sisyphus`, `_migrations`
+`$schema`, `new_task_system_enabled`, `default_run_agent`, `disabled_agents`, `disabled_hooks`, `disabled_tools`, `hashline_edit`, `agents`, `categories`, `claude_code`, `experimental`, `background_task`, `git_master`, `browser_automation_engine`, `websearch`, `sisyphus`, `_migrations`
 
-## AGENT OVERRIDE FIELDS
+## WHERE TO LOOK
 
-`model`, `variant`, `category`, `skills`, `temperature`, `top_p`, `prompt`, `prompt_append`, `tools`, `disable`, `description`, `mode`, `color`, `permission`, `maxTokens`, `thinking`, `reasoningEffort`, `textVerbosity`, `providerOptions`
+| Task | Location | Notes |
+|------|----------|-------|
+| Root config shape | `schema/oh-my-opencode-config.ts` | Single source of truth |
+| Agent overrides | `schema/agent-overrides.ts` | Model/prompt/permission overrides |
+| Category config | `schema/categories.ts` | Category defaults and custom categories |
+| Background task limits | `schema/background-task.ts` | Concurrency, stale timeout, circuit breaker |
+| Experimental flags | `schema/experimental.ts` | Dynamic pruning, safe hook creation, task system |
 
-## HOW TO ADD CONFIG
+## CONVENTIONS
 
-1. Create `src/config/schema/{name}.ts` with Zod schema
-2. Add field to `oh-my-opencode-config.ts` root schema
-3. Reference via `z.infer<typeof YourSchema>` for TypeScript types
-4. Access in handlers via `pluginConfig.{name}`
+- Add new config at `schema/{name}.ts`, then compose it into `oh-my-opencode-config.ts`.
+- Keep config docs aligned with actual schema fields; remove stale entries immediately.
+- Use `z.infer<typeof Schema>` for exported TS types instead of hand-written duplicates.
+
+## ANTI-PATTERNS
+
+- Do not document removed config keys as active.
+- Do not add runtime behavior here; schema modules validate and describe config only.

@@ -1,52 +1,58 @@
-# src/plugin/ — 10 OpenCode Hook Handlers + Hook Composition
+# src/plugin/ — Hook Handlers and Runtime Glue
 
-**Generated:** 2026-04-11
+**Generated:** 2026-04-25 | **Commit:** 51061ac8
 
 ## OVERVIEW
 
-Core glue layer. Source files assemble the 10 OpenCode hook handlers and compose the runtime hook records into the PluginInterface. Every handler file corresponds to one OpenCode hook type.
+Glue layer between bootstrap code and OpenCode runtime. This directory owns handler implementations, handler composition helpers, runtime overrides, and tool registry wiring.
 
-## HANDLER FILES
+## OPENCODE HANDLER FILES
 
-| File | OpenCode Hook | Purpose |
-|------|---------------|---------|
-| `config.ts` | `config` | Runtime config hook |
-| `tool-registry.ts` | `tool` | 26 tools assembled from factories |
-| `chat-message.ts` | `chat.message` | First-message variant and session setup |
-| `chat-params.ts` | `chat.params` | Anthropic effort level |
-| `chat-headers.ts` | `chat.headers` | Copilot x-initiator header injection |
-| `event.ts` | `event` | Session lifecycle (created, deleted, idle, error) |
-| `tool-execute-before.ts` | `tool.execute.before` | Pre-tool guards (file guard, label truncator) |
-| `tool-execute-after.ts` | `tool.execute.after` | Post-tool hooks (output truncation) |
-| `messages-transform.ts` | `experimental.chat.messages.transform` | Transform pass-through |
-| `session-compacting.ts` | `experimental.session.compacting` | Compatibility no-op hook |
-| `skill-context.ts` | — | Skill/browser/category context for tool creation |
+| File | Surface | Purpose |
+|------|---------|---------|
+| `tool-registry.ts` | `tool` | Assemble plugin tool surface |
+| `chat-message.ts` | `chat.message` | First-message/session setup |
+| `chat-params.ts` | `chat.params` | Effort/variant handling |
+| `chat-headers.ts` | `chat.headers` | Copilot header injection |
+| `event.ts` | `event` | Session lifecycle dispatch |
+| `tool-execute-before.ts` | `tool.execute.before` | Pre-tool guards |
+| `tool-execute-after.ts` | `tool.execute.after` | Post-tool processing |
+| `messages-transform.ts` | `experimental.chat.messages.transform` | Message transform surface |
+| `system-transform.ts` | `experimental.chat.system.transform` | System-prompt transform |
 
-## HOOK COMPOSITION (hooks/ subdir)
+`config` is provided by the runtime config hook created in `src/create-managers.ts`.
 
-| File | Tier | Count |
-|------|------|-------|
-| `create-session-hooks.ts` | Session | Runtime session hooks |
-| `create-tool-guard-hooks.ts` | Tool Guard | Runtime guard hooks |
-| `create-transform-hooks.ts` | Transform | Empty surface |
-| `create-core-hooks.ts` | Aggregator | Session + Guard + Transform |
+## COMPOSITION HELPERS
+
+| File | Role |
+|------|------|
+| `hooks/create-session-hooks.ts` | Session hook composition |
+| `hooks/create-tool-guard-hooks.ts` | Tool-guard hook composition |
+| `hooks/create-transform-hooks.ts` | Transform hook composition |
+| `hooks/create-core-hooks.ts` | Aggregate the composed hook record |
 
 ## SUPPORT FILES
 
 | File | Purpose |
 |------|---------|
-| `available-categories.ts` | Build `AvailableCategory[]` for agent prompt injection |
-| `session-agent-resolver.ts` | Resolve which agent owns a session |
-| `session-status-normalizer.ts` | Normalize session status across OpenCode versions |
-| `recent-synthetic-idles.ts` | Dedup rapid idle events |
-| `types.ts` | `PluginContext`, `PluginInterface`, `ToolsRecord`, `TmuxConfig` |
-| `ultrawork-model-override.ts` | Ultrawork mode model override logic |
-| `ultrawork-db-model-override.ts` | DB-level model override for ultrawork |
-| `runtime-config-hook.ts` | Runtime config loading and caching |
+| `runtime-config-hook.ts` | Runtime config loading/caching |
+| `available-categories.ts` | Build category metadata for prompts |
+| `session-agent-resolver.ts` | Resolve session owner agent |
+| `session-status-normalizer.ts` | Normalize event/session state |
+| `recent-synthetic-idles.ts` | Idle-event dedup helper |
+| `ultrawork-model-override.ts` | Message-triggered model override |
+| `ultrawork-db-model-override.ts` | DB-level ultrawork mutation path |
+| `types.ts` | Plugin-layer shared types |
 
-## KEY PATTERNS
+## WHERE TO START
 
-- Each handler exports a function receiving `(hookRecord, ctx, pluginConfig, managers)` → returns OpenCode hook function
-- Handlers iterate over hook records, calling each hook with `(input, output)` in sequence
-- `safeHook()` wrapper in composition files catches errors per-hook without breaking the chain
-- Tool registry uses `filterDisabledTools()` before returning
+- Adding/removing tools: `tool-registry.ts`
+- Changing lifecycle behavior: `event.ts` + `hooks/create-*.ts`
+- Changing prompt/message transforms: `chat-message.ts`, `messages-transform.ts`, `system-transform.ts`
+- Runtime config issues: `runtime-config-hook.ts`
+
+## CONVENTIONS
+
+- Keep handlers thin; push reusable logic into `src/shared/`, `src/hooks/`, or `src/tools/`.
+- `tool-registry.ts` is the registry boundary, not the place for tool implementation logic.
+- Composition files should assemble hook records, not own feature behavior.

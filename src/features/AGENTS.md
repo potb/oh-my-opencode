@@ -1,38 +1,37 @@
 # src/features/ — Feature Modules
 
-**Generated:** 2026-04-11
+**Generated:** 2026-04-25 | **Commit:** 20a49686
 
 ## OVERVIEW
 
-Standalone feature modules wired into plugin/ layer. Each is self-contained with own types, implementation, and tests.
+Feature-layer runtime modules wired into plugin/bootstrap code. Current source tree has two real feature families: background-task orchestration and builtin skill definitions.
 
 ## MODULE MAP
 
-| Module | Files | Complexity | Purpose |
-|--------|-------|------------|---------|
-| **background-agent** | 47 | HIGH | Task lifecycle, concurrency, polling, spawner pattern, circuit breaker |
-| **builtin-skills** | 13 | LOW | Built-in skill definitions and templates |
-| **claude-code-plugin-loader** | 15 | MEDIUM | Unified plugin discovery from .opencode/plugins/ |
-| **claude-code-mcp-loader** | 6 | MEDIUM | .mcp.json loading with ${VAR} env expansion |
+| Module | Size signal | Purpose |
+|--------|-------------|---------|
+| `background-agent/` | 43 files, highest complexity in `src/features/` | Async task lifecycle, concurrency, polling, stale cleanup, notifications |
+| `builtin-skills/` | 9 top-level entries + nested skill assets | Repo-local built-in skill definitions and prompt fragments |
 
-## KEY MODULES
+## WHERE TO LOOK
 
-### background-agent (47 files, ~10k LOC)
+| Task | Location | Notes |
+|------|----------|-------|
+| Background task launch/resume/cancel | `background-agent/manager.ts` | `BackgroundManager` orchestration boundary |
+| Polling/completion rules | `background-agent/task-poller.ts`, `session-idle-event-handler.ts` | Idle + stability detection |
+| Concurrency and stale handling | `background-agent/concurrency.ts`, `task-history.ts`, `constants.ts` | Per-model/provider limits and cleanup |
+| Spawn limits | `background-agent/subagent-spawn-limits.ts`, `spawner.ts` | Prevent background-agent explosion |
+| Built-in skill registry | `builtin-skills/skills.ts`, `types.ts` | `createBuiltinSkills()` |
+| Git skill prompt fragments | `builtin-skills/skills/git-master-sections/` | Commit/rebase/history-search prompt sections |
 
-Core orchestration engine. `BackgroundManager` manages task lifecycle:
-- States: pending → running → completed/error/cancelled/interrupt
-- Concurrency: per-model/provider limits via `ConcurrencyManager` (FIFO queue)
-- Polling: 3s interval, completion via idle events + stability detection (10s unchanged)
-- Circuit breaker: automatic failure detection and recovery
-- spawner/: 8 focused files composing via `SpawnerContext` interface
+## CONVENTIONS
 
-### builtin-skills (4 skill objects)
+- Keep feature modules self-contained; push cross-cutting helpers back to `src/shared/`.
+- `background-agent/` is operational code, not a prompt directory; test edge cases exhaustively.
+- `builtin-skills/` mixes static SKILL.md assets with TypeScript prompt builders; keep those responsibilities explicit.
 
-| Skill | Size | MCP | Tools |
-|-------|------|-----|-------|
-| git-master | 1111 LOC | — | Bash |
-| agent-browser | (in agent-browser.ts) | — | Bash(agent-browser:*) |
-| frontend-ui-ux | 79 LOC | — | — |
-| review-work | ~LOC | --- | --- |
+## ANTI-PATTERNS
 
-Browser automation uses `agent-browser` only.
+- Do not reintroduce removed feature-loader directories in this subtree.
+- Do not place generic shared helpers here when they are imported across unrelated domains.
+- Do not document repo-wide rules here; keep this file feature-scoped.

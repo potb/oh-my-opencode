@@ -1,75 +1,57 @@
-# src/agents/ — Agent Definitions
+# src/agents/ — Built-in Agent Definitions
 
-**Generated:** 2026-04-11
+**Generated:** 2026-04-25 | **Commit:** 20a49686
 
 ## OVERVIEW
 
-Agent factories follow `createXXXAgent(model) → AgentConfig`. Each has a static `mode` property and is built via `buildAgent()` plus category/prompt composition.
+Owns built-in agent factories, prompt composition helpers, model-routing logic, and fixed-product agent metadata. Two main families exist: orchestrators (`sisyphus`, `sisyphus-junior`) and specialist subagents (Oracle, Librarian, Explore, Metis, Momus).
 
 ## AGENT INVENTORY
 
-| Agent | Model | Temp | Mode | Fallback Chain | Purpose |
-|-------|-------|------|------|----------------|---------|
-| **Sisyphus** | claude-opus-4-6 max | 0.1 | all | k2p5 -> kimi-k2.5 -> gpt-5.4 medium -> glm-5 -> big-pickle | Main orchestrator, plans + delegates |
-| **Oracle** | gpt-5.4 high | 0.1 | subagent | gemini-3.1-pro high -> claude-opus-4-6 max | Read-only consultation |
-| **Librarian** | minimax-m2.7 | 0.1 | subagent | minimax-m2.7-highspeed -> claude-haiku-4-5 -> gpt-5-nano | External docs/code search |
-| **Explore** | grok-code-fast-1 | 0.1 | subagent | minimax-m2.7-highspeed -> minimax-m2.7 -> claude-haiku-4-5 -> gpt-5-nano | Contextual grep |
-| **Metis** | claude-opus-4-6 max | **0.3** | subagent | gpt-5.4 high -> gemini-3.1-pro high | Pre-planning consultant |
-| **Momus** | gpt-5.4 xhigh | 0.1 | subagent | claude-opus-4-6 max -> gemini-3.1-pro high | Plan reviewer |
-| **Sisyphus-Junior** | claude-sonnet-4-6 | 0.1 | all | user-configurable | Category-spawned executor |
-
-## TOOL RESTRICTIONS
-
-| Agent | Denied Tools |
-|-------|-------------|
-| Oracle | write, edit, task |
-| Librarian | write, edit, task |
-| Explore | write, edit, task |
-| Momus | write, edit, task |
+| Agent | Mode | Purpose |
+|-------|------|---------|
+| `sisyphus` | all | Main orchestrator, planning and delegation |
+| `sisyphus-junior` | subagent | Focused executor, category-spawned worker |
+| `oracle` | subagent | Read-only consultation |
+| `librarian` | subagent | External docs/code search |
+| `explore` | subagent | Internal codebase grep |
+| `metis` | subagent | Pre-planning consultant |
+| `momus` | subagent | Plan review / critique |
 
 ## STRUCTURE
 
-```
+```text
 agents/
-├── sisyphus.ts            # 559 LOC, main orchestrator
-├── oracle.ts              # Read-only consultant
-├── librarian.ts           # External search
-├── explore.ts             # Codebase grep
-├── metis.ts               # Pre-planning
-├── momus.ts               # Plan review
-├── types.ts               # AgentFactory, AgentMode
-├── agent-builder.ts       # buildAgent() composition
-├── utils.ts               # Agent utilities
-├── builtin-agents.ts      # createBuiltinAgents() registry
-├── dynamic-agent-prompt-builder.ts    # Dynamic prompt builder system
-├── dynamic-agent-core-sections.ts   # Core prompt sections
-├── dynamic-agent-policy-sections.ts # Policy prompt sections
-├── dynamic-agent-tool-categorization.ts # Tool categorization
-├── dynamic-agent-category-skills-guide.ts # Category skills guide
-├── custom-agent-summaries.ts        # Custom agent summaries
-├── env-context.ts                   # Environment context
-└── builtin-agents/        # maybeCreateXXXConfig conditional factories
-    ├── sisyphus-agent.ts
-    ├── general-agents.ts  # collectPendingBuiltinAgents
-    └── available-skills.ts
+├── sisyphus.ts                  # Main orchestrator factory + variant routing
+├── sisyphus/                    # Model-specific Sisyphus prompt variants
+├── sisyphus-junior/             # Focused executor variants
+├── oracle.ts                    # Read-only consultant
+├── librarian.ts                 # External reference search
+├── explore.ts                   # Internal grep agent
+├── metis.ts                     # Pre-planning consultant
+├── momus.ts                     # Plan reviewer
+├── builtin-agents.ts            # Built-in registry assembly
+├── agent-builder.ts             # Final AgentConfig composition
+├── dynamic-agent-*.ts           # Shared prompt-section builders
+└── builtin-agents/              # Conditional factory helpers / available skills
 ```
 
-## FACTORY PATTERN
+## WHERE TO LOOK
 
-```typescript
-const createXXXAgent: AgentFactory = (model: string) => ({
-  instructions: "...",
-  model,
-  temperature: 0.1,
-  // ...config
-})
-createXXXAgent.mode = "subagent" // or "primary" or "all"
-```
+| Task | Location | Notes |
+|------|----------|-------|
+| Main orchestrator behavior | `sisyphus.ts`, `sisyphus/` | Variant routing by active model |
+| Executor behavior | `sisyphus-junior/` | GPT/Gemini/default prompt variants + tool restrictions |
+| Agent registry wiring | `builtin-agents.ts`, `agent-builder.ts` | Creation + final assembly |
+| Shared prompt sections | `dynamic-agent-core-sections.ts`, `dynamic-agent-policy-sections.ts`, `dynamic-agent-category-skills-guide.ts` | Common policy text |
 
-Model resolution: 4-step: override → category-default → provider-fallback → system-default. Defined in `shared/model-requirements.ts`.
+## CONVENTIONS
 
-## MODES
+- Agent factories return `AgentConfig`; keep heavy prompt text in dedicated variant files.
+- Family-specific docs belong in child AGENTS files (`sisyphus/`, `sisyphus-junior/`).
+- Tool restrictions are part of agent contracts; document them where they materially affect behavior.
 
-- **primary**: Respects UI-selected model, uses fallback chain
-- **subagent**: Uses own fallback chain, ignores UI selection
-- **all**: Available in both contexts (Sisyphus-Junior)
+## ANTI-PATTERNS
+
+- Do not mix registry wiring, prompt text, and unrelated helper logic in one file.
+- Do not duplicate shared policy text across families when dynamic section builders already own it.

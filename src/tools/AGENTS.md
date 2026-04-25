@@ -1,70 +1,50 @@
-# src/tools/ - Tool Factories
+# src/tools/ — Tool Families
 
-**Generated:** 2026-04-11
+**Generated:** 2026-04-25 | **Commit:** 20a49686
 
 ## OVERVIEW
 
-Tool factories and direct definitions used by the trimmed plugin tool surface.
+Owns plugin tool factories plus direct LSP tool definitions. The major families are delegation, search, hash-anchored editing, and custom LSP.
 
-## TOOL CATALOG
+## STRUCTURE
 
-### Delegation (1)
+```text
+tools/
+├── delegate-task/  # Subagent delegation engine
+├── lsp/            # Custom LSP client + 6 tools
+├── hashline-edit/  # Hash-anchored edit tool
+├── ast-grep/       # AST-aware pattern search/replace
+├── grep/           # Content search wrapper
+├── glob/           # File pattern matching wrapper
+├── shared/         # Tool-local helpers
+└── index.ts        # Exports factories + builtin LSP tools
+```
 
-| Tool | Factory | Parameters |
-|------|---------|------------|
-| `task` | `createDelegateTask` | description, prompt, subagent_type, run_in_background, session_id, command |
+## TOOL MAP
 
-Category-based routing is removed in the fixed-product runtime. Use direct `subagent_type` delegation.
+| Family | Entry | Notes |
+|--------|------|-------|
+| Delegation | `createDelegateTask` | Routes sync/background subagent work |
+| Search | `createAstGrepTools`, `createGrepTools`, `createGlobTools` | Literal, AST, and file-pattern search |
+| Editing | `createHashlineEditTool` | Optional hash-anchored file edits |
+| LSP | `lsp_*` exports from `lsp/` | Direct `ToolDefinition`s plus `lspManager` |
 
-### Agent Invocation (1)
+## WHERE TO LOOK
 
-| Tool | Factory | Parameters |
-|------|---------|------------|
+| Task | Location | Notes |
+|------|----------|-------|
+| Delegation behavior | `delegate-task/` | Background vs sync execution, prompt building, model selection |
+| Search tool implementation | `ast-grep/`, `grep/`, `glob/` | Separate wrappers, parent guide is enough for now |
+| Hashline edit flow | `hashline-edit/` | Validation, ordering, diff output |
+| LSP transport stack | `lsp/` | Custom process/client/transport implementation |
 
-### LSP Refactoring (6) - Direct ToolDefinition
+## CONVENTIONS
 
-| Tool | Parameters |
-|------|------------|
-| `lsp_goto_definition` | filePath, line, character |
-| `lsp_find_references` | filePath, line, character, includeDeclaration |
-| `lsp_symbols` | filePath, scope (document/workspace), query, limit |
-| `lsp_diagnostics` | filePath, severity |
-| `lsp_prepare_rename` | filePath, line, character |
-| `lsp_rename` | filePath, line, character, newName |
+- Keep `index.ts` limited to exports and builtin tool maps.
+- Treat each family as an ownership boundary; put family-specific docs in child AGENTS files where they exist.
+- Prefer adding new tool families as dedicated subdirs, not as loose files in `tools/` root.
 
-### Code Search (4)
+## ANTI-PATTERNS
 
-| Tool | Factory | Parameters |
-|------|---------|------------|
-| `ast_grep_search` | `createAstGrepTools` | pattern, lang, paths, globs, context |
-| `ast_grep_replace` | `createAstGrepTools` | pattern, rewrite, lang, paths, globs, dryRun |
-| `grep` | `createGrepTools` | pattern, path, include (60s timeout, 10MB limit) |
-| `glob` | `createGlobTools` | pattern, path (60s timeout, 100 file limit) |
-
-### Task Tracking
-
-Task tracking is handled by the active todo/task hooks and current fixed-product runtime conventions, not by a standalone task_create/task_update tool surface.
-
-### System (2)
-
-| Tool | Factory | Parameters |
-|------|---------|------------|
-| `interactive_bash` | Direct | tmux_command |
-| `look_at` | `createLookAt` | file_path, image_data, goal |
-
-### Editing (1) - Conditional
-
-| Tool | Factory | Parameters |
-|------|---------|------------|
-| `hashline_edit` | `createHashlineEditTool` | file, edits[] |
-
-## DELEGATION
-
-The fixed-product runtime delegates through explicit `subagent_type` values such as `explore`, `librarian`, `oracle`, and `plan`.
-
-## HOW TO ADD A TOOL
-
-1. Create `src/tools/{name}/index.ts` exporting factory
-2. Create `src/tools/{name}/types.ts` for parameter schemas
-3. Create `src/tools/{name}/tools.ts` for implementation
-4. Register in `src/plugin/tool-registry.ts`
+- Do not put implementation logic in `tool-registry.ts`; this tree owns tool behavior.
+- Do not create synthetic grouping directories just for docs when existing family dirs already express ownership.

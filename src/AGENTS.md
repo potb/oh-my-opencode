@@ -1,40 +1,65 @@
 # src/ — Plugin Source
 
-**Generated:** 2026-04-11
+**Generated:** 2026-04-25 | **Commit:** 51061ac8
 
 ## OVERVIEW
 
-Entry point `index.ts` orchestrates 5-step initialization: loadConfig → createManagers → createTools → createHooks → createPluginInterface.
+Source root for plugin bootstrap plus the main runtime domains: agents, config, features, hooks, plugin handlers/helpers, shared infrastructure, and tools.
+
+## INITIALIZATION PATH
+
+```text
+index.ts
+  → plugin-config.ts
+  → create-managers.ts
+  → create-tools.ts
+  → create-hooks.ts
+  → plugin-interface.ts
+```
 
 ## KEY FILES
 
 | File | Purpose |
 |------|---------|
-| `index.ts` | Plugin entry, exports `OhMyOpenCodePlugin` |
-| `plugin-config.ts` | JSONC parse, multi-level merge, Zod v4 validation |
-| `create-managers.ts` | BackgroundManager and config/runtime managers |
-| `create-tools.ts` | ToolRegistry wiring |
-| `create-hooks.ts` | Core + continuation hook composition |
-| `plugin-interface.ts` | 10 OpenCode hook handlers: config, tool, chat.message, chat.params, chat.headers, event, tool.execute.before, tool.execute.after, experimental.chat.messages.transform, experimental.session.compacting |
+| `index.ts` | Exports `OhMyOpenCodePlugin` |
+| `plugin-config.ts` | JSONC load, migration, merge, partial-parse fallback |
+| `create-managers.ts` | `BackgroundManager` + runtime config hook |
+| `create-tools.ts` | Calls `createToolRegistry()` |
+| `create-hooks.ts` | Builds composed hook record |
+| `plugin-interface.ts` | Exposes 10 OpenCode hook surfaces |
+| `plugin-state.ts` | Model cache state helpers |
+| `fixed-product.ts` | Fixed-product agent names / removals |
 
-## CONFIG LOADING
+## REAL SUBDIRECTORIES
 
-```
-loadPluginConfig(directory, ctx)
-  1. User: ~/.config/opencode/oh-my-openagent.jsonc
-  2. Project: .opencode/oh-my-openagent.jsonc
-  3. mergeConfigs(user, project) → deepMerge for agents/categories, Set union for disabled_*
-  4. Zod safeParse → defaults for omitted fields
-  5. migrateConfigFile() → legacy key transformation
-```
+| Directory | Role |
+|-----------|------|
+| `agents/` | Agent prompts, model routing, agent factories |
+| `config/` | Zod schemas and config exports |
+| `features/` | Background-agent engine, builtin skills, loaders |
+| `generated/` | Generated artifacts committed into source when needed |
+| `hooks/` | Hook implementations and hook-only helpers |
+| `plugin/` | Hook handlers, hook composition, runtime plumbing |
+| `shared/` | Cross-cutting utilities and caches |
+| `testing/` | Reserved helper area for source-level testing support |
+| `tools/` | Tool definitions and tool submodules |
 
-## HOOK COMPOSITION
+## PLUGIN INTERFACE SURFACE
 
-```
-createHooks()
-  ├─→ createCoreHooks()           # Session + guard + transform hooks
-  │   ├─ createSessionHooks()     # Session-facing runtime hooks
-  │   ├─ createToolGuardHooks()   # Tool guard hooks: writeExistingFileGuard, hashlineReadEnhancer, webfetchRedirectGuard...
-  │   └─ createTransformHooks()   # Empty transform surface
-  └─→ experimental.session.compacting compatibility no-op
-```
+`plugin-interface.ts` wires:
+- `tool`
+- `config`
+- `chat.message`
+- `chat.params`
+- `chat.headers`
+- `event`
+- `tool.execute.before`
+- `tool.execute.after`
+- `experimental.chat.messages.transform`
+- `experimental.chat.system.transform`
+
+## NOTES
+
+- `src/testing/` exists but is currently empty in this checkout.
+- Older docs referenced removed paths (`src/mcp`, `src/openclaw`, `src/plugin-handlers`). Do not reintroduce those assumptions.
+- Use child AGENTS files for domain rules; keep this file focused on source-root navigation.

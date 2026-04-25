@@ -1,147 +1,125 @@
 # oh-my-opencode — OpenCode Plugin
 
-**Generated:** 2026-04-11 | **Commit:** f5dc1c0e | **Branch:** dev
+**Generated:** 2026-04-25 | **Commit:** 20a49686 | **Branch:** dev
 
 ## OVERVIEW
 
-OpenCode plugin (npm: `oh-my-opencode`) extending Claude Code with focused multi-agent orchestration, hook/tool integrations, Hashline edit, IntentGate classification, and Claude Code compatibility. ~1600 TypeScript source files. Dual-published as `oh-my-opencode` + `oh-my-openagent` during transition.
+Bun-first TypeScript OpenCode plugin for multi-agent orchestration, background task execution, hook composition, custom tool wiring, and fixed-product runtime constraints. Current checkout is large and modular: ~585 files, ~66k LOC, deep AGENTS coverage, plus docs/dist/packages for publishing and operator workflows.
 
 ## STRUCTURE
 
-```
+```text
 oh-my-opencode/
-├── src/
-│   ├── index.ts              # Plugin entry: loadConfig → createManagers → createTools → createHooks → createPluginInterface
-│   ├── plugin-config.ts      # JSONC multi-level config: user → project → defaults (Zod v4)
-│   ├── agents/               # Built-in agent definitions and prompt assembly
-│   ├── hooks/                # Lifecycle hooks across dedicated modules and standalone files
-│   ├── tools/                # Tool factories and built-in tool wiring (includes Hashline edit with LINE#ID content hashing)
-│   ├── features/             # Feature modules (background-agent, skill-loader, hook injectors, state, etc.)
-│   ├── shared/               # 170+ utility files (barrel-exported, logger → /tmp/oh-my-opencode.log)
-│   ├── config/               # Zod v4 schema system (32 files)
-│   ├── mcp/                  # 3 built-in remote MCPs (websearch, context7, grep_app)
-│   ├── plugin/               # 10 OpenCode hook handlers + 52 hook composition
-│   ├── plugin-handlers/      # 6-phase config loading pipeline
-│   └── openclaw/             # Bidirectional external integration (Discord/Telegram/webhook/command)
-├── script/                   # Build/publish automation (singular, not scripts/)
-├── .sisyphus/                # AI agent workspace (rules, plans, tasks, notepads)
-└── .local-ignore/            # Dev-only test fixtures + PR worktrees
+├── src/         # Plugin source: bootstrap, agents, config, features, hooks, plugin glue, shared infra, tools
+├── script/      # Schema generation and CI test runner
+├── tests/       # Extra integration harnesses outside co-located *.test.ts
+├── docs/        # Long-form product docs, plans, and reference material
+├── packages/    # Platform-specific packaged artifacts
+├── dist/        # Built output mirroring src/
+├── .opencode/   # Project runtime config + project-installed skills
+├── .sisyphus/   # Agent workspace rules, plans, notepads, continuation state
+├── .github/     # Repo automation and workflow definitions
+├── bin/         # Binary/test entrypoints
+├── assets/      # Generated schema + static assets
+└── signatures/  # Release/signing artifacts
 ```
 
 ## INITIALIZATION FLOW
 
-```
+```text
 OhMyOpenCodePlugin(ctx)
-  ├─→ loadPluginConfig()         # JSONC parse → project/user merge → Zod validate → migrate
-  ├─→ createManagers()           # BackgroundManager and config/runtime managers
-  ├─→ createTools()              # ToolRegistry wiring
-  ├─→ createHooks()              # Compose core + continuation hooks
-  └─→ createPluginInterface()    # 10 OpenCode hook handlers → PluginInterface
+  ├─→ loadPluginConfig()
+  ├─→ createManagers()
+  ├─→ createTools()
+  ├─→ createHooks()
+  └─→ createPluginInterface()
 ```
-
-## 10 OPENCODE HOOK HANDLERS
-
-| Handler | Purpose |
-|---------|---------|
-| `config` | 6-phase: provider → plugin-components → agents → tools → MCPs → commands |
-| `tool` | 26 registered tools |
-| `chat.message` | First-message variant and session setup |
-| `chat.params` | Anthropic effort level, think mode, runtime fallback override |
-| `chat.headers` | Copilot x-initiator header injection |
-| `event` | Session lifecycle (created, deleted, idle, error), openclaw dispatch, runtime fallback |
-| `tool.execute.before` | Pre-tool hooks (file guard, label truncator, prometheus md-only) |
-| `tool.execute.after` | Post-tool hooks (output truncation, hashline read enhancer) |
-| `experimental.chat.messages.transform` | Thinking block validation and tool pair validation |
-| `experimental.session.compacting` | Context + todo preservation during compaction |
 
 ## WHERE TO LOOK
 
 | Task | Location | Notes |
 |------|----------|-------|
-| Add new agent | `src/agents/` + `src/agents/builtin-agents/` | Follow createXXXAgent factory pattern |
-| Add new hook | `src/hooks/{name}/` + register in `src/plugin/hooks/create-*-hooks.ts` | Match event type to tier |
-| Add new tool | `src/tools/{name}/` + register in `src/plugin/tool-registry.ts` | Follow createXXXTool factory |
-| Add new feature module | `src/features/{name}/` | Standalone module, wire in plugin/ |
-| Add new MCP | `src/mcp/` + register in `createBuiltinMcps()` | Remote HTTP only (tier 1 of 3) |
-| Add new skill | `src/features/builtin-skills/skills/` | Implement BuiltinSkill interface |
-| Modify config schema | `src/config/schema/` + update root schema | Zod v4, add to OhMyOpenCodeConfigSchema |
-| External notifications | `src/openclaw/` | Bidirectional Discord/Telegram/webhook integration |
-
-## MULTI-LEVEL CONFIG
-
-```
-Project (.opencode/oh-my-openagent.jsonc)  →  User (~/.config/opencode/oh-my-openagent.jsonc)  →  Defaults
-```
-
-- `agents`, `categories`, `claude_code`: deep merged recursively (prototype-pollution-safe)
-- `disabled_*` arrays: Set union (concatenated + deduplicated)
-- All other fields: override replaces base value
-- Zod `safeParse()` fills defaults for omitted fields; partial parsing as fallback
-- `migrateConfigFile()` transforms legacy keys automatically (idempotent via `_migrations` tracking)
-
-Fields: agents, categories, disabled_* arrays, and the remaining fixed-product runtime settings.
-
-## THREE-TIER MCP SYSTEM
-
-| Tier | Source | Mechanism |
-|------|--------|-----------|
-| Built-in | `src/mcp/` | 3 remote HTTP: websearch (Exa/Tavily), context7, grep_app |
-| Claude Code | `.mcp.json` | `${VAR}` env expansion via claude-code-mcp-loader |
-| Skill-embedded | SKILL.md YAML | Managed by the skill loader/runtime integration |
+| Plugin bootstrap | `src/index.ts`, `src/plugin-interface.ts` | End-to-end startup and 10 hook surfaces |
+| Config loading/merge | `src/plugin-config.ts`, `src/config/schema/` | JSONC load, migration, Zod validation |
+| Background task engine | `src/features/background-agent/` | Concurrency, polling, stale-task cleanup, notifications |
+| Agent definitions | `src/agents/` | Sisyphus family + Oracle/Librarian/Explore/Metis/Momus |
+| Hook behavior | `src/hooks/`, `src/plugin/hooks/` | Hook implementations vs composition glue |
+| Tool registration | `src/create-tools.ts`, `src/plugin/tool-registry.ts`, `src/tools/` | Registry boundary and tool families |
+| Shared runtime helpers | `src/shared/` | Logging, caches, model resolution, migration, session helpers |
+| CI/schema scripts | `script/` | `build-schema.ts`, `run-ci-tests.ts` |
+| Extra integration harnesses | `tests/hashline/` | Separate Bun package for hashline scenarios |
+| Project skill/runtime config | `.opencode/` | Project config plus installed skill assets |
+| Agent workspace rules/plans | `.sisyphus/` | Runtime contract for plans/rules/notepads |
+| Product/reference docs | `docs/` | Long-form docs, not runtime source |
 
 ## CONVENTIONS
 
-- **Runtime**: Bun only (1.3.11 in CI) -- never use npm/yarn
-- **TypeScript**: strict mode, ESNext, bundler moduleResolution, `bun-types` (never `@types/node`)
-- **Test pattern**: Bun test (`bun:test`), co-located `*.test.ts`, given/when/then style (nested describe with `#given`/`#when`/`#then` prefixes or inline `// given` / `// when` / `// then` comments)
-- **CI test split**: `script/run-ci-tests.ts` auto-detects `mock.module()` usage, isolates those tests in separate processes
-- **Factory pattern**: `createXXX()` for all tools, hooks, agents
-- **Hook tiers**: Session (24) → Tool-Guard (14) → Transform (5) → Continuation (7) → Skill (2)
-- **Agent modes**: `primary` (respects UI model) vs `subagent` (own fallback chain) vs `all`
-- **Model resolution**: 4-step: override → category-default → provider-fallback → system-default
-- **Config format**: JSONC with comments, Zod v4 validation, snake_case keys
-- **File naming**: kebab-case for all files/directories
-- **Module structure**: index.ts barrel exports, no catch-all files (utils.ts, helpers.ts banned), 200 LOC soft limit
-- **Imports**: relative within module, barrel imports across modules (`import { log } from "./shared"`)
-- **No path aliases**: no `@/` -- relative imports only
-- **Dual package**: `oh-my-opencode` + `oh-my-openagent` published simultaneously (transition period)
+- Runtime: Bun only
+- TypeScript: strict, ESNext, bundler resolution, `bun-types`
+- Tests: co-located `*.test.ts` plus extra harnesses in `tests/`
+- CI: `script/run-ci-tests.ts` isolates `mock.module()` tests
+- Naming: kebab-case files/directories
+- Factories: `createXXX()` for tools, hooks, managers, agents
+- Imports: relative paths, no `@/` aliases
+- `index.ts`: entry/barrel/wiring only
+- Prefer focused modules over grab-bag helpers; some legacy localized `utils` files exist, do not expand that pattern
+- Update the nearest owning `AGENTS.md` when structure or responsibilities change
 
 ## ANTI-PATTERNS
 
-- Never use `as any`, `@ts-ignore`, `@ts-expect-error`
-- Never suppress lint/type errors
-- Never add emojis to code/comments unless user explicitly asks
-- Never commit unless explicitly requested
-- Never run `bun publish` directly -- use GitHub Actions
-- Never modify `package.json` version locally
-- Test: given/when/then -- never use Arrange-Act-Assert comments
-- Comments: avoid AI-generated comment patterns
-- Never create catch-all files (`utils.ts`, `helpers.ts`, `service.ts`)
-- Empty catch blocks `catch(e) {}` -- always handle errors
-- Never use em dashes, en dashes, or AI filler phrases in generated content
-- index.ts is entry point ONLY -- never dump business logic there
+- `as any`, `@ts-ignore`, `@ts-expect-error`
+- empty `catch {}` blocks
+- direct `bun publish`
+- local `package.json` version bumps for releases
+- Arrange-Act-Assert comments in tests
+- emojis / AI filler prose / em dashes in generated content unless explicitly requested
+- committing without explicit user request
+- adding new catch-all `utils.ts` / `helpers.ts` / `service.ts`
 
 ## COMMANDS
 
 ```bash
-bun test                    # Bun test suite
-bun run build              # Build plugin (ESM + declarations + schema)
-bun run typecheck           # tsc --noEmit
+bun test                              # Full Bun test suite
+bun run build                         # ESM build + declarations + schema
+bun run typecheck                     # tsc --noEmit
+bun run build:schema                  # Regenerate JSON schema
+bun run script/run-ci-tests.ts        # CI-style split test execution
+bun run script/run-ci-tests.ts --print-plan
 ```
+
+## AGENTS HIERARCHY
+
+- `src/AGENTS.md`
+- `src/agents/AGENTS.md`
+- `src/agents/sisyphus/AGENTS.md`
+- `src/agents/sisyphus-junior/AGENTS.md`
+- `src/config/AGENTS.md`
+- `src/features/AGENTS.md`
+- `src/features/background-agent/AGENTS.md`
+- `src/features/builtin-skills/AGENTS.md`
+- `src/features/builtin-skills/skills/git-master-sections/AGENTS.md`
+- `src/hooks/AGENTS.md`
+- `src/plugin/AGENTS.md`
+- `src/shared/AGENTS.md`
+- `src/shared/model-capabilities/AGENTS.md`
+- `src/tools/AGENTS.md`
+- `src/tools/delegate-task/AGENTS.md`
+- `src/tools/hashline-edit/AGENTS.md`
+- `src/tools/lsp/AGENTS.md`
+- `script/AGENTS.md`
+- `tests/AGENTS.md`
+- `.sisyphus/AGENTS.md`
+
+## DOCUMENTATION POLICY
+
+- Root file owns repo-wide structure, conventions, commands, and AGENTS index.
+- Child files own domain-specific contracts only.
+- Link downward; do not repeat parent content.
+- Remove stale path references immediately when modules disappear or move.
 
 ## NOTES
 
-- Logger writes to `/tmp/oh-my-opencode.log` -- check there for debugging
-- Background tasks: 5 concurrent per model/provider (configurable, circuit breaker support)
-- Plugin load timeout: 10s for Claude Code plugins
-- Model fallback: per-agent chains in `shared/model-requirements.ts`, not a single global priority
-- Config migration: idempotent via `_migrations` tracking, creates timestamped backups before atomic writes
-- Build: bun build (ESM) + tsc --emitDeclarationOnly, externals: @ast-grep/napi
-- Test setup: `test-setup.ts` preloaded via bunfig.toml, resets session/cache state between tests
-- Test split: `script/run-ci-tests.ts` auto-isolates files using `mock.module()` (plus `src/openclaw/__tests__/reply-listener-discord.test.ts`)
-- 104 barrel export files (index.ts) establish module boundaries
-- Architecture rules enforced via `.sisyphus/rules/modular-code-enforcement.md`
-- Windows builds run on `windows-latest` runner (not cross-compiled) to avoid Bun segfaults
-- Platform binaries detect AVX2 + libc family at runtime, fallback to baseline if needed
-- Hashline edit: every Read output tagged with `LINE#ID` content hashes; edits reject on hash mismatch
-- IntentGate: classifies user intent (research/implementation/investigation/evaluation/fix) before routing
+- Logger output: `/tmp/oh-my-opencode.log`
+- `.sisyphus/rules/modular-code-enforcement.md` is blocking architecture guidance
+- `tests/hashline/` is a separate Bun package
+- `.opencode/skills/github-triage/scripts/gh_fetch.py` is the only Python file in this checkout
