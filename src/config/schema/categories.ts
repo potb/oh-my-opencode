@@ -1,11 +1,8 @@
 import { z } from "zod"
-import { FallbackModelsSchema } from "./fallback-models"
-
 const CategoryConfigSchema = z.object({
   /** Human-readable description of the category's purpose. Shown in task prompt. */
   description: z.string().optional(),
   model: z.string().optional(),
-  fallback_models: FallbackModelsSchema.optional(),
   variant: z.string().optional(),
   temperature: z.number().min(0).max(2).optional(),
   top_p: z.number().min(0).max(1).optional(),
@@ -15,6 +12,7 @@ const CategoryConfigSchema = z.object({
       type: z.enum(["enabled", "disabled"]),
       budgetTokens: z.number().optional(),
     })
+    .strict()
     .optional(),
   reasoningEffort: z.enum(["none", "minimal", "low", "medium", "high", "xhigh"]).optional(),
   textVerbosity: z.enum(["low", "medium", "high"]).optional(),
@@ -25,7 +23,7 @@ const CategoryConfigSchema = z.object({
   is_unstable_agent: z.boolean().optional(),
   /** Disable this category. Disabled categories are excluded from task delegation. */
   disable: z.boolean().optional(),
-})
+}).strict()
 
 const BuiltinCategoryNameSchema = z.enum([
   "visual-engineering",

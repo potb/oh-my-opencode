@@ -3,18 +3,24 @@ import { AgentOverridesSchema } from "./agent-overrides"
 import { BackgroundTaskConfigSchema } from "./background-task"
 import { BrowserAutomationConfigSchema } from "./browser-automation"
 import { CategoriesConfigSchema } from "./categories"
-import { ClaudeCodeConfigSchema } from "./claude-code"
 import { ExperimentalConfigSchema } from "./experimental"
 import { GitMasterConfigSchema } from "./git-master"
 import { SisyphusConfigSchema } from "./sisyphus"
 import { WebsearchConfigSchema } from "./websearch"
 
+const LspEntrySchema = z.object({
+  disabled: z.boolean().optional(),
+  command: z.array(z.string()).optional(),
+  extensions: z.array(z.string()).optional(),
+  priority: z.number().optional(),
+  env: z.record(z.string(), z.string()).optional(),
+  initialization: z.record(z.string(), z.unknown()).optional(),
+}).strict()
+
 export const OhMyOpenCodeConfigSchema = z.object({
   $schema: z.string().optional(),
-  /** Enable new task system (default: false) */
-  new_task_system_enabled: z.boolean().optional(),
-  /** Default agent name for `oh-my-opencode run` (env: OPENCODE_DEFAULT_AGENT) */
-  default_run_agent: z.string().optional(),
+  plugin: z.array(z.string()).optional(),
+  lsp: z.record(z.string(), LspEntrySchema).optional(),
   disabled_agents: z.array(z.string()).optional(),
   disabled_hooks: z.array(z.string()).optional(),
   /** Disable specific tools by name (e.g., ["todowrite", "todoread"]) */
@@ -23,7 +29,6 @@ export const OhMyOpenCodeConfigSchema = z.object({
   hashline_edit: z.boolean().optional(),
   agents: AgentOverridesSchema.optional(),
   categories: CategoriesConfigSchema.optional(),
-  claude_code: ClaudeCodeConfigSchema.optional(),
   experimental: ExperimentalConfigSchema.optional(),
   background_task: BackgroundTaskConfigSchema.optional(),
   git_master: GitMasterConfigSchema.default({
@@ -34,8 +39,6 @@ export const OhMyOpenCodeConfigSchema = z.object({
   browser_automation_engine: BrowserAutomationConfigSchema.optional(),
   websearch: WebsearchConfigSchema.optional(),
   sisyphus: SisyphusConfigSchema.optional(),
-  /** Migration history to prevent re-applying migrations (e.g., model version upgrades) */
-  _migrations: z.array(z.string()).optional(),
-})
+}).strict()
 
 export type OhMyOpenCodeConfig = z.infer<typeof OhMyOpenCodeConfigSchema>

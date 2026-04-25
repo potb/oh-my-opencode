@@ -9,6 +9,7 @@ export const DynamicContextPruningConfigSchema = z.object({
       enabled: z.boolean().default(true),
       turns: z.number().min(1).max(10).default(3),
     })
+    .strict()
     .optional(),
   /** Tools that should never be pruned */
   protected_tools: z.array(z.string()).default([
@@ -28,6 +29,7 @@ export const DynamicContextPruningConfigSchema = z.object({
         .object({
           enabled: z.boolean().default(true),
         })
+        .strict()
         .optional(),
       /** Prune write inputs when file subsequently read */
       supersede_writes: z
@@ -36,6 +38,7 @@ export const DynamicContextPruningConfigSchema = z.object({
           /** Aggressive mode: prune any write if ANY subsequent read */
           aggressive: z.boolean().default(false),
         })
+        .strict()
         .optional(),
       /** Prune errored tool inputs after N turns */
       purge_errors: z
@@ -43,10 +46,12 @@ export const DynamicContextPruningConfigSchema = z.object({
           enabled: z.boolean().default(true),
           turns: z.number().min(1).max(20).default(5),
         })
+        .strict()
         .optional(),
     })
+    .strict()
     .optional(),
-})
+}).strict()
 
 type DynamicContextPruningConfig = z.infer<
   typeof DynamicContextPruningConfigSchema

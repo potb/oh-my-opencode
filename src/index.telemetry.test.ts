@@ -2,7 +2,6 @@ import { afterEach, beforeEach, describe, expect, it, mock } from "bun:test"
 
 const mockInitConfigContext = mock(() => {})
 const mockInjectServerAuthIntoClient = mock(() => {})
-const mockLogLegacyPluginStartupWarning = mock(() => {})
 const mockLoadPluginConfig = mock(() => ({}))
 const mockCreateManagers = mock(() => ({
   backgroundManager: { shutdown: async () => {} },
@@ -39,7 +38,6 @@ function installModuleMocks(): void {
   mock.module("./shared", () => ({
     injectServerAuthIntoClient: mockInjectServerAuthIntoClient,
     log: mock(() => {}),
-    logLegacyPluginStartupWarning: mockLogLegacyPluginStartupWarning,
   }))
   mock.module("./plugin-config", () => ({
     loadPluginConfig: mockLoadPluginConfig,
@@ -111,6 +109,6 @@ describe("OhMyOpenCodePlugin telemetry isolation", () => {
     } as Parameters<typeof plugin>[0])
 
     // then
-    expect(result).toMatchObject({ name: "oh-my-openagent" })
+    expect(result).toMatchObject({ name: "oh-my-opencode" })
   })
 })

@@ -27,11 +27,7 @@ type ProviderConfig = {
 type AgentWithPermission = { permission?: Record<string, unknown> }
 
 function supportsImageInput(modelConfig: ProviderModelConfig | undefined): boolean {
-  if (modelConfig?.modalities?.input?.includes("image")) {
-    return true
-  }
-
-  return modelConfig?.capabilities?.input?.image === true
+  return modelConfig?.modalities?.input?.includes("image") === true
 }
 
 function applyProviderMetadata(config: Record<string, unknown>, modelCacheState: ModelCacheState): void {

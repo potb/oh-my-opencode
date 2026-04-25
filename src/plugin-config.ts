@@ -1,6 +1,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import { OhMyOpenCodeConfigSchema, type OhMyOpenCodeConfig } from "./config";
+import { GitMasterConfigSchema } from "./config/schema/git-master";
 import {
   log,
   deepMerge,
@@ -8,79 +9,36 @@ import {
   addConfigLoadError,
   parseJsonc,
   detectPluginConfigFile,
-  migrateConfigFile,
 } from "./shared";
-import { migrateLegacyConfigFile } from "./shared/migrate-legacy-config-file";
-import { CONFIG_BASENAME, LEGACY_CONFIG_BASENAME } from "./shared/plugin-identity";
+import { CONFIG_BASENAME } from "./shared/plugin-identity";
 
 function loadExplicitGitMasterOverrides(configPath: string): Record<string, unknown> | undefined {
-  try {
-    if (!fs.existsSync(configPath)) {
-      return undefined
-    }
-
-    const content = fs.readFileSync(configPath, "utf-8")
-    const rawConfig = parseJsonc<Record<string, unknown>>(content)
-    const gitMaster = rawConfig.git_master
-
-    if (gitMaster && typeof gitMaster === "object" && !Array.isArray(gitMaster)) {
-      return gitMaster as Record<string, unknown>
-    }
-  } catch {
+  if (!fs.existsSync(configPath)) {
     return undefined
   }
 
-  return undefined
-}
-
-const PARTIAL_STRING_ARRAY_KEYS = new Set([
-  "disabled_agents",
-  "disabled_hooks",
-  "disabled_tools",
-]);
-
-function parseConfigPartially(
-  rawConfig: Record<string, unknown>
-): OhMyOpenCodeConfig | null {
-  const fullResult = OhMyOpenCodeConfigSchema.safeParse(rawConfig);
-  if (fullResult.success) {
-    return fullResult.data;
+  const content = fs.readFileSync(configPath, "utf-8")
+  const rawConfig = parseJsonc<Record<string, unknown>>(content)
+  if (!("git_master" in rawConfig)) {
+    return undefined
   }
 
-  const partialConfig: Record<string, unknown> = {};
-  const invalidSections: string[] = [];
-
-  for (const key of Object.keys(rawConfig)) {
-    if (PARTIAL_STRING_ARRAY_KEYS.has(key)) {
-      const sectionValue = rawConfig[key];
-      if (Array.isArray(sectionValue) && sectionValue.every((value) => typeof value === "string")) {
-        partialConfig[key] = sectionValue;
-      }
-      continue;
-    }
-
-    const sectionResult = OhMyOpenCodeConfigSchema.safeParse({ [key]: rawConfig[key] });
-    if (sectionResult.success) {
-      const parsed = sectionResult.data as Record<string, unknown>;
-      if (parsed[key] !== undefined) {
-        partialConfig[key] = parsed[key];
-      }
-    } else {
-      const sectionErrors = sectionResult.error.issues
-        .filter((i) => i.path[0] === key)
-        .map((i) => `${i.path.join(".")}: ${i.message}`)
-        .join(", ");
-      if (sectionErrors) {
-        invalidSections.push(`${key}: ${sectionErrors}`);
-      }
-    }
+  const rawGitMaster = rawConfig.git_master
+  const result = GitMasterConfigSchema.safeParse(rawGitMaster)
+  if (!result.success) {
+    const errorMsg = result.error.issues
+      .map((issue) => `${issue.path.join(".")}: ${issue.message}`)
+      .join(", ")
+    throw new Error(`Invalid git_master config at ${configPath}: ${errorMsg}`)
   }
 
-  if (invalidSections.length > 0) {
-    log("Partial config loaded - invalid sections skipped:", invalidSections);
-  }
+  const explicitKeys = typeof rawGitMaster === "object" && rawGitMaster !== null
+    ? Object.keys(rawGitMaster as Record<string, unknown>)
+    : []
 
-  return partialConfig as OhMyOpenCodeConfig;
+  return Object.fromEntries(
+    Object.entries(result.data).filter(([key]) => explicitKeys.includes(key))
+  )
 }
 
 function loadConfigFromPath(
@@ -91,8 +49,6 @@ function loadConfigFromPath(
     if (fs.existsSync(configPath)) {
       const content = fs.readFileSync(configPath, "utf-8");
       const rawConfig = parseJsonc<Record<string, unknown>>(content);
-
-      migrateConfigFile(configPath, rawConfig);
 
       const result = OhMyOpenCodeConfigSchema.safeParse(rawConfig);
 
@@ -107,21 +63,15 @@ function loadConfigFromPath(
       log(`Config validation error in ${configPath}:`, result.error.issues);
       addConfigLoadError({
         path: configPath,
-        error: `Partial config loaded - invalid sections skipped: ${errorMsg}`,
+        error: errorMsg,
       });
-
-      const partialResult = parseConfigPartially(rawConfig);
-      if (partialResult) {
-        log(`Partial config loaded from ${configPath}`, { agents: partialResult.agents });
-        return partialResult;
-      }
-
-      return null;
+      throw new Error(`Invalid config at ${configPath}: ${errorMsg}`)
     }
   } catch (err) {
     const errorMsg = err instanceof Error ? err.message : String(err);
     log(`Error loading config from ${configPath}:`, err);
     addConfigLoadError({ path: configPath, error: errorMsg });
+    throw err instanceof Error ? err : new Error(errorMsg)
   }
   return null;
 }
@@ -153,7 +103,7 @@ function mergeConfigs(
         ...(override.disabled_tools ?? []),
       ]),
     ],
-    claude_code: deepMerge(base.claude_code, override.claude_code),
+    git_master: deepMerge(base.git_master, override.git_master),
   };
 }
 
@@ -164,60 +114,18 @@ export function loadPluginConfig(
   // User-level config path - prefer .jsonc over .json
   const configDir = getOpenCodeConfigDir({ binary: "opencode" });
   const userDetected = detectPluginConfigFile(configDir);
-  let userConfigPath =
+  const userConfigPath =
     userDetected.format !== "none"
       ? userDetected.path
-      : path.join(configDir, `${CONFIG_BASENAME}.json`);
-
-  if (userDetected.legacyPath) {
-    log("Canonical plugin config detected alongside legacy config. Remove the legacy file to avoid confusion.", {
-      canonicalPath: userDetected.path,
-      legacyPath: userDetected.legacyPath,
-    });
-  }
-
-  // Auto-copy legacy config file to canonical name if needed
-  if (userDetected.format !== "none" && path.basename(userDetected.path).startsWith(LEGACY_CONFIG_BASENAME)) {
-    const migrated = migrateLegacyConfigFile(userDetected.path);
-    const canonicalPath = path.join(
-      path.dirname(userDetected.path),
-      `${CONFIG_BASENAME}${path.extname(userDetected.path)}`
-    );
-    // Only switch to canonical path if migration succeeded OR canonical file already exists
-    if (migrated || fs.existsSync(canonicalPath)) {
-      userConfigPath = canonicalPath;
-    }
-    // Otherwise keep loading from the legacy path that was detected
-  }
+      : path.join(configDir, `${CONFIG_BASENAME}.jsonc`);
 
   // Project-level config path - prefer .jsonc over .json
   const projectBasePath = path.join(directory, ".opencode");
   const projectDetected = detectPluginConfigFile(projectBasePath);
-  let projectConfigPath =
+  const projectConfigPath =
     projectDetected.format !== "none"
       ? projectDetected.path
-      : path.join(projectBasePath, `${CONFIG_BASENAME}.json`);
-
-  if (projectDetected.legacyPath) {
-    log("Canonical plugin config detected alongside legacy config. Remove the legacy file to avoid confusion.", {
-      canonicalPath: projectDetected.path,
-      legacyPath: projectDetected.legacyPath,
-    });
-  }
-
-  // Auto-copy legacy project config file to canonical name if needed
-  if (projectDetected.format !== "none" && path.basename(projectDetected.path).startsWith(LEGACY_CONFIG_BASENAME)) {
-    const projectMigrated = migrateLegacyConfigFile(projectDetected.path);
-    const canonicalProjectPath = path.join(
-      path.dirname(projectDetected.path),
-      `${CONFIG_BASENAME}${path.extname(projectDetected.path)}`
-    );
-    // Only switch to canonical path if migration succeeded OR canonical file already exists
-    if (projectMigrated || fs.existsSync(canonicalProjectPath)) {
-      projectConfigPath = canonicalProjectPath;
-    }
-    // Otherwise keep loading from the legacy path that was detected
-  }
+      : path.join(projectBasePath, `${CONFIG_BASENAME}.jsonc`);
 
   // Load user config first (base). Parse empty config through Zod to apply field defaults.
   const userConfig = loadConfigFromPath(userConfigPath, ctx)
@@ -248,7 +156,6 @@ export function loadPluginConfig(
     agents: config.agents,
     disabled_agents: config.disabled_agents,
     disabled_hooks: config.disabled_hooks,
-    claude_code: config.claude_code,
   });
   return config;
 }

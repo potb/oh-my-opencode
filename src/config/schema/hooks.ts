@@ -6,8 +6,6 @@ const HookNameSchema = z.enum([
   "non-interactive-env",
   "interactive-bash-session",
 
-  "edit-error-recovery",
-  "delegate-task-retry",
   "sisyphus-junior-notepad",
   "write-existing-file-guard",
   "anthropic-effort",

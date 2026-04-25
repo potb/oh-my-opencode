@@ -8,7 +8,6 @@ type CiTestPlan = {
 
 const TEST_ROOTS = ["bin", "script", "src"] as const
 const MODULE_MOCK_PATTERN = "mock.module("
-const ALWAYS_ISOLATED_TEST_FILES = ["src/openclaw/__tests__/reply-listener-discord.test.ts"] as const
 
 async function collectTestFiles(rootDirectory: string): Promise<string[]> {
   const testFiles: string[] = []
@@ -55,9 +54,7 @@ export async function createCiTestPlan(rootDirectory: string = process.cwd()): P
     }
   }
 
-  const isolatedTestFiles = Array.from(
-    new Set([...isolatedModuleMockFiles, ...ALWAYS_ISOLATED_TEST_FILES.filter((testFile) => allTestFiles.includes(testFile))]),
-  )
+  const isolatedTestFiles = Array.from(new Set(isolatedModuleMockFiles))
   const isolatedTestTargets = collapseNestedTargets(
     isolatedTestFiles.map((testFile) => toIsolatedTarget(testFile)).sort((left, right) =>
       left.localeCompare(right),

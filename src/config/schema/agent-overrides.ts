@@ -1,11 +1,7 @@
 import { z } from "zod"
-import { FallbackModelsSchema } from "./fallback-models"
 import { AgentPermissionSchema } from "./internal/permission"
 
 const AgentOverrideConfigSchema = z.object({
-  /** @deprecated Use `category` instead. Model is inherited from category defaults. */
-  model: z.string().optional(),
-  fallback_models: FallbackModelsSchema.optional(),
   variant: z.string().optional(),
   /** Category name to inherit model and other settings from CategoryConfig */
   category: z.string().optional(),
@@ -16,7 +12,6 @@ const AgentOverrideConfigSchema = z.object({
   prompt: z.string().optional(),
   /** Text to append to agent prompt. Supports file:// URIs (file:///abs, file://./rel, file://~/home) */
   prompt_append: z.string().optional(),
-  tools: z.record(z.string(), z.boolean()).optional(),
   disable: z.boolean().optional(),
   description: z.string().optional(),
   mode: z.enum(["subagent", "primary", "all"]).optional(),
@@ -33,6 +28,7 @@ const AgentOverrideConfigSchema = z.object({
       type: z.enum(["enabled", "disabled"]),
       budgetTokens: z.number().optional(),
     })
+    .strict()
     .optional(),
   /** Reasoning effort level (OpenAI). Overrides category and default settings. */
   reasoningEffort: z.enum(["none", "minimal", "low", "medium", "high", "xhigh"]).optional(),
@@ -46,14 +42,16 @@ const AgentOverrideConfigSchema = z.object({
       model: z.string().optional(),
       variant: z.string().optional(),
     })
+    .strict()
     .optional(),
   compaction: z
     .object({
       model: z.string().optional(),
       variant: z.string().optional(),
     })
+    .strict()
     .optional(),
-})
+}).strict()
 
 export const AgentOverridesSchema = z.object({
   plan: AgentOverrideConfigSchema.optional(),
@@ -64,7 +62,7 @@ export const AgentOverridesSchema = z.object({
   oracle: AgentOverrideConfigSchema.optional(),
   librarian: AgentOverrideConfigSchema.optional(),
   explore: AgentOverrideConfigSchema.optional(),
-})
+}).strict()
 
 export type AgentOverrideConfig = z.infer<typeof AgentOverrideConfigSchema>
 export type AgentOverrides = z.infer<typeof AgentOverridesSchema>

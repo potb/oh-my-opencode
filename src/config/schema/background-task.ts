@@ -4,7 +4,7 @@ const CircuitBreakerConfigSchema = z.object({
   enabled: z.boolean().optional(),
   maxToolCalls: z.number().int().min(10).optional(),
   consecutiveThreshold: z.number().int().min(5).optional(),
-})
+}).strict()
 
 export const BackgroundTaskConfigSchema = z.object({
   defaultConcurrency: z.number().min(1).optional(),
@@ -24,6 +24,6 @@ export const BackgroundTaskConfigSchema = z.object({
   /** Maximum tool calls per subagent task before circuit breaker triggers (default: 200, minimum: 10). Prevents runaway loops from burning unlimited tokens. */
   maxToolCalls: z.number().int().min(10).optional(),
   circuitBreaker: CircuitBreakerConfigSchema.optional(),
-})
+}).strict()
 
 export type BackgroundTaskConfig = z.infer<typeof BackgroundTaskConfigSchema>

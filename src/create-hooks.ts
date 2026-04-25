@@ -13,22 +13,14 @@ export function createHooks(args: {
   pluginConfig: OhMyOpenCodeConfig
   modelCacheState: ModelCacheState
   isHookEnabled: (hookName: HookName) => boolean
-  safeHookEnabled: boolean
 }) {
-  const {
-    ctx,
-    pluginConfig,
-    modelCacheState,
-    isHookEnabled,
-    safeHookEnabled,
-  } = args
+  const { ctx, pluginConfig, modelCacheState, isHookEnabled } = args
 
   const core = createCoreHooks({
     ctx,
     pluginConfig,
     modelCacheState,
     isHookEnabled,
-    safeHookEnabled,
   })
 
   const hooks = core

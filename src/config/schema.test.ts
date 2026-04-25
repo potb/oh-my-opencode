@@ -8,20 +8,17 @@ import {
 } from "./schema"
 
 describe("disabled_mcps schema", () => {
-  test("ignores disabled_mcps in the trimmed fixed-product schema", () => {
+  test("rejects disabled_mcps in the strict fixed-product schema", () => {
     const result = OhMyOpenCodeConfigSchema.safeParse({
       disabled_mcps: ["context7", "grep_app"],
     })
 
-    expect(result.success).toBe(true)
-    if (result.success) {
-      expect((result.data as Record<string, unknown>).disabled_mcps).toBeUndefined()
-    }
+    expect(result.success).toBe(false)
   })
 })
 
 describe("OhMyOpenCodeConfigSchema trimmed fixed-product fields", () => {
-  test("strips removed top-level config fields", () => {
+  test("rejects removed top-level config fields", () => {
     const result = OhMyOpenCodeConfigSchema.safeParse({
       auto_update: true,
       skills: ["frontend-ui-ux"],
@@ -31,26 +28,16 @@ describe("OhMyOpenCodeConfigSchema trimmed fixed-product fields", () => {
       sisyphus_agent: { disabled: true },
     })
 
-    expect(result.success).toBe(true)
-    if (result.success) {
-      const data = result.data as Record<string, unknown>
-      expect(data.auto_update).toBeUndefined()
-      expect(data.skills).toBeUndefined()
-      expect(data.notification).toBeUndefined()
-      expect(data.model_capabilities).toBeUndefined()
-      expect(data.babysitting).toBeUndefined()
-      expect(data.sisyphus_agent).toBeUndefined()
-    }
+    expect(result.success).toBe(false)
   })
 })
 
 describe("Sisyphus-Junior agent override", () => {
-  test("schema accepts agents['Sisyphus-Junior'] and retains the key after parsing", () => {
+  test("schema accepts agents['Sisyphus-Junior'] override fields after strict cleanup", () => {
     // given
     const config = {
       agents: {
         "sisyphus-junior": {
-          model: "openai/gpt-5.4",
           temperature: 0.2,
         },
       },
@@ -63,7 +50,6 @@ describe("Sisyphus-Junior agent override", () => {
     expect(result.success).toBe(true)
     if (result.success) {
       expect(result.data.agents?.["sisyphus-junior"]).toBeDefined()
-      expect(result.data.agents?.["sisyphus-junior"]?.model).toBe("openai/gpt-5.4")
       expect(result.data.agents?.["sisyphus-junior"]?.temperature).toBe(0.2)
     }
   })
@@ -87,32 +73,6 @@ describe("Sisyphus-Junior agent override", () => {
       expect(result.data.agents?.["sisyphus-junior"]?.prompt_append).toBe(
         "Additional instructions for sisyphus-junior"
       )
-    }
-  })
-
-  test("schema accepts sisyphus-junior with tools override", () => {
-    // given
-    const config = {
-      agents: {
-        "sisyphus-junior": {
-          tools: {
-            read: true,
-            write: false,
-          },
-        },
-      },
-    }
-
-    // when
-    const result = OhMyOpenCodeConfigSchema.safeParse(config)
-
-    // then
-    expect(result.success).toBe(true)
-    if (result.success) {
-      expect(result.data.agents?.["sisyphus-junior"]?.tools).toEqual({
-        read: true,
-        write: false,
-      })
     }
   })
 
@@ -233,7 +193,7 @@ describe("OhMyOpenCodeConfigSchema - hashline_edit", () => {
 
   test("hashline_edit is optional", () => {
     //#given
-    const input = { experimental: { safe_hook_creation: true } }
+    const input = { experimental: { disable_omo_env: true } }
 
     //#when
     const result = OhMyOpenCodeConfigSchema.safeParse(input)
@@ -256,45 +216,6 @@ describe("OhMyOpenCodeConfigSchema - hashline_edit", () => {
 })
 
 describe("ExperimentalConfigSchema feature flags", () => {
-  test("accepts plugin_load_timeout_ms as number", () => {
-    //#given
-    const config = { plugin_load_timeout_ms: 5000 }
-
-    //#when
-    const result = ExperimentalConfigSchema.safeParse(config)
-
-    //#then
-    expect(result.success).toBe(true)
-    if (result.success) {
-      expect(result.data.plugin_load_timeout_ms).toBe(5000)
-    }
-  })
-
-  test("rejects plugin_load_timeout_ms below 1000", () => {
-    //#given
-    const config = { plugin_load_timeout_ms: 500 }
-
-    //#when
-    const result = ExperimentalConfigSchema.safeParse(config)
-
-    //#then
-    expect(result.success).toBe(false)
-  })
-
-  test("accepts safe_hook_creation as boolean", () => {
-    //#given
-    const config = { safe_hook_creation: false }
-
-    //#when
-    const result = ExperimentalConfigSchema.safeParse(config)
-
-    //#then
-    expect(result.success).toBe(true)
-    if (result.success) {
-      expect(result.data.safe_hook_creation).toBe(false)
-    }
-  })
-
   test("both fields are optional", () => {
     //#given
     const config = {}
@@ -305,8 +226,7 @@ describe("ExperimentalConfigSchema feature flags", () => {
     //#then
     expect(result.success).toBe(true)
     if (result.success) {
-      expect(result.data.plugin_load_timeout_ms).toBeUndefined()
-      expect(result.data.safe_hook_creation).toBeUndefined()
+      expect(result.data.disable_omo_env).toBeUndefined()
     }
   })
 
@@ -340,7 +260,7 @@ describe("ExperimentalConfigSchema feature flags", () => {
 
   test("disable_omo_env is optional", () => {
     //#given
-    const config = { safe_hook_creation: true }
+    const config = { max_tools: 50 }
 
     //#when
     const result = ExperimentalConfigSchema.safeParse(config)
@@ -493,7 +413,7 @@ describe("OhMyOpenCodeConfigSchema - git_master defaults (#2040)", () => {
 })
 
 describe("skills schema", () => {
-  test("accepts skills.sources configuration", () => {
+  test("rejects removed skills.sources configuration", () => {
     //#given
     const config = {
       skills: {
@@ -505,6 +425,6 @@ describe("skills schema", () => {
     const result = OhMyOpenCodeConfigSchema.safeParse(config)
 
     //#then
-    expect(result.success).toBe(true)
+    expect(result.success).toBe(false)
   })
 })

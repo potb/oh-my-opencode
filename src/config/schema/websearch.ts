@@ -9,4 +9,4 @@ export const WebsearchConfigSchema = z.object({
    * - "tavily": Uses Tavily websearch (requires TAVILY_API_KEY)
    */
   provider: WebsearchProviderSchema.optional(),
-})
+}).strict()

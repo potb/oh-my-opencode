@@ -10,7 +10,7 @@ export const BrowserAutomationConfigSchema = z.object({
    * - "agent-browser": Uses agent-browser CLI
    */
   provider: BrowserAutomationProviderSchema.default("agent-browser"),
-})
+}).strict()
 
 export type BrowserAutomationProvider = z.infer<
   typeof BrowserAutomationProviderSchema

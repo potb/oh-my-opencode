@@ -5,14 +5,13 @@ import type { HookName } from "./config"
 import { createHooks } from "./create-hooks"
 import { createManagers } from "./create-managers"
 import { createTools } from "./create-tools"
-import { applyFixedProductTrim } from "./fixed-product"
 import { createPluginInterface } from "./plugin-interface"
 import { createPluginDispose, type PluginDispose } from "./plugin-dispose"
 
 import { loadPluginConfig } from "./plugin-config"
 import { createModelCacheState } from "./plugin-state"
 import { createFirstMessageVariantGate } from "./shared/first-message-variant"
-import { initConfigContext, injectServerAuthIntoClient, log, logLegacyPluginStartupWarning } from "./shared"
+import { initConfigContext, injectServerAuthIntoClient, log } from "./shared"
 import { detectExternalSkillPlugin, getSkillPluginConflictWarning } from "./shared/external-plugin-detector"
 import { lspManager } from "./tools/lsp/client"
 import { createPluginPostHog, getPostHogDistinctId } from "./shared/posthog"
@@ -24,8 +23,6 @@ const OhMyOpenCodePlugin: Plugin = async (ctx) => {
   log("[OhMyOpenCodePlugin] ENTRY - plugin loading", {
     directory: ctx.directory,
   })
-  logLegacyPluginStartupWarning()
-
   const skillPluginCheck = detectExternalSkillPlugin(ctx.directory)
   if (skillPluginCheck.detected && skillPluginCheck.pluginName) {
     console.warn(getSkillPluginConflictWarning(skillPluginCheck.pluginName))
@@ -34,7 +31,7 @@ const OhMyOpenCodePlugin: Plugin = async (ctx) => {
   injectServerAuthIntoClient(ctx.client)
   await activePluginDispose?.()
 
-  const pluginConfig = applyFixedProductTrim(loadPluginConfig(ctx.directory, ctx))
+  const pluginConfig = loadPluginConfig(ctx.directory, ctx)
 
   const posthog = createPluginPostHog()
   const distinctId = getPostHogDistinctId()
@@ -49,7 +46,6 @@ const OhMyOpenCodePlugin: Plugin = async (ctx) => {
         event: "plugin_loaded",
         properties: {
           entry_point: "plugin",
-          has_openclaw: false,
           tmux_enabled: false,
         },
       })
@@ -59,8 +55,6 @@ const OhMyOpenCodePlugin: Plugin = async (ctx) => {
   const disabledHooks = new Set(pluginConfig.disabled_hooks ?? [])
 
   const isHookEnabled = (hookName: HookName): boolean => !disabledHooks.has(hookName)
-  const safeHookEnabled = pluginConfig.experimental?.safe_hook_creation ?? true
-
   const firstMessageVariantGate = createFirstMessageVariantGate()
 
   const modelCacheState = createModelCacheState()
@@ -82,7 +76,6 @@ const OhMyOpenCodePlugin: Plugin = async (ctx) => {
     pluginConfig,
     modelCacheState,
     isHookEnabled,
-    safeHookEnabled,
   })
 
   const dispose = createPluginDispose({
@@ -103,7 +96,7 @@ const OhMyOpenCodePlugin: Plugin = async (ctx) => {
   activePluginDispose = dispose
 
   return {
-    name: "oh-my-openagent",
+    name: "oh-my-opencode",
     ...pluginInterface,
 
     "experimental.session.compacting": async (
