@@ -33,7 +33,6 @@ describe("executeBackgroundContinuation - subagent metadata", () => {
       session_id: "ses_resumed_123",
       prompt: "continue working",
       description: "resume oracle",
-      load_skills: [],
       run_in_background: true,
     }
 
@@ -79,7 +78,6 @@ describe("executeBackgroundContinuation - subagent metadata", () => {
       session_id: "ses_resumed_456",
       prompt: "continue",
       description: "resume task",
-      load_skills: [],
       run_in_background: true,
     }
 

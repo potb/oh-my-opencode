@@ -8,15 +8,14 @@ describe("build-schema-document", () => {
 
     // when
     const schema = createOhMyOpenCodeJsonSchema()
+    const properties = schema.properties as Record<string, unknown>
 
     // then
     expect(schema.$schema).toBe(expectedDraft)
     expect(schema.title).toBe("Oh My OpenCode Configuration")
-    expect(schema.properties).toBeDefined()
-    expect(schema.properties.skills).toBeUndefined()
-    expect(schema.properties.sisyphus_agent).toBeUndefined()
-    expect(schema.properties.auto_update).toBeUndefined()
-    expect(schema.properties.model_capabilities).toBeUndefined()
-    expect(schema.properties.babysitting).toBeUndefined()
+    expect(properties).toBeDefined()
+    expect(properties.agents).toBeDefined()
+    expect(properties.background_task).toBeDefined()
+    expect(properties.disabled_tools).toBeDefined()
   })
 })

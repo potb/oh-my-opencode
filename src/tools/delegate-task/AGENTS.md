@@ -46,6 +46,4 @@ background-task.ts → BackgroundManager.launch() → (async polling) → backgr
 
 ## FIXED-PRODUCT CONSTRAINTS
 
-- Category-based task routing has been removed from the fixed-product runtime.
-- Skill loading through the `task` tool has been removed from the fixed-product runtime.
 - Direct `subagent_type` delegation is the supported path.

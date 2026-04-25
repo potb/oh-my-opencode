@@ -7,25 +7,19 @@ import {
   OhMyOpenCodeConfigSchema,
 } from "./schema"
 
-describe("disabled_mcps schema", () => {
-  test("rejects disabled_mcps in the strict fixed-product schema", () => {
+describe("OhMyOpenCodeConfigSchema unknown fields", () => {
+  test("rejects unknown top-level config fields", () => {
     const result = OhMyOpenCodeConfigSchema.safeParse({
-      disabled_mcps: ["context7", "grep_app"],
+      unknown_field: true,
     })
 
     expect(result.success).toBe(false)
   })
-})
 
-describe("OhMyOpenCodeConfigSchema trimmed fixed-product fields", () => {
-  test("rejects removed top-level config fields", () => {
+  test("rejects multiple unknown top-level config fields", () => {
     const result = OhMyOpenCodeConfigSchema.safeParse({
-      auto_update: true,
-      skills: ["frontend-ui-ux"],
-      notification: { force_enable: true },
-      model_capabilities: { enabled: true },
-      babysitting: { timeout_ms: 1 },
-      sisyphus_agent: { disabled: true },
+      unknown_field_a: true,
+      unknown_field_b: { enabled: true },
     })
 
     expect(result.success).toBe(false)
@@ -154,63 +148,14 @@ describe("OhMyOpenCodeConfigSchema - browser_automation_engine", () => {
     expect(result.data?.browser_automation_engine).toBeUndefined()
   })
 
-  test("rejects browser_automation_engine with removed provider", () => {
+  test("rejects browser_automation_engine with unsupported provider", () => {
     // given
-    const input = { browser_automation_engine: { provider: "playwright-cli" } }
+    const input = { browser_automation_engine: { provider: "unsupported-provider" } }
 
     // when
     const result = OhMyOpenCodeConfigSchema.safeParse(input)
 
     // then
-    expect(result.success).toBe(false)
-  })
-})
-
-describe("OhMyOpenCodeConfigSchema - hashline_edit", () => {
-  test("accepts hashline_edit as true", () => {
-    //#given
-    const input = { hashline_edit: true }
-
-    //#when
-    const result = OhMyOpenCodeConfigSchema.safeParse(input)
-
-    //#then
-    expect(result.success).toBe(true)
-    expect(result.data?.hashline_edit).toBe(true)
-  })
-
-  test("accepts hashline_edit as false", () => {
-    //#given
-    const input = { hashline_edit: false }
-
-    //#when
-    const result = OhMyOpenCodeConfigSchema.safeParse(input)
-
-    //#then
-    expect(result.success).toBe(true)
-    expect(result.data?.hashline_edit).toBe(false)
-  })
-
-  test("hashline_edit is optional", () => {
-    //#given
-    const input = { experimental: { disable_omo_env: true } }
-
-    //#when
-    const result = OhMyOpenCodeConfigSchema.safeParse(input)
-
-    //#then
-    expect(result.success).toBe(true)
-    expect(result.data?.hashline_edit).toBeUndefined()
-  })
-
-  test("rejects non-boolean hashline_edit", () => {
-    //#given
-    const input = { hashline_edit: "true" }
-
-    //#when
-    const result = OhMyOpenCodeConfigSchema.safeParse(input)
-
-    //#then
     expect(result.success).toBe(false)
   })
 })
@@ -413,11 +358,11 @@ describe("OhMyOpenCodeConfigSchema - git_master defaults (#2040)", () => {
 })
 
 describe("skills schema", () => {
-  test("rejects removed skills.sources configuration", () => {
+  test("rejects unknown skills configuration", () => {
     //#given
     const config = {
       skills: {
-        sources: [{ path: "skill/", recursive: true }],
+        custom: true,
       },
     }
 

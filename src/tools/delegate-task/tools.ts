@@ -32,8 +32,6 @@ export function createDelegateTask(options: DelegateTaskToolOptions): ToolDefini
   - session_id: Continue an existing task session with its prior context preserved
 
   Notes:
-  - Category-based task routing has been removed from the fixed-product runtime.
-  - Skill loading through task has been removed from the fixed-product runtime.
   - Prompts must be in English.`
 
   return tool({
@@ -62,10 +60,6 @@ export function createDelegateTask(options: DelegateTaskToolOptions): ToolDefini
       }
 
       const runInBackground = args.run_in_background === true
-
-      if (args.category) {
-        return `Invalid arguments: category-based task routing has been removed. Provide subagent_type instead.`
-      }
 
       const parentContext = await resolveParentContext(ctx, options.client)
 

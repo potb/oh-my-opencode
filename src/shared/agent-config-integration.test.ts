@@ -16,8 +16,8 @@ describe("Agent Config Integration", () => {
       expect(displayNames).toContain("explore")
     })
 
-    test("returns original key for removed atlas", () => {
-      expect(getAgentDisplayName("atlas")).toBe("atlas")
+    test("returns original key for unknown agents", () => {
+      expect(getAgentDisplayName("custom-agent")).toBe("custom-agent")
     })
   })
 

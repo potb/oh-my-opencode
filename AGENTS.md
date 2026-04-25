@@ -47,7 +47,7 @@ OhMyOpenCodePlugin(ctx)
 | Tool registration | `src/create-tools.ts`, `src/plugin/tool-registry.ts`, `src/tools/` | Registry boundary and tool families |
 | Shared runtime helpers | `src/shared/` | Logging, caches, model resolution, session helpers |
 | CI/schema scripts | `script/` | `build-schema.ts`, `run-ci-tests.ts` |
-| Extra integration harnesses | `tests/hashline/` | Separate Bun package for hashline scenarios |
+| Extra integration harnesses | `tests/` | Non-co-located harness helpers when needed |
 | Project skill/runtime config | `.opencode/` | Project config plus installed skill assets |
 | Agent workspace rules/plans | `.sisyphus/` | Runtime contract for plans/rules/notepads |
 | Product/reference docs | `docs/` | Long-form docs, not runtime source |
@@ -103,7 +103,6 @@ bun run script/run-ci-tests.ts --print-plan
 - `src/shared/AGENTS.md`
 - `src/tools/AGENTS.md`
 - `src/tools/delegate-task/AGENTS.md`
-- `src/tools/hashline-edit/AGENTS.md`
 - `src/tools/lsp/AGENTS.md`
 - `script/AGENTS.md`
 - `tests/AGENTS.md`
@@ -119,5 +118,4 @@ bun run script/run-ci-tests.ts --print-plan
 ## NOTES
 
 - Logger output: `/tmp/oh-my-opencode.log`
-- `tests/hashline/` is a separate Bun package
 - `.opencode/skills/github-triage/scripts/gh_fetch.py` is the only Python file in this checkout

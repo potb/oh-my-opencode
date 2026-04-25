@@ -5,14 +5,12 @@ import type { PluginContext } from "../types"
 import {
   createToolOutputTruncatorHook,
   createWriteExistingFileGuardHook,
-  createHashlineReadEnhancerHook,
   createWebFetchRedirectGuardHook,
 } from "../../hooks"
 
 type ToolGuardHooks = {
   toolOutputTruncator: ReturnType<typeof createToolOutputTruncatorHook> | null
   writeExistingFileGuard: ReturnType<typeof createWriteExistingFileGuardHook> | null
-  hashlineReadEnhancer: ReturnType<typeof createHashlineReadEnhancerHook> | null
   webfetchRedirectGuard: ReturnType<typeof createWebFetchRedirectGuardHook> | null
 }
 
@@ -35,10 +33,6 @@ export function createToolGuardHooks(args: {
     ? createWriteExistingFileGuardHook(ctx)
     : null
 
-  const hashlineReadEnhancer = isHookEnabled("hashline-read-enhancer")
-    ? createHashlineReadEnhancerHook(ctx, { hashline_edit: { enabled: pluginConfig.hashline_edit ?? false } })
-    : null
-
   const webfetchRedirectGuard = isHookEnabled("webfetch-redirect-guard")
     ? createWebFetchRedirectGuardHook(ctx)
     : null
@@ -46,7 +40,6 @@ export function createToolGuardHooks(args: {
   return {
     toolOutputTruncator,
     writeExistingFileGuard,
-    hashlineReadEnhancer,
     webfetchRedirectGuard,
   }
 }

@@ -4,7 +4,6 @@ import type { ModelCacheState, VisionCapableModel } from "../plugin-state"
 import { setVisionCapableModelsCache } from "../shared/vision-capable-models-cache"
 import { log } from "../shared"
 import { getAgentDisplayName, getAgentListDisplayName } from "../shared/agent-display-names"
-import { clearFormatterCache } from "../tools/hashline-edit/formatter-trigger"
 import { applyRuntimeAgentConfig } from "./runtime-agent-config"
 
 type ProviderModelConfig = {
@@ -160,7 +159,6 @@ export function createRuntimeConfigHook(args: {
     const formatterConfig = config.formatter
 
     applyProviderMetadata(config, modelCacheState)
-    clearFormatterCache()
 
     const agentResult = await applyRuntimeAgentConfig({
       config,

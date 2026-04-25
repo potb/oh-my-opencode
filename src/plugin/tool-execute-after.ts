@@ -20,7 +20,6 @@ export function createToolExecuteAfterHandler(args: {
 
     const runToolExecuteAfterHooks = async (): Promise<void> => {
       await hooks.toolOutputTruncator?.["tool.execute.after"]?.(input, output)
-      await hooks.hashlineReadEnhancer?.["tool.execute.after"]?.(input, output)
       await hooks.webfetchRedirectGuard?.["tool.execute.after"]?.(input, output)
     }
 

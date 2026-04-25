@@ -2,7 +2,6 @@ import type { DelegateTaskArgs, ToolContextWithMetadata, DelegatedModelConfig } 
 import type { ExecutorContext, ParentContext } from "./executor-types"
 import { log } from "../../shared/logger"
 import { addSubagentSession, removeSubagentSession } from "../../shared/subagent-session-registry"
-import { SessionCategoryRegistry } from "../../shared/session-category-registry"
 import { formatDuration } from "./time-formatter"
 import { formatDetailedError } from "./error-formatting"
 import { syncTaskDeps, type SyncTaskDeps } from "./sync-task-deps"
@@ -52,10 +51,6 @@ export async function executeSyncTask(
     syncSessionID = sessionID
     addSubagentSession(sessionID)
 
-    if (args.category) {
-      SessionCategoryRegistry.register(sessionID, args.category)
-    }
-
     if (onSyncSessionCreated) {
       log("[task] Invoking onSyncSessionCreated callback", { sessionID, parentID: parentContext.sessionID })
       await onSyncSessionCreated({
@@ -74,7 +69,6 @@ export async function executeSyncTask(
       metadata: {
         prompt: args.prompt,
         agent: agentToUse,
-        category: args.category,
         description: args.description,
         run_in_background: args.run_in_background,
         sessionId: sessionID,
@@ -125,14 +119,14 @@ export async function executeSyncTask(
       : undefined
     const modelRoutingNote =
       actualModelStr && parentModelStr && actualModelStr !== parentModelStr
-        ? `\n⚠️  Model routing: parent used ${parentModelStr}, this subagent used ${actualModelStr} (via category: ${args.category ?? "unknown"})`
+        ? `\n⚠️  Model routing: parent used ${parentModelStr}, this subagent used ${actualModelStr}`
         : actualModelStr
-          ? `\nModel: ${actualModelStr}${args.category ? ` (category: ${args.category})` : ""}`
+          ? `\nModel: ${actualModelStr}`
           : ""
 
     return `Task completed in ${duration}.
 
-Agent: ${agentToUse}${args.category ? ` (category: ${args.category})` : ""}${modelRoutingNote}
+Agent: ${agentToUse}${modelRoutingNote}
 
 ---
 
@@ -148,12 +142,10 @@ session_id: ${sessionID}
       args,
       sessionID: syncSessionID,
       agent: agentToUse,
-      category: args.category,
     })
   } finally {
     if (syncSessionID) {
       removeSubagentSession(syncSessionID)
-      SessionCategoryRegistry.remove(syncSessionID)
     }
   }
 }

@@ -1,8 +1,4 @@
-declare const require: NodeJS.Require
-
-const { describe, expect, test } = require("bun:test")
-
-import type { DelegateTaskArgs } from "./types"
+import { describe, expect, test } from "bun:test"
 
 const runtimeRequire = require as NodeJS.Require & { cache?: Record<string, unknown> }
 
@@ -19,28 +15,6 @@ function loadToolsModule(): typeof import("./tools") {
 }
 
 describe("createDelegateTask", () => {
-  test("rejects category-based task routing in the fixed-product runtime", async () => {
-    const { createDelegateTask } = loadToolsModule()
-    const tool = createDelegateTask({ manager: {} as never, client: {} as never, directory: "/tmp" })
-
-    const result = await tool.execute(
-      {
-        category: "quick",
-        description: "category task",
-        prompt: "Find the issue",
-        run_in_background: false,
-      } as unknown as DelegateTaskArgs,
-      {
-        sessionID: "ses_parent",
-        messageID: "msg_parent",
-        agent: "sisyphus",
-        abort: new AbortController().signal,
-      },
-    )
-
-    expect(result).toContain("category-based task routing has been removed")
-  })
-
   test("requires subagent_type for new tasks", async () => {
     const { createDelegateTask } = loadToolsModule()
     const tool = createDelegateTask({ manager: {} as never, client: {} as never, directory: "/tmp" })
@@ -50,13 +24,13 @@ describe("createDelegateTask", () => {
         description: "missing agent",
         prompt: "Find the issue",
         run_in_background: false,
-      } as unknown as DelegateTaskArgs,
+      } as Record<string, unknown>,
       {
         sessionID: "ses_parent",
         messageID: "msg_parent",
         agent: "sisyphus",
         abort: new AbortController().signal,
-      },
+      } as never,
     )
 
     expect(result).toContain("Must provide subagent_type")

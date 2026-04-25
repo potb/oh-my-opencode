@@ -9,8 +9,3 @@ export const FIXED_PRODUCT_AGENT_NAMES = [
   "momus",
   "oracle",
 ] as const
-
-export const REMOVED_AGENT_NAMES = [
-  "atlas",
-  "hephaestus",
-] as const

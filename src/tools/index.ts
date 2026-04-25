@@ -16,7 +16,6 @@ export { createGrepTools } from "./grep"
 export { createGlobTools } from "./glob"
 
 export { createDelegateTask } from "./delegate-task"
-export { createHashlineEditTool } from "./hashline-edit"
 
 export const builtinTools: Record<string, ToolDefinition> = {
   lsp_goto_definition,

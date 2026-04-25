@@ -34,10 +34,8 @@ describe("buildCategorySkillsDelegationGuide", () => {
     const allSkills = [...builtinSkills, ...customUserSkills, ...customProjectSkills]
     const result = buildCategorySkillsDelegationGuide(categories, allSkills)
 
-    expect(result).toContain("Category-based task routing has been removed")
-    expect(result).toContain("Skill loading through the `task` tool has been removed")
     expect(result).toContain("subagent_type")
-    expect(result).not.toContain("load_skills")
+    expect(result).toContain("available local tools")
   })
 
   it("should return empty string when no categories and no skills", () => {

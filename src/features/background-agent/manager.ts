@@ -18,7 +18,6 @@ import {
 } from "../../shared"
 import { applySessionPromptParams } from "../../shared/session-prompt-params-helpers"
 import { setSessionTools } from "../../shared/session-tools-store"
-import { SessionCategoryRegistry } from "../../shared/session-category-registry"
 import { ConcurrencyManager } from "./concurrency"
 import type { BackgroundTaskConfig } from "../../config/schema"
 import {
@@ -1084,7 +1083,6 @@ export class BackgroundManager {
       }
 
       this.rootDescendantCounts.delete(sessionID)
-      SessionCategoryRegistry.remove(sessionID)
     }
 
     if (event.type === "session.status") {
@@ -1156,9 +1154,6 @@ export class BackgroundManager {
     this.cleanupPendingByParent(task)
     this.clearNotificationsForTask(task.id)
     this.scheduleTaskRemoval(task.id)
-    if (task.sessionID) {
-      SessionCategoryRegistry.remove(task.sessionID)
-    }
 
     this.markForNotification(task)
     await this.enqueueNotificationForParent(task.parentSessionID, () => this.notifyParentSession(task))
@@ -1330,7 +1325,6 @@ export class BackgroundManager {
       this.clearTaskHistoryWhenParentTasksGone(task.parentSessionID)
       if (task.sessionID) {
         removeSubagentSession(task.sessionID)
-        SessionCategoryRegistry.remove(task.sessionID)
       }
       log("[background-agent] Removed completed task from memory:", taskId)
     }, TASK_CLEANUP_DELAY_MS)
@@ -1401,7 +1395,6 @@ export class BackgroundManager {
       // Awaited to prevent dangling promise during subagent teardown (Bun/WebKit SIGABRT)
       await this.abortSessionWithLogging(task.sessionID, `task cancellation (${source})`)
 
-      SessionCategoryRegistry.remove(task.sessionID)
     }
 
     if (options?.skipNotification) {
@@ -1514,7 +1507,6 @@ export class BackgroundManager {
       // Awaited to prevent dangling promise during subagent teardown (Bun/WebKit SIGABRT)
       await this.abortSessionWithLogging(task.sessionID, `task completion (${source})`)
 
-      SessionCategoryRegistry.remove(task.sessionID)
     }
 
     await this.enqueueNotificationForParent(task.parentSessionID, () => this.notifyParentSession(task))
@@ -1748,9 +1740,6 @@ export class BackgroundManager {
     this.cleanupPendingByParent(task)
     this.clearNotificationsForTask(task.id)
     this.scheduleTaskRemoval(task.id)
-    if (task.sessionID) {
-      SessionCategoryRegistry.remove(task.sessionID)
-    }
 
     this.markForNotification(task)
     await this.enqueueNotificationForParent(task.parentSessionID, () => this.notifyParentSession(task))
@@ -1905,7 +1894,6 @@ export class BackgroundManager {
 
     for (const sessionID of trackedSessionIDs) {
       removeSubagentSession(sessionID)
-      SessionCategoryRegistry.remove(sessionID)
     }
 
     this.concurrencyManager.clear()

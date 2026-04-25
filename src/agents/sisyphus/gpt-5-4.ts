@@ -308,8 +308,6 @@ Every implementation task follows this cycle. No exceptions.
 
    Visual domain → delegate to the best available visual/frontend-capable subagent when one exists.
 
-   Skills are not loaded through the \`task\` tool in the fixed-product runtime; ignore \`load_skills\` as a strategy.
-
 4. EXECUTE_OR_SUPERVISE -
    If self: surgical changes, match existing patterns, minimal diff. Never suppress type errors. Never commit unless asked. Bugfix rule: fix minimally, never refactor while fixing. ${GPT_APPLY_PATCH_GUIDANCE}
    If delegated: exhaustive 6-section prompt per \`<delegation>\` protocol. Session continuity for follow-ups.

@@ -8,7 +8,6 @@ interface ErrorContext {
   args?: DelegateTaskArgs
   sessionID?: string
   agent?: string
-  category?: string
 }
 
 /**
@@ -25,16 +24,14 @@ export function formatDetailedError(error: unknown, ctx: ErrorContext): string {
   }
 
   if (ctx.agent) {
-    lines.push(`**Agent**: ${ctx.agent}${ctx.category ? ` (category: ${ctx.category})` : ""}`)
+    lines.push(`**Agent**: ${ctx.agent}`)
   }
 
   if (ctx.args) {
     lines.push("", "**Arguments**:")
     lines.push(`- description: "${ctx.args.description}"`)
-    lines.push(`- category: ${ctx.args.category ?? "(none)"}`)
     lines.push(`- subagent_type: ${ctx.args.subagent_type ?? "(none)"}`)
     lines.push(`- run_in_background: ${ctx.args.run_in_background}`)
-    lines.push(`- load_skills: [${ctx.args.load_skills?.join(", ") ?? ""}]`)
     if (ctx.args.session_id) {
       lines.push(`- session_id: ${ctx.args.session_id}`)
     }

@@ -44,7 +44,6 @@ const toolFactories: NonNullable<Parameters<typeof createToolRegistry>[0]["toolF
     syncSessionCreatedCallbacks.push(options.onSyncSessionCreated)
     return delegateTaskTool
   }),
-  createHashlineEditTool: mock(() => fakeTool),
 }
 
 function createPluginConfig(overrides: Partial<OhMyOpenCodeConfig> = {}): OhMyOpenCodeConfig {
@@ -93,28 +92,6 @@ describe("createToolRegistry", () => {
     expect(result.filteredTools).not.toHaveProperty("skill")
     expect(result.filteredTools).not.toHaveProperty("skill_mcp")
     expect(result.filteredTools).not.toHaveProperty("task_create")
-  })
-
-  test("adds hashline edit only when the feature flag is enabled", () => {
-    const withoutEdit = createToolRegistry({
-      ctx: { directory: "/tmp" } as Parameters<typeof createToolRegistry>[0]["ctx"],
-      pluginConfig: createPluginConfig({ hashline_edit: false }),
-      managers: {
-        backgroundManager: {},
-      } as Parameters<typeof createToolRegistry>[0]["managers"],
-      toolFactories,
-    })
-    const withEdit = createToolRegistry({
-      ctx: { directory: "/tmp" } as Parameters<typeof createToolRegistry>[0]["ctx"],
-      pluginConfig: createPluginConfig({ hashline_edit: true }),
-      managers: {
-        backgroundManager: {},
-      } as Parameters<typeof createToolRegistry>[0]["managers"],
-      toolFactories,
-    })
-
-    expect(withoutEdit.filteredTools).not.toHaveProperty("edit")
-    expect(withEdit.filteredTools).toHaveProperty("edit")
   })
 
   test("does not attach a sync session-created side effect in the fixed product", async () => {

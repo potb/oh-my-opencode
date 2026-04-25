@@ -13,8 +13,6 @@ Session, tool-guard, transform, and continuation hooks compose the runtime surfa
 ```
 hooks/
 ├── anthropic-effort/            # Reasoning effort level adjustment
-├── hashline-edit-diff-enhancer/ # Enhanced diff output for hashline edits
-├── hashline-read-enhancer/     # Adds LINE#ID hashes to Read output
 ├── non-interactive-env/        # Non-TTY environment handling
 ├── question-label-truncator/   # Auto-truncates question labels
 ├── sisyphus-junior-notepad/    # Sisyphus Junior notepad
@@ -38,7 +36,6 @@ hooks/
 | toolOutputTruncator | tool.execute.after | Truncate oversized tool output |
 | writeExistingFileGuard | tool.execute.before | Require Read before Write on existing files |
 | webfetchRedirectGuard | tool.execute.before | Guard webfetch redirect behavior |
-| hashlineReadEnhancer | tool.execute.after | Enhance Read output with line hashes |
 
 ### Tier 3: Transform Hooks — `create-transform-hooks.ts`
 

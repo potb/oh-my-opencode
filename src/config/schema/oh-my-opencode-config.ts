@@ -25,8 +25,6 @@ export const OhMyOpenCodeConfigSchema = z.object({
   disabled_hooks: z.array(z.string()).optional(),
   /** Disable specific tools by name (e.g., ["todowrite", "todoread"]) */
   disabled_tools: z.array(z.string()).optional(),
-  /** Enable hashline_edit tool/hook integrations (default: false) */
-  hashline_edit: z.boolean().optional(),
   agents: AgentOverridesSchema.optional(),
   categories: CategoriesConfigSchema.optional(),
   experimental: ExperimentalConfigSchema.optional(),

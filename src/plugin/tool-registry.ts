@@ -8,7 +8,6 @@ import {
   createGlobTools,
   createAstGrepTools,
   createDelegateTask,
-  createHashlineEditTool,
 } from "../tools"
 import { filterDisabledTools } from "../shared/disabled-tools"
 import { log } from "../shared"
@@ -22,7 +21,6 @@ type ToolRegistryFactories = {
   createGlobTools: typeof createGlobTools
   createAstGrepTools: typeof createAstGrepTools
   createDelegateTask: typeof createDelegateTask
-  createHashlineEditTool: typeof createHashlineEditTool
 }
 
 const defaultToolRegistryFactories: ToolRegistryFactories = {
@@ -31,7 +29,6 @@ const defaultToolRegistryFactories: ToolRegistryFactories = {
   createGlobTools,
   createAstGrepTools,
   createDelegateTask,
-  createHashlineEditTool,
 }
 
 type ToolRegistryResult = {
@@ -104,18 +101,12 @@ export function createToolRegistry(args: {
     syncPollTimeoutMs: pluginConfig.background_task?.syncPollTimeoutMs,
   })
 
-  const hashlineEnabled = pluginConfig.hashline_edit ?? false
-  const hashlineToolsRecord: Record<string, ToolDefinition> = hashlineEnabled
-    ? { edit: factories.createHashlineEditTool(ctx) }
-    : {}
-
   const allTools: Record<string, ToolDefinition> = {
     ...factories.builtinTools,
     ...factories.createGrepTools(ctx),
     ...factories.createGlobTools(ctx),
     ...factories.createAstGrepTools(ctx),
     task: delegateTask,
-    ...hashlineToolsRecord,
   }
 
   for (const toolDefinition of Object.values(allTools)) {

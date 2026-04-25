@@ -7,7 +7,6 @@ const afterEachFn = bunTest.afterEach
 
 const { executeBackgroundTask } = require("./background-task")
 const { __setTimingConfig, __resetTimingConfig } = require("./timing")
-const { SessionCategoryRegistry } = require("../../shared/session-category-registry")
 
 describeFn("executeBackgroundTask output/session metadata compatibility", () => {
   beforeEachFn(() => {
@@ -20,7 +19,6 @@ describeFn("executeBackgroundTask output/session metadata compatibility", () => 
 
   afterEachFn(() => {
     __resetTimingConfig()
-    SessionCategoryRegistry.clear()
   })
 
   testFn("does not emit synthetic pending session metadata when session id is unresolved", async () => {
@@ -42,7 +40,6 @@ describeFn("executeBackgroundTask output/session metadata compatibility", () => 
         description: "Unresolved session",
         prompt: "check",
         run_in_background: true,
-        load_skills: [],
       },
       {
         sessionID: "ses_parent",
@@ -85,7 +82,6 @@ describeFn("executeBackgroundTask output/session metadata compatibility", () => 
         description: "Resolved session",
         prompt: "check",
         run_in_background: true,
-        load_skills: [],
       },
       {
         sessionID: "ses_parent",
@@ -134,7 +130,6 @@ describeFn("executeBackgroundTask output/session metadata compatibility", () => 
         description: "Late session",
         prompt: "check",
         run_in_background: true,
-        load_skills: [],
       },
       {
         sessionID: "ses_parent",
@@ -181,7 +176,6 @@ describeFn("executeBackgroundTask output/session metadata compatibility", () => 
         description: "Permission session",
         prompt: "check",
         run_in_background: true,
-        load_skills: [],
       },
       {
         sessionID: "ses_parent",
@@ -227,7 +221,6 @@ describeFn("executeBackgroundTask output/session metadata compatibility", () => 
         description: "Clean agent",
         prompt: "check",
         run_in_background: true,
-        load_skills: [],
       },
       {
         sessionID: "ses_parent",
@@ -272,7 +265,6 @@ describeFn("executeBackgroundTask output/session metadata compatibility", () => 
         description: "Abort after launch",
         prompt: "check",
         run_in_background: true,
-        load_skills: [],
       },
       {
         sessionID: "ses_parent",
@@ -296,57 +288,6 @@ describeFn("executeBackgroundTask output/session metadata compatibility", () => 
     expectFn("sessionId" in metadataCalls[0].metadata).toBe(false)
   })
 
-  testFn("registers late session category even when parent aborts before session id resolves", async () => {
-    //#given - session wiring should continue after returning early on parent abort
-    const abortController = new AbortController()
-    abortController.abort()
-    let reads = 0
-    const manager = {
-      launch: async () => ({
-        id: "bg_abort_category",
-        sessionID: undefined,
-        description: "Abort category",
-        agent: "explore",
-        status: "pending",
-      }),
-      getTask: () => {
-        reads += 1
-        return reads >= 2
-          ? { sessionID: "ses_abort_category", status: "running" }
-          : { sessionID: undefined, status: "pending" }
-      },
-    }
-
-    //#when
-    const result = await executeBackgroundTask(
-      {
-        description: "Abort category",
-        prompt: "check",
-        run_in_background: true,
-        load_skills: [],
-        category: "quick",
-      },
-      {
-        sessionID: "ses_parent",
-        callID: "call_abort_category",
-        metadata: async () => {},
-        abort: abortController.signal,
-      },
-      { manager },
-      { sessionID: "ses_parent", messageID: "msg_abort_category" },
-      "explore",
-      undefined,
-      undefined,
-      [{ providers: ["openai"], model: "gpt-5.4" }],
-    )
-
-    await new Promise(resolve => setTimeout(resolve, 5))
-
-    //#then - late session setup should still register category for runtime fallback
-    expectFn(result).toContain("Background task launched")
-    expectFn(SessionCategoryRegistry.get("ses_abort_category")).toBe("quick")
-  })
-
   testFn("prefers child terminal status over parent abort while waiting for session id", async () => {
     //#given - failed child launch should not be misreported as a successful background launch
     const abortController = new AbortController()
@@ -368,7 +309,6 @@ describeFn("executeBackgroundTask output/session metadata compatibility", () => 
         description: "Abort terminal",
         prompt: "check",
         run_in_background: true,
-        load_skills: [],
       },
       {
         sessionID: "ses_parent",
@@ -416,7 +356,6 @@ describeFn("executeBackgroundTask output/session metadata compatibility", () => 
         description: "Crash before prompt",
         prompt: "check",
         run_in_background: true,
-        load_skills: [],
       },
       {
         sessionID: "ses_parent",
@@ -473,7 +412,6 @@ describeFn("executeBackgroundTask output/session metadata compatibility", () => 
           description: "First",
           prompt: "check",
           run_in_background: true,
-          load_skills: [],
         },
         {
           sessionID: "ses_parent",
@@ -493,7 +431,6 @@ describeFn("executeBackgroundTask output/session metadata compatibility", () => 
           description: "Second",
           prompt: "check",
           run_in_background: true,
-          load_skills: [],
         },
         {
           sessionID: "ses_parent",
@@ -518,3 +455,5 @@ describeFn("executeBackgroundTask output/session metadata compatibility", () => 
     expectFn(secondResult).not.toContain("interrupt")
   })
 })
+
+export {}

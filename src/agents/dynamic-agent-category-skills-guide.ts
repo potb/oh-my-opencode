@@ -57,8 +57,6 @@ export function buildCategorySkillsDelegationGuide(
 
   return `### Delegation Constraints
 
-- Category-based task routing has been removed from the fixed-product runtime.
-- Skill loading through the \`task\` tool has been removed from the fixed-product runtime.
 - Use direct \`subagent_type\` delegation with \`task(subagent_type="...", run_in_background=..., ...)\`.
-- If no suitable subagent exists, work directly with the available local tools instead of inventing category or skill routing.`
+- If no suitable subagent exists, work directly with the available local tools.`
 }

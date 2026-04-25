@@ -61,5 +61,4 @@ index.ts
 ## NOTES
 
 - `src/testing/` exists but is currently empty in this checkout.
-- Older docs referenced removed paths (`src/mcp`, `src/openclaw`, `src/plugin-handlers`). Do not reintroduce those assumptions.
 - Use child AGENTS files for domain rules; keep this file focused on source-root navigation.

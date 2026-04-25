@@ -60,7 +60,7 @@ describe("resolvePromptContextFromSessionMessages", () => {
   test("returns the first recent SDK message that already has context", () => {
     // given
     const messages = [
-      { info: { agent: "atlas" } },
+      { info: { agent: "custom-agent" } },
       { info: { model: { providerID: "anthropic", modelID: "claude-opus-4-1" } } },
       { info: { tools: { bash: true } } },
     ]
@@ -79,7 +79,7 @@ describe("resolvePromptContextFromSessionMessages", () => {
     const messages = [
       {
         id: "msg_compaction",
-        info: { agent: "atlas", model: { providerID: "openai", modelID: "gpt-5" } },
+        info: { agent: "custom-agent", model: { providerID: "openai", modelID: "gpt-5" } },
         parts: [{ type: "compaction" }],
       },
       { info: { agent: "sisyphus" } },

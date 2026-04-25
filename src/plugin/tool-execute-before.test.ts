@@ -196,30 +196,6 @@ describe("createToolRegistry", () => {
     }
   }
 
-  describe("#given hashline_edit is undefined", () => {
-    describe("#when creating tool registry", () => {
-      test("#then should not register edit tool", () => {
-        const result = createToolRegistry(createRegistryInput())
-
-        expect(result.filteredTools.edit).toBeUndefined()
-      })
-    })
-  })
-
-  describe("#given hashline_edit is true", () => {
-    describe("#when creating tool registry", () => {
-      test("#then should register edit tool", () => {
-        const result = createToolRegistry(
-          createRegistryInput({
-            hashline_edit: true,
-          }),
-        )
-
-        expect(result.filteredTools.edit).toBeDefined()
-      })
-    })
-  })
-
   describe("#given max_tools is lower than or equal to builtin tool count", () => {
     describe("#when creating the tool registry", () => {
       test("#then it trims to the exact configured cap", () => {

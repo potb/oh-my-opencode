@@ -97,7 +97,6 @@ export async function sendSyncPrompt(
         args: input.args,
         sessionID: input.sessionID,
         agent: input.agentToUse,
-        category: input.args.category,
       })
     }
     return formatDetailedError(promptError, {
@@ -105,7 +104,6 @@ export async function sendSyncPrompt(
       args: input.args,
       sessionID: input.sessionID,
       agent: input.agentToUse,
-      category: input.args.category,
     })
   }
 

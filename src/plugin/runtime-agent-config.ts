@@ -1,6 +1,6 @@
 import { createBuiltinAgents } from "../agents"
 import type { OhMyOpenCodeConfig } from "../config"
-import { FIXED_PRODUCT_AGENT_NAMES, REMOVED_AGENT_NAMES } from "../fixed-product"
+import { FIXED_PRODUCT_AGENT_NAMES } from "../fixed-product"
 import {
   getAgentRuntimeName,
 } from "../shared/agent-display-names"
@@ -15,7 +15,7 @@ export async function applyRuntimeAgentConfig(args: {
   const disableOmoEnv = args.pluginConfig.experimental?.disable_omo_env ?? false
 
   const builtinAgents = await createBuiltinAgents(
-    [...(args.pluginConfig.disabled_agents ?? []), ...REMOVED_AGENT_NAMES],
+    [...(args.pluginConfig.disabled_agents ?? [])],
     {},
     args.ctx.directory,
     undefined,

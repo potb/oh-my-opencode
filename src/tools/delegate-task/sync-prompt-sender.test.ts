@@ -39,7 +39,6 @@ bunDescribe("sendSyncPrompt", () => {
         description: "test task",
         prompt: "test prompt",
         run_in_background: false,
-        load_skills: [],
       },
       systemContent: undefined,
       categoryModel: undefined,
@@ -77,9 +76,7 @@ bunDescribe("sendSyncPrompt", () => {
       args: {
         description: "test task",
         prompt: "test prompt",
-        category: "quick",
         run_in_background: false,
-        load_skills: [],
       },
       systemContent: undefined,
       categoryModel: undefined,
@@ -117,9 +114,7 @@ bunDescribe("sendSyncPrompt", () => {
       args: {
         description: "test task",
         prompt: "test prompt",
-        category: "quick",
         run_in_background: false,
-        load_skills: [],
       },
       systemContent: undefined,
       categoryModel: undefined,
@@ -157,9 +152,7 @@ bunDescribe("sendSyncPrompt", () => {
       args: {
         description: "test task",
         prompt: "test prompt",
-        category: "quick",
         run_in_background: false,
-        load_skills: [],
       },
       systemContent: undefined,
       categoryModel: undefined,
@@ -175,7 +168,7 @@ bunDescribe("sendSyncPrompt", () => {
     bunExpect(promptArgs.body.tools.task).toBe(false)
   })
 
-  bunTest("includes agent alongside explicit category model", async () => {
+  bunTest("includes agent alongside explicit delegated model", async () => {
     //#given
     const { sendSyncPrompt } = require("./sync-prompt-sender")
 
@@ -197,9 +190,7 @@ bunDescribe("sendSyncPrompt", () => {
       args: {
         description: "test task",
         prompt: "test prompt",
-        category: "quick",
         run_in_background: false,
-        load_skills: [],
       },
       systemContent: undefined,
       categoryModel: {
@@ -240,7 +231,6 @@ bunDescribe("sendSyncPrompt", () => {
         description: "test task",
         prompt: "test prompt",
         run_in_background: false,
-        load_skills: [],
       },
       systemContent: undefined,
       categoryModel: {
@@ -289,7 +279,7 @@ bunDescribe("sendSyncPrompt", () => {
     })
   })
 
-  bunTest("forwards category temperature through the sync prompt body", async () => {
+  bunTest("forwards delegated model temperature through the sync prompt body", async () => {
     //#given
     const { sendSyncPrompt } = require("./sync-prompt-sender")
 
@@ -304,9 +294,7 @@ bunDescribe("sendSyncPrompt", () => {
       args: {
         description: "test task",
         prompt: "test prompt",
-        category: "quick",
         run_in_background: false,
-        load_skills: [],
       },
       systemContent: undefined,
       categoryModel: {
@@ -345,7 +333,6 @@ bunDescribe("sendSyncPrompt", () => {
         description: "test task",
         prompt: "test prompt",
         run_in_background: false,
-        load_skills: [],
       },
       systemContent: undefined,
       categoryModel: undefined,
@@ -381,7 +368,6 @@ bunDescribe("sendSyncPrompt", () => {
         description: "test task",
         prompt: "test prompt",
         run_in_background: false,
-        load_skills: [],
       },
       systemContent: undefined,
       categoryModel: undefined,

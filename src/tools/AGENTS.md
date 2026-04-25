@@ -4,7 +4,7 @@
 
 ## OVERVIEW
 
-Owns plugin tool factories plus direct LSP tool definitions. The major families are delegation, search, hash-anchored editing, and custom LSP.
+Owns plugin tool factories plus direct LSP tool definitions. The major families are delegation, search, and custom LSP.
 
 ## STRUCTURE
 
@@ -12,7 +12,6 @@ Owns plugin tool factories plus direct LSP tool definitions. The major families 
 tools/
 ├── delegate-task/  # Subagent delegation engine
 ├── lsp/            # Custom LSP client + 6 tools
-├── hashline-edit/  # Hash-anchored edit tool
 ├── ast-grep/       # AST-aware pattern search/replace
 ├── grep/           # Content search wrapper
 ├── glob/           # File pattern matching wrapper
@@ -26,7 +25,6 @@ tools/
 |--------|------|-------|
 | Delegation | `createDelegateTask` | Routes sync/background subagent work |
 | Search | `createAstGrepTools`, `createGrepTools`, `createGlobTools` | Literal, AST, and file-pattern search |
-| Editing | `createHashlineEditTool` | Optional hash-anchored file edits |
 | LSP | `lsp_*` exports from `lsp/` | Direct `ToolDefinition`s plus `lspManager` |
 
 ## WHERE TO LOOK
@@ -35,7 +33,6 @@ tools/
 |------|----------|-------|
 | Delegation behavior | `delegate-task/` | Background vs sync execution, prompt building, model selection |
 | Search tool implementation | `ast-grep/`, `grep/`, `glob/` | Separate wrappers, parent guide is enough for now |
-| Hashline edit flow | `hashline-edit/` | Validation, ordering, diff output |
 | LSP transport stack | `lsp/` | Custom process/client/transport implementation |
 
 ## CONVENTIONS

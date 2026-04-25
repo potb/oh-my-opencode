@@ -1,6 +1,6 @@
 import type { PluginInput } from "@opencode-ai/plugin"
 import type { BackgroundManager } from "../../features/background-agent"
-import type { CategoriesConfig, GitMasterConfig, BrowserAutomationProvider, AgentOverrides } from "../../config/schema"
+import type { GitMasterConfig, BrowserAutomationProvider, AgentOverrides } from "../../config/schema"
 import type {
   AvailableCategory,
   AvailableSkill,
@@ -19,12 +19,10 @@ type SisyphusAgentConfig = {
 export interface DelegateTaskArgs {
   description: string
   prompt: string
-  category?: string
   subagent_type?: string
   run_in_background: boolean
   session_id?: string
   command?: string
-  load_skills?: string[]
   execute?: {
     task_id: string
     task_dir?: string
@@ -63,7 +61,6 @@ export interface DelegateTaskToolOptions {
    * Test hook: bypass fetchAvailableModels() by providing an explicit available model set.
    */
   availableModelsOverride?: Set<string>
-  userCategories?: CategoriesConfig
   gitMasterConfig?: GitMasterConfig
   sisyphusJuniorModel?: string
   browserProvider?: BrowserAutomationProvider

@@ -4,7 +4,6 @@ import { getTimingConfig } from "./timing"
 import { buildTaskPrompt } from "./prompt-builder"
 import { formatDetailedError } from "./error-formatting"
 import { getSessionTools } from "../../shared/session-tools-store"
-import { SessionCategoryRegistry } from "../../shared/session-category-registry"
 import { QUESTION_DENIED_SESSION_PERMISSION } from "../../shared/question-denied-session-permission"
 import { stripAgentListSortPrefix } from "../../shared/agent-display-names"
 
@@ -12,12 +11,7 @@ function continueSessionSetup(args: {
   taskID: string
   manager: ExecutorContext["manager"]
   timing: ReturnType<typeof getTimingConfig>
-  category?: string
 }): void {
-  if (!args.category) {
-    return
-  }
-
   void (async () => {
     const waitStart = Date.now()
     while (Date.now() - waitStart < args.timing.WAIT_FOR_SESSION_TIMEOUT_MS) {
@@ -33,10 +27,6 @@ function continueSessionSetup(args: {
       const sessionId = updated.sessionID
       if (!sessionId) {
         continue
-      }
-
-      if (args.category) {
-        SessionCategoryRegistry.register(sessionId, args.category)
       }
       return
     }
@@ -69,7 +59,6 @@ export async function executeBackgroundTask(
       parentTools: getSessionTools(parentContext.sessionID),
       model: categoryModel,
       skillContent: systemContent,
-      category: args.category,
       sessionPermission: QUESTION_DENIED_SESSION_PERMISSION,
     })
 
@@ -94,21 +83,15 @@ export async function executeBackgroundTask(
           taskID: task.id,
           manager,
           timing,
-          category: args.category,
         })
         break
       }
       await new Promise(resolve => setTimeout(resolve, timing.WAIT_FOR_SESSION_INTERVAL_MS))
     }
 
-    if (args.category && sessionId) {
-      SessionCategoryRegistry.register(sessionId, args.category)
-    }
-
     const metadata = {
       prompt: args.prompt,
       agent: task.agent,
-      category: args.category,
       description: args.description,
       run_in_background: args.run_in_background,
       command: args.command,
@@ -130,7 +113,7 @@ export async function executeBackgroundTask(
 
 Background Task ID: ${task.id}
 Description: ${task.description}
-Agent: ${task.agent}${args.category ? ` (category: ${args.category})` : ""}
+Agent: ${task.agent}
 Status: ${task.status}
 
 System notifies on completion. Wait for the related parent-session follow-up.
@@ -141,7 +124,6 @@ Do NOT poll removed background helper tools. Wait for <system-reminder> notifica
       operation: "Launch background task",
       args,
       agent: stripAgentListSortPrefix(agentToUse),
-      category: args.category,
     })
   }
 }

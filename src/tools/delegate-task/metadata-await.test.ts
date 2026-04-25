@@ -21,7 +21,6 @@ describe("task tool metadata awaiting", () => {
     }
 
     const args: DelegateTaskArgs = {
-      load_skills: [],
       description: "Test task",
       prompt: "Do something",
       run_in_background: true,

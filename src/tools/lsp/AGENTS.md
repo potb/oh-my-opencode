@@ -66,5 +66,4 @@ file.ts → extension (.ts) → language-mappings → server ID (typescript)
 
 - File must be opened via `didOpen` before any LSP request — `LSPClient.openFile()` handles this
 - 1s delay after `didOpen` for server initialization before sending requests
-- `lsp_servers` tool was removed — duplicates OpenCode's built-in `LspServers` tool
 - Synced with OpenCode's `server.ts` — when adding servers, check upstream first

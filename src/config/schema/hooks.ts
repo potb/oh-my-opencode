@@ -9,7 +9,6 @@ const HookNameSchema = z.enum([
   "sisyphus-junior-notepad",
   "write-existing-file-guard",
   "anthropic-effort",
-  "hashline-read-enhancer",
   "webfetch-redirect-guard",
 ])
 

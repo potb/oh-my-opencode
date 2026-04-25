@@ -15,9 +15,8 @@ describe("getAgentDisplayName", () => {
     expect(getAgentDisplayName("METIS")).toBe("METIS")
   })
 
-  it("returns original key for unknown or removed agents", () => {
+  it("returns original key for unknown agents", () => {
     expect(getAgentDisplayName("custom-agent")).toBe("custom-agent")
-    expect(getAgentDisplayName("atlas")).toBe("atlas")
   })
 })
 
@@ -28,7 +27,7 @@ describe("getAgentConfigKey", () => {
     expect(getAgentConfigKey("Momus - Plan Critic")).toBe("momus")
   })
 
-  it("returns lowercased unknown agents (including removed agents)", () => {
+  it("returns lowercased unknown agents", () => {
     expect(getAgentConfigKey("Custom-Agent")).toBe("custom-agent")
     expect(getAgentConfigKey("Removed Agent - Primary")).toBe("removed agent - primary")
     expect(getAgentConfigKey("Removed Agent (Primary)")).toBe("removed agent (primary)")
@@ -40,8 +39,7 @@ describe("getAgentListDisplayName", () => {
     expect(getAgentListDisplayName("sisyphus")).toBe("\u200BSisyphus - Ultraworker")
   })
 
-  it("keeps non-core and removed agents unprefixed", () => {
+  it("keeps non-core agents unprefixed", () => {
     expect(getAgentListDisplayName("oracle")).toBe("oracle")
-    expect(getAgentListDisplayName("atlas")).toBe("atlas")
   })
 })

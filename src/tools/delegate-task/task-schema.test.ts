@@ -21,14 +21,13 @@ describe("createDelegateTask schema", () => {
     })
 
     expect(toolDefinition.args).not.toHaveProperty("category")
-    expect(toolDefinition.args).not.toHaveProperty("load_skills")
     expect(toolDefinition.args).toHaveProperty("subagent_type")
     expect(toolDefinition.args).toHaveProperty("prompt")
     expect(toolDefinition.args).toHaveProperty("run_in_background")
     expect(toolDefinition.args).toHaveProperty("session_id")
   })
 
-  test("describes direct subagent delegation and explicitly documents removed category/skill paths", () => {
+  test("describes direct subagent delegation", () => {
     const toolDefinition = createDelegateTask({
       manager: {} as never,
       client: {} as never,
@@ -36,9 +35,7 @@ describe("createDelegateTask schema", () => {
     })
 
     expect(toolDefinition.description).toContain("subagent_type: Direct target agent name")
-    expect(toolDefinition.description).toContain("Category-based task routing has been removed")
-    expect(toolDefinition.description).toContain("Skill loading through task has been removed")
-    expect(toolDefinition.description).not.toContain("sisyphus-junior with category")
+    expect(toolDefinition.description).toContain("Prompts must be in English")
   })
 })
 

@@ -26,7 +26,7 @@ config/
 
 ## ROOT SCHEMA FIELDS
 
-`$schema`, `disabled_agents`, `disabled_hooks`, `disabled_tools`, `hashline_edit`, `agents`, `categories`, `experimental`, `background_task`, `git_master`, `browser_automation_engine`, `websearch`, `sisyphus`
+`$schema`, `disabled_agents`, `disabled_hooks`, `disabled_tools`, `agents`, `categories`, `experimental`, `background_task`, `git_master`, `browser_automation_engine`, `websearch`, `sisyphus`
 
 ## WHERE TO LOOK
 
