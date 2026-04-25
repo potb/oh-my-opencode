@@ -54,7 +54,7 @@ const LOW_PRIORITY_TOOL_ORDER = [
   "lsp_diagnostics",
 ] as const
 
-export function trimToolsToCap(filteredTools: ToolsRecord, maxTools: number): void {
+function trimToolsToCap(filteredTools: ToolsRecord, maxTools: number): void {
   const toolNames = Object.keys(filteredTools)
   if (toolNames.length <= maxTools) return
 

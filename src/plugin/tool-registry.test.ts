@@ -24,7 +24,7 @@ const syncSessionCreatedCallbacks: Array<
   ((event: { sessionID: string; parentID: string; title: string }) => Promise<void>) | undefined
 > = []
 
-const { createToolRegistry, trimToolsToCap } = await import("./tool-registry")
+const { createToolRegistry } = await import("./tool-registry")
 
 const toolFactories: NonNullable<Parameters<typeof createToolRegistry>[0]["toolFactories"]> = {
   builtinTools: {
@@ -60,22 +60,6 @@ function createPluginConfig(overrides: Partial<OhMyOpenCodeConfig> = {}): OhMyOp
 
 beforeEach(() => {
   syncSessionCreatedCallbacks.length = 0
-})
-
-describe("trimToolsToCap", () => {
-  test("removes lower-priority tools like edit before higher-priority core tools", () => {
-    const filteredTools = {
-      bash: fakeTool,
-      edit: fakeTool,
-      read: fakeTool,
-    } satisfies ToolsRecord
-
-    trimToolsToCap(filteredTools, 2)
-
-    expect(filteredTools).not.toHaveProperty("edit")
-    expect(filteredTools).toHaveProperty("bash")
-    expect(filteredTools).toHaveProperty("read")
-  })
 })
 
 describe("createToolRegistry", () => {

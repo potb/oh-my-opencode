@@ -39,7 +39,7 @@ const PARTIAL_STRING_ARRAY_KEYS = new Set([
   "disabled_tools",
 ]);
 
-export function parseConfigPartially(
+function parseConfigPartially(
   rawConfig: Record<string, unknown>
 ): OhMyOpenCodeConfig | null {
   const fullResult = OhMyOpenCodeConfigSchema.safeParse(rawConfig);
@@ -126,7 +126,7 @@ function loadConfigFromPath(
   return null;
 }
 
-export function mergeConfigs(
+function mergeConfigs(
   base: OhMyOpenCodeConfig,
   override: OhMyOpenCodeConfig
 ): OhMyOpenCodeConfig {
