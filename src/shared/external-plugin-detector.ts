@@ -73,7 +73,6 @@ Both ${PLUGIN_NAME} and ${pluginName} scan ~/.config/opencode/skills/ and regist
    Running both simultaneously causes "Duplicate tool names detected" warnings and HTTP 400 errors.
 
    Consider either:
-   1. Remove ${pluginName} from your opencode.json plugins to use ${PLUGIN_NAME}'s skill loading
-   2. Or disable ${PLUGIN_NAME}'s skill loading by setting "claude_code.skills": false in ${CONFIG_BASENAME}.json
-   3. Or uninstall ${PLUGIN_NAME} if you prefer ${pluginName}'s skill management`
+   1. Remove ${pluginName} from your oh-my-opencode.jsonc plugins to use ${PLUGIN_NAME}'s skill loading
+   2. Or uninstall ${PLUGIN_NAME} if you prefer ${pluginName}'s skill management`
 }

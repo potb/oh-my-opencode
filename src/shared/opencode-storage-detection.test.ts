@@ -15,26 +15,16 @@ const SQLITE_VERSION = "1.1.53"
 // Other files (e.g., opencode-message-dir.test.ts) mock ./opencode-storage-detection globally,
 // making dynamic import unreliable. By inlining, we test the actual logic with controlled deps.
 const NOT_CACHED = Symbol("NOT_CACHED")
-const FALSE_PENDING_RETRY = Symbol("FALSE_PENDING_RETRY")
-let cachedResult: true | false | typeof NOT_CACHED | typeof FALSE_PENDING_RETRY = NOT_CACHED
+let cachedResult: true | false | typeof NOT_CACHED = NOT_CACHED
 
 function isSqliteBackend(): boolean {
   if (cachedResult === true) return true
   if (cachedResult === false) return false
-  if (cachedResult === FALSE_PENDING_RETRY) {
-    const versionOk = (() => { versionCheckCalls.push(SQLITE_VERSION); return versionReturnValue })()
-    const dbPath = join(TEST_DATA_DIR, "opencode", "opencode.db")
-    const dbExists = existsSync(dbPath)
-    const result = versionOk && dbExists
-    cachedResult = result
-    return result
-  }
   const versionOk = (() => { versionCheckCalls.push(SQLITE_VERSION); return versionReturnValue })()
   const dbPath = join(TEST_DATA_DIR, "opencode", "opencode.db")
   const dbExists = existsSync(dbPath)
   const result = versionOk && dbExists
-  if (result) { cachedResult = true }
-  else { cachedResult = FALSE_PENDING_RETRY }
+  cachedResult = result
   return result
 }
 
@@ -104,7 +94,7 @@ describe("isSqliteBackend", () => {
     expect(versionCheckCalls.length).toBe(1)
   })
 
-  it("retries once when first result is false, then caches permanently", () => {
+  it("caches false after the first failed check", () => {
     //#given
     versionReturnValue = true
 
@@ -115,22 +105,15 @@ describe("isSqliteBackend", () => {
     expect(first).toBe(false)
     expect(versionCheckCalls.length).toBe(1)
 
-    //#when: second call, DB still does not exist (retry)
+    //#when: second call, DB still does not exist
     const second = isSqliteBackend()
 
-    //#then: retried once
+    //#then: no retry occurs
     expect(second).toBe(false)
-    expect(versionCheckCalls.length).toBe(2)
-
-    //#when: third call, no more retries
-    const third = isSqliteBackend()
-
-    //#then: no further checks
-    expect(third).toBe(false)
-    expect(versionCheckCalls.length).toBe(2)
+    expect(versionCheckCalls.length).toBe(1)
   })
 
-  it("recovers on retry when DB appears after first false", () => {
+  it("keeps cached false even if DB appears later", () => {
     //#given
     versionReturnValue = true
 
@@ -140,22 +123,15 @@ describe("isSqliteBackend", () => {
     //#then
     expect(first).toBe(false)
 
-    //#given: DB appears before retry
+    //#given: DB appears after the first failed check
     mkdirSync(join(TEST_DATA_DIR, "opencode"), { recursive: true })
     writeFileSync(DB_PATH, "")
 
-    //#when: second call, retry finds DB
+    //#when: second call
     const second = isSqliteBackend()
 
-    //#then: recovers to true and caches permanently
-    expect(second).toBe(true)
-    expect(versionCheckCalls.length).toBe(2)
-
-    //#when: third call, cached true
-    const third = isSqliteBackend()
-
-    //#then: no further checks
-    expect(third).toBe(true)
-    expect(versionCheckCalls.length).toBe(2)
+    //#then: cached false remains until reset
+    expect(second).toBe(false)
+    expect(versionCheckCalls.length).toBe(1)
   })
 })

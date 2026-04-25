@@ -75,7 +75,7 @@ describe("getMessageDir", () => {
     expect(result).toBe(sessionDir)
   })
 
-  it("returns file fallback path even when SQLite backend is active", () => {
+  it("returns the discovered file path even when SQLite backend is active", () => {
     //#given
     sqliteBackend = true
     const sessionDir = join(TEST_MESSAGE_STORAGE, "subdir", "ses_123")

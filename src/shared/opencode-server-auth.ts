@@ -47,10 +47,10 @@ function getInternalClient(client: unknown): UnknownRecord | null {
   return isRecord(internal) ? internal : null
 }
 
-function tryInjectViaSetConfigHeaders(internal: UnknownRecord, auth: string): boolean {
+function injectViaSetConfigHeaders(internal: UnknownRecord, auth: string): void {
   const setConfig = internal["setConfig"]
   if (typeof setConfig !== "function") {
-    return false
+    throw new Error(`OPENCODE_SERVER_PASSWORD is set but SDK client structure is incompatible: ${Object.keys(internal).join(", ")}`)
   }
 
   setConfig({
@@ -58,89 +58,6 @@ function tryInjectViaSetConfigHeaders(internal: UnknownRecord, auth: string): bo
       Authorization: auth,
     },
   })
-
-  return true
-}
-
-function tryInjectViaInterceptors(internal: UnknownRecord, auth: string): boolean {
-  const interceptors = internal["interceptors"]
-  if (!isRecord(interceptors)) {
-    return false
-  }
-
-  const requestInterceptors = interceptors["request"]
-  if (!isRecord(requestInterceptors)) {
-    return false
-  }
-
-  const use = requestInterceptors["use"]
-  if (typeof use !== "function") {
-    return false
-  }
-
-  use((request: Request): Request => {
-    if (!request.headers.get("Authorization")) {
-      request.headers.set("Authorization", auth)
-    }
-    return request
-  })
-
-  return true
-}
-
-function tryInjectViaFetchWrapper(internal: UnknownRecord, auth: string): boolean {
-  const getConfig = internal["getConfig"]
-  const setConfig = internal["setConfig"]
-  if (typeof getConfig !== "function" || typeof setConfig !== "function") {
-    return false
-  }
-
-  const config = getConfig()
-  if (!isRecord(config)) {
-    return false
-  }
-
-  const fetchValue = config["fetch"]
-  if (!isRequestFetch(fetchValue)) {
-    return false
-  }
-
-  setConfig({
-    fetch: wrapRequestFetch(fetchValue, auth),
-  })
-
-  return true
-}
-
-function tryInjectViaMutableInternalConfig(internal: UnknownRecord, auth: string): boolean {
-  const configValue = internal["_config"]
-  if (!isRecord(configValue)) {
-    return false
-  }
-
-  const fetchValue = configValue["fetch"]
-  if (!isRequestFetch(fetchValue)) {
-    return false
-  }
-
-  configValue["fetch"] = wrapRequestFetch(fetchValue, auth)
-
-  return true
-}
-
-function tryInjectViaTopLevelFetch(client: unknown, auth: string): boolean {
-  if (!isRecord(client)) {
-    return false
-  }
-
-  const fetchValue = client["fetch"]
-  if (!isRequestFetch(fetchValue)) {
-    return false
-  }
-
-  client["fetch"] = wrapRequestFetch(fetchValue, auth)
-
-  return true
 }
 
 /**
@@ -163,28 +80,13 @@ export function injectServerAuthIntoClient(client: unknown): void {
 
   try {
     const internal = getInternalClient(client)
-    if (internal) {
-      const injectedHeaders = tryInjectViaSetConfigHeaders(internal, auth)
-      const injectedInterceptors = tryInjectViaInterceptors(internal, auth)
-      const injectedFetch = tryInjectViaFetchWrapper(internal, auth)
-      const injectedMutable = tryInjectViaMutableInternalConfig(internal, auth)
-
-      const injected = injectedHeaders || injectedInterceptors || injectedFetch || injectedMutable
-
-      if (!injected) {
-        log("[opencode-server-auth] OPENCODE_SERVER_PASSWORD is set but SDK client structure is incompatible", {
-          keys: Object.keys(internal),
-        })
-      }
-      return
+    if (!internal) {
+      throw new Error("OPENCODE_SERVER_PASSWORD is set but no compatible SDK client found")
     }
-
-    const injected = tryInjectViaTopLevelFetch(client, auth)
-    if (!injected) {
-      log("[opencode-server-auth] OPENCODE_SERVER_PASSWORD is set but no compatible SDK client found")
-    }
+    injectViaSetConfigHeaders(internal, auth)
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error)
     log("[opencode-server-auth] Failed to inject server auth", { message })
+    throw error instanceof Error ? error : new Error(message)
   }
 }

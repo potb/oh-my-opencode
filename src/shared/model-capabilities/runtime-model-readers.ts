@@ -76,22 +76,12 @@ function readRuntimeModelCapabilities(
 
 function readRuntimeModelBoolean(
 	runtimeModel: Record<string, unknown> | undefined,
-	keys: string[],
+	key: string,
 ): boolean | undefined {
-	const runtimeCapabilities = readRuntimeModelCapabilities(runtimeModel)
-
-	for (const key of keys) {
-		const value = runtimeModel?.[key]
-		if (typeof value === "boolean") {
-			return value
-		}
-
-		const capabilityValue = runtimeCapabilities?.[key]
-		if (typeof capabilityValue === "boolean") {
-			return capabilityValue
-		}
+	const value = runtimeModel?.[key]
+	if (typeof value === "boolean") {
+		return value
 	}
-
 	return undefined
 }
 
@@ -104,33 +94,19 @@ export function readRuntimeModel(
 export function readRuntimeModelVariants(
 	runtimeModel: Record<string, unknown> | undefined,
 ): string[] | undefined {
-	const rootVariants = normalizeVariantKeys(runtimeModel?.variants)
-	if (rootVariants) {
-		return rootVariants
-	}
-
-	return normalizeVariantKeys(readRuntimeModelCapabilities(runtimeModel)?.variants)
+	return normalizeVariantKeys(runtimeModel?.variants)
 }
 
 export function readRuntimeModelModalities(
 	runtimeModel: Record<string, unknown> | undefined,
 ): ModelCapabilities["modalities"] | undefined {
-	const rootModalities = normalizeModalities(runtimeModel?.modalities)
-	if (rootModalities) {
-		return rootModalities
-	}
-
-	const runtimeCapabilities = readRuntimeModelCapabilities(runtimeModel)
-	return (
-		normalizeModalities(runtimeCapabilities?.modalities)
-		?? normalizeModalities(runtimeCapabilities)
-	)
+	return normalizeModalities(runtimeModel?.modalities)
 }
 
 export function readRuntimeModelReasoningSupport(
 	runtimeModel: Record<string, unknown> | undefined,
 ): boolean | undefined {
-	return readRuntimeModelBoolean(runtimeModel, ["reasoning"])
+	return readRuntimeModelBoolean(runtimeModel, "reasoning")
 }
 
 export function readRuntimeModelThinkingSupport(
@@ -141,17 +117,9 @@ export function readRuntimeModelThinkingSupport(
 		return capabilityValue
 	}
 
-	const thinkingSupport = readRuntimeModelBoolean(runtimeModel, ["thinking", "supportsThinking"])
+	const thinkingSupport = readRuntimeModelBoolean(runtimeModel, "thinking")
 	if (thinkingSupport !== undefined) {
 		return thinkingSupport
-	}
-
-	const runtimeCapabilities = readRuntimeModelCapabilities(runtimeModel)
-	for (const key of ["thinking", "supportsThinking"] as const) {
-		const value = runtimeCapabilities?.[key]
-		if (typeof value === "boolean") {
-			return value
-		}
 	}
 
 	return undefined
@@ -160,19 +128,19 @@ export function readRuntimeModelThinkingSupport(
 export function readRuntimeModelTemperatureSupport(
 	runtimeModel: Record<string, unknown> | undefined,
 ): boolean | undefined {
-	return readRuntimeModelBoolean(runtimeModel, ["temperature"])
+	return readRuntimeModelBoolean(runtimeModel, "temperature")
 }
 
 export function readRuntimeModelTopPSupport(
 	runtimeModel: Record<string, unknown> | undefined,
 ): boolean | undefined {
-	return readRuntimeModelBoolean(runtimeModel, ["topP", "top_p"])
+	return readRuntimeModelBoolean(runtimeModel, "topP")
 }
 
 export function readRuntimeModelToolCallSupport(
 	runtimeModel: Record<string, unknown> | undefined,
 ): boolean | undefined {
-	return readRuntimeModelBoolean(runtimeModel, ["toolCall", "tool_call", "toolcall"])
+	return readRuntimeModelBoolean(runtimeModel, "toolCall")
 }
 
 export function readRuntimeModelLimitOutput(
@@ -180,7 +148,7 @@ export function readRuntimeModelLimitOutput(
 ): number | undefined {
 	const limit = isRecord(runtimeModel?.limit)
 		? runtimeModel.limit
-		: readRuntimeModelCapabilities(runtimeModel)?.limit
+		: undefined
 
 	if (!isRecord(limit)) {
 		return undefined

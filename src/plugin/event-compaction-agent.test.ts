@@ -15,6 +15,9 @@ function createMinimalEventHandler() {
       clear: () => {},
     },
     managers: {
+      backgroundManager: {
+        handleEvent: () => {},
+      },
       tmuxSessionManager: {
         onSessionCreated: async () => {},
         onSessionDeleted: async () => {},

@@ -25,24 +25,8 @@ type ChatMessageInput = {
 
 type SessionModelOverride = { providerID: string; modelID: string }
 
-function hasExplicitAgentModelOverride(
-  agent: string | undefined,
-  pluginConfig: OhMyOpenCodeConfig
-): boolean {
-  const configuredAgents = pluginConfig.agents
-  const normalizedAgent = typeof agent === "string" ? getAgentConfigKey(agent) : undefined
-  if (!normalizedAgent || !configuredAgents || !(normalizedAgent in configuredAgents)) {
-    return false
-  }
-
-  const configuredAgent = configuredAgents[normalizedAgent as keyof typeof configuredAgents]
-  const configuredModel = configuredAgent?.model
-  return typeof configuredModel === "string" && configuredModel.trim().length > 0
-}
-
 function getStoredMainSessionModel(
   input: ChatMessageInput,
-  pluginConfig: OhMyOpenCodeConfig,
   isFirstMessage: boolean,
   output: ChatMessageHandlerOutput
 ): SessionModelOverride | undefined {
@@ -63,10 +47,6 @@ function getStoredMainSessionModel(
   }
 
   if (output.message["model"] !== undefined) {
-    return undefined
-  }
-
-  if (hasExplicitAgentModelOverride(input.agent, pluginConfig)) {
     return undefined
   }
 
@@ -108,7 +88,6 @@ export function createChatMessageHandler(args: {
 
     const storedMainSessionModel = getStoredMainSessionModel(
       input,
-      pluginConfig,
       isFirstMessage,
       output,
     )
@@ -142,7 +121,6 @@ export function createChatMessageHandler(args: {
             duration: 6000,
           },
         })
-        .catch(() => {})
     }
 
     await applyUltraworkModelOverrideOnMessage(

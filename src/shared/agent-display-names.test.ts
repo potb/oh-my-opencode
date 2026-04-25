@@ -10,9 +10,9 @@ describe("getAgentDisplayName", () => {
     expect(getAgentDisplayName("sisyphus")).toBe("Sisyphus - Ultraworker")
   })
 
-  it("returns display name case-insensitively for supported agents", () => {
-    expect(getAgentDisplayName("Sisyphus")).toBe("Sisyphus - Ultraworker")
-    expect(getAgentDisplayName("METIS")).toBe("Metis - Plan Consultant")
+  it("returns original key when casing does not match canonical config key", () => {
+    expect(getAgentDisplayName("Sisyphus")).toBe("Sisyphus")
+    expect(getAgentDisplayName("METIS")).toBe("METIS")
   })
 
   it("returns original key for unknown or removed agents", () => {

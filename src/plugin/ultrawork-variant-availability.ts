@@ -39,7 +39,7 @@ export async function resolveValidUltraworkVariant(
   }
 
   const response = await providerList()
-  const data = normalizeSDKResponse<ProviderListData>(response, {})
+  const data = normalizeSDKResponse<ProviderListData>(response)
   const providerEntry = data.all?.find((entry) => entry.id === model.providerID)
   const variants = providerEntry?.models?.[model.modelID]?.variants
 

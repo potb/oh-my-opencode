@@ -2,12 +2,7 @@ import { existsSync, readFileSync } from "node:fs"
 import { join } from "node:path"
 import { parse, ParseError, printParseErrorCode } from "jsonc-parser"
 
-import { CONFIG_BASENAME, LEGACY_CONFIG_BASENAME } from "./plugin-identity"
-
-interface JsoncParseResult<T> {
-  data: T | null
-  errors: Array<{ message: string; offset: number; length: number }>
-}
+import { CONFIG_BASENAME } from "./plugin-identity"
 
 function stripBom(content: string): string {
   return content.charCodeAt(0) === 0xfeff ? content.slice(1) : content
@@ -33,66 +28,21 @@ export function parseJsonc<T = unknown>(content: string): T {
   return result
 }
 
-export function parseJsoncSafe<T = unknown>(content: string): JsoncParseResult<T> {
-  const errors: ParseError[] = []
-  const data = parse(stripBom(content), errors, {
-    allowTrailingComma: true,
-    disallowComments: false,
-  }) as T | null
-
-  return {
-    data: errors.length > 0 ? null : data,
-    errors: errors.map((e) => ({
-      message: printParseErrorCode(e.error),
-      offset: e.offset,
-      length: e.length,
-    })),
-  }
-}
-
-function readJsoncFile<T = unknown>(filePath: string): T | null {
-  try {
-    const content = readFileSync(filePath, "utf-8")
-    return parseJsonc<T>(content)
-  } catch {
-    return null
-  }
-}
-
 export function detectConfigFile(basePath: string): {
-  format: "json" | "jsonc" | "none"
+  format: "jsonc" | "none"
   path: string
 } {
   const jsoncPath = `${basePath}.jsonc`
-  const jsonPath = `${basePath}.json`
 
   if (existsSync(jsoncPath)) {
     return { format: "jsonc", path: jsoncPath }
   }
-  if (existsSync(jsonPath)) {
-    return { format: "json", path: jsonPath }
-  }
-  return { format: "none", path: jsonPath }
+  return { format: "none", path: jsoncPath }
 }
 
 export function detectPluginConfigFile(dir: string): {
-  format: "json" | "jsonc" | "none"
+  format: "jsonc" | "none"
   path: string
-  legacyPath?: string
 } {
-  const canonicalResult = detectConfigFile(join(dir, CONFIG_BASENAME))
-  const legacyResult = detectConfigFile(join(dir, LEGACY_CONFIG_BASENAME))
-
-  if (canonicalResult.format !== "none") {
-    return {
-      ...canonicalResult,
-      legacyPath: legacyResult.format !== "none" ? legacyResult.path : undefined,
-    }
-  }
-
-  if (legacyResult.format !== "none") {
-    return legacyResult
-  }
-
-  return { format: "none", path: join(dir, `${CONFIG_BASENAME}.json`) }
+  return detectConfigFile(join(dir, CONFIG_BASENAME))
 }

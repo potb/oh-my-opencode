@@ -28,7 +28,6 @@ describe("createSessionHooks", () => {
       pluginConfig,
       modelCacheState: mockModelCacheState,
       isHookEnabled: () => true,
-      safeHookEnabled: true,
     })
 
     expect(result.questionLabelTruncator).not.toBeNull()
@@ -43,7 +42,6 @@ describe("createSessionHooks", () => {
       pluginConfig,
       modelCacheState: mockModelCacheState,
       isHookEnabled: () => false,
-      safeHookEnabled: true,
     })
 
     for (const value of Object.values(result)) {

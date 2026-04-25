@@ -25,9 +25,9 @@ type ToastFn = {
 function showToast(tui: unknown, title: string, message: string): void {
   const toastFn = tui as Partial<ToastFn>
   if (typeof toastFn.showToast !== "function") return
-  toastFn.showToast({
+  void toastFn.showToast({
     body: { title, message, variant: "warning" as const, duration: 3000 },
-  }).catch(() => {})
+  })
 }
 
 type UltraworkOverrideResult = {
@@ -118,8 +118,7 @@ function applyResolvedUltraworkOverride(args: {
     return
   }
   if (!messageId) {
-    log("[ultrawork-model-override] No message ID found, falling back to direct mutation")
-    output.message.model = targetModel
+    log("[ultrawork-model-override] No message ID found; skipping deferred model override")
     return
   }
 
@@ -162,11 +161,7 @@ export function applyUltraworkModelOverrideOnMessage(
     : currentModel
 
   if (!client || typeof (client as { provider?: { list?: unknown } }).provider?.list !== "function") {
-    log("[ultrawork-model-override] SDK validation unavailable, skipping variant override", {
-      variant: override.variant,
-    })
-    applyResolvedUltraworkOverride({ override, validatedVariant: undefined, output, inputAgentName, tui })
-    return
+    throw new Error("SDK validation unavailable for ultrawork override")
   }
 
   return resolveValidUltraworkVariant(client, variantTargetModel, override.variant)
@@ -182,12 +177,6 @@ export function applyUltraworkModelOverrideOnMessage(
       applyResolvedUltraworkOverride({ override, validatedVariant, output, inputAgentName, tui })
     })
     .catch((error) => {
-      log("[ultrawork-model-override] Failed to validate ultrawork variant via SDK", {
-        variant: override.variant,
-        error: String(error),
-        providerID: variantTargetModel?.providerID,
-        modelID: variantTargetModel?.modelID,
-      })
-      applyResolvedUltraworkOverride({ override, validatedVariant: undefined, output, inputAgentName, tui })
+      throw error
     })
 }

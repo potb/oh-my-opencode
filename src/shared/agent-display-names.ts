@@ -42,21 +42,12 @@ export function getAgentRuntimeName(configKey: string): string {
 
 /**
  * Get display name for an agent config key.
- * Uses case-insensitive lookup for backward compatibility.
  * Returns original key if not found.
  */
 export function getAgentDisplayName(configKey: string): string {
-  // Try exact match first
   const exactMatch = AGENT_DISPLAY_NAMES[configKey]
   if (exactMatch !== undefined) return exactMatch
-  
-  // Fall back to case-insensitive search
-  const lowerKey = configKey.toLowerCase()
-  for (const [k, v] of Object.entries(AGENT_DISPLAY_NAMES)) {
-    if (k.toLowerCase() === lowerKey) return v
-  }
-  
-  // Unknown agent: return original key
+
   return configKey
 }
 
@@ -71,20 +62,10 @@ const REVERSE_DISPLAY_NAMES: Record<string, string> = Object.fromEntries(
   Object.entries(AGENT_DISPLAY_NAMES).map(([key, displayName]) => [displayName.toLowerCase(), key]),
 )
 
-// Legacy parenthesized display names for backward compatibility.
-// Old configs/sessions may reference these names; resolve them to config keys.
-const LEGACY_DISPLAY_NAMES: Record<string, string> = {
-  "sisyphus (ultraworker)": "sisyphus",
-  "metis (plan consultant)": "metis",
-  "momus (plan critic)": "momus",
-}
-
 function resolveKnownAgentConfigKey(agentName: string): string | undefined {
   const lower = stripAgentListSortPrefix(agentName).trim().toLowerCase()
   const reversed = REVERSE_DISPLAY_NAMES[lower]
   if (reversed !== undefined) return reversed
-  const legacy = LEGACY_DISPLAY_NAMES[lower]
-  if (legacy !== undefined) return legacy
   if (AGENT_DISPLAY_NAMES[lower] !== undefined) return lower
   return undefined
 }

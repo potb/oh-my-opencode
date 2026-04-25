@@ -72,15 +72,7 @@ export function getOpenCodeConfigDir(options: OpenCodeConfigDirOptions): string 
     ? (win32.isAbsolute(tauriDirBase) ? win32.normalize(tauriDirBase) : win32.resolve(tauriDirBase))
     : resolveConfigPath(tauriDirBase)
 
-  if (checkExisting) {
-    const legacyDir = getCliConfigDir()
-    const legacyConfig = join(legacyDir, "opencode.json")
-    const legacyConfigC = join(legacyDir, "opencode.jsonc")
-
-    if (existsSync(legacyConfig) || existsSync(legacyConfigC)) {
-      return legacyDir
-    }
-  }
+  void checkExisting
 
   return tauriDir
 }
@@ -90,10 +82,8 @@ export function getOpenCodeConfigPaths(options: OpenCodeConfigDirOptions): OpenC
 
   return {
     configDir,
-    configJson: join(configDir, "opencode.json"),
-    configJsonc: join(configDir, "opencode.jsonc"),
     packageJson: join(configDir, "package.json"),
-    omoConfig: join(configDir, `${CONFIG_BASENAME}.json`),
+    omoConfig: join(configDir, `${CONFIG_BASENAME}.jsonc`),
   }
 }
 
@@ -117,10 +107,9 @@ function detectExistingConfigDir(binary: OpenCodeBinaryType, version?: string | 
   locations.push(getCliConfigDir())
 
   for (const dir of locations) {
-    const configJson = join(dir, "opencode.json")
-    const configJsonc = join(dir, "opencode.jsonc")
+    const omoConfig = join(dir, `${CONFIG_BASENAME}.jsonc`)
 
-    if (existsSync(configJson) || existsSync(configJsonc)) {
+    if (existsSync(omoConfig)) {
       return dir
     }
   }

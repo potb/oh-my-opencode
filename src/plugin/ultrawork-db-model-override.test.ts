@@ -138,7 +138,7 @@ describe("scheduleDeferredModelOverride", () => {
     expect(readMessageField("msg_002", "thinking")).toBe("max")
   })
 
-  test("should fall back to setTimeout when message never appears", async () => {
+  test("should give up when message never appears", async () => {
     //#given no message inserted
 
     //#when
@@ -150,7 +150,7 @@ describe("scheduleDeferredModelOverride", () => {
 
     //#then
     expect(logSpy).toHaveBeenCalledWith(
-      expect.stringContaining("setTimeout fallback failed"),
+      "[ultrawork-db-override] Deferred DB update skipped; message not found",
       expect.objectContaining({ messageId: "msg_nonexistent" }),
     )
   })

@@ -38,20 +38,20 @@ describe("prompt-tools", () => {
     setSessionTools(sessionID, { question: false, bash: true })
 
     // when
-    const resolved = resolveInheritedPromptTools(sessionID, { question: true, bash: false })
+    const resolved = resolveInheritedPromptTools(sessionID)
 
     // then
     expect(resolved).toEqual({ question: false, bash: true })
   })
 
-  test("uses fallback tools when no per-session tools exist", () => {
+  test("returns undefined when no per-session tools exist", () => {
     // given
     const sessionID = "ses_fallback_only"
 
     // when
-    const resolved = resolveInheritedPromptTools(sessionID, { question: "deny", write: "allow" })
+    const resolved = resolveInheritedPromptTools(sessionID)
 
     // then
-    expect(resolved).toEqual({ question: false, write: true })
+    expect(resolved).toBeUndefined()
   })
 })

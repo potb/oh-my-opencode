@@ -7,66 +7,47 @@ describe("normalizeSDKResponse", () => {
     const response = { data: [{ id: "1" }] }
 
     //#when
-    const result = normalizeSDKResponse(response, [] as Array<{ id: string }>)
+    const result = normalizeSDKResponse<Array<{ id: string }>>(response)
 
     //#then
     expect(result).toEqual([{ id: "1" }])
   })
 
-  it("returns fallback array when data is missing", () => {
+  it("throws when data is missing", () => {
     //#given
     const response = {}
-    const fallback = [{ id: "fallback" }]
-
-    //#when
-    const result = normalizeSDKResponse(response, fallback)
-
-    //#then
-    expect(result).toEqual(fallback)
+    //#when / #then
+    expect(() => normalizeSDKResponse<Array<{ id: string }>>(response)).toThrow("SDK response must use { data: ... } envelope")
   })
 
-  it("returns response array directly when SDK returns plain array", () => {
+  it("throws when SDK returns a plain array", () => {
     //#given
     const response = [{ id: "2" }]
 
-    //#when
-    const result = normalizeSDKResponse(response, [] as Array<{ id: string }>)
-
-    //#then
-    expect(result).toEqual([{ id: "2" }])
+    //#when / #then
+    expect(() => normalizeSDKResponse<Array<{ id: string }>>(response)).toThrow("SDK response must use { data: ... } envelope")
   })
 
-  it("returns response when data missing and preferResponseOnMissingData is true", () => {
+  it("throws when object response has no data", () => {
     //#given
     const response = { value: "legacy" }
 
-    //#when
-    const result = normalizeSDKResponse(response, { value: "fallback" }, { preferResponseOnMissingData: true })
-
-    //#then
-    expect(result).toEqual({ value: "legacy" })
+    //#when / #then
+    expect(() => normalizeSDKResponse<{ value: string }>(response)).toThrow("SDK response must use { data: ... } envelope")
   })
 
-  it("returns fallback for null response", () => {
+  it("throws for null response", () => {
     //#given
     const response = null
 
-    //#when
-    const result = normalizeSDKResponse(response, [] as string[])
-
-    //#then
-    expect(result).toEqual([])
+    //#when / #then
+    expect(() => normalizeSDKResponse<string[]>(response)).toThrow("SDK response was nullish")
   })
 
-  it("returns object fallback for direct data nullish pattern", () => {
+  it("throws when response.data is nullish", () => {
     //#given
     const response = { data: undefined as { connected: string[] } | undefined }
-    const fallback = { connected: [] }
-
-    //#when
-    const result = normalizeSDKResponse(response, fallback)
-
-    //#then
-    expect(result).toEqual(fallback)
+    //#when / #then
+    expect(() => normalizeSDKResponse<{ connected: string[] }>(response)).toThrow("SDK response.data was missing")
   })
 })

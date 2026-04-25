@@ -2,10 +2,11 @@ import * as fs from "node:fs"
 import * as os from "node:os"
 import * as path from "node:path"
 
-import { parseJsoncSafe } from "./jsonc-parser"
+import { parseJsonc } from "./jsonc-parser"
+import { CONFIG_BASENAME } from "./plugin-identity"
 
 interface OpencodeConfig {
-  plugin?: (string | [string, ...unknown[]])[]
+  plugin?: string[]
 }
 
 function getWindowsAppdataDir(): string | null {
@@ -15,17 +16,14 @@ function getWindowsAppdataDir(): string | null {
 function getConfigPaths(directory: string): string[] {
   const crossPlatformDir = path.join(os.homedir(), ".config")
   const paths = [
-    path.join(directory, ".opencode", "opencode.json"),
-    path.join(directory, ".opencode", "opencode.jsonc"),
-    path.join(crossPlatformDir, "opencode", "opencode.json"),
-    path.join(crossPlatformDir, "opencode", "opencode.jsonc"),
+    path.join(directory, ".opencode", `${CONFIG_BASENAME}.jsonc`),
+    path.join(crossPlatformDir, "opencode", `${CONFIG_BASENAME}.jsonc`),
   ]
 
   if (process.platform === "win32") {
     const appdataDir = getWindowsAppdataDir()
     if (appdataDir) {
-      paths.push(path.join(appdataDir, "opencode", "opencode.json"))
-      paths.push(path.join(appdataDir, "opencode", "opencode.jsonc"))
+      paths.push(path.join(appdataDir, "opencode", `${CONFIG_BASENAME}.jsonc`))
     }
   }
 
@@ -41,18 +39,26 @@ export function loadOpencodePlugins(directory: string): string[] {
       if (!fs.existsSync(configPath)) continue
 
       const content = fs.readFileSync(configPath, "utf-8")
-      const result = parseJsoncSafe<OpencodeConfig>(content)
-      const plugins = result.data?.plugin ?? []
+      const parsed = parseJsonc<OpencodeConfig>(content)
+      const plugins = parsed.plugin
+      if (plugins === undefined) {
+        continue
+      }
+      if (!Array.isArray(plugins)) {
+        throw new Error(`Invalid plugin config in ${configPath}: 'plugin' must be an array of strings`)
+      }
 
       for (const rawPlugin of plugins) {
-        const plugin = typeof rawPlugin === "string" ? rawPlugin : Array.isArray(rawPlugin) ? rawPlugin[0] : null
-        if (typeof plugin !== "string") continue
+        if (typeof rawPlugin !== "string") {
+          throw new Error(`Invalid plugin entry in ${configPath}: plugin entries must be strings`)
+        }
+        const plugin = rawPlugin
         if (seenPluginEntries.has(plugin)) continue
         seenPluginEntries.add(plugin)
         pluginEntries.push(plugin)
       }
-    } catch {
-      continue
+    } catch (error) {
+      throw new Error(`Failed to load OpenCode plugins from ${configPath}: ${String(error)}`)
     }
   }
 

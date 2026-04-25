@@ -35,14 +35,6 @@ function getConfigDir(): string {
   return getConfigContext().paths.configDir
 }
 
-function getConfigJson(): string {
-  return getConfigContext().paths.configJson
-}
-
-function getConfigJsonc(): string {
-  return getConfigContext().paths.configJsonc
-}
-
 function getOmoConfigPath(): string {
   const configDir = getConfigContext().paths.configDir
   const detected = detectPluginConfigFile(configDir)

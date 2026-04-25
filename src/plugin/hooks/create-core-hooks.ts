@@ -11,16 +11,14 @@ export function createCoreHooks(args: {
   pluginConfig: OhMyOpenCodeConfig
   modelCacheState: ModelCacheState
   isHookEnabled: (hookName: HookName) => boolean
-  safeHookEnabled: boolean
 }) {
-  const { ctx, pluginConfig, modelCacheState, isHookEnabled, safeHookEnabled } = args
+  const { ctx, pluginConfig, modelCacheState, isHookEnabled } = args
 
   const session = createSessionHooks({
     ctx,
     pluginConfig,
     modelCacheState,
     isHookEnabled,
-    safeHookEnabled,
   })
 
   const tool = createToolGuardHooks({
@@ -28,12 +26,10 @@ export function createCoreHooks(args: {
     pluginConfig,
     modelCacheState,
     isHookEnabled,
-    safeHookEnabled,
   })
 
   const transform = createTransformHooks({
     isHookEnabled: (name) => isHookEnabled(name as HookName),
-    safeHookEnabled,
   })
 
   return {

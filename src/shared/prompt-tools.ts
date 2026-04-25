@@ -25,11 +25,10 @@ export function normalizePromptTools(
 
 export function resolveInheritedPromptTools(
   sessionID: string,
-  fallbackTools?: Record<string, PromptToolPermission>
 ): Record<string, boolean> | undefined {
   const sessionTools = getSessionTools(sessionID)
   if (sessionTools && Object.keys(sessionTools).length > 0) {
     return { ...sessionTools }
   }
-  return normalizePromptTools(fallbackTools)
+  return undefined
 }

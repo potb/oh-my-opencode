@@ -10,8 +10,7 @@ const DEFAULT_TARGET_MAX_TOKENS = 50_000;
 
 interface AssistantMessageInfo {
 	role: "assistant";
-	providerID?: string;
-	modelID?: string;
+	model?: { providerID?: string; modelID?: string };
 	tokens: {
 		input: number;
 		output: number;
@@ -122,7 +121,7 @@ async function getContextWindowUsage(
 			path: { id: sessionID },
 		});
 
-		const messages = normalizeSDKResponse(response, [] as MessageWrapper[], { preferResponseOnMissingData: true })
+    const messages = normalizeSDKResponse<MessageWrapper[]>(response)
 
 		const assistantMessages = messages
 			.filter((m) => m.info.role === "assistant")
@@ -134,11 +133,13 @@ async function getContextWindowUsage(
 		const lastTokens = lastAssistant?.tokens;
 		if (!lastAssistant || !lastTokens) return null;
 
+		const providerID = lastAssistant.model?.providerID
+		const modelID = lastAssistant.model?.modelID ?? ""
 		const actualLimit =
-			lastAssistant.providerID !== undefined
+			providerID !== undefined
 				? resolveActualContextLimit(
-					lastAssistant.providerID,
-					lastAssistant.modelID ?? "",
+					providerID,
+					modelID,
 					modelCacheState,
 				)
 				: null;

@@ -278,7 +278,7 @@ describe("updateConnectedProvidersCache", () => {
 		}
 	})
 
-	test("keeps normalized fallback ids when raw metadata id is not a string", async () => {
+	test("ignores metadata entries when raw metadata id is not a string", async () => {
 		const {
 			createConnectedProvidersCacheStore,
 			findProviderModelMetadata,
@@ -310,13 +310,8 @@ describe("updateConnectedProvidersCache", () => {
 			await testCacheStore.updateConnectedProvidersCache(mockClient)
 			const cache = testCacheStore.readProviderModelsCache()
 
-			expect(cache?.models.openai).toEqual([
-				{ id: "o3-mini", name: "o3-mini" },
-			])
-			expect(findProviderModelMetadata("openai", "o3-mini", cache)).toEqual({
-				id: "o3-mini",
-				name: "o3-mini",
-			})
+			expect(cache?.models.openai).toBeUndefined()
+			expect(findProviderModelMetadata("openai", "o3-mini", cache)).toBeUndefined()
 		} finally {
 			cleanupTestCacheContext(fakeUserCacheRoot)
 		}

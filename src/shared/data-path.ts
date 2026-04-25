@@ -9,10 +9,8 @@ function resolveWritableDirectory(preferredDir: string, fallbackSuffix: string):
     mkdirSync(preferredDir, { recursive: true })
     accessSync(preferredDir, constants.W_OK)
     return preferredDir
-  } catch {
-    const fallbackDir = path.join(os.tmpdir(), fallbackSuffix)
-    mkdirSync(fallbackDir, { recursive: true })
-    return fallbackDir
+  } catch (error) {
+    throw new Error(`Directory is not writable: ${preferredDir} (${String(error)})`)
   }
 }
 

@@ -183,7 +183,7 @@ describe("createChatParamsHandler", () => {
     })
   })
 
-  test("drops gpt-5.4 temperature and clamps maxOutputTokens from bundled model capabilities", async () => {
+  test("preserves stored prompt params without compatibility rewriting", async () => {
     //#given
     setSessionPromptParams("ses_chat_params_temperature", {
       temperature: 0.7,
@@ -214,14 +214,15 @@ describe("createChatParamsHandler", () => {
 
     //#then
     expect(output).toEqual({
+      temperature: 0.7,
       topP: 1,
       topK: 1,
-      maxOutputTokens: 128_000,
+      maxOutputTokens: 200_000,
       options: {},
     })
   })
 
-  test("drops unsupported reasoning settings from bundled model capabilities", async () => {
+  test("preserves stored reasoning settings without compatibility rewriting", async () => {
     //#given
     setSessionPromptParams("ses_chat_params", {
       temperature: 0.4,
@@ -258,7 +259,10 @@ describe("createChatParamsHandler", () => {
       temperature: 0.4,
       topP: 1,
       topK: 1,
-      options: {},
+      options: {
+        reasoningEffort: "high",
+        thinking: { type: "enabled", budgetTokens: 4096 },
+      },
     })
   })
 })

@@ -268,24 +268,20 @@ describe("applyUltraworkModelOverrideOnMessage", () => {
     } as unknown as Parameters<typeof applyUltraworkModelOverrideOnMessage>[0]
   }
 
-  test("should schedule deferred DB override without variant when SDK unavailable", () => {
+  test("should throw when SDK validation is unavailable", () => {
     //#given
     const config = createConfig("sisyphus", { model: "anthropic/claude-opus-4-6", variant: "max" })
     const output = createOutput("ultrawork do something", { messageId: "msg_123" })
     const tui = createMockTui()
 
-    //#when - no client passed, SDK validation unavailable
-    applyUltraworkModelOverrideOnMessage(config, "sisyphus", output, tui)
-
-    //#then - variant should NOT be applied without SDK validation
-    expect(dbOverrideSpy).toHaveBeenCalledWith(
-      "msg_123",
-      { providerID: "anthropic", modelID: "claude-opus-4-6" },
-      undefined,
+    //#when / #then
+    expect(() => applyUltraworkModelOverrideOnMessage(config, "sisyphus", output, tui)).toThrow(
+      "SDK validation unavailable for ultrawork override"
     )
+    expect(dbOverrideSpy).not.toHaveBeenCalled()
   })
 
-  test("should NOT override variant when SDK unavailable even if config specifies variant", () => {
+  test("should preserve existing variant while throwing when SDK unavailable", () => {
     //#given
     const config = createConfig("sisyphus", {
       model: "anthropic/claude-opus-4-6",
@@ -296,20 +292,16 @@ describe("applyUltraworkModelOverrideOnMessage", () => {
     output.message["thinking"] = "max"
     const tui = createMockTui()
 
-    //#when - no client, SDK unavailable
-    applyUltraworkModelOverrideOnMessage(config, "sisyphus", output, tui)
-
-    //#then - existing variant preserved, not overridden to "extended"
-    expect(dbOverrideSpy).toHaveBeenCalledWith(
-      "msg_123",
-      { providerID: "anthropic", modelID: "claude-opus-4-6" },
-      undefined,
+    //#when / #then
+    expect(() => applyUltraworkModelOverrideOnMessage(config, "sisyphus", output, tui)).toThrow(
+      "SDK validation unavailable for ultrawork override"
     )
+    expect(dbOverrideSpy).not.toHaveBeenCalled()
     expect(output.message["variant"]).toBe("max")
     expect(output.message["thinking"]).toBe("max")
   })
 
-  test("should NOT mutate output.message.model when message ID present", () => {
+  test("should not mutate output.message.model when SDK validation is unavailable", () => {
     //#given
     const sonnetModel = { providerID: "anthropic", modelID: "claude-sonnet-4-6" }
     const config = createConfig("sisyphus", { model: "anthropic/claude-opus-4-6" })
@@ -319,38 +311,38 @@ describe("applyUltraworkModelOverrideOnMessage", () => {
     })
     const tui = createMockTui()
 
-    //#when
-    applyUltraworkModelOverrideOnMessage(config, "sisyphus", output, tui)
-
-    //#then
+    //#when / #then
+    expect(() => applyUltraworkModelOverrideOnMessage(config, "sisyphus", output, tui)).toThrow(
+      "SDK validation unavailable for ultrawork override"
+    )
     expect(output.message.model).toEqual(sonnetModel)
   })
 
-  test("should fall back to direct model mutation without variant when no message ID and no SDK", () => {
+  test("should throw when no message ID and no SDK", () => {
     //#given
     const config = createConfig("sisyphus", { model: "anthropic/claude-opus-4-6", variant: "max" })
     const output = createOutput("ultrawork do something")
     const tui = createMockTui()
 
-    //#when
-    applyUltraworkModelOverrideOnMessage(config, "sisyphus", output, tui)
-
-    //#then - model is set but variant is NOT applied without SDK validation
-    expect(output.message.model).toEqual({ providerID: "anthropic", modelID: "claude-opus-4-6" })
+    //#when / #then
+    expect(() => applyUltraworkModelOverrideOnMessage(config, "sisyphus", output, tui)).toThrow(
+      "SDK validation unavailable for ultrawork override"
+    )
+    expect(output.message.model).toBeUndefined()
     expect(output.message["variant"]).toBeUndefined()
     expect(dbOverrideSpy).not.toHaveBeenCalled()
   })
 
-  test("should not apply variant-only override when no SDK available", () => {
+  test("should throw for variant-only override when no SDK available", () => {
     //#given
     const config = createConfig("sisyphus", { variant: "high" })
     const output = createOutput("ultrawork do something")
     const tui = createMockTui()
 
-    //#when - variant-only override, no SDK = no-op
-    applyUltraworkModelOverrideOnMessage(config, "sisyphus", output, tui)
-
-    //#then - nothing applied since no model and variant requires SDK
+    //#when / #then
+    expect(() => applyUltraworkModelOverrideOnMessage(config, "sisyphus", output, tui)).toThrow(
+      "SDK validation unavailable for ultrawork override"
+    )
     expect(output.message.model).toBeUndefined()
     expect(output.message["variant"]).toBeUndefined()
     expect(dbOverrideSpy).not.toHaveBeenCalled()
@@ -369,7 +361,7 @@ describe("applyUltraworkModelOverrideOnMessage", () => {
     expect(dbOverrideSpy).not.toHaveBeenCalled()
   })
 
-  test("should log the model transition with deferred DB tag", () => {
+  test("should throw before logging a skipped ultrawork override when SDK validation is unavailable", () => {
     //#given
     const config = createConfig("sisyphus", { model: "anthropic/claude-opus-4-6" })
     const existingModel = { providerID: "anthropic", modelID: "claude-sonnet-4-6" }
@@ -379,17 +371,13 @@ describe("applyUltraworkModelOverrideOnMessage", () => {
     })
     const tui = createMockTui()
 
-    //#when
-    applyUltraworkModelOverrideOnMessage(config, "sisyphus", output, tui)
-
-    //#then
-    expect(logSpy).toHaveBeenCalledWith(
-      expect.stringContaining("deferred DB"),
-      expect.objectContaining({ agent: "sisyphus" }),
+    //#when / #then
+    expect(() => applyUltraworkModelOverrideOnMessage(config, "sisyphus", output, tui)).toThrow(
+      "SDK validation unavailable for ultrawork override"
     )
   })
 
-  test("should call showToast on override", () => {
+  test("should not call showToast when ultrawork override throws", () => {
     //#given
     const config = createConfig("sisyphus", { model: "anthropic/claude-opus-4-6" })
     const output = createOutput("ultrawork do something", { messageId: "msg_123" })
@@ -400,31 +388,27 @@ describe("applyUltraworkModelOverrideOnMessage", () => {
       },
     }
 
-    //#when
-    applyUltraworkModelOverrideOnMessage(config, "sisyphus", output, tui)
-
-    //#then
-    expect(toastCalled).toBe(true)
+    //#when / #then
+    expect(() => applyUltraworkModelOverrideOnMessage(config, "sisyphus", output, tui)).toThrow(
+      "SDK validation unavailable for ultrawork override"
+    )
+    expect(toastCalled).toBe(false)
   })
 
-  test("should resolve display name to config key with deferred path", () => {
+  test("should resolve display name to config key but still throw without SDK validation", () => {
     //#given
     const config = createConfig("sisyphus", { model: "anthropic/claude-opus-4-6", variant: "max" })
     const output = createOutput("ulw do something", { messageId: "msg_123" })
     const tui = createMockTui()
 
-    //#when
-    applyUltraworkModelOverrideOnMessage(config, "Sisyphus - Ultraworker", output, tui)
-
-    //#then
-    expect(dbOverrideSpy).toHaveBeenCalledWith(
-      "msg_123",
-      { providerID: "anthropic", modelID: "claude-opus-4-6" },
-      undefined,
+    //#when / #then
+    expect(() => applyUltraworkModelOverrideOnMessage(config, "Sisyphus - Ultraworker", output, tui)).toThrow(
+      "SDK validation unavailable for ultrawork override"
     )
+    expect(dbOverrideSpy).not.toHaveBeenCalled()
   })
 
-  test("should skip override trigger when current model already matches ultrawork model", () => {
+  test("should throw before applying override when current model already matches but SDK validation is unavailable", () => {
     //#given
     const config = createConfig("sisyphus", { model: "anthropic/claude-opus-4-6", variant: "max" })
     const output = createOutput("ultrawork do something", {
@@ -438,10 +422,10 @@ describe("applyUltraworkModelOverrideOnMessage", () => {
       },
     }
 
-    //#when
-    applyUltraworkModelOverrideOnMessage(config, "sisyphus", output, tui)
-
-    //#then
+    //#when / #then
+    expect(() => applyUltraworkModelOverrideOnMessage(config, "sisyphus", output, tui)).toThrow(
+      "SDK validation unavailable for ultrawork override"
+    )
     expect(dbOverrideSpy).not.toHaveBeenCalled()
     expect(toastCalled).toBe(false)
   })

@@ -1,5 +1,4 @@
 import { getSessionPromptParams } from "../shared/session-prompt-params-state"
-import { getModelCapabilities, resolveCompatibleModelSettings } from "../shared"
 
 type ChatParamsInput = {
   sessionID: string
@@ -40,9 +39,7 @@ function buildChatParamsInput(raw: unknown): ChatParamsHookInput | null {
   if (!isRecord(message)) return null
 
   let agentName: string | undefined
-  if (typeof agent === "string") {
-    agentName = agent
-  } else if (isRecord(agent)) {
+  if (isRecord(agent)) {
     const name = agent.name
     if (typeof name === "string") {
       agentName = name
@@ -51,11 +48,7 @@ function buildChatParamsInput(raw: unknown): ChatParamsHookInput | null {
   if (!agentName) return null
 
   const providerID = model.providerID
-  const modelID = typeof model.modelID === "string"
-    ? model.modelID
-    : typeof model.id === "string"
-      ? model.id
-      : undefined
+  const modelID = model.modelID
   const providerId = provider.id
   if (typeof providerID !== "string") return null
   if (typeof modelID !== "string") return null
@@ -104,76 +97,6 @@ export function createChatParamsHandler(args: {
           ...output.options,
           ...storedPromptParams.options,
         }
-      }
-    }
-
-    const capabilities = getModelCapabilities({
-      providerID: normalizedInput.model.providerID,
-      modelID: normalizedInput.model.modelID,
-    })
-
-    const compatibility = resolveCompatibleModelSettings({
-      providerID: normalizedInput.model.providerID,
-      modelID: normalizedInput.model.modelID,
-      desired: {
-        variant: typeof normalizedInput.message.variant === "string"
-          ? normalizedInput.message.variant
-          : undefined,
-        reasoningEffort: typeof output.options.reasoningEffort === "string"
-          ? output.options.reasoningEffort
-          : undefined,
-        temperature: typeof output.temperature === "number" ? output.temperature : undefined,
-        topP: typeof output.topP === "number" ? output.topP : undefined,
-        maxTokens: typeof output.maxOutputTokens === "number" ? output.maxOutputTokens : undefined,
-        thinking: isRecord(output.options.thinking) ? output.options.thinking : undefined,
-      },
-      capabilities,
-    })
-
-    if (normalizedInput.rawMessage) {
-      if (compatibility.variant !== undefined) {
-        normalizedInput.rawMessage.variant = compatibility.variant
-      } else {
-        delete normalizedInput.rawMessage.variant
-      }
-    }
-    normalizedInput.message = normalizedInput.rawMessage as { variant?: string }
-
-    if (compatibility.reasoningEffort !== undefined) {
-      output.options.reasoningEffort = compatibility.reasoningEffort
-    } else if ("reasoningEffort" in output.options) {
-      delete output.options.reasoningEffort
-    }
-
-    if ("temperature" in compatibility) {
-      if (compatibility.temperature !== undefined) {
-        output.temperature = compatibility.temperature
-      } else {
-        delete output.temperature
-      }
-    }
-
-    if ("topP" in compatibility) {
-      if (compatibility.topP !== undefined) {
-        output.topP = compatibility.topP
-      } else {
-        delete output.topP
-      }
-    }
-
-    if ("maxTokens" in compatibility) {
-      if (compatibility.maxTokens !== undefined) {
-        output.maxOutputTokens = compatibility.maxTokens
-      } else {
-        delete output.maxOutputTokens
-      }
-    }
-
-    if ("thinking" in compatibility) {
-      if (compatibility.thinking !== undefined) {
-        output.options.thinking = compatibility.thinking
-      } else {
-        delete output.options.thinking
       }
     }
 

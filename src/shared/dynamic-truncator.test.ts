@@ -37,8 +37,10 @@ function createContextUsageMockContext(
             {
               info: {
                 role: "assistant",
-                providerID: options?.providerID ?? "anthropic",
-                modelID: options?.modelID,
+                model: {
+                  providerID: options?.providerID ?? "anthropic",
+                  ...(options?.modelID ? { modelID: options.modelID } : {}),
+                },
                 tokens: {
                   input: inputTokens,
                   output: 0,

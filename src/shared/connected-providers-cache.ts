@@ -34,7 +34,7 @@ export interface ModelMetadata {
 }
 
 interface ProviderModelsCache {
-	models: Record<string, string[] | ModelMetadata[]>
+	models: Record<string, ModelMetadata[]>
 	connected: string[]
 	updatedAt: string
 }
@@ -87,7 +87,7 @@ export function createConnectedProvidersCacheStore(
 		return providerModelsCacheStore.has()
 	}
 
-	function writeProviderModelsCache(data: { models: Record<string, string[] | ModelMetadata[]>; connected: string[] }): void {
+	function writeProviderModelsCache(data: { models: Record<string, ModelMetadata[]>; connected: string[] }): void {
 		providerModelsCacheStore.write({
 			...data,
 			updatedAt: new Date().toISOString(),
@@ -124,19 +124,19 @@ export function createConnectedProvidersCacheStore(
 
 			for (const provider of allProviders) {
 				if (provider.models) {
-					const modelMetadata = Object.entries(provider.models).map(([modelID, rawMetadata]) => {
+					const modelMetadata = Object.entries(provider.models).flatMap(([modelID, rawMetadata]) => {
 						if (!isRecord(rawMetadata)) {
-							return { id: modelID }
+							return []
 						}
 
-						const normalizedID = typeof rawMetadata.id === "string"
-							? rawMetadata.id
-							: modelID
+						if (typeof rawMetadata.id !== "string") {
+							return []
+						}
 
-						return {
+						return [{
 							...rawMetadata,
-							id: normalizedID,
-						} satisfies ModelMetadata
+							id: rawMetadata.id,
+						} satisfies ModelMetadata]
 					})
 					if (modelMetadata.length > 0) {
 						modelsByProvider[provider.id] = modelMetadata
@@ -185,13 +185,6 @@ export function findProviderModelMetadata(
 	}
 
 	for (const entry of providerModels) {
-		if (typeof entry === "string") {
-			if (entry === modelID) {
-				return { id: entry }
-			}
-			continue
-		}
-
 		if (entry.id === modelID) {
 			return entry
 		}

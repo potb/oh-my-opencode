@@ -13,46 +13,43 @@ describe("model-capability-aliases", () => {
     })
   })
 
-  test("strips provider prefixes when the input is already canonical", () => {
+  test("keeps provider prefixes when the input is already canonical", () => {
     const result = resolveModelIDAlias("anthropic/claude-sonnet-4-6")
 
     expect(result).toEqual({
       requestedModelID: "anthropic/claude-sonnet-4-6",
-      canonicalModelID: "claude-sonnet-4-6",
+      canonicalModelID: "anthropic/claude-sonnet-4-6",
       source: "canonical",
     })
   })
 
-  test("normalizes gemini tier aliases through a pattern rule", () => {
+  test("keeps gemini tier aliases unchanged", () => {
     const result = resolveModelIDAlias("gemini-3.1-pro-high")
 
     expect(result).toEqual({
       requestedModelID: "gemini-3.1-pro-high",
-      canonicalModelID: "gemini-3.1-pro",
-      source: "pattern-alias",
-      ruleID: "gemini-3.1-pro-tier-alias",
+      canonicalModelID: "gemini-3.1-pro-high",
+      source: "canonical",
     })
   })
 
-  test("normalizes provider-prefixed gemini tier aliases to bare canonical IDs", () => {
+  test("keeps provider prefixes on gemini tier model IDs without aliasing", () => {
     const result = resolveModelIDAlias("google/gemini-3.1-pro-high")
 
     expect(result).toEqual({
       requestedModelID: "google/gemini-3.1-pro-high",
-      canonicalModelID: "gemini-3.1-pro",
-      source: "pattern-alias",
-      ruleID: "gemini-3.1-pro-tier-alias",
+      canonicalModelID: "google/gemini-3.1-pro-high",
+      source: "canonical",
     })
   })
 
-  test("keeps exceptional gemini preview aliases as exact rules", () => {
+  test("keeps exceptional gemini preview aliases unchanged", () => {
     const result = resolveModelIDAlias("gemini-3-pro-high")
 
     expect(result).toEqual({
       requestedModelID: "gemini-3-pro-high",
-      canonicalModelID: "gemini-3-pro-preview",
-      source: "exact-alias",
-      ruleID: "gemini-3-pro-tier-alias",
+      canonicalModelID: "gemini-3-pro-high",
+      source: "canonical",
     })
   })
 
@@ -66,14 +63,13 @@ describe("model-capability-aliases", () => {
     })
   })
 
-  test("normalizes provider-prefixed Claude thinking aliases through a pattern rule", () => {
+  test("keeps provider prefixes on Claude thinking model IDs without aliasing", () => {
     const result = resolveModelIDAlias("anthropic/claude-opus-4-6-thinking")
 
     expect(result).toEqual({
       requestedModelID: "anthropic/claude-opus-4-6-thinking",
-      canonicalModelID: "claude-opus-4-6",
-      source: "pattern-alias",
-      ruleID: "claude-thinking-legacy-alias",
+      canonicalModelID: "anthropic/claude-opus-4-6-thinking",
+      source: "canonical",
     })
   })
 
@@ -97,14 +93,13 @@ describe("model-capability-aliases", () => {
     })
   })
 
-  test("normalizes legacy Claude thinking aliases through a pattern rule", () => {
+  test("keeps Claude thinking aliases unchanged", () => {
     const result = resolveModelIDAlias("claude-opus-4-6-thinking")
 
     expect(result).toEqual({
       requestedModelID: "claude-opus-4-6-thinking",
-      canonicalModelID: "claude-opus-4-6",
-      source: "pattern-alias",
-      ruleID: "claude-thinking-legacy-alias",
+      canonicalModelID: "claude-opus-4-6-thinking",
+      source: "canonical",
     })
   })
 })

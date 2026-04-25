@@ -8,7 +8,6 @@ import {
   createHashlineReadEnhancerHook,
   createWebFetchRedirectGuardHook,
 } from "../../hooks"
-import { safeCreateHook } from "../../shared/safe-create-hook"
 
 type ToolGuardHooks = {
   toolOutputTruncator: ReturnType<typeof createToolOutputTruncatorHook> | null
@@ -22,30 +21,26 @@ export function createToolGuardHooks(args: {
   pluginConfig: OhMyOpenCodeConfig
   modelCacheState: ModelCacheState
   isHookEnabled: (hookName: HookName) => boolean
-  safeHookEnabled: boolean
 }): ToolGuardHooks {
-  const { ctx, pluginConfig, modelCacheState, isHookEnabled, safeHookEnabled } = args
-  const safeHook = <T>(hookName: HookName, factory: () => T): T | null =>
-    safeCreateHook(hookName, factory, { enabled: safeHookEnabled })
+  const { ctx, pluginConfig, modelCacheState, isHookEnabled } = args
 
   const toolOutputTruncator = isHookEnabled("tool-output-truncator")
-    ? safeHook("tool-output-truncator", () =>
-        createToolOutputTruncatorHook(ctx, {
-          modelCacheState,
-          experimental: pluginConfig.experimental,
-        }))
+    ? createToolOutputTruncatorHook(ctx, {
+        modelCacheState,
+        experimental: pluginConfig.experimental,
+      })
     : null
 
   const writeExistingFileGuard = isHookEnabled("write-existing-file-guard")
-    ? safeHook("write-existing-file-guard", () => createWriteExistingFileGuardHook(ctx))
+    ? createWriteExistingFileGuardHook(ctx)
     : null
 
   const hashlineReadEnhancer = isHookEnabled("hashline-read-enhancer")
-    ? safeHook("hashline-read-enhancer", () => createHashlineReadEnhancerHook(ctx, { hashline_edit: { enabled: pluginConfig.hashline_edit ?? false } }))
+    ? createHashlineReadEnhancerHook(ctx, { hashline_edit: { enabled: pluginConfig.hashline_edit ?? false } })
     : null
 
   const webfetchRedirectGuard = isHookEnabled("webfetch-redirect-guard")
-    ? safeHook("webfetch-redirect-guard", () => createWebFetchRedirectGuardHook(ctx))
+    ? createWebFetchRedirectGuardHook(ctx)
     : null
 
   return {
