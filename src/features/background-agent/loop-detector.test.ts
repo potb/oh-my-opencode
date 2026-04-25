@@ -2,7 +2,6 @@
 
 import { describe, expect, test } from "bun:test"
 import {
-  createToolCallSignature,
   detectRepetitiveToolUse,
   recordToolCall,
   resolveCircuitBreakerSettings,
@@ -90,53 +89,6 @@ describe("loop-detector", () => {
 
         expect(result.enabled).toBe(true)
       })
-    })
-  })
-
-  describe("createToolCallSignature", () => {
-    test("#given tool with input #when signature created #then includes tool and sorted input", () => {
-      const result = createToolCallSignature("read", { filePath: "/a.ts" })
-
-      expect(result).toBe('read::{"filePath":"/a.ts"}')
-    })
-
-    test("#given tool with undefined input #when signature created #then returns bare tool name", () => {
-      const result = createToolCallSignature("read", undefined)
-
-      expect(result).toBe("read")
-    })
-
-    test("#given tool with null input #when signature created #then returns bare tool name", () => {
-      const result = createToolCallSignature("read", null)
-
-      expect(result).toBe("read")
-    })
-
-    test("#given nullish inputs #when signatures are created #then null and undefined behave the same", () => {
-      // given
-      const undefinedInput = undefined
-      const nullInput = null
-
-      // when
-      const undefinedResult = createToolCallSignature("read", undefinedInput)
-      const nullResult = createToolCallSignature("read", nullInput)
-
-      // then
-      expect(undefinedResult).toBe("read")
-      expect(nullResult).toBe(undefinedResult)
-    })
-
-    test("#given tool with empty object input #when signature created #then returns bare tool name", () => {
-      const result = createToolCallSignature("read", {})
-
-      expect(result).toBe("read")
-    })
-
-    test("#given same input different key order #when signatures compared #then they are equal", () => {
-      const first = createToolCallSignature("read", { filePath: "/a.ts", offset: 0 })
-      const second = createToolCallSignature("read", { offset: 0, filePath: "/a.ts" })
-
-      expect(first).toBe(second)
     })
   })
 

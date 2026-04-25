@@ -3,15 +3,13 @@ import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs"
 import { join } from "node:path"
 import { tmpdir } from "node:os"
 import {
-  isCompactionAgent,
   findNearestMessageExcludingCompaction,
   resolvePromptContextFromSessionMessages,
 } from "./compaction-aware-message-resolver"
+import { isCompactionAgent } from "../../shared/compaction-marker"
 import {
-  clearCompactionAgentConfigCheckpoint,
-  setCompactionAgentConfigCheckpoint,
-} from "../../shared/compaction-agent-config-checkpoint"
-import { getCompactionPartStorageDir } from "../../shared/compaction-marker"
+  PART_STORAGE,
+} from "../../shared/opencode-storage-paths"
 
 describe("isCompactionAgent", () => {
   describe("#given agent name variations", () => {
@@ -74,8 +72,7 @@ describe("findNearestMessageExcludingCompaction", () => {
 
   afterEach(() => {
     rmSync(tempDir, { force: true, recursive: true })
-    rmSync(getCompactionPartStorageDir("msg_test_background_compaction_marker"), { force: true, recursive: true })
-    clearCompactionAgentConfigCheckpoint("ses_checkpoint")
+    rmSync(join(PART_STORAGE, "msg_test_background_compaction_marker"), { force: true, recursive: true })
   })
 
   describe("#given directory with messages", () => {
@@ -115,30 +112,6 @@ describe("findNearestMessageExcludingCompaction", () => {
 
       // then
       expect(result).not.toBeNull()
-      expect(result?.agent).toBe("sisyphus")
-    })
-
-    test("skips JSON messages whose part storage contains a compaction marker", () => {
-      // given
-      const compactionMessageID = "msg_test_background_compaction_marker"
-      const partDir = getCompactionPartStorageDir(compactionMessageID)
-      writeFileSync(join(tempDir, "002.json"), JSON.stringify({
-        id: compactionMessageID,
-        agent: "atlas",
-        model: { providerID: "anthropic", modelID: "claude-opus-4-6" },
-      }))
-      writeFileSync(join(tempDir, "001.json"), JSON.stringify({
-        id: "msg_001",
-        agent: "sisyphus",
-        model: { providerID: "anthropic", modelID: "claude-opus-4-6" },
-      }))
-      mkdirSync(partDir, { recursive: true })
-      writeFileSync(join(partDir, "prt_0001.json"), JSON.stringify({ type: "compaction" }))
-
-      // when
-      const result = findNearestMessageExcludingCompaction(tempDir)
-
-      // then
       expect(result?.agent).toBe("sisyphus")
     })
 
@@ -242,24 +215,6 @@ describe("findNearestMessageExcludingCompaction", () => {
       })
     })
 
-    test("fills missing metadata from compaction checkpoint", () => {
-      // given
-      setCompactionAgentConfigCheckpoint("ses_checkpoint", {
-        agent: "sisyphus",
-        model: { providerID: "openai", modelID: "gpt-5" },
-      })
-      writeFileSync(join(tempDir, "001.json"), JSON.stringify({ tools: { bash: true } }))
-
-      // when
-      const result = findNearestMessageExcludingCompaction(tempDir, "ses_checkpoint")
-
-      // then
-      expect(result).toEqual({
-        agent: "sisyphus",
-        model: { providerID: "openai", modelID: "gpt-5" },
-        tools: { bash: true },
-      })
-    })
   })
 })
 

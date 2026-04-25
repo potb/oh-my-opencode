@@ -40,6 +40,24 @@ async function runEventHookSafely(
   }
 }
 
+function getEventHookEntries(hooks: CreatedHooks): Array<[
+  string,
+  (input: EventInput) => unknown | Promise<unknown>,
+]> {
+  return Object.entries(hooks).flatMap(([hookName, hookValue]) => {
+    if (!hookValue || typeof hookValue !== "object") {
+      return []
+    }
+
+    const eventHandler = (hookValue as { event?: unknown }).event
+    if (typeof eventHandler !== "function") {
+      return []
+    }
+
+    return [[hookName, eventHandler as (input: EventInput) => unknown | Promise<unknown>]]
+  })
+}
+
 export async function dispatchEventHooks(args: {
   input: EventInput
   hooks: CreatedHooks
@@ -57,5 +75,7 @@ export async function dispatchEventHooks(args: {
     })
   }
 
-  await runEventHookSafely("writeExistingFileGuard", hooks.writeExistingFileGuard?.event, input)
+  for (const [hookName, eventHandler] of getEventHookEntries(hooks)) {
+    await runEventHookSafely(hookName, eventHandler, input)
+  }
 }

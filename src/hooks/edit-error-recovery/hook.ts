@@ -3,7 +3,7 @@ import type { PluginInput } from "@opencode-ai/plugin"
 /**
  * Known Edit tool error patterns that indicate the AI made a mistake
  */
-export const EDIT_ERROR_PATTERNS = [
+const EDIT_ERROR_PATTERNS = [
   "oldString and newString must be different",
   "oldString not found",
   "oldString found multiple times",
@@ -13,7 +13,7 @@ export const EDIT_ERROR_PATTERNS = [
  * System reminder injected when Edit tool fails due to AI mistake
  * Short, direct, and commanding - forces immediate corrective action
  */
-export const EDIT_ERROR_REMINDER = `
+const EDIT_ERROR_REMINDER = `
 [EDIT ERROR - IMMEDIATE ACTION REQUIRED]
 
 You made an Edit mistake. STOP and do this NOW:

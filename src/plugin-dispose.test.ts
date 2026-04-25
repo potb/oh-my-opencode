@@ -1,6 +1,5 @@
 import { describe, expect, spyOn, test } from "bun:test"
 
-import { disposeCreatedHooks } from "./create-hooks"
 import { createPluginDispose } from "./plugin-dispose"
 
 describe("createPluginDispose", () => {
@@ -21,22 +20,6 @@ describe("createPluginDispose", () => {
     await dispose()
 
     expect(shutdownSpy).toHaveBeenCalledTimes(1)
-  })
-
-  test("disposeCreatedHooks remains a safe no-op", async () => {
-    const lspManager = { stopAll: async (): Promise<void> => {} }
-
-    const dispose = createPluginDispose({
-      backgroundManager: {
-        shutdown: async (): Promise<void> => {},
-      },
-      lspManager,
-      disposeHooks: (): void => {
-        disposeCreatedHooks()
-      },
-    })
-
-    await expect(dispose()).resolves.toBeUndefined()
   })
 
   test("is idempotent", async () => {

@@ -3,11 +3,9 @@ import type { OpencodeClient } from "./constants"
 import {
   resolveSubagentSpawnContext,
   getMaxSubagentDepth,
-  DEFAULT_MAX_SUBAGENT_DEPTH,
   createSubagentDepthLimitError,
   createSubagentDescendantLimitError,
   getMaxRootSessionSpawnBudget,
-  DEFAULT_MAX_ROOT_SESSION_SPAWN_BUDGET,
 } from "./subagent-spawn-limits"
 
 function createMockClient(sessionGet: OpencodeClient["session"]["get"]): OpencodeClient {
@@ -143,13 +141,13 @@ describe("resolveSubagentSpawnContext", () => {
       expect(result.childDepth).toBe(3)
     })
 
-    test("depth at DEFAULT_MAX_SUBAGENT_DEPTH reports exact max childDepth", async () => {
-      // given - chain of exactly DEFAULT_MAX_SUBAGENT_DEPTH depth
+    test("depth at default max depth reports exact max childDepth", async () => {
+      // given - chain of exactly default depth 3
       // With default=3: session-3 -> session-2 -> session-1 -> root
       const sessions: Record<string, { id: string; parentID?: string }> = {
         "root": { id: "root" },
       }
-      for (let i = 1; i <= DEFAULT_MAX_SUBAGENT_DEPTH; i++) {
+      for (let i = 1; i <= 3; i++) {
         sessions[`session-${i}`] = {
           id: `session-${i}`,
           parentID: i === 1 ? "root" : `session-${i - 1}`,
@@ -163,12 +161,12 @@ describe("resolveSubagentSpawnContext", () => {
       }) as unknown as OpencodeClient["session"]["get"])
 
       // when - resolve from the deepest session
-      const deepest = `session-${DEFAULT_MAX_SUBAGENT_DEPTH}`
+      const deepest = "session-3"
       const result = await resolveSubagentSpawnContext(client, deepest)
 
-      // then - childDepth should be DEFAULT_MAX_SUBAGENT_DEPTH + 1 (exceeds limit)
-      expect(result.childDepth).toBe(DEFAULT_MAX_SUBAGENT_DEPTH + 1)
-      expect(result.parentDepth).toBe(DEFAULT_MAX_SUBAGENT_DEPTH)
+      // then - childDepth should be default maxDepth + 1 (exceeds limit)
+      expect(result.childDepth).toBe(4)
+      expect(result.parentDepth).toBe(3)
     })
 
     test("detects parent cycle and throws", async () => {
@@ -193,9 +191,9 @@ describe("resolveSubagentSpawnContext", () => {
 })
 
 describe("getMaxSubagentDepth", () => {
-  test("returns DEFAULT_MAX_SUBAGENT_DEPTH when no config", () => {
-    expect(getMaxSubagentDepth()).toBe(DEFAULT_MAX_SUBAGENT_DEPTH)
-    expect(getMaxSubagentDepth(undefined)).toBe(DEFAULT_MAX_SUBAGENT_DEPTH)
+  test("returns default max depth when no config", () => {
+    expect(getMaxSubagentDepth()).toBe(3)
+    expect(getMaxSubagentDepth(undefined)).toBe(3)
   })
 
   test("returns config.maxDepth when provided", () => {
@@ -205,13 +203,13 @@ describe("getMaxSubagentDepth", () => {
   })
 
   test("default is 3", () => {
-    expect(DEFAULT_MAX_SUBAGENT_DEPTH).toBe(3)
+    expect(getMaxSubagentDepth()).toBe(3)
   })
 })
 
 describe("getMaxRootSessionSpawnBudget", () => {
-  test("returns DEFAULT_MAX_ROOT_SESSION_SPAWN_BUDGET when no config", () => {
-    expect(getMaxRootSessionSpawnBudget()).toBe(DEFAULT_MAX_ROOT_SESSION_SPAWN_BUDGET)
+  test("returns default root session spawn budget when no config", () => {
+    expect(getMaxRootSessionSpawnBudget()).toBe(50)
   })
 
   test("returns config.maxDescendants when provided", () => {
@@ -219,7 +217,7 @@ describe("getMaxRootSessionSpawnBudget", () => {
   })
 
   test("default is 50", () => {
-    expect(DEFAULT_MAX_ROOT_SESSION_SPAWN_BUDGET).toBe(50)
+    expect(getMaxRootSessionSpawnBudget()).toBe(50)
   })
 })
 

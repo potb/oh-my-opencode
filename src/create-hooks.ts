@@ -6,7 +6,7 @@ import { createCoreHooks } from "./plugin/hooks/create-core-hooks"
 
 export type CreatedHooks = ReturnType<typeof createHooks>
 
-export function disposeCreatedHooks(): void {}
+function disposeCreatedHooks(): void {}
 
 export function createHooks(args: {
   ctx: PluginContext

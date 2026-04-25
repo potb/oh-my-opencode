@@ -45,7 +45,7 @@ interface SpawnerContext {
   onTaskError: (task: BackgroundTask, error: Error) => void
 }
 
-export function createTask(input: LaunchInput): BackgroundTask {
+function createTask(input: LaunchInput): BackgroundTask {
   return {
     id: `bg_${crypto.randomUUID().slice(0, 8)}`,
     status: "pending",
@@ -61,7 +61,7 @@ export function createTask(input: LaunchInput): BackgroundTask {
   }
 }
 
-export async function startTask(
+async function startTask(
   item: QueueItem,
   ctx: SpawnerContext
 ): Promise<void> {

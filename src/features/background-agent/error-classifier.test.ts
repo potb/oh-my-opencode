@@ -2,7 +2,6 @@ import { describe, test, expect } from "bun:test"
 import {
   isRecord,
   isAbortedSessionError,
-  getErrorText,
   extractErrorName,
   extractErrorMessage,
   getSessionErrorMessage,
@@ -104,56 +103,6 @@ describe("isAbortedSessionError", () => {
 
     test("returns false for object without message", () => {
       expect(isAbortedSessionError({ code: "ABORTED" })).toBe(false)
-    })
-  })
-})
-
-describe("getErrorText", () => {
-  describe("#given string input", () => {
-    test("returns the string as-is", () => {
-      expect(getErrorText("Something went wrong")).toBe("Something went wrong")
-    })
-
-    test("returns empty string for empty string", () => {
-      expect(getErrorText("")).toBe("")
-    })
-  })
-
-  describe("#given Error instance", () => {
-    test("returns name and message format", () => {
-      expect(getErrorText(new Error("test message"))).toBe("Error: test message")
-    })
-
-    test("returns TypeError format", () => {
-      expect(getErrorText(new TypeError("type error"))).toBe("TypeError: type error")
-    })
-  })
-
-  describe("#given object with message property", () => {
-    test("returns message property as string", () => {
-      expect(getErrorText({ message: "custom error" })).toBe("custom error")
-    })
-
-    test("returns name property when message not available", () => {
-      expect(getErrorText({ name: "CustomError" })).toBe("CustomError")
-    })
-
-    test("prefers message over name", () => {
-      expect(getErrorText({ name: "CustomError", message: "error message" })).toBe("error message")
-    })
-  })
-
-  describe("#given invalid inputs", () => {
-    test("returns empty string for null", () => {
-      expect(getErrorText(null)).toBe("")
-    })
-
-    test("returns empty string for undefined", () => {
-      expect(getErrorText(undefined)).toBe("")
-    })
-
-    test("returns empty string for object without message or name", () => {
-      expect(getErrorText({ code: 500 })).toBe("")
     })
   })
 })

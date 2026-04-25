@@ -8,8 +8,6 @@ import {
   isCompactionMessage,
 } from "../../shared/compaction-marker"
 
-export { isCompactionAgent } from "../../shared/compaction-marker"
-
 type SessionMessage = {
   id?: string
   info?: {

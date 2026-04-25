@@ -7,7 +7,7 @@ export function isAbortedSessionError(error: unknown): boolean {
   return message.toLowerCase().includes("aborted")
 }
 
-export function getErrorText(error: unknown): string {
+function getErrorText(error: unknown): string {
   if (!error) return ""
   if (typeof error === "string") return error
   if (error instanceof Error) {

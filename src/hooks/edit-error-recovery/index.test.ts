@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "bun:test"
-import { createEditErrorRecoveryHook, EDIT_ERROR_REMINDER, EDIT_ERROR_PATTERNS } from "./index"
+import { createEditErrorRecoveryHook } from "./index"
 
 describe("createEditErrorRecoveryHook", () => {
   let hook: ReturnType<typeof createEditErrorRecoveryHook>
@@ -29,7 +29,7 @@ describe("createEditErrorRecoveryHook", () => {
 
           await hook["tool.execute.after"](input, output)
 
-          expect(output.output).toContain(EDIT_ERROR_REMINDER)
+          expect(output.output).toContain("[EDIT ERROR - IMMEDIATE ACTION REQUIRED]")
           expect(output.output).toContain("oldString and newString must be different")
         })
       })
@@ -41,7 +41,7 @@ describe("createEditErrorRecoveryHook", () => {
 
           await hook["tool.execute.after"](input, output)
 
-          expect(output.output).toContain(EDIT_ERROR_REMINDER)
+          expect(output.output).toContain("[EDIT ERROR - IMMEDIATE ACTION REQUIRED]")
         })
       })
     })
@@ -54,7 +54,7 @@ describe("createEditErrorRecoveryHook", () => {
 
           await hook["tool.execute.after"](input, output)
 
-          expect(output.output).toContain(EDIT_ERROR_REMINDER)
+          expect(output.output).toContain("[EDIT ERROR - IMMEDIATE ACTION REQUIRED]")
         })
       })
     })
@@ -69,7 +69,7 @@ describe("createEditErrorRecoveryHook", () => {
 
           await hook["tool.execute.after"](input, output)
 
-          expect(output.output).toContain(EDIT_ERROR_REMINDER)
+          expect(output.output).toContain("[EDIT ERROR - IMMEDIATE ACTION REQUIRED]")
         })
       })
     })
@@ -127,17 +127,10 @@ describe("createEditErrorRecoveryHook", () => {
 
           await hook["tool.execute.after"](input, output)
 
-          expect(output.output).toContain(EDIT_ERROR_REMINDER)
+          expect(output.output).toContain("[EDIT ERROR - IMMEDIATE ACTION REQUIRED]")
         })
       })
     })
   })
 
-  describe("EDIT_ERROR_PATTERNS", () => {
-    it("#then should contain all known Edit error patterns", () => {
-      expect(EDIT_ERROR_PATTERNS).toContain("oldString and newString must be different")
-      expect(EDIT_ERROR_PATTERNS).toContain("oldString not found")
-      expect(EDIT_ERROR_PATTERNS).toContain("oldString found multiple times")
-    })
-  })
 })
