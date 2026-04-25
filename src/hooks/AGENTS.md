@@ -13,8 +13,6 @@ Session, tool-guard, transform, and continuation hooks compose the runtime surfa
 ```
 hooks/
 ├── anthropic-effort/            # Reasoning effort level adjustment
-├── delegate-task-retry/        # Retries failed delegations
-├── edit-error-recovery/        # Recovers from failures
 ├── hashline-edit-diff-enhancer/ # Enhanced diff output for hashline edits
 ├── hashline-read-enhancer/     # Adds LINE#ID hashes to Read output
 ├── non-interactive-env/        # Non-TTY environment handling
@@ -29,8 +27,6 @@ hooks/
 | Hook | Event | Purpose |
 |------|-------|---------|
 | nonInteractiveEnv | chat.message | Adjust behavior for `run` command |
-| editErrorRecovery | tool.execute.after | Retry failed file edits |
-| delegateTaskRetry | tool.execute.after | Retry failed task delegations |
 | sisyphusJuniorNotepad | chat.message | Notepad injection for subagents |
 | questionLabelTruncator | tool.execute.before | Truncate long question labels |
 | anthropicEffort | chat.params | Adjust reasoning effort level |

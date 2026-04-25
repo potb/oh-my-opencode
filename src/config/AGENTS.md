@@ -15,20 +15,18 @@ config/
     ├── oh-my-opencode-config.ts   # Root schema
     ├── agent-overrides.ts         # Per-agent overrides
     ├── categories.ts              # Category config
-    ├── claude-code.ts             # Claude Code compatibility flags
     ├── experimental.ts            # Feature flags and dynamic pruning
     ├── background-task.ts         # Concurrency / timeout config
     ├── git-master.ts              # Git skill config
     ├── browser-automation.ts      # Browser automation provider
     ├── websearch.ts               # Web search provider
-    ├── model-capabilities.ts      # Model capability config
     ├── sisyphus.ts                # Sisyphus-specific config
     └── internal/permission.ts     # Permission schema pieces
 ```
 
 ## ROOT SCHEMA FIELDS
 
-`$schema`, `new_task_system_enabled`, `default_run_agent`, `disabled_agents`, `disabled_hooks`, `disabled_tools`, `hashline_edit`, `agents`, `categories`, `claude_code`, `experimental`, `background_task`, `git_master`, `browser_automation_engine`, `websearch`, `sisyphus`, `_migrations`
+`$schema`, `disabled_agents`, `disabled_hooks`, `disabled_tools`, `hashline_edit`, `agents`, `categories`, `experimental`, `background_task`, `git_master`, `browser_automation_engine`, `websearch`, `sisyphus`
 
 ## WHERE TO LOOK
 
@@ -38,7 +36,7 @@ config/
 | Agent overrides | `schema/agent-overrides.ts` | Model/prompt/permission overrides |
 | Category config | `schema/categories.ts` | Category defaults and custom categories |
 | Background task limits | `schema/background-task.ts` | Concurrency, stale timeout, circuit breaker |
-| Experimental flags | `schema/experimental.ts` | Dynamic pruning, safe hook creation, task system |
+| Experimental flags | `schema/experimental.ts` | Dynamic pruning, prompt environment flags |
 
 ## CONVENTIONS
 

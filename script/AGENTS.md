@@ -20,7 +20,6 @@ Small, high-signal automation directory. Owns schema generation and the CI test-
 
 - Test roots: `bin`, `script`, `src`
 - Isolation trigger: file contains `mock.module(`
-- Always-isolated constant: `src/openclaw/__tests__/reply-listener-discord.test.ts` when that file exists in the checkout
 - Shared suite runs after isolated targets
 - Directory targets exclude nested `_auc-*` test directories during grouped runs
 

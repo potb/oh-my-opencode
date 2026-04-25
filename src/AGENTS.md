@@ -22,7 +22,7 @@ index.ts
 | File | Purpose |
 |------|---------|
 | `index.ts` | Exports `OhMyOpenCodePlugin` |
-| `plugin-config.ts` | JSONC load, migration, merge, partial-parse fallback |
+| `plugin-config.ts` | JSONC load, strict validation, merge |
 | `create-managers.ts` | `BackgroundManager` + runtime config hook |
 | `create-tools.ts` | Calls `createToolRegistry()` |
 | `create-hooks.ts` | Builds composed hook record |

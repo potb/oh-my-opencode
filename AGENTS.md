@@ -40,12 +40,12 @@ OhMyOpenCodePlugin(ctx)
 | Task | Location | Notes |
 |------|----------|-------|
 | Plugin bootstrap | `src/index.ts`, `src/plugin-interface.ts` | End-to-end startup and 10 hook surfaces |
-| Config loading/merge | `src/plugin-config.ts`, `src/config/schema/` | JSONC load, migration, Zod validation |
+| Config loading/merge | `src/plugin-config.ts`, `src/config/schema/` | JSONC load, strict Zod validation, merge |
 | Background task engine | `src/features/background-agent/` | Concurrency, polling, stale-task cleanup, notifications |
 | Agent definitions | `src/agents/` | Sisyphus family + Oracle/Librarian/Explore/Metis/Momus |
 | Hook behavior | `src/hooks/`, `src/plugin/hooks/` | Hook implementations vs composition glue |
 | Tool registration | `src/create-tools.ts`, `src/plugin/tool-registry.ts`, `src/tools/` | Registry boundary and tool families |
-| Shared runtime helpers | `src/shared/` | Logging, caches, model resolution, migration, session helpers |
+| Shared runtime helpers | `src/shared/` | Logging, caches, model resolution, session helpers |
 | CI/schema scripts | `script/` | `build-schema.ts`, `run-ci-tests.ts` |
 | Extra integration harnesses | `tests/hashline/` | Separate Bun package for hashline scenarios |
 | Project skill/runtime config | `.opencode/` | Project config plus installed skill assets |
@@ -120,6 +120,5 @@ bun run script/run-ci-tests.ts --print-plan
 ## NOTES
 
 - Logger output: `/tmp/oh-my-opencode.log`
-- `.sisyphus/rules/modular-code-enforcement.md` is blocking architecture guidance
 - `tests/hashline/` is a separate Bun package
 - `.opencode/skills/github-triage/scripts/gh_fetch.py` is the only Python file in this checkout
