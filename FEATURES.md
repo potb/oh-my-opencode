@@ -19,7 +19,6 @@ graph TD
   Delegation --> ModelRes
   BgEngine --> Compaction["19. Compaction"]
   BgEngine --> SessionState["20. Session State"]
-  ModelRes --> Ultrawork["11. Ultrawork Override"]
   ModelRes --> Anthropic["12. Anthropic Effort"]
   Bootstrap --> HookEnv["13. Non-Interactive Env"]
   Delegation --> HookNotes["14. Junior Notepad"]
@@ -50,7 +49,6 @@ graph TD
 | 8 | Code-Search Tools | `src/tools/{ast-grep,grep,glob}/` | Three search tools — AST-aware (`sg`), text (`rg`), filename (`glob`) — for agents to read the codebase. |
 | 9 | Binary Install Pipeline | `src/shared/{binary-downloader,zip-*,archive-entry-validator}.ts` + per-tool `downloader.ts` | Auto-downloads & extracts CLI binaries (ripgrep, ast-grep) on first use, host-aware and validated. |
 | 10 | Model Resolution & Variants Pipeline | `src/shared/model-*.ts` + `src/generated/model-capabilities.generated.json` | Turns `"openai/gpt-5.4"` / category names / variants into a real, available model with sensible fallbacks. |
-| 11 | Ultrawork Model Override | `src/plugin/ultrawork-*.ts` | Type "ultrawork" in a message → that turn (and the agent's next turns) get bumped to a stronger model. SQLite-backed. |
 | 12 | Anthropic Effort Hook | `src/hooks/anthropic-effort/` + `src/plugin/hooks/create-session-hooks.ts` | On Claude-family `chat.params`, injects / clamps reasoning effort so `max` only reaches models that actually support it. |
 | 13 | Non-Interactive Env Hook | `src/hooks/non-interactive-env/` + `src/plugin/hooks/create-session-hooks.ts` | Before `bash`, auto-prepends non-interactive env vars to git commands and warns on obviously interactive commands that would hang. |
 | 14 | Sisyphus Junior Notepad Hook | `src/hooks/sisyphus-junior-notepad/` + `src/plugin/hooks/create-session-hooks.ts` | Before orchestrator-spawned `task()` calls, injects the Junior notepad directive so subagents keep the expected scratchpad behavior. |

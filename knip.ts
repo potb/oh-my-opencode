@@ -5,7 +5,6 @@ const config: KnipConfig = {
     "tests/**/*.ts",
   ],
   ignoreIssues: {
-    "src/plugin/ultrawork-model-override.ts": ["exports"],
     "src/shared/connected-providers-cache.ts": ["exports"],
     "src/shared/zip-entry-listing/tar-zip-entry-listing.ts": ["exports"],
     "src/tools/delegate-task/timing.ts": ["exports"],

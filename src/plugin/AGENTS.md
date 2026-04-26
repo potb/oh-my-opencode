@@ -41,9 +41,6 @@ The `config` surface is provided by the runtime config hook from `src/create-man
 | `session-status-normalizer.ts` | Normalize event / session status |
 | `recent-synthetic-idles.ts` | Synthetic idle-event dedup |
 | `normalize-tool-arg-schemas.ts` | Tool argument schema normalization |
-| `ultrawork-model-override.ts` | Message-triggered ultrawork model override |
-| `ultrawork-db-model-override.ts` | DB-level ultrawork mutation path |
-| `ultrawork-variant-availability.ts` | Variant availability for ultrawork |
 | `event-hook-dispatch.ts` | Internal event-hook dispatch |
 | `types.ts` | Plugin-layer shared types |
 
