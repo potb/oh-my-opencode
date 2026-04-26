@@ -1,37 +1,38 @@
 # src/features/ — Feature Modules
 
-**Generated:** 2026-04-26 | **Commit:** 5d62e3bf
+**Generated:** 2026-04-26 | **Commit:** 5af01eb4
 
 ## OVERVIEW
 
-Feature-layer runtime modules wired into plugin/bootstrap code. Two real families live here: the background-task engine and builtin skill definitions.
+Two feature subsystems live here: the background-task engine and the built-in skills registry.
 
-## MODULE MAP
+## MODULES
 
-| Module | Size signal | Purpose |
-|--------|-------------|---------|
-| `background-agent/` | largest and most operationally complex subtree here | Async task lifecycle, concurrency, polling, stale cleanup, notifications |
-| `builtin-skills/` | compact root with nested skill assets/prompt fragments | Repo-local built-in skill definitions and prompt fragments |
+| Module | Scope |
+|--------|-------|
+| `background-agent/` | Async task lifecycle: launch, queue, poll, cancel, stale cleanup, notifications |
+| `builtin-skills/` | Repo-local built-in skill registrations + authored SKILL.md assets |
 
 ## WHERE TO LOOK
 
-| Task | Location | Notes |
-|------|----------|-------|
-| Background task launch/resume/cancel | `background-agent/manager.ts` | `BackgroundManager` orchestration boundary |
-| Polling/completion rules | `background-agent/task-poller.ts`, `session-idle-event-handler.ts` | Idle + stability detection |
-| Concurrency and stale handling | `background-agent/concurrency.ts`, `task-history.ts`, `constants.ts` | Per-model/provider limits and cleanup |
-| Spawn limits | `background-agent/subagent-spawn-limits.ts`, `spawner.ts` | Prevent background-agent explosion |
-| Built-in skill registry | `builtin-skills/skills.ts`, `types.ts` | `createBuiltinSkills()` |
-| Git skill prompt fragments | `builtin-skills/skills/git-master-sections/` | Commit/rebase/history-search prompt sections |
+| Task | Location |
+|------|----------|
+| Launch / resume / cancel background task | `background-agent/manager.ts` |
+| Concurrency slot management | `background-agent/concurrency.ts` |
+| Polling + completion detection | `background-agent/task-poller.ts`, `session-idle-event-handler.ts` |
+| Spawn-tree limits | `background-agent/subagent-spawn-limits.ts`, `spawner.ts` |
+| Stale-task cleanup | `background-agent/task-history.ts`, `cancel-task-cleanup.test.ts` |
+| Built-in skill registration | `builtin-skills/skills.ts`, `skills/index.ts`, `types.ts` |
+| Skill prompt sections | `builtin-skills/skills/git-master-sections/` |
 
 ## CONVENTIONS
 
-- Keep feature modules self-contained; push cross-cutting helpers back to `src/shared/`.
-- `background-agent/` is operational code, not a prompt directory; test edge cases exhaustively.
-- `builtin-skills/` mixes static SKILL.md assets with TypeScript prompt builders; keep those responsibilities explicit.
+- Keep features self-contained — push cross-cutting helpers to `src/shared/`
+- `background-agent/` is operational code (test edge cases aggressively); not a prompt directory
+- `builtin-skills/` mixes static SKILL.md assets with TS registrations — keep that boundary explicit
 
 ## ANTI-PATTERNS
 
-- Do not reintroduce removed feature-loader directories in this subtree.
-- Do not place generic shared helpers here when they are imported across unrelated domains.
-- Do not document repo-wide rules here; keep this file feature-scoped.
+- Reintroducing removed feature-loader directories
+- Placing generic helpers here when used across unrelated domains (those belong in `src/shared/`)
+- Documenting repo-wide rules in this file — keep scope feature-local

@@ -1,69 +1,78 @@
 # src/tools/lsp/ — LSP Tool Implementations
 
-**Generated:** 2026-04-26 | **Commit:** 5d62e3bf
+**Generated:** 2026-04-26 | **Commit:** 5af01eb4
 
 ## OVERVIEW
 
-Full LSP (Language Server Protocol) client stack exposed as 6 tools. This subtree owns the custom server/process/client implementation and does not delegate to OpenCode's built-in LSP surface.
+Custom Language Server Protocol client stack exposed as 6 tools. Owns its own process / transport / client implementation; does not delegate to OpenCode's built-in LSP surface.
 
 ## TOOL EXPOSURE
 
-| Tool | File | What It Does |
-|------|------|--------------|
+| Tool | File | Purpose |
+|------|------|---------|
 | `lsp_goto_definition` | `goto-definition-tool.ts` | Jump to symbol definition |
-| `lsp_find_references` | `find-references-tool.ts` | All usages of a symbol |
-| `lsp_symbols` | `symbols-tool.ts` | Document outline or workspace symbol search |
-| `lsp_diagnostics` | `diagnostics-tool.ts` | Errors/warnings from language server |
-| `lsp_prepare_rename` | `rename-tools.ts` | Validate rename before applying |
-| `lsp_rename` | `rename-tools.ts` | Apply safe rename across workspace |
+| `lsp_find_references` | `find-references-tool.ts` | All workspace usages |
+| `lsp_symbols` | `symbols-tool.ts` | Document outline / workspace symbol search |
+| `lsp_diagnostics` | `diagnostics-tool.ts` | Errors / warnings from server |
+| `lsp_prepare_rename` | `rename-tools.ts` | Validate rename feasibility |
+| `lsp_rename` | `rename-tools.ts` | Apply workspace-wide rename |
 
-All 6 are direct `ToolDefinition` objects (not factory functions) — registered directly in `tool-registry.ts`.
+All exported as direct `ToolDefinition` objects from `tools.ts` (not factories) — registered directly in `src/plugin/tool-registry.ts`.
 
 ## ARCHITECTURE
 
-```
+```text
 tools.ts (6 ToolDefinition exports)
-  ↓ uses
+  ↓
 LspClientWrapper (lsp-client-wrapper.ts)
-  ↓ wraps
+  ↓
 LSPClient (lsp-client.ts) extends LSPClientConnection (lsp-client-connection.ts)
-  ↓ communicates via
+  ↓ JSON-RPC
 LSPClientTransport (lsp-client-transport.ts)
-  ↓ talks to
-LSPProcess (lsp-process.ts) — spawns server binary
+  ↓ stdio
+LSPProcess (lsp-process.ts) — spawned server binary
 ```
 
 ## KEY FILES
 
 | File | Purpose |
 |------|---------|
-| `lsp-client-wrapper.ts` | High-level entry: resolves server, opens file, runs request |
-| `lsp-client.ts` | `LSPClient` — file tracking, document sync (`didOpen`/`didChange`) |
-| `lsp-client-connection.ts` | JSON-RPC request/response/notification layer |
-| `lsp-client-transport.ts` | stdin/stdout byte-stream framing |
-| `lsp-process.ts` | Spawn + cleanup of LSP server process |
+| `lsp-client-wrapper.ts` | High-level entry; resolve server, open file, run request |
+| `lsp-client.ts`, `lsp-client-connection.ts`, `lsp-client-transport.ts` | Client + JSON-RPC + stdio framing |
+| `lsp-process.ts` | Spawn / cleanup of LSP server process |
 | `lsp-manager-process-cleanup.ts` | Reap orphan LSP processes on exit |
 | `lsp-manager-temp-directory-cleanup.ts` | Clean temp dirs used by some servers |
-| `server-definitions.ts` | Builtin server catalog synced from OpenCode's `server.ts` |
-| `server-config-loader.ts` | Merge builtin server definitions for resolution |
-| `server-resolution.ts` | Resolve which server handles a file extension |
+| `lsp-server.ts` | Manager-level server orchestration |
+| `server-definitions.ts`, `server-config-loader.ts` | Builtin server catalog (synced from OpenCode `server.ts`) |
+| `server-resolution.ts` | Pick server for a file based on extension |
 | `server-installation.ts` | Detect missing binaries, surface install hints |
-| `language-mappings.ts` | Extension → language ID mapping |
-| `lsp-formatters.ts` | Format LSP responses into human-readable strings |
-| `workspace-edit.ts` | Apply `WorkspaceEdit` results to disk (for rename) |
-| `types.ts` | `LSPServerConfig`, `Position`, `Range`, `Location`, `Diagnostic` etc. |
+| `server-path-bases.ts` | Server install path bases |
+| `language-mappings.ts`, `infer-extension.ts` | Extension / language-id mapping |
+| `language-config.ts` | Per-language settings |
+| `directory-diagnostics.ts` | Multi-file diagnostics for directory targets |
+| `lsp-formatters.ts` | Format LSP responses to human-readable strings |
+| `workspace-edit.ts` | Apply `WorkspaceEdit` to disk (rename) |
+| `client.ts`, `config.ts` | Client + config glue |
+| `constants.ts`, `types.ts` | Constants + `LSPServerConfig`, `Position`, `Range`, `Location`, `Diagnostic` |
 
-## SERVER RESOLUTION
+## SERVER RESOLUTION FLOW
 
-```
-file.ts → extension (.ts) → language-mappings → server ID (typescript)
-  → server-resolution: check server-definitions.ts for builtin server matches
-  → server-installation: verify binary exists (warn with install hint if not)
+```text
+file.ts → extension (.ts) → language-mappings → server id (typescript)
+  → server-resolution: match in server-definitions
+  → server-installation: verify binary + surface install hint if missing
   → LSPProcess.spawn(command[])
 ```
 
-## NOTES
+## CONTRACTS
 
-- File must be opened via `didOpen` before any LSP request — `LSPClient.openFile()` handles this
-- 1s delay after `didOpen` for server initialization before sending requests
-- Synced with OpenCode's `server.ts` — when adding servers, check upstream first
+- File MUST be opened via `didOpen` before any LSP request — `LSPClient.openFile()` handles this
+- 1s delay after `didOpen` for server initialization before sending the first request
+- Server catalog is synced from OpenCode's `server.ts` — when adding servers, check upstream first
+- All process spawns must register with `lspManager` cleanup so exits free orphans
+
+## ANTI-PATTERNS
+
+- Skipping `didOpen` and sending requests on a cold file
+- Spawning LSP processes outside `lsp-process.ts`
+- Letting `tools.ts` grow domain logic — keep tool exports thin, push behavior to wrapper / client

@@ -1,37 +1,34 @@
-# src/config/ — Type Definition System
+# src/config/ — Type Definitions Only
 
-**Generated:** 2026-04-25
+**Generated:** 2026-04-26 | **Commit:** 5af01eb4
 
 ## OVERVIEW
 
-Owns configuration type definitions via plain TypeScript types and interfaces. No runtime file loading or validation happens here; all config values come from the explicit constant in `src/plugin-config.ts`.
+Owns runtime config TYPE shapes. No file loading, no JSONC parsing, no validation, no defaults. Runtime values come from the single TS constant in `src/plugin-config.ts`.
 
 ## STRUCTURE
 
 ```text
 config/
-├── index.ts
-└── types.ts
+├── index.ts            # Barrel exports
+├── types.ts            # All config type definitions
+└── schema/internal/    # Reserved (currently empty)
 ```
 
-## ROOT CONFIG FIELDS
+## ROOT CONFIG FIELDS (`OhMyOpenCodeConfig`)
 
-`disabled_agents`, `disabled_hooks`, `disabled_tools`, `agents`, `categories`, `experimental`, `background_task`, `git_master`, `browser_automation_engine`
+`disabled_agents`, `disabled_hooks`, `disabled_tools`, `agents`, `categories`, `experimental`, `background_task`, `git_master`, `browser_automation_engine`.
 
 ## WHERE TO LOOK
 
-| Task | Location | Notes |
-|------|----------|-------|
-| Root config shape | `types.ts` | Type definitions only |
-| Change config values | `src/plugin-config.ts` | Single source of truth for runtime config |
-
-## CONVENTIONS
-
-- Add new config types in `types.ts`.
-- Keep shapes aligned with the runtime config constant in `src/plugin-config.ts`.
-- Edit `src/plugin-config.ts` to change runtime behavior; this directory defines types only.
+| Task | Location |
+|------|----------|
+| Add a new config field | `types.ts` then update `src/plugin-config.ts` constant |
+| Change a runtime value | `src/plugin-config.ts` (NOT here) |
+| Validate consumer expectations | Compile-time via `tsc`; no runtime validators |
 
 ## ANTI-PATTERNS
 
-- Do not add runtime file loading, JSONC parsing, or fallback defaults here.
-- Do not add runtime validation here; type modules define shapes only.
+- Adding runtime file loaders, JSONC parsers, or fallback defaults
+- Adding runtime validation here — schemas only
+- Letting `schema/internal/` host runtime code; keep it for reserved type artifacts

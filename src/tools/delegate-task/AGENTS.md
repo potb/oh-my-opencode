@@ -1,49 +1,65 @@
 # src/tools/delegate-task/ — Task Delegation Engine
 
-**Generated:** 2026-04-11
+**Generated:** 2026-04-26 | **Commit:** 5af01eb4
 
 ## OVERVIEW
 
-Task delegation implementation for the fixed-product runtime. Supports direct subagent delegation plus sync/background execution flows.
+Implementation of the `task` tool. Routes subagent work through either sync or background execution and provides resume / continuation flows.
 
-## TWO EXECUTION MODES
+## EXECUTION MODES
 
-| Mode | Flow | Use Case |
-|------|------|----------|
-| **Background** (`run_in_background=true`) | Launch → BackgroundManager → poll → notify parent | Explore, librarian, parallel work |
-| **Sync** (`run_in_background=false`) | Create session → send prompt → poll until idle → return result | Sequential tasks needing immediate result |
+| Mode | Trigger | Flow |
+|------|---------|------|
+| Background | `run_in_background=true` | Launch via `BackgroundManager` → poll → notify parent |
+| Sync | `run_in_background=false` | Create session → send prompt → poll until idle → return result |
 
 ## KEY FILES
 
 | File | Purpose |
 |------|---------|
-| `tools.ts` | `createDelegateTask()` factory — main entry point |
-| `executor.ts` | Route to background or sync execution |
-| `types.ts` | `DelegateTaskArgs`, `DelegateTaskToolOptions`, `ToolContextWithMetadata` |
-| `subagent-resolver.ts` | Map subagent_type → agent + model |
-| `model-selection.ts` | Model availability checking + fallback |
-| `prompt-builder.ts` | Build system/user prompt for direct subagent delegation |
+| `tools.ts` | `createDelegateTask()` factory — main entry |
+| `executor.ts`, `executor-types.ts` | Route to background vs sync |
+| `types.ts`, `task-schema.ts` | `DelegateTaskArgs`, `ToolContextWithMetadata`, schema |
+| `subagent-resolver.ts`, `subagent-discovery.ts`, `sisyphus-junior-agent.ts` | Map `subagent_type` to agent + model |
+| `model-selection.ts`, `model-string-parser.ts`, `available-models.ts`, `delegated-model-config.ts` | Model availability + `"model variant"` parsing |
+| `prompt-builder.ts` | Build subagent system + user prompts |
+| `parent-context-resolver.ts` | Resolve parent session context |
+| `error-formatting.ts` | Surface delegation errors |
+| `time-formatter.ts`, `timing.ts` | Timing helpers |
+| `token-limiter.ts` | Output / context token caps |
+| `constants.ts` | Internal constants |
 
 ## SYNC EXECUTION CHAIN
 
-```
-sync-task.ts → sync-session-creator.ts → sync-prompt-sender.ts → sync-session-poller.ts → sync-result-fetcher.ts
+```text
+sync-task.ts
+  → sync-session-creator.ts
+  → sync-prompt-sender.ts
+  → sync-session-poller.ts
+  → sync-result-fetcher.ts
 ```
 
-Each file handles one step. `sync-continuation.ts` handles session continuation (resume with session_id).
+`sync-continuation.ts` + `sync-continuation-deps.ts` + `sync-task-deps.ts` handle resume via `session_id`.
 
 ## BACKGROUND EXECUTION
 
+```text
+background-task.ts → BackgroundManager.launch() → (async polling)
+background-continuation.ts → resume by session_id
 ```
-background-task.ts → BackgroundManager.launch() → (async polling) → background-continuation.ts
-```
 
-`background-continuation.ts` handles `session_id` resume for existing background tasks.
+## MOCKS / KNIP-IGNORED
 
-## MODEL STRING PARSER
+`zauc-mocks-subagent-resolver/` — test mocks. Knip ignores listed in `knip.ts`.
 
-`model-string-parser.ts` handles `"model variant"` format (e.g., `"gpt-5.3-codex medium"` → model=`gpt-5.3-codex`, variant=`medium`).
+## CONTRACTS
 
-## FIXED-PRODUCT CONSTRAINTS
+- Direct `subagent_type` delegation is the supported delegation path for fixed-product runtime
+- Model string format: `"<model> <variant>"` (e.g. `"gpt-5.3-codex medium"`)
+- Token caps live in `token-limiter.ts`; don't bypass them at call sites
 
-- Direct `subagent_type` delegation is the supported path.
+## ANTI-PATTERNS
+
+- Bypassing the executor router with direct sync/background calls from tools
+- Embedding model availability logic into `prompt-builder.ts`
+- Letting subagent-resolver fall back to non-fixed-product agents

@@ -1,19 +1,16 @@
-# src/features/background-agent/ — Core Orchestration Engine
+# src/features/background-agent/ — Background Task Engine
 
-**Generated:** 2026-04-25 | **Commit:** 20a49686
+**Generated:** 2026-04-26 | **Commit:** 5af01eb4
 
 ## OVERVIEW
 
-43-file async task engine for background subagent execution. Owns launch/resume/cancel flows, per-model concurrency, poll-based completion, stale-task cleanup, notification injection, and subagent spawn limits.
+43-file async task engine for background subagent execution. Owns launch/resume/cancel flow, per-model concurrency slots, poll-based completion detection, stale-task cleanup, parent-session notification injection, and spawn-tree depth/descendant limits.
 
 ## TASK LIFECYCLE
 
 ```text
-LaunchInput/ResumeInput
-  → pending
-  → queued (ConcurrencyManager)
-  → running
-  → polling
+LaunchInput | ResumeInput
+  → pending → queued (ConcurrencyManager) → running → polling
   → completed | error | cancelled | interrupt
 ```
 
@@ -21,46 +18,57 @@ LaunchInput/ResumeInput
 
 | File | Purpose |
 |------|---------|
-| `manager.ts` | `BackgroundManager` orchestration boundary |
+| `manager.ts` | `BackgroundManager` orchestrator — enqueue, poll, notify, cleanup, cancel |
 | `spawner.ts` | Session creation, prompt injection, initial launch |
-| `concurrency.ts` | FIFO slot acquisition/release per concurrency key |
-| `task-poller.ts` | 3s polling, stability detection, completion/error transitions |
-| `task-history.ts` | Task retention, stale cleanup, history bookkeeping |
-| `subagent-spawn-limits.ts` | maxDepth / maxDescendants enforcement |
-| `session-idle-event-handler.ts` | Idle-event side of completion detection |
+| `concurrency.ts` | FIFO slot acquire/release per `{providerID}/{modelID}` key |
+| `task-poller.ts` | 3s poll, stability detection, status transitions |
+| `task-history.ts` | Retention + stale removal bookkeeping |
+| `subagent-spawn-limits.ts` | maxDepth + maxDescendants enforcement |
+| `session-idle-event-handler.ts` | Idle-event side of completion confirmation |
 | `session-status-classifier.ts` | Normalize session status during polling |
 | `error-classifier.ts` | Runtime error classification |
+| `loop-detector.ts` | Detect runaway loops in subagent traces |
+| `compaction-aware-message-resolver.ts` | Compaction-safe message lookup |
+| `abort-with-timeout.ts` | Timeout-bounded abort plumbing |
+| `background-task-notification-template.ts` | Format parent-session notifications |
+| `opencode-client.ts` | OpenCode session API access |
+| `process-cleanup.ts` | Manager registration for process-exit cleanup |
+| `session-existence.ts` | Session presence checks |
+| `duration-formatter.ts` | Human-readable durations for notifications |
+| `constants.ts` | Polling/timeout constants |
+| `test-config.ts` | Test-only config (knip-ignored file) |
 | `types.ts` | `BackgroundTask`, `LaunchInput`, `ResumeInput`, status types |
+| `index.ts` | Barrel exports |
 
 ## CONCURRENCY MODEL
 
-- Key format: `{providerID}/{modelID}`
-- Default limit comes from `background_task` config
-- FIFO queue, release on completion/error/cancel
-- `concurrencyGroup` persists enough state to re-acquire on resume
+- Slot key: `{providerID}/{modelID}`
+- Default cap from `background_task` config in `src/plugin-config.ts`
+- FIFO queue per key; release on completion / error / cancel
+- `concurrencyGroup` persisted so resumed tasks reacquire slots correctly
 
 ## COMPLETION + STALE RULES
 
-- Completion requires both idle-event confirmation and stable message counts
+- Completion requires BOTH idle-event confirmation AND stable message counts
 - Polling interval: 3s
-- Stale-task cleanup is part of the contract, not incidental maintenance
-- Cancellation/interruption paths must free slots immediately
+- Stale cleanup is a contract, not housekeeping — must run on schedule
+- Cancellation / interruption paths must free slots immediately
 
 ## SPAWN LIMITS
 
-- Background tasks track `rootSessionID` and `spawnDepth`
+- Tasks track `rootSessionID` and `spawnDepth`
 - Limit checks prevent runaway descendant trees
-- Reuse/resume existing sessions when possible instead of spawning blindly
+- Reuse / resume existing sessions before spawning new ones
 
 ## TESTING FOCUS
 
-- This subtree is test-heavy by design
-- High-signal tests: `manager.test.ts`, `manager.polling.test.ts`, `task-poller.test.ts`, `cancel-task-cleanup.test.ts`, `task-history*.test.ts`, `subagent-spawn-limits.test.ts`
-- Mock lifecycle/concurrency edges aggressively; avoid depending on real sessions
+High-signal tests: `manager.test.ts`, `manager.polling.test.ts`, `manager-circuit-breaker.test.ts`, `manager-session-permission.test.ts`, `task-poller.test.ts`, `cancel-task-cleanup.test.ts`, `task-history*.test.ts`, `subagent-spawn-limits.test.ts`, `session-idle-event-handler.test.ts`, `loop-detector.test.ts`.
+
+Mock lifecycle/concurrency edges aggressively. Avoid depending on real sessions.
 
 ## ANTI-PATTERNS
 
-- Slot leaks after error/cancel/resume paths
-- Marking tasks complete from one signal only
-- Treating stale cleanup as optional housekeeping
+- Slot leaks in error / cancel / resume paths
+- Marking tasks complete from a single signal
+- Treating stale cleanup as optional
 - Moving generic helpers here when they belong in `src/shared/`

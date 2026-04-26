@@ -1,49 +1,68 @@
 # src/shared/ — Shared Runtime Infrastructure
 
-**Generated:** 2026-04-26 | **Commit:** 5d62e3bf
+**Generated:** 2026-04-26 | **Commit:** 5af01eb4
 
 ## OVERVIEW
 
-Cross-cutting runtime helpers used across agents, plugin glue, tools, and background execution. Most modules are flat files exported through `index.ts`, with a few focused subdirectories for heavier subsystems.
+Cross-cutting helpers used by agents, plugin glue, tools, and background execution. Mostly flat files exported through `index.ts`, with a few focused subdirectories for heavier subsystems and platform variants.
 
 ## STRUCTURE
 
 ```text
 shared/
-├── index.ts                    # barrel export surface
-├── logger.ts                   # `/tmp/oh-my-opencode.log`
-├── model-*.ts                  # model normalization, availability, resolution
-├── session-*.ts                # session state, prompt params, tool stores
-├── opencode-*.ts               # config/message/auth/storage helpers
-├── prompt-*.ts                 # prompt tool/timeouts/context helpers
-├── posthog*.ts                 # telemetry activity state
-├── tmux/                       # tmux/process integration helpers
-├── model-capabilities/         # model capability lookups
-├── migration/                  # migration helpers
-├── zip-entry-listing/          # platform-specific zip listing backends
-└── zauc-mocks-migrate-legacy-plugin/ # legacy migration support
+├── index.ts                              # Barrel surface
+├── logger.ts                             # `/tmp/oh-my-opencode.log` writer
+├── model-*.ts                            # Normalization, availability, resolution pipeline
+├── session-*.ts                          # Session state, prompt params, tool stores, cursor
+├── opencode-*.ts                         # OpenCode config dir, message dir, server auth, storage
+├── prompt-*.ts                           # Prompt tools, async timeout, timeout context
+├── posthog*.ts                           # Telemetry + activity state
+├── agent-*.ts                            # Agent permissions, tool restrictions, display names
+├── *-cache*.ts                           # JSON file cache, providers cache, vision-models cache
+├── data-path.ts, shell-env.ts            # Filesystem + env helpers
+├── compaction-marker.ts, system-directive.ts # Compaction + directive helpers
+├── deep-merge.ts, contains-path.ts       # Small focused utilities
+├── plugin-identity.ts                    # Plugin self-identification
+├── internal-initiator-marker.ts          # OMO_INTERNAL_INITIATOR marker
+├── dynamic-truncator.ts, truncate-description.ts # Truncation helpers
+├── first-message-variant.ts              # First-message routing
+├── archive-entry-validator.ts, zip-extractor.ts, zip-entry-listing.ts # Archive helpers
+├── binary-downloader.ts                  # Binary fetch helper
+├── question-denied-session-permission.ts # Permission helper
+├── write-file-atomically.ts              # Atomic file write
+├── normalize-sdk-response.ts             # SDK response normalization
+├── subagent-session-registry.ts          # Subagent session tracking
+├── background-output-consumption.ts      # Background output reader
+├── main-session-id.ts                    # Main session id resolver
+├── tmux/                                 # tmux integration helpers
+├── model-capabilities/                   # Model capability lookups
+├── migration/                            # Migration helpers
+├── zip-entry-listing/                    # Platform-variant zip listing
+└── zauc-mocks-migrate-legacy-plugin/     # Legacy migration mocks
 ```
 
 ## WHERE TO LOOK
 
-| Task | Location | Notes |
-|------|----------|-------|
-| Logging and operator traces | `logger.ts` | Writes to `/tmp/oh-my-opencode.log` |
-| Model selection pipeline | `model-resolution-pipeline.ts`, `model-availability.ts`, `model-normalization.ts` | Core model routing helpers |
-| Session state helpers | `session-*.ts`, `session-tools-store.ts`, `session-cursor.ts` | Prompt/session continuity |
-| Path and config resolution | `data-path.ts`, `opencode-config-dir.ts`, `opencode-storage-*.ts` | XDG/runtime storage |
-| Prompt/tool helper state | `prompt-tools.ts`, `prompt-async-timeout.ts`, `context-limit-resolver.ts` | Shared prompt execution support |
-| Shell/tmux/process helpers | `shell-env.ts`, `tmux/`, `binary-downloader.ts` | Environment/process integration |
+| Task | Location |
+|------|----------|
+| Logging | `logger.ts` |
+| Model selection | `model-resolution-pipeline.ts`, `model-availability.ts`, `model-normalization.ts`, `model-format-normalizer.ts` |
+| Session state | `session-prompt-params-state.ts`, `session-tools-store.ts`, `session-model-state.ts`, `session-cursor.ts` |
+| OpenCode storage / paths | `data-path.ts`, `opencode-config-dir.ts`, `opencode-storage-paths.ts`, `opencode-storage-detection.ts` |
+| Prompt timeouts / tool helpers | `prompt-async-timeout.ts`, `prompt-timeout-context.ts`, `prompt-tools.ts` |
+| Telemetry | `posthog.ts`, `posthog-activity-state.ts` |
+| Process / environment | `shell-env.ts`, `tmux/`, `binary-downloader.ts` |
+| Agent permissions / display | `agent-permissions.ts`, `agent-tool-restrictions.ts`, `agent-display-names.ts` |
 
 ## CONVENTIONS
 
-- Prefer focused single-purpose modules over catch-all utility buckets.
-- Keep `index.ts` as the export surface; heavy behavior stays in named modules.
-- Put tool-family logic in `src/tools/` and plugin glue in `src/plugin/`; `src/shared/` is only for genuinely cross-domain helpers.
-- Small subdirectories are allowed only when a helper family has platform variants or a clear internal boundary.
+- Single-purpose modules over catch-all utility buckets
+- `index.ts` is the export surface; behavior lives in named modules
+- Tool-family logic belongs in `src/tools/`; plugin glue in `src/plugin/`; only genuinely cross-domain helpers land here
+- Subdirectories only when a helper family has platform variants OR a clear internal boundary
 
 ## ANTI-PATTERNS
 
-- Do not add new generic `utils.ts`/`helpers.ts` files here.
-- Do not move domain-specific runtime logic into `shared/` just to avoid choosing an owner.
-- Do not create child AGENTS files for every helper cluster; this subtree remains intentionally documented as one ownership unit.
+- Adding new generic `utils.ts` / `helpers.ts` files
+- Moving domain-specific runtime logic into `shared/` to avoid choosing an owner
+- Creating child AGENTS.md files for every helper cluster — this subtree is one ownership unit

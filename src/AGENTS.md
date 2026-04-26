@@ -1,10 +1,10 @@
-# src/ — Plugin Source
+# src/ — Plugin Source Root
 
-**Generated:** 2026-04-25 | **Commit:** 51061ac8
+**Generated:** 2026-04-26 | **Commit:** 5af01eb4
 
 ## OVERVIEW
 
-Source root for plugin bootstrap plus the main runtime domains: agents, config, features, hooks, plugin handlers/helpers, shared infrastructure, and tools.
+Bootstrap layer plus root-level wiring that ties together agents, config, features, hooks, plugin glue, shared infrastructure, and tools.
 
 ## INITIALIZATION PATH
 
@@ -15,50 +15,44 @@ index.ts
   → create-tools.ts
   → create-hooks.ts
   → plugin-interface.ts
+  → plugin-dispose.ts (cleanup)
 ```
 
-## KEY FILES
+## ROOT FILES
 
 | File | Purpose |
 |------|---------|
-| `index.ts` | Exports `OhMyOpenCodePlugin` |
-| `plugin-config.ts` | Single TS constants file, sole source of truth for config |
-| `create-managers.ts` | `BackgroundManager` + runtime config hook |
+| `index.ts` | Exports `OhMyOpenCodePlugin`; wires factories |
+| `plugin-config.ts` | Sole source of truth for runtime config values (`PLUGIN_CONFIG`) |
+| `create-managers.ts` | `BackgroundManager` + runtime config hook factory |
 | `create-tools.ts` | Calls `createToolRegistry()` |
-| `create-hooks.ts` | Builds composed hook record |
-| `plugin-interface.ts` | Exposes 10 OpenCode hook surfaces |
+| `create-hooks.ts` | Delegates to `plugin/hooks/create-core-hooks.ts` |
+| `plugin-interface.ts` | Exposes the 10 OpenCode hook surfaces |
 | `plugin-state.ts` | Model cache state helpers |
-| `fixed-product.ts` | Fixed-product agent names / removals |
+| `plugin-dispose.ts` | Plugin teardown, manager cleanup |
+| `fixed-product.ts` | Fixed-product agent name removals/overrides |
 
-## REAL SUBDIRECTORIES
+## SUBDIRECTORIES
 
 | Directory | Role |
 |-----------|------|
-| `agents/` | Agent prompts, model routing, agent factories |
-| `config/` | Plain TypeScript config type definitions |
-| `features/` | Background-agent engine, builtin skills, loaders |
-| `generated/` | Generated artifacts committed into source when needed |
-| `hooks/` | Hook implementations and hook-only helpers |
-| `plugin/` | Hook handlers, hook composition, runtime plumbing |
-| `shared/` | Cross-cutting utilities and caches |
-| `testing/` | Reserved helper area for source-level testing support |
-| `tools/` | Tool definitions and tool submodules |
+| `agents/` | Agent factories, prompts, model routing |
+| `config/` | TypeScript config types (no runtime loading) |
+| `features/` | Background-task engine, builtin skills |
+| `generated/` | Generated artifacts committed into source |
+| `hooks/` | Per-domain hook factories |
+| `plugin/` | Hook handlers, composition glue, runtime overrides |
+| `shared/` | Cross-cutting helpers (logger, model resolution, sessions) |
+| `testing/` | Reserved (currently empty) |
+| `tools/` | Tool family factories + LSP tools |
 
-## PLUGIN INTERFACE SURFACE
+## CONVENTIONS
 
-`plugin-interface.ts` wires:
-- `tool`
-- `config`
-- `chat.message`
-- `chat.params`
-- `chat.headers`
-- `event`
-- `tool.execute.before`
-- `tool.execute.after`
-- `experimental.chat.messages.transform`
-- `experimental.chat.system.transform`
+- Edit `plugin-config.ts` for runtime values; do NOT spread config across modules
+- Keep `index.ts` to factory wiring only — never put domain logic here
+- New top-level concerns get their own subdirectory; do not flatten into root files
 
 ## NOTES
 
-- `src/testing/` exists but is currently empty in this checkout.
-- Use child AGENTS files for domain rules; keep this file focused on source-root navigation.
+- `src/testing/` exists empty — do not document as a live module
+- `src/generated/` holds committed schema artifacts; do not hand-edit
