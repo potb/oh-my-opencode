@@ -1,41 +1,49 @@
-# src/shared/ — 100+ Utility Files
+# src/shared/ — Shared Runtime Infrastructure
 
-**Generated:** 2026-04-11
+**Generated:** 2026-04-26 | **Commit:** 5d62e3bf
 
 ## OVERVIEW
 
-Cross-cutting utilities used throughout the plugin. Barrel-exported from `index.ts`. Logger writes to `/tmp/oh-my-opencode.log`.
+Cross-cutting runtime helpers used across agents, plugin glue, tools, and background execution. Most modules are flat files exported through `index.ts`, with a few focused subdirectories for heavier subsystems.
 
-## CATEGORY MAP
+## STRUCTURE
 
-| Category | Files | Key Exports |
-|----------|-------|-------------|
-| **Model Resolution** | ~18 | `resolveModelPipeline()`, `checkModelAvailability()` |
-| **Tmux Integration** | 11 | `createTmuxSession()`, `spawnPane()`, `closePane()`, server health |
-| **Configuration & Paths** | 5 | `resolveOpenCodeConfigDir()`, `getDataPath()` |
-| **Session Management** | 8 | `SessionCursor`, `trackInjectedPath()`, `SessionToolsStore` |
-| **Git Worktree** | 7 | `parseGitStatusPorcelain()`, `collectGitDiffStats()`, `formatFileChanges()` |
-| **Command Execution** | 7 | `executeCommand()`, `executeHookCommand()`, embedded command registry |
-| **String & Tool Utils** | 6 | `toSnakeCase()`, `normalizeToolName()`, `parseFrontmatter()` |
-| **Agent Configuration** | 5 | `getAgentVariant()`, `AGENT_DISPLAY_NAMES`, `AGENT_TOOL_RESTRICTIONS` |
-| **OpenCode Integration** | 4 | `injectServerAuth()`, client accessors |
-| **Type Helpers** | 4 | `deepMerge()`, `DynamicTruncator`, `matchPattern()`, `isRecord()` |
-| **Misc** | 8 | `log()`, `readFile()`, `extractZip()`, `downloadBinary()`, `findAvailablePort()` |
+```text
+shared/
+├── index.ts                    # barrel export surface
+├── logger.ts                   # `/tmp/oh-my-opencode.log`
+├── model-*.ts                  # model normalization, availability, resolution
+├── session-*.ts                # session state, prompt params, tool stores
+├── opencode-*.ts               # config/message/auth/storage helpers
+├── prompt-*.ts                 # prompt tool/timeouts/context helpers
+├── posthog*.ts                 # telemetry activity state
+├── tmux/                       # tmux/process integration helpers
+├── model-capabilities/         # model capability lookups
+├── migration/                  # migration helpers
+├── zip-entry-listing/          # platform-specific zip listing backends
+└── zauc-mocks-migrate-legacy-plugin/ # legacy migration support
+```
 
-## MODEL RESOLUTION
+## WHERE TO LOOK
 
-Current resolution in this subtree is intentionally narrower than older revisions:
-- explicit override model when configured
-- category/default model matching against currently available models
-- no legacy fallback-chain compatibility logic
+| Task | Location | Notes |
+|------|----------|-------|
+| Logging and operator traces | `logger.ts` | Writes to `/tmp/oh-my-opencode.log` |
+| Model selection pipeline | `model-resolution-pipeline.ts`, `model-availability.ts`, `model-normalization.ts` | Core model routing helpers |
+| Session state helpers | `session-*.ts`, `session-tools-store.ts`, `session-cursor.ts` | Prompt/session continuity |
+| Path and config resolution | `data-path.ts`, `opencode-config-dir.ts`, `opencode-storage-*.ts` | XDG/runtime storage |
+| Prompt/tool helper state | `prompt-tools.ts`, `prompt-async-timeout.ts`, `context-limit-resolver.ts` | Shared prompt execution support |
+| Shell/tmux/process helpers | `shell-env.ts`, `tmux/`, `binary-downloader.ts` | Environment/process integration |
 
-Key files: `model-resolution-pipeline.ts` (orchestration), `model-availability.ts` (fuzzy matching), `model-normalization.ts` (normalization).
+## CONVENTIONS
 
-## MOST IMPORTED
+- Prefer focused single-purpose modules over catch-all utility buckets.
+- Keep `index.ts` as the export surface; heavy behavior stays in named modules.
+- Put tool-family logic in `src/tools/` and plugin glue in `src/plugin/`; `src/shared/` is only for genuinely cross-domain helpers.
+- Small subdirectories are allowed only when a helper family has platform variants or a clear internal boundary.
 
-| Utility | Import Count | Purpose |
-|---------|-------------|---------|
-| `logger.ts` | 62 | `/tmp/oh-my-opencode.log` |
-| `data-path.ts` | 11 | XDG storage resolution |
-| `system-directive.ts` | 11 | System message filtering |
-| `frontmatter.ts` | 10 | YAML metadata extraction |
+## ANTI-PATTERNS
+
+- Do not add new generic `utils.ts`/`helpers.ts` files here.
+- Do not move domain-specific runtime logic into `shared/` just to avoid choosing an owner.
+- Do not create child AGENTS files for every helper cluster; this subtree remains intentionally documented as one ownership unit.

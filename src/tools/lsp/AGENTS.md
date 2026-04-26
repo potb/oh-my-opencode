@@ -1,10 +1,10 @@
 # src/tools/lsp/ — LSP Tool Implementations
 
-**Generated:** 2026-04-11
+**Generated:** 2026-04-26 | **Commit:** 5d62e3bf
 
 ## OVERVIEW
 
-33 files. Full LSP (Language Server Protocol) client stack exposed as 6 tools. Custom implementation that manages server processes, opens files, and forwards requests — does NOT delegate to OpenCode's built-in LSP.
+Full LSP (Language Server Protocol) client stack exposed as 6 tools. This subtree owns the custom server/process/client implementation and does not delegate to OpenCode's built-in LSP surface.
 
 ## TOOL EXPOSURE
 
@@ -44,7 +44,7 @@ LSPProcess (lsp-process.ts) — spawns server binary
 | `lsp-process.ts` | Spawn + cleanup of LSP server process |
 | `lsp-manager-process-cleanup.ts` | Reap orphan LSP processes on exit |
 | `lsp-manager-temp-directory-cleanup.ts` | Clean temp dirs used by some servers |
-| `server-definitions.ts` | 40+ builtin servers synced from OpenCode's `server.ts` |
+| `server-definitions.ts` | Builtin server catalog synced from OpenCode's `server.ts` |
 | `server-config-loader.ts` | Merge builtin server definitions for resolution |
 | `server-resolution.ts` | Resolve which server handles a file extension |
 | `server-installation.ts` | Detect missing binaries, surface install hints |

@@ -1,10 +1,10 @@
 # oh-my-opencode — OpenCode Plugin
 
-**Generated:** 2026-04-25 | **Commit:** 20a49686 | **Branch:** dev
+**Generated:** 2026-04-26 | **Commit:** 5d62e3bf | **Branch:** dev
 
 ## OVERVIEW
 
-Bun-first TypeScript OpenCode plugin for multi-agent orchestration, background task execution, hook composition, custom tool wiring, and fixed-product runtime constraints. Current checkout is large and modular: ~585 files, ~66k LOC, deep AGENTS coverage, plus docs/dist/packages for publishing and operator workflows.
+Bun-first TypeScript OpenCode plugin for multi-agent orchestration, background task execution, hook composition, custom tool wiring, and fixed-product runtime constraints. Current checkout is large and modular, with deep source hierarchy plus project-installed skills, authored docs, and release artifacts.
 
 ## STRUCTURE
 
@@ -13,12 +13,12 @@ oh-my-opencode/
 ├── src/         # Plugin source: bootstrap, agents, config, features, hooks, plugin glue, shared infra, tools
 ├── script/      # Schema generation and CI test runner
 ├── tests/       # Extra integration harnesses outside co-located *.test.ts
-├── docs/        # Long-form product docs, plans, and reference material
+├── docs/        # Authored product docs, examples, guides, and troubleshooting
 ├── packages/    # Platform-specific packaged artifacts
 ├── dist/        # Built output mirroring src/
-├── .opencode/   # Project runtime config + project-installed skills
-├── .sisyphus/   # Agent workspace rules, plans, notepads, continuation state
-├── .github/     # Repo automation and workflow definitions
+├── .opencode/   # Project runtime config, custom commands, and installed skills
+├── .sisyphus/   # Reserved agent workspace state dir (currently empty)
+├── .github/     # Issue templates, assets, and repo automation surface
 ├── bin/         # Binary/test entrypoints
 ├── assets/      # Generated schema + static assets
 └── signatures/  # Release/signing artifacts
@@ -48,9 +48,9 @@ OhMyOpenCodePlugin(ctx)
 | Shared runtime helpers | `src/shared/` | Logging, caches, model resolution, session helpers |
 | CI scripts | `script/` | `run-ci-tests.ts` |
 | Extra integration harnesses | `tests/` | Non-co-located harness helpers when needed |
+| Authored product docs | `docs/` | Human-facing docs only; not runtime source |
 | Project skill/runtime config | `.opencode/` | Project config plus installed skill assets |
-| Agent workspace rules/plans | `.sisyphus/` | Runtime contract for plans/rules/notepads |
-| Product/reference docs | `docs/` | Long-form docs, not runtime source |
+| Repo automation | `.github/` | Issue templates and workflow surface; workflows dir currently empty |
 
 ## CONVENTIONS
 
@@ -62,6 +62,7 @@ OhMyOpenCodePlugin(ctx)
 - Factories: `createXXX()` for tools, hooks, managers, agents
 - Imports: relative paths, no `@/` aliases
 - `index.ts`: entry/barrel/wiring only
+- `create-hooks.ts` delegates composition to `src/plugin/hooks/create-core-hooks.ts`
 - Prefer focused modules over grab-bag helpers; some legacy localized `utils` files exist, do not expand that pattern
 - Update the nearest owning `AGENTS.md` when structure or responsibilities change
 
@@ -98,6 +99,8 @@ bun run script/run-ci-tests.ts --print-plan
 - `src/features/builtin-skills/AGENTS.md`
 - `src/features/builtin-skills/skills/git-master-sections/AGENTS.md`
 - `src/hooks/AGENTS.md`
+- `docs/AGENTS.md`
+- `.opencode/AGENTS.md`
 - `src/plugin/AGENTS.md`
 - `src/shared/AGENTS.md`
 - `src/tools/AGENTS.md`
@@ -105,7 +108,6 @@ bun run script/run-ci-tests.ts --print-plan
 - `src/tools/lsp/AGENTS.md`
 - `script/AGENTS.md`
 - `tests/AGENTS.md`
-- `.sisyphus/AGENTS.md`
 
 ## DOCUMENTATION POLICY
 
@@ -117,4 +119,5 @@ bun run script/run-ci-tests.ts --print-plan
 ## NOTES
 
 - Logger output: `/tmp/oh-my-opencode.log`
-- `.opencode/skills/github-triage/scripts/gh_fetch.py` is the only Python file in this checkout
+- `.github/workflows/` currently exists but is empty in this checkout
+- `.sisyphus/` currently exists but is empty in this checkout

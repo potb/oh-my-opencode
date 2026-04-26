@@ -1,17 +1,17 @@
 # src/features/ — Feature Modules
 
-**Generated:** 2026-04-25 | **Commit:** 20a49686
+**Generated:** 2026-04-26 | **Commit:** 5d62e3bf
 
 ## OVERVIEW
 
-Feature-layer runtime modules wired into plugin/bootstrap code. Current source tree has two real feature families: background-task orchestration and builtin skill definitions.
+Feature-layer runtime modules wired into plugin/bootstrap code. Two real families live here: the background-task engine and builtin skill definitions.
 
 ## MODULE MAP
 
 | Module | Size signal | Purpose |
 |--------|-------------|---------|
-| `background-agent/` | 43 files, highest complexity in `src/features/` | Async task lifecycle, concurrency, polling, stale cleanup, notifications |
-| `builtin-skills/` | 9 top-level entries + nested skill assets | Repo-local built-in skill definitions and prompt fragments |
+| `background-agent/` | largest and most operationally complex subtree here | Async task lifecycle, concurrency, polling, stale cleanup, notifications |
+| `builtin-skills/` | compact root with nested skill assets/prompt fragments | Repo-local built-in skill definitions and prompt fragments |
 
 ## WHERE TO LOOK
 
