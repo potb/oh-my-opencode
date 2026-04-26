@@ -7,7 +7,7 @@ import {
 
 describe("getAgentDisplayName", () => {
   it("returns display name for lowercase config key", () => {
-    expect(getAgentDisplayName("sisyphus")).toBe("Sisyphus - Ultraworker")
+    expect(getAgentDisplayName("sisyphus")).toBe("Sisyphus")
   })
 
   it("returns original key when casing does not match canonical config key", () => {
@@ -22,7 +22,7 @@ describe("getAgentDisplayName", () => {
 
 describe("getAgentConfigKey", () => {
   it("resolves supported display names to config keys", () => {
-    expect(getAgentConfigKey("Sisyphus - Ultraworker")).toBe("sisyphus")
+    expect(getAgentConfigKey("Sisyphus")).toBe("sisyphus")
     expect(getAgentConfigKey("Metis - Plan Consultant")).toBe("metis")
     expect(getAgentConfigKey("Momus - Plan Critic")).toBe("momus")
   })
@@ -36,7 +36,7 @@ describe("getAgentConfigKey", () => {
 
 describe("getAgentListDisplayName", () => {
   it("applies an invisible stable-sort prefix only to sisyphus", () => {
-    expect(getAgentListDisplayName("sisyphus")).toBe("\u200BSisyphus - Ultraworker")
+    expect(getAgentListDisplayName("sisyphus")).toBe("\u200BSisyphus")
   })
 
   it("keeps non-core agents unprefixed", () => {

@@ -8,7 +8,7 @@ describe("Agent Config Integration", () => {
 
       const displayNames = agents.map((agent) => getAgentDisplayName(agent))
 
-      expect(displayNames).toContain("Sisyphus - Ultraworker")
+      expect(displayNames).toContain("Sisyphus")
       expect(displayNames).toContain("Metis - Plan Consultant")
       expect(displayNames).toContain("Momus - Plan Critic")
       expect(displayNames).toContain("oracle")

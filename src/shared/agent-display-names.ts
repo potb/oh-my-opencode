@@ -1,7 +1,7 @@
 /**
  * Agent config keys to display names mapping.
  * Config keys are lowercase (e.g., "sisyphus").
- * Display names include suffixes for UI/logs (e.g., "Sisyphus - Ultraworker").
+ * Display names may include suffixes for UI/logs (e.g., "Metis - Plan Consultant").
  *
  * IMPORTANT: Display names MUST NOT contain parentheses or other characters
  * that are invalid in HTTP header values per RFC 7230. OpenCode passes the
@@ -10,7 +10,7 @@
  * type selector dropdown. Use ` - ` (space-dash-space) instead of `(...)`.
  */
 const AGENT_DISPLAY_NAMES: Record<string, string> = {
-  sisyphus: "Sisyphus - Ultraworker",
+  sisyphus: "Sisyphus",
   "sisyphus-junior": "Sisyphus-Junior",
   metis: "Metis - Plan Consultant",
   momus: "Momus - Plan Critic",
