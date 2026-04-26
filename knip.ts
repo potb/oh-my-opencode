@@ -2,7 +2,6 @@ import type { KnipConfig } from "knip"
 
 const config: KnipConfig = {
   entry: [
-    "script/**/*.ts",
     "tests/**/*.ts",
   ],
   ignoreIssues: {
@@ -14,7 +13,6 @@ const config: KnipConfig = {
   },
   project: [
     "src/**/*.ts!",
-    "script/**/*.ts",
     "tests/**/*.ts",
   ],
 }
