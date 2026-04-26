@@ -7,8 +7,6 @@
 
 export const SYSTEM_DIRECTIVE_PREFIX = "[SYSTEM DIRECTIVE: OH-MY-OPENCODE"
 
-const SYSTEM_DIRECTIVE_LEADING_KEYWORD_PATTERN = /^\s*(?:ultrawork|ulw)\s+/i
-
 /**
  * Creates a system directive header with the given type.
  * @param type - The directive type (e.g., "TODO CONTINUATION", "RALPH LOOP")
@@ -26,11 +24,7 @@ function createSystemDirective(type: string): string {
  */
 function isSystemDirective(text: string): boolean {
   const trimmed = text.trimStart()
-  if (trimmed.startsWith(SYSTEM_DIRECTIVE_PREFIX)) {
-    return true
-  }
-  const withoutLeadingKeyword = trimmed.replace(SYSTEM_DIRECTIVE_LEADING_KEYWORD_PATTERN, "")
-  return withoutLeadingKeyword.startsWith(SYSTEM_DIRECTIVE_PREFIX)
+  return trimmed.startsWith(SYSTEM_DIRECTIVE_PREFIX)
 }
 
 /**

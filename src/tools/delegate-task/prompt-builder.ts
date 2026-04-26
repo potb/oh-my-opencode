@@ -9,7 +9,6 @@ const PLAN_AGENT_PROMPT_BASE = `
 Additional requirements for this planning request:
 - Answer in English.
 - Write the plan in English.
-- Plan well for ultrawork execution.
 - Include a clear atomic commit strategy.`
 
 const TDD_LINE = "- Use TDD-oriented planning."

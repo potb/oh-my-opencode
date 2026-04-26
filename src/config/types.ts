@@ -58,8 +58,6 @@ export type AgentOverrideConfig = Partial<AgentConfig> & {
   textVerbosity?: "low" | "medium" | "high"
   /** Provider-specific options. Passed directly to OpenCode SDK. */
   providerOptions?: Record<string, unknown>
-  /** Per-message ultrawork override model/variant when ultrawork keyword is detected. */
-  ultrawork?: AgentModelOverrideConfig
   compaction?: AgentModelOverrideConfig
 }
 
@@ -186,7 +184,7 @@ export interface ExperimentalConfig {
 export type GitEnvPrefix = string
 
 export interface GitMasterConfig {
-  /** Add "Ultraworked with Sisyphus" footer to commit messages. Can be boolean or custom string. */
+  /** Add a footer to commit messages. Can be boolean or custom string. */
   commit_footer: boolean | string
   /** Add "Co-authored-by: Sisyphus" trailer to commit messages. */
   include_co_authored_by: boolean
