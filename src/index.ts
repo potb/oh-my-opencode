@@ -13,7 +13,6 @@ import { createModelCacheState } from "./plugin-state"
 import { createFirstMessageVariantGate } from "./shared/first-message-variant"
 import { initConfigContext, injectServerAuthIntoClient, log } from "./shared"
 import { lspManager } from "./tools/lsp/client"
-import { createPluginPostHog, getPostHogDistinctId } from "./shared/posthog"
 
 let activePluginDispose: PluginDispose | null = null
 
@@ -27,26 +26,6 @@ const OhMyOpenCodePlugin: Plugin = async (ctx) => {
   await activePluginDispose?.()
 
   const pluginConfig = PLUGIN_CONFIG
-
-  const posthog = createPluginPostHog()
-  const distinctId = getPostHogDistinctId()
-  try {
-    posthog.trackActive(distinctId, "plugin_loaded")
-  } catch {
-    // telemetry failure is non-fatal, silently ignore
-  }
-  try {
-    posthog.capture({
-        distinctId,
-        event: "plugin_loaded",
-        properties: {
-          entry_point: "plugin",
-          tmux_enabled: false,
-        },
-      })
-  } catch {
-    // telemetry failure is non-fatal, silently ignore
-  }
   const disabledHooks = new Set(pluginConfig.disabled_hooks)
 
   const isHookEnabled = (hookName: HookName): boolean => !disabledHooks.has(hookName)

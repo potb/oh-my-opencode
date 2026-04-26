@@ -17,7 +17,6 @@ function cleanupOmoCacheDir(cacheDir: string): void {
 beforeEach(() => {
   environmentSnapshot = { ...process.env }
   workingDirectorySnapshot = process.cwd()
-  process.env.OMO_DISABLE_POSTHOG = "true"
   cleanupOmoCacheDir(getOmoOpenCodeCacheDir())
   resetMainSessionIDForTesting()
   resetSubagentSessionsForTesting()

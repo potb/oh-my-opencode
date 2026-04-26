@@ -16,7 +16,6 @@ shared/
 ├── session-*.ts                          # Session state, prompt params, tool stores, cursor
 ├── opencode-*.ts                         # OpenCode config dir, message dir, server auth, storage
 ├── prompt-*.ts                           # Prompt tools, async timeout, timeout context
-├── posthog*.ts                           # Telemetry + activity state
 ├── agent-*.ts                            # Agent permissions, tool restrictions, display names
 ├── *-cache*.ts                           # JSON file cache, providers cache, vision-models cache
 ├── data-path.ts, shell-env.ts            # Filesystem + env helpers
@@ -50,7 +49,6 @@ shared/
 | Session state | `session-prompt-params-state.ts`, `session-tools-store.ts`, `session-model-state.ts`, `session-cursor.ts` |
 | OpenCode storage / paths | `data-path.ts`, `opencode-config-dir.ts`, `opencode-storage-paths.ts`, `opencode-storage-detection.ts` |
 | Prompt timeouts / tool helpers | `prompt-async-timeout.ts`, `prompt-timeout-context.ts`, `prompt-tools.ts` |
-| Telemetry | `posthog.ts`, `posthog-activity-state.ts` |
 | Process / environment | `shell-env.ts`, `tmux/`, `binary-downloader.ts` |
 | Agent permissions / display | `agent-permissions.ts`, `agent-tool-restrictions.ts`, `agent-display-names.ts` |
 

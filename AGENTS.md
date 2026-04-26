@@ -46,7 +46,7 @@ src/index.ts → OhMyOpenCodePlugin(ctx)
 | Hook composition | `src/plugin/hooks/` | Assembles hooks into runtime record |
 | Tool registry | `src/plugin/tool-registry.ts`, `src/create-tools.ts` | Registry boundary |
 | Tool families | `src/tools/` | delegate-task, lsp, ast-grep, grep, glob |
-| Shared runtime helpers | `src/shared/` | Logger, model resolution, session helpers, posthog |
+| Shared runtime helpers | `src/shared/` | Logger, model resolution, session helpers |
 | Builtin skills | `src/features/builtin-skills/` | git-master, agent-browser, frontend-ui-ux, review-work |
 
 ## PLUGIN INTERFACE — 10 HOOK SURFACES
