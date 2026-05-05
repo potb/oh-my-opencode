@@ -1,0 +1,37 @@
+{
+  "name": "oh-my-opencode",
+  "version": "3.17.2",
+  "description": "Batteries-included OpenCode plugin with multi-agent orchestration and crafted tools",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "rm -rf dist && bun build src/index.ts --outdir dist --target bun --format esm --external @ast-grep/napi",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "opencode",
+    "plugin",
+    "oracle",
+    "librarian",
+    "agents",
+    "ai",
+    "llm"
+  ],
+  "author": "YeonGyu-Kim",
+  "license": "SUL-1.0",
+  "dependencies": {
+    "@ast-grep/cli": "^0.41.1",
+    "@opencode-ai/plugin": "^1.4.0",
+    "vscode-jsonrpc": "^8.2.0"
+  }
+}

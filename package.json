@@ -1,22 +1,15 @@
 {
-  "name": "oh-my-opencode",
+  "name": "oh-my-opencode-workspace",
   "version": "3.17.2",
   "description": "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
-  "main": "./dist/index.js",
-  "types": "dist/index.d.ts",
+  "private": true,
   "type": "module",
-  "files": [
-    "dist"
+  "workspaces": [
+    "packages/*"
   ],
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    }
-  },
   "scripts": {
-    "build": "rm -rf dist && bun build src/index.ts --outdir dist --target bun --format esm --external @ast-grep/napi && tsc --emitDeclarationOnly",
-    "clean": "rm -rf dist",
+    "build": "bun run clean && bun build packages/oh-my-opencode/src/index.ts --outdir packages/oh-my-opencode/dist --target bun --format esm --external @ast-grep/napi && bun build packages/opencode-task-delegation/src/index.ts --outdir packages/opencode-task-delegation/dist --target bun --format esm --external @ast-grep/napi && bun build packages/opencode-lsp-tools/src/index.ts --outdir packages/opencode-lsp-tools/dist --target bun --format esm --external @ast-grep/napi && tsc --emitDeclarationOnly --declarationDir .types && cp .types/packages/oh-my-opencode/src/index.d.ts packages/oh-my-opencode/dist/index.d.ts && cp .types/packages/opencode-task-delegation/src/index.d.ts packages/opencode-task-delegation/dist/index.d.ts && cp .types/packages/opencode-lsp-tools/src/index.d.ts packages/opencode-lsp-tools/dist/index.d.ts && rm -rf .types",
+    "clean": "rm -rf dist .types packages/*/dist",
     "knip": "knip",
     "typecheck": "tsc --noEmit",
     "test": "bun test"
@@ -41,6 +34,9 @@
     "@opencode-ai/sdk": "^1.4.0",
     "bun-types": "1.3.11",
     "knip": "^6.6.2",
+    "oh-my-opencode": "workspace:*",
+    "opencode-lsp-tools": "workspace:*",
+    "opencode-task-delegation": "workspace:*",
     "typescript": "^5.7.3"
   },
   "overrides": {},

@@ -1,0 +1,33 @@
+{
+  "name": "opencode-task-delegation",
+  "version": "3.17.2",
+  "description": "OpenCode task delegation plugin extracted from oh-my-opencode",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "rm -rf dist && bun build src/index.ts --outdir dist --target bun --format esm --external @ast-grep/napi",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "opencode",
+    "plugin",
+    "task",
+    "delegation",
+    "agents"
+  ],
+  "author": "YeonGyu-Kim",
+  "license": "SUL-1.0",
+  "dependencies": {
+    "@opencode-ai/plugin": "^1.4.0"
+  }
+}

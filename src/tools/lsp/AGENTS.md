@@ -1,10 +1,12 @@
 # src/tools/lsp/ — LSP Tool Implementations
 
-**Generated:** 2026-04-26 | **Commit:** 5af01eb4
+**Generated:** 2026-05-06 | **Commit:** 10ae7625
 
 ## OVERVIEW
 
 Custom Language Server Protocol client stack exposed as 6 tools. Owns its own process / transport / client implementation; does not delegate to OpenCode's built-in LSP surface.
+
+Also consumed by `packages/opencode-lsp-tools`, which exposes only these six tools as a standalone OpenCode plugin.
 
 ## TOOL EXPOSURE
 
@@ -18,6 +20,8 @@ Custom Language Server Protocol client stack exposed as 6 tools. Owns its own pr
 | `lsp_rename` | `rename-tools.ts` | Apply workspace-wide rename |
 
 All exported as direct `ToolDefinition` objects from `tools.ts` (not factories) — registered directly in `src/plugin/tool-registry.ts`.
+
+The package wrapper imports the same definitions from `tools.ts` and `lspManager` from `client.ts`; it does not fork protocol logic.
 
 ## ARCHITECTURE
 
@@ -43,7 +47,7 @@ LSPProcess (lsp-process.ts) — spawned server binary
 | `lsp-manager-process-cleanup.ts` | Reap orphan LSP processes on exit |
 | `lsp-manager-temp-directory-cleanup.ts` | Clean temp dirs used by some servers |
 | `lsp-server.ts` | Manager-level server orchestration |
-| `server-definitions.ts`, `server-config-loader.ts` | Builtin server catalog (synced from OpenCode `server.ts`) |
+| `server-definitions.ts`, `server-config-loader.ts` | Builtin server catalog |
 | `server-resolution.ts` | Pick server for a file based on extension |
 | `server-installation.ts` | Detect missing binaries, surface install hints |
 | `server-path-bases.ts` | Server install path bases |
@@ -53,9 +57,7 @@ LSPProcess (lsp-process.ts) — spawned server binary
 | `lsp-formatters.ts` | Format LSP responses to human-readable strings |
 | `workspace-edit.ts` | Apply `WorkspaceEdit` to disk (rename) |
 | `client.ts`, `config.ts` | Client + config glue |
-| `constants.ts`, `types.ts` | Constants + `LSPServerConfig`, `Position`, `Range`, `Location`, `Diagnostic` |
-
-## SERVER RESOLUTION FLOW
+| `constants.ts`, `types.ts` | Constants + LSP data shapes |
 
 ```text
 file.ts → extension (.ts) → language-mappings → server id (typescript)

@@ -1,7 +1,7 @@
 /// <reference types="bun-types" />
 
 import { afterEach, describe, expect, it } from "bun:test"
-import { cpSync, mkdtempSync, rmSync } from "node:fs"
+import { cpSync, existsSync, mkdtempSync, rmSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { dirname, join } from "node:path"
 import { pathToFileURL } from "node:url"
@@ -22,7 +22,10 @@ function getNestedRecord(record: Record<string, unknown>, key: string): Record<s
 // biome-ignore lint: dynamic import from plugin's bundled zod, not our dependency
 async function loadSeparateHostZodModule(): Promise<{ z: { toJSONSchema: (schema: unknown) => Record<string, unknown>; object: (...args: unknown[]) => unknown } }> {
   const pluginPackageDirectory = dirname(Bun.resolveSync("@opencode-ai/plugin/package.json", import.meta.dir))
-  const sourceZodDirectory = join(pluginPackageDirectory, "node_modules", "zod")
+  const nestedZodDirectory = join(pluginPackageDirectory, "node_modules", "zod")
+  const sourceZodDirectory = existsSync(nestedZodDirectory)
+    ? nestedZodDirectory
+    : dirname(Bun.resolveSync("zod/package.json", pluginPackageDirectory))
   const tempDirectory = mkdtempSync(join(tmpdir(), "omo-host-zod-"))
   const copiedZodDirectory = join(tempDirectory, "zod")
 

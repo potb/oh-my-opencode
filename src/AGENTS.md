@@ -1,10 +1,12 @@
 # src/ — Plugin Source Root
 
-**Generated:** 2026-04-26 | **Commit:** 5af01eb4
+**Generated:** 2026-05-06 | **Commit:** 10ae7625
 
 ## OVERVIEW
 
 Bootstrap layer plus root-level wiring that ties together agents, config, features, hooks, plugin glue, shared infrastructure, and tools.
+
+Publishable packages in `../packages/*` are thin OpenCode plugin entry adapters over this source tree.
 
 ## INITIALIZATION PATH
 
@@ -32,6 +34,14 @@ index.ts
 | `plugin-dispose.ts` | Plugin teardown, manager cleanup |
 | `fixed-product.ts` | Fixed-product agent name removals/overrides |
 
+## PACKAGE ADAPTERS
+
+| Package | Source dependency |
+|---------|-------------------|
+| `packages/oh-my-opencode` | `src/index.ts` full plugin |
+| `packages/opencode-task-delegation` | `plugin-config.ts`, `features/background-agent/`, `tools/delegate-task/` |
+| `packages/opencode-lsp-tools` | `tools/lsp/tools.ts`, `tools/lsp/client.ts` |
+
 ## SUBDIRECTORIES
 
 | Directory | Role |
@@ -50,6 +60,7 @@ index.ts
 
 - Edit `plugin-config.ts` for runtime values; do NOT spread config across modules
 - Keep `index.ts` to factory wiring only — never put domain logic here
+- Keep package wrappers thin; implementation ownership remains in `src/` until explicitly extracted
 - New top-level concerns get their own subdirectory; do not flatten into root files
 
 ## NOTES

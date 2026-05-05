@@ -1,10 +1,12 @@
 # src/tools/ — Tool Families
 
-**Generated:** 2026-04-26 | **Commit:** 5af01eb4
+**Generated:** 2026-05-06 | **Commit:** 10ae7625
 
 ## OVERVIEW
 
 Tool factory families plus direct LSP tool definitions. Each family is an ownership boundary with its own internal docs where warranted.
+
+Two package wrappers consume this tree: `packages/opencode-task-delegation` imports `delegate-task/`; `packages/opencode-lsp-tools` imports `lsp/`.
 
 ## STRUCTURE
 
@@ -30,6 +32,13 @@ tools/
 | File pattern | `createGlobTools` (`glob/tools.ts`) | Glob wrapper |
 | LSP | `lsp_*` direct `ToolDefinition` exports (`lsp/tools.ts`) | Plus `lspManager` for cleanup |
 
+## PACKAGE CONSUMERS
+
+| Package | Imported surface |
+|---------|------------------|
+| `opencode-task-delegation` | `createDelegateTask()` plus `BackgroundManager` from `src/features/background-agent/` |
+| `opencode-lsp-tools` | Six `lsp_*` definitions plus `lspManager` |
+
 ## WHERE TO LOOK
 
 | Task | Location |
@@ -46,6 +55,7 @@ tools/
 - `index.ts` limited to exports + builtin tool maps — no implementation
 - Each family owns its own contract; deeper docs live in family-specific AGENTS.md when warranted
 - New tool families ship as dedicated subdirectories (no loose `tools/` root files)
+- Package wrappers import tool surfaces; do not fork tool definitions under `packages/`
 
 ## ANTI-PATTERNS
 

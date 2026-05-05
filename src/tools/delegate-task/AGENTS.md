@@ -1,10 +1,12 @@
 # src/tools/delegate-task/ — Task Delegation Engine
 
-**Generated:** 2026-04-26 | **Commit:** 5af01eb4
+**Generated:** 2026-05-06 | **Commit:** 10ae7625
 
 ## OVERVIEW
 
 Implementation of the `task` tool. Routes subagent work through either sync or background execution and provides resume / continuation flows.
+
+Also consumed by `packages/opencode-task-delegation`, which exposes only this tool as a standalone OpenCode plugin.
 
 ## EXECUTION MODES
 
@@ -28,6 +30,10 @@ Implementation of the `task` tool. Routes subagent work through either sync or b
 | `time-formatter.ts`, `timing.ts` | Timing helpers |
 | `token-limiter.ts` | Output / context token caps |
 | `constants.ts` | Internal constants |
+
+## PACKAGE WRAPPER
+
+`packages/opencode-task-delegation/src/index.ts` creates a `BackgroundManager`, registers `task: createDelegateTask(...)`, forwards events to `BackgroundManager.handleEvent()`, and shuts down the previous manager on reload.
 
 ## SYNC EXECUTION CHAIN
 
@@ -57,6 +63,7 @@ background-continuation.ts → resume by session_id
 - Direct `subagent_type` delegation is the supported delegation path for fixed-product runtime
 - Model string format: `"<model> <variant>"` (e.g. `"gpt-5.3-codex medium"`)
 - Token caps live in `token-limiter.ts`; don't bypass them at call sites
+- Package wrapper must not change delegation behavior; update this source tree instead
 
 ## ANTI-PATTERNS
 
